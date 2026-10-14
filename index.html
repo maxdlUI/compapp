@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Match Tools</title>
+  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Match Tools">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Eigene, einfache Linien-Icons (siehe ASSETS.md) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3.6"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4 4.5v4.5h4.5"/></symbol>
+      <symbol id="i-storm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><path d="M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 7a5 5 0 0 1 5 5M12 17a5 5 0 0 1-5-5"/></symbol>
+      <symbol id="i-rotate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"/></symbol>
+      <symbol id="i-net" viewBox="0 0 24 24"><path d="M3.5 17l5.5-5.5 4 3.5 7.5-8"/><path d="M15 7h5.5v5.5"/></symbol>
+      <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z"/><path d="M9 12h7M9 16h7"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7.5l4-4 4 4"/><path d="M5 11.5V20h14v-8.5"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
+      <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+      <symbol id="i-even" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+      <symbol id="i-sound-on" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4V5.5l-5 4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/></symbol>
+      <symbol id="i-sound-off" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4V5.5l-5 4z"/><path d="M17 9.5l4 5M21 9.5l-4 5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
+    </defs>
+  </svg>
+
+  <main class="app">
+    <p id="storage-warning" class="notice" role="status" hidden>
+      Speichern auf diesem Gerät ist nicht möglich (z. B. privater Modus). Daten gehen beim Schließen verloren.
+    </p>
+
+    <div class="grid">
+      <!-- STORM -->
+      <section class="card card-storm" aria-labelledby="h-storm">
+        <header class="card-head">
+          <h2 id="h-storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg>Storm</h2>
+          <div class="select-wrap">
+            <label for="storm-rate" class="sr-only">Storm-Schaden pro Sekunde</label>
+            <select id="storm-rate">
+              <option value="1">1 Schaden pro Sekunde</option>
+              <option value="2">2 Schaden pro Sekunde</option>
+              <option value="5">5 Schaden pro Sekunde</option>
+              <option value="8">8 Schaden pro Sekunde</option>
+              <option value="10">10 Schaden pro Sekunde</option>
+            </select>
+          </div>
+        </header>
+
+        <div class="hero">
+          <div class="hero-label">Zeit</div>
+          <div id="storm-time" class="hero-value" role="timer" aria-live="off">00:00</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Schaden pro Sekunde</div>
+            <div id="storm-rate-out" class="stat-value">5</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Geschätzter Schaden</div>
+            <div id="storm-damage" class="stat-value stat-accent">0</div>
+          </div>
+        </div>
+
+        <div class="meter">
+          <div id="storm-bar" class="bar" role="progressbar" aria-label="Storm-Schaden bis 600" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0">
+            <div id="storm-fill" class="bar-fill"></div>
+            <span class="bar-tick" style="left:83.333%"></span>
+          </div>
+          <div class="bar-scale"><span>0</span><span style="left:83.333%">500</span><span style="left:100%">600</span></div>
+        </div>
+
+        <ul class="thresholds">
+          <li id="th-500" data-reached="false">
+            <span class="th-target">500</span>
+            <span class="th-text" id="th-500-text">Noch 500 Schaden</span>
+            <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+          </li>
+          <li id="th-600" data-reached="false">
+            <span class="th-target">600</span>
+            <span class="th-text" id="th-600-text">Noch 600 Schaden</span>
+            <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+          </li>
+        </ul>
+
+        <div class="controls">
+          <button id="storm-toggle" class="btn btn-primary" type="button">
+            <svg class="i" aria-hidden="true"><use href="#i-play"/></svg><span>Start</span>
+          </button>
+          <button id="storm-reset" class="btn" type="button" aria-label="Storm-Timer zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          </button>
+        </div>
+        <p class="hint">Schätzung. Der Timer liest keine Live-Daten aus Fortnite aus. Wähle den Schaden passend zur aktuellen Phase.</p>
+      </section>
+
+      <!-- NET DAMAGE -->
+      <section class="card card-net" aria-labelledby="h-net">
+        <header class="card-head">
+          <h2 id="h-net"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg>Net Damage</h2>
+        </header>
+
+        <div class="fields">
+          <div class="field">
+            <label for="dmg-dealt">Damage Dealt</label>
+            <input id="dmg-dealt" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="dealt-error">
+            <p id="dealt-error" class="field-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="dmg-taken">Damage Taken</label>
+            <input id="dmg-taken" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="taken-error">
+            <p id="taken-error" class="field-error" hidden></p>
+          </div>
+        </div>
+
+        <div id="net-result" class="net-result" data-kind="even" aria-live="polite">
+          <div class="net-label"><svg class="i" aria-hidden="true"><use id="net-icon" href="#i-even"/></svg><span id="net-label">Ausgeglichen</span></div>
+          <div id="net-value" class="net-value">0</div>
+        </div>
+
+        <div class="controls controls-single">
+          <button id="net-reset" class="btn" type="button" aria-label="Net Damage zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ROTATION -->
+      <section class="card card-rot" aria-labelledby="h-rot">
+        <header class="card-head">
+          <h2 id="h-rot"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg>Rotation</h2>
+          <button id="sound-toggle" class="chip-toggle" type="button" aria-pressed="true" aria-label="Ton bei Ablauf">
+            <svg class="i on" aria-hidden="true"><use href="#i-sound-on"/></svg>
+            <svg class="i off" aria-hidden="true"><use href="#i-sound-off"/></svg>
+            <span id="sound-text">Ton an</span>
+          </button>
+        </header>
+
+        <div id="presets" class="presets" role="radiogroup" aria-label="Rotation-Dauer"></div>
+
+        <div class="hero">
+          <div id="rot-status" class="hero-label">Bereit</div>
+          <div id="rot-time" class="hero-value" role="timer" aria-live="off">2:00</div>
+        </div>
+
+        <p id="rot-warning" class="banner banner-warn" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>Noch 10 Sekunden</p>
+        <p id="rot-done" class="banner banner-done" role="alert" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>Zeit abgelaufen. Rotation jetzt!</p>
+
+        <div class="controls">
+          <button id="rot-toggle" class="btn btn-primary" type="button">
+            <svg class="i" aria-hidden="true"><use href="#i-play"/></svg><span>Start</span>
+          </button>
+          <button id="rot-reset" class="btn" type="button" aria-label="Rotation-Countdown zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- NOTIZEN -->
+      <section class="card card-notes" aria-labelledby="h-notes">
+        <header class="card-head">
+          <h2 id="h-notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg>Match-Notizen</h2>
+        </header>
+
+        <label for="note-input" class="sr-only">Notiz zum aktuellen Match</label>
+        <textarea id="note-input" rows="5" placeholder="Notizen zum aktuellen Match …" autocomplete="off" spellcheck="false"></textarea>
+
+        <div class="note-actions">
+          <button id="note-save" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-save"/></svg><span>Speichern</span></button>
+          <button id="note-export" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg><span>Export .txt</span></button>
+          <button id="note-share" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span>Teilen</span></button>
+          <button id="note-delete" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span>Löschen</span></button>
+        </div>
+
+        <div id="note-confirm" class="confirm" role="alertdialog" aria-labelledby="note-confirm-text" hidden>
+          <p id="note-confirm-text">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer und Net Damage bleiben unverändert.</p>
+          <div class="confirm-actions">
+            <button id="note-confirm-cancel" class="btn" type="button">Abbrechen</button>
+            <button id="note-confirm-ok" class="btn btn-danger-solid" type="button">Endgültig löschen</button>
+          </div>
+        </div>
+
+        <p id="note-status" class="status" role="status" aria-live="polite"></p>
+
+        <ul id="note-list" class="note-list" aria-label="Gespeicherte Notizen"></ul>
+        <p id="note-empty" class="note-empty">Noch keine gespeicherten Notizen.</p>
+      </section>
+    </div>
+
+    <footer class="footnote">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Alle Daten bleiben auf diesem Gerät.</footer>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
