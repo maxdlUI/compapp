@@ -1,4 +1,5 @@
 import * as L from './logic.js';
+import { initMap } from './map.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -107,7 +108,9 @@ function setButton(btn, icon, label) {
 const fmt = (n) => n.toLocaleString('de-DE');
 
 // ---------- Storm ----------
+const STORM_STATUS = { idle: 'Bereit', running: 'Läuft', paused: 'Pausiert' };
 const stormEls = {
+  pill: $('storm-pill'),
   rate: $('storm-rate'),
   rateOut: $('storm-rate-out'),
   time: $('storm-time'),
@@ -143,6 +146,8 @@ function renderStorm(now = Date.now()) {
   });
   const label = storm.status === 'running' ? ['pause', 'Pause'] : storm.status === 'paused' ? ['play', 'Fortsetzen'] : ['play', 'Start'];
   setButton(stormEls.toggle, label[0], label[1]);
+  setText(stormEls.pill, STORM_STATUS[storm.status]);
+  if (stormEls.pill.dataset.state !== storm.status) stormEls.pill.dataset.state = storm.status;
 }
 
 stormEls.toggle.addEventListener('click', () => {
@@ -216,6 +221,19 @@ function onNetInput() {
 }
 netEls.dealt.addEventListener('input', onNetInput);
 netEls.taken.addEventListener('input', onNetInput);
+// Schnellbuttons: lesen immer den aktuellen Feldwert, daher gehen schnelle Mehrfachtipps nicht verloren
+document.querySelectorAll('.qbtn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const input = btn.dataset.target === 'dealt' ? netEls.dealt : netEls.taken;
+    const result = L.applyDelta(input.value, Number(btn.dataset.delta));
+    if (!result.ok) {
+      renderNet(); // ungültiger Text im Feld: Fehlermeldung bleibt sichtbar, nichts wird überschrieben
+      return;
+    }
+    input.value = String(result.value);
+    onNetInput();
+  });
+});
 netEls.reset.addEventListener('click', () => {
   netEls.dealt.value = '';
   netEls.taken.value = '';
@@ -262,6 +280,7 @@ function renderRotation(now = Date.now()) {
   const state = rotation.status === 'finished' ? 'finished' : warn ? 'warn' : rotation.status;
   if (rotEls.card.dataset.state !== state) rotEls.card.dataset.state = state;
   setText(rotEls.status, STATUS_LABELS[rotation.status]);
+  if (rotEls.status.dataset.state !== rotation.status) rotEls.status.dataset.state = rotation.status;
   if (rotEls.warn.hidden === warn) rotEls.warn.hidden = !warn;
   const finished = rotation.status === 'finished';
   if (rotEls.done.hidden === finished) rotEls.done.hidden = !finished;
@@ -484,6 +503,60 @@ noteEls.confirmOk.addEventListener('click', () => {
   say('Notizen gelöscht.');
   noteEls.del.focus();
 });
+
+// ---------- Karte (Bild-Upload) ----------
+initMap();
+
+// ---------- Navigation: aktiven Bereich markieren ----------
+(function setupNav() {
+  const tabs = [...document.querySelectorAll('.tab')];
+  const sections = tabs.map((t) => document.querySelector(t.getAttribute('href'))).filter(Boolean);
+  if (!sections.length) return;
+  const PROBE = 120; // Höhe der Navigationsleiste plus etwas Abstand
+  let lockUntil = 0; // nach einem Tipp auf einen Tab bleibt dessen Markierung bis das Scrollen fertig ist
+  let ticking = false;
+
+  const mark = (id) => tabs.forEach((t) => {
+    if (t.getAttribute('href') === `#${id}`) t.setAttribute('aria-current', 'true');
+    else t.removeAttribute('aria-current');
+  });
+
+  function update() {
+    ticking = false;
+    if (Date.now() < lockUntil) return;
+    const doc = document.documentElement;
+    const atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+    if (atBottom && window.scrollY > 0) {
+      mark(sections[sections.length - 1].id);
+      return;
+    }
+    let best = null;
+    let bestTop = -Infinity;
+    sections.forEach((sec) => {
+      const top = sec.getBoundingClientRect().top;
+      if (top <= PROBE && top > bestTop + 2) {
+        best = sec;
+        bestTop = top;
+      }
+    });
+    mark((best || sections[0]).id);
+  }
+  const schedule = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    mark(t.getAttribute('href').slice(1));
+    lockUntil = Date.now() + 900;
+    setTimeout(schedule, 950);
+  }));
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  update();
+})();
 
 // ---------- Hauptschleife ----------
 function tick() {

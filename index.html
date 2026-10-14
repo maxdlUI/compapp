@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Match Tools</title>
-  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#0b0d12">
+  <meta name="theme-color" content="#14120d">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,6 +28,11 @@
       <symbol id="i-rotate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"/></symbol>
       <symbol id="i-net" viewBox="0 0 24 24"><path d="M3.5 17l5.5-5.5 4 3.5 7.5-8"/><path d="M15 7h5.5v5.5"/></symbol>
       <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z"/><path d="M9 12h7M9 16h7"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4.5M7.5 9L12 4.5 16.5 9M5 20h14"/></symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
       <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></symbol>
       <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7.5l4-4 4 4"/><path d="M5 11.5V20h14v-8.5"/></symbol>
       <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
@@ -42,6 +47,16 @@
     </defs>
   </svg>
 
+  <header class="topbar">
+    <nav class="tabs" aria-label="Bereiche">
+      <a class="tab" href="#storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span>Storm</span></a>
+      <a class="tab" href="#damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span>Damage</span></a>
+      <a class="tab" href="#rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span>Rotation</span></a>
+      <a class="tab" href="#map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span>Map</span></a>
+      <a class="tab" href="#notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span>Notizen</span></a>
+    </nav>
+  </header>
+
   <main class="app">
     <p id="storage-warning" class="notice" role="status" hidden>
       Speichern auf diesem Gerät ist nicht möglich (z. B. privater Modus). Daten gehen beim Schließen verloren.
@@ -49,9 +64,9 @@
 
     <div class="grid">
       <!-- STORM -->
-      <section class="card card-storm" aria-labelledby="h-storm">
+      <section id="storm" class="card card-storm" aria-labelledby="h-storm">
         <header class="card-head">
-          <h2 id="h-storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg>Storm</h2>
+          <h2 id="h-storm" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg>Storm</h2>
           <div class="select-wrap">
             <label for="storm-rate" class="sr-only">Storm-Schaden pro Sekunde</label>
             <select id="storm-rate">
@@ -64,42 +79,47 @@
           </div>
         </header>
 
-        <div class="hero">
-          <div class="hero-label">Zeit</div>
-          <div id="storm-time" class="hero-value" role="timer" aria-live="off">00:00</div>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-label">Schaden pro Sekunde</div>
-            <div id="storm-rate-out" class="stat-value">5</div>
+        <div class="storm-grid">
+          <div class="storm-main">
+            <div class="hero">
+              <div class="hero-top"><span class="hero-label">Zeit</span><span id="storm-pill" class="pill" data-state="idle">Bereit</span></div>
+              <div id="storm-time" class="hero-value" role="timer" aria-live="off">00:00</div>
+            </div>
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-label">Schaden pro Sekunde</div>
+                <div id="storm-rate-out" class="stat-value">5</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Geschätzter Schaden</div>
+                <div id="storm-damage" class="stat-value stat-accent">0</div>
+              </div>
+            </div>
           </div>
-          <div class="stat">
-            <div class="stat-label">Geschätzter Schaden</div>
-            <div id="storm-damage" class="stat-value stat-accent">0</div>
+
+          <div class="storm-side">
+            <div class="meter">
+              <div id="storm-bar" class="bar" role="progressbar" aria-label="Storm-Schaden bis 600" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0">
+                <div id="storm-fill" class="bar-fill"></div>
+                <span class="bar-tick" style="left:83.333%"></span>
+              </div>
+              <div class="bar-scale"><span>0</span><span style="left:83.333%">500</span><span style="left:100%">600</span></div>
+            </div>
+
+            <ul class="thresholds">
+              <li id="th-500" data-reached="false">
+                <span class="th-target">500</span>
+                <span class="th-text" id="th-500-text">Noch 500 Schaden</span>
+                <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+              </li>
+              <li id="th-600" data-reached="false">
+                <span class="th-target">600</span>
+                <span class="th-text" id="th-600-text">Noch 600 Schaden</span>
+                <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+              </li>
+            </ul>
           </div>
         </div>
-
-        <div class="meter">
-          <div id="storm-bar" class="bar" role="progressbar" aria-label="Storm-Schaden bis 600" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0">
-            <div id="storm-fill" class="bar-fill"></div>
-            <span class="bar-tick" style="left:83.333%"></span>
-          </div>
-          <div class="bar-scale"><span>0</span><span style="left:83.333%">500</span><span style="left:100%">600</span></div>
-        </div>
-
-        <ul class="thresholds">
-          <li id="th-500" data-reached="false">
-            <span class="th-target">500</span>
-            <span class="th-text" id="th-500-text">Noch 500 Schaden</span>
-            <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
-          </li>
-          <li id="th-600" data-reached="false">
-            <span class="th-target">600</span>
-            <span class="th-text" id="th-600-text">Noch 600 Schaden</span>
-            <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
-          </li>
-        </ul>
 
         <div class="controls">
           <button id="storm-toggle" class="btn btn-primary" type="button">
@@ -113,9 +133,9 @@
       </section>
 
       <!-- NET DAMAGE -->
-      <section class="card card-net" aria-labelledby="h-net">
+      <section id="damage" class="card card-net" aria-labelledby="h-net">
         <header class="card-head">
-          <h2 id="h-net"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg>Net Damage</h2>
+          <h2 id="h-net" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg>Net Damage</h2>
         </header>
 
         <div class="fields">
@@ -123,11 +143,27 @@
             <label for="dmg-dealt">Damage Dealt</label>
             <input id="dmg-dealt" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="dealt-error">
             <p id="dealt-error" class="field-error" hidden></p>
+            <div class="qgrid" role="group" aria-label="Damage Dealt ändern">
+              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-10" aria-label="Damage Dealt minus 10">−10</button>
+              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-5" aria-label="Damage Dealt minus 5">−5</button>
+              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-1" aria-label="Damage Dealt minus 1">−1</button>
+              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="1" aria-label="Damage Dealt plus 1">+1</button>
+              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="5" aria-label="Damage Dealt plus 5">+5</button>
+              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="10" aria-label="Damage Dealt plus 10">+10</button>
+            </div>
           </div>
           <div class="field">
             <label for="dmg-taken">Damage Taken</label>
             <input id="dmg-taken" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="taken-error">
             <p id="taken-error" class="field-error" hidden></p>
+            <div class="qgrid" role="group" aria-label="Damage Taken ändern">
+              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-10" aria-label="Damage Taken minus 10">−10</button>
+              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-5" aria-label="Damage Taken minus 5">−5</button>
+              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-1" aria-label="Damage Taken minus 1">−1</button>
+              <button class="qbtn qplus" type="button" data-target="taken" data-delta="1" aria-label="Damage Taken plus 1">+1</button>
+              <button class="qbtn qplus" type="button" data-target="taken" data-delta="5" aria-label="Damage Taken plus 5">+5</button>
+              <button class="qbtn qplus" type="button" data-target="taken" data-delta="10" aria-label="Damage Taken plus 10">+10</button>
+            </div>
           </div>
         </div>
 
@@ -144,9 +180,9 @@
       </section>
 
       <!-- ROTATION -->
-      <section class="card card-rot" aria-labelledby="h-rot">
+      <section id="rotation" class="card card-rot" aria-labelledby="h-rot">
         <header class="card-head">
-          <h2 id="h-rot"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg>Rotation</h2>
+          <h2 id="h-rot" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg>Rotation</h2>
           <button id="sound-toggle" class="chip-toggle" type="button" aria-pressed="true" aria-label="Ton bei Ablauf">
             <svg class="i on" aria-hidden="true"><use href="#i-sound-on"/></svg>
             <svg class="i off" aria-hidden="true"><use href="#i-sound-off"/></svg>
@@ -154,10 +190,10 @@
           </button>
         </header>
 
-        <div id="presets" class="presets" role="radiogroup" aria-label="Rotation-Dauer"></div>
+        <div id="presets" class="segmented" role="radiogroup" aria-label="Rotation-Dauer"></div>
 
         <div class="hero">
-          <div id="rot-status" class="hero-label">Bereit</div>
+          <div class="hero-top"><span class="hero-label">Restzeit</span><span id="rot-status" class="pill" data-state="idle">Bereit</span></div>
           <div id="rot-time" class="hero-value" role="timer" aria-live="off">2:00</div>
         </div>
 
@@ -174,10 +210,50 @@
         </div>
       </section>
 
-      <!-- NOTIZEN -->
-      <section class="card card-notes" aria-labelledby="h-notes">
+      <!-- MAP -->
+      <section id="map" class="card card-map" aria-labelledby="h-map">
         <header class="card-head">
-          <h2 id="h-notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg>Match-Notizen</h2>
+          <h2 id="h-map" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Map</h2>
+        </header>
+
+        <input id="map-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+        <div id="map-empty" class="map-empty">
+          <svg class="map-art" viewBox="0 0 320 170" aria-hidden="true" focusable="false">
+            <defs><pattern id="mapgrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-opacity=".14"/></pattern></defs>
+            <rect width="320" height="170" rx="14" fill="url(#mapgrid)"/>
+            <circle cx="170" cy="88" r="72" fill="none" stroke="#b79cff" stroke-opacity=".5" stroke-width="2" stroke-dasharray="4 7"/>
+            <circle cx="170" cy="88" r="43" fill="none" stroke="#e6cf6e" stroke-opacity=".7" stroke-width="2"/>
+            <circle cx="170" cy="88" r="4" fill="#f2efe6"/>
+            <path d="M52 134l42-30 30 12 26-28" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="map-empty-title">Lade deine Fortnite-Map hoch</p>
+          <p class="hint">PNG, JPG oder WEBP. Das Bild bleibt nur auf diesem Gerät gespeichert.</p>
+          <button id="map-upload" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg><span>Map hochladen</span></button>
+        </div>
+
+        <div id="map-view" class="map-layout" hidden>
+          <figure class="map-stage"><img id="map-img" alt="Hochgeladene Fortnite-Map" decoding="async"></figure>
+          <div class="map-side">
+            <div class="eyebrow-text">Deine Karte</div>
+            <h3 class="map-title">Fortnite-Map</h3>
+            <ul id="map-chips" class="chips" aria-label="Bildinformationen"></ul>
+            <p id="map-note" class="hint"></p>
+            <div class="map-actions">
+              <button id="map-fullscreen" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg><span>Vollbild</span></button>
+              <button id="map-replace" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-swap"/></svg><span>Ersetzen</span></button>
+              <button id="map-remove" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span>Entfernen</span></button>
+            </div>
+          </div>
+        </div>
+
+        <p id="map-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- NOTIZEN -->
+      <section id="notes" class="card card-notes" aria-labelledby="h-notes">
+        <header class="card-head">
+          <h2 id="h-notes" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg>Match-Notizen</h2>
         </header>
 
         <label for="note-input" class="sr-only">Notiz zum aktuellen Match</label>
@@ -191,7 +267,7 @@
         </div>
 
         <div id="note-confirm" class="confirm" role="alertdialog" aria-labelledby="note-confirm-text" hidden>
-          <p id="note-confirm-text">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer und Net Damage bleiben unverändert.</p>
+          <p id="note-confirm-text">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer, Net Damage und Map bleiben unverändert.</p>
           <div class="confirm-actions">
             <button id="note-confirm-cancel" class="btn" type="button">Abbrechen</button>
             <button id="note-confirm-ok" class="btn btn-danger-solid" type="button">Endgültig löschen</button>
@@ -207,6 +283,19 @@
 
     <footer class="footnote">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Alle Daten bleiben auf diesem Gerät.</footer>
   </main>
+
+  <!-- Vollbild-Ansicht der Map -->
+  <div id="map-viewer" class="viewer" role="dialog" aria-modal="true" aria-label="Map im Vollbild" hidden>
+    <div class="viewer-bar">
+      <button id="viewer-close" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg><span>Schließen</span></button>
+      <div class="viewer-zoom" role="group" aria-label="Zoom">
+        <button id="zoom-out" class="btn btn-icon" type="button" aria-label="Verkleinern">−</button>
+        <span id="zoom-level" class="zoom-level" aria-live="polite">100 %</span>
+        <button id="zoom-in" class="btn btn-icon" type="button" aria-label="Vergrößern">+</button>
+      </div>
+    </div>
+    <div id="viewer-scroll" class="viewer-scroll"><img id="viewer-img" alt="Fortnite-Map, große Ansicht"></div>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>

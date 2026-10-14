@@ -249,3 +249,59 @@ export function buildNotesExport(entries, draft) {
   if (d) parts.unshift(`[Entwurf, nicht gespeichert]\n${d}`);
   return parts.join('\n\n---\n\n');
 }
+
+// ---------- Net Damage: Schnellbuttons ----------
+
+export const QUICK_STEPS = [-10, -5, -1, 1, 5, 10];
+
+/**
+ * Verändert einen Eingabewert um delta. Liest immer den aktuellen Text, nie einen
+ * zwischengespeicherten Wert, damit schnelle Mehrfachtipps nichts verschlucken.
+ * Das Ergebnis bleibt zwischen 0 und MAX_DAMAGE_INPUT.
+ */
+export function applyDelta(raw, delta) {
+  const parsed = parseDamageInput(raw);
+  if (!parsed.ok) return { ok: false, error: parsed.error };
+  const next = Math.min(MAX_DAMAGE_INPUT, Math.max(0, parsed.value + delta));
+  return { ok: true, value: next, changed: next !== parsed.value };
+}
+
+// ---------- Map-Bild ----------
+
+export const MAP_MAX_EDGE = 2560; // längste Kante nach der Verkleinerung in Pixeln
+export const MAP_KEEP_BYTES = 6 * 1024 * 1024; // kleinere Dateien bleiben unverändert
+export const MAP_MAX_FILE_BYTES = 30 * 1024 * 1024; // größere Dateien werden abgelehnt
+
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+const IMAGE_EXT = /\.(png|jpe?g|webp)$/i;
+
+/** PNG, JPG und WEBP. Manche iOS-Dateien melden keinen MIME-Typ, dann zählt die Endung. */
+export function isSupportedImage(file) {
+  if (!file) return false;
+  const type = String(file.type || '').toLowerCase();
+  if (IMAGE_TYPES.includes(type)) return true;
+  if (type === '' || type === 'application/octet-stream') return IMAGE_EXT.test(String(file.name || ''));
+  return false;
+}
+
+/** Verkleinert proportional, sodass die längste Kante höchstens max beträgt. */
+export function fitSize(w, h, max = MAP_MAX_EDGE) {
+  const longest = Math.max(w, h);
+  if (!(longest > max)) return { w, h, scale: 1 };
+  const scale = max / longest;
+  return { w: Math.max(1, Math.round(w * scale)), h: Math.max(1, Math.round(h * scale)), scale };
+}
+
+export function formatBytes(n) {
+  if (!Number.isFinite(n) || n < 0) return '';
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
+  return `${(n / (1024 * 1024)).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MB`;
+}
+
+export const ZOOM_LEVELS = [1, 1.5, 2, 3, 4];
+export function nextZoom(current, dir) {
+  const i = ZOOM_LEVELS.indexOf(current);
+  const base = i === -1 ? 0 : i;
+  return ZOOM_LEVELS[Math.min(ZOOM_LEVELS.length - 1, Math.max(0, base + dir))];
+}
