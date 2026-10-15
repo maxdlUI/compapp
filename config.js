@@ -10,6 +10,6 @@
 //
 // Solange beide Werte leer sind, funktioniert die App wie bisher, nur ohne Konten.
 export const CONFIG = {
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  supabaseUrl: 'https://mwaszqstxhpofxomjagn.supabase.co',
+  supabaseAnonKey: 'sb_publishable_rPR0o6UP2kpmg7AWP3HSRg_kU3Hl18u',
 };
