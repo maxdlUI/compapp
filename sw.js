@@ -1,7 +1,8 @@
 // Service Worker: legt die App-Dateien beim ersten Besuch in den Cache.
 // Danach startet die App auch ohne Internet. Updates laden im Hintergrund nach
-// und sind beim nächsten Öffnen aktiv. CACHE hochzählen, wenn Dateien geändert werden.
-const CACHE = 'match-tools-v3';
+// und sind beim nächsten Öffnen aktiv. CACHE hochzählen, wenn Dateien geändert werden (auch config.js).
+// Anfragen an andere Server (Supabase, Google) fasst der Service Worker nicht an.
+const CACHE = 'krevo-v4';
 const ASSETS = [
   './',
   'index.html',
@@ -12,10 +13,16 @@ const ASSETS = [
   'i18n.js',
   'presets.js',
   'presets-ui.js',
-  'surge.js',
-  'surge-ui.js',
-  'surge-data.json',
+  'intro.js',
+  'config.js',
+  'authclient.js',
+  'auth-ui.js',
+  'username.js',
   'manifest.webmanifest',
+  'krevo-symbol.svg',
+  'krevo-wordmark.svg',
+  'favicon.svg',
+  'favicon-32.png',
   'icon-192.png',
   'icon-512.png',
   'icon-maskable-512.png',
@@ -47,7 +54,8 @@ self.addEventListener('fetch', (event) => {
     caches.match(req, { ignoreSearch: true }).then((cached) => {
       const network = fetch(req)
         .then((res) => {
-          if (res && res.ok) {
+          // Adressen mit Parametern (z. B. ?code= nach der Google-Anmeldung) landen nicht im Cache
+          if (res && res.ok && !url.search) {
             const copy = res.clone();
             caches.open(CACHE).then((c) => c.put(req, copy));
           }

@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Match Tools</title>
-  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown, Storm-Surge-Info, Map und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <title>KREVO</title>
+  <meta name="description" content="KREVO: Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt, nicht von Epic Games.">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#14120d">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Match Tools">
+  <meta name="apple-mobile-web-app-title" content="KREVO">
   <meta name="format-detection" content="telephone=no">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="modulepreload" href="intro.js">
 </head>
 <body>
   <!-- Eigene, einfache Linien-Icons (siehe ASSETS.md) -->
@@ -46,15 +48,25 @@
       <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 5L4 10l5 5"/><path d="M4 10h10.5a5.5 5.5 0 0 1 0 11H10"/></symbol>
       <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l1-4.5L16.5 4a2 2 0 0 1 3 3L8 18.5z"/><path d="M14.5 6l3.5 3.5"/></symbol>
       <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-      <symbol id="i-surge" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.4 7.2-5.4s6.3 1.8 7.2 5.4"/></symbol>
       <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
     </defs>
   </svg>
 
-  <div class="langbar">
-    <div class="lang" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache">
-      <button type="button" class="lang-btn" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="true">DE</button>
-      <button type="button" class="lang-btn" data-lang="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+  <div class="brandbar">
+    <div class="brand">
+      <img class="brand-symbol" src="krevo-symbol.svg" alt="" width="30" height="30" decoding="async">
+      <img class="brand-word" src="krevo-wordmark.svg" alt="KREVO" width="127" height="17" decoding="async">
+    </div>
+    <div class="bar-tools">
+      <div class="lang" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache">
+        <button type="button" class="lang-btn" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="true">DE</button>
+        <button type="button" class="lang-btn" data-lang="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+      </div>
+      <button id="account-btn" class="acct-btn" type="button" aria-haspopup="dialog" aria-controls="account-dialog" data-state="loading" aria-label="Anmelden oder registrieren">
+        <span id="acct-avatar" class="avatar" aria-hidden="true"><svg class="i"><use href="#i-user"/></svg></span>
+        <span id="acct-label" class="acct-label" data-i18n="auth.btn.signIn">Anmelden</span>
+      </button>
     </div>
   </div>
 
@@ -63,7 +75,6 @@
       <a class="tab" href="#storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span data-i18n="nav.storm">Storm</span></a>
       <a class="tab" href="#damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span data-i18n="nav.damage">Damage</span></a>
       <a class="tab" href="#rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span data-i18n="nav.rotation">Rotation</span></a>
-      <a class="tab" href="#surge"><svg class="i" aria-hidden="true"><use href="#i-surge"/></svg><span data-i18n="nav.surge">Surge</span></a>
       <a class="tab" href="#map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="nav.map">Map</span></a>
       <a class="tab" href="#notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span data-i18n="nav.notes">Notizen</span></a>
     </nav>
@@ -251,49 +262,6 @@
         </div>
       </section>
 
-      <!-- STORM SURGE -->
-      <section id="surge" class="card card-surge" aria-labelledby="h-surge">
-        <header class="card-head">
-          <h2 id="h-surge" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-surge"/></svg><span data-i18n="surge.title">Storm Surge</span></h2>
-          <span id="surge-badge" class="pill" data-state="loading">Lädt …</span>
-        </header>
-
-        <p id="surge-error" class="banner banner-warn" role="status" hidden></p>
-        <button id="surge-retry" class="btn" type="button" data-i18n="surge.retry" hidden>Erneut versuchen</button>
-        <p id="surge-fixture" class="banner banner-warn" hidden></p>
-        <p id="surge-dropped" class="hint" hidden></p>
-
-        <div id="surge-empty" class="surge-empty" hidden>
-          <p class="surge-title" data-i18n="surge.emptyTitle">Nicht genügend verlässliche Daten</p>
-          <p class="hint" data-i18n="surge.emptyLead">Es gibt hier noch keine belastbare Auswertung. Es wird bewusst nichts geschätzt.</p>
-          <ul class="surge-why">
-            <li data-i18n="surge.why1">Es wurde keine öffentlich zugängliche, überprüfbare Datenreihe mit Storm-Surge-Werten pro Zone gefunden.</li>
-            <li data-i18n="surge.why2">Die echte Schwelle ist nach den geprüften Quellen relativ zur Lobby und wird im Spiel angezeigt. Sie lässt sich nicht aus alten Matches ableiten.</li>
-            <li data-i18n="surge.why3">Surge bezieht sich laut Quellen auf Damage Dealt. Net Damage (Dealt − Taken) ist nicht automatisch dieselbe Kennzahl.</li>
-          </ul>
-        </div>
-
-        <div id="surge-data" class="surge-data" hidden>
-          <div class="surge-pick">
-            <div class="select-wrap">
-              <label for="surge-group" class="sr-only" data-i18n="surge.group">Datengruppe</label>
-              <select id="surge-group"></select>
-            </div>
-            <div id="surge-zones" class="zone-chips" role="radiogroup" data-i18n-attr="aria-label=surge.zones" aria-label="Zone"></div>
-          </div>
-          <p class="hint" data-i18n="surge.context">Die App erkennt weder deine aktuelle Zone noch Spielversion oder Format. Wähle die Zone selbst; die Vergleichbarkeit ist eingeschränkt.</p>
-          <div id="surge-detail" class="surge-detail" aria-live="polite"></div>
-        </div>
-
-        <p class="surge-limits" data-i18n="surge.noLive">Die App zeigt keinen Live-Schwellenwert und kein „über/unter Surge“. Historische Werte sind keine aktuelle Schwelle.</p>
-
-        <details id="surge-sources" class="surge-sources">
-          <summary data-i18n="surge.sourcesTitle">Geprüfte Quellen und Methode</summary>
-          <div id="surge-sources-body" class="surge-sources-body"></div>
-        </details>
-        <p id="surge-meta" class="hint"></p>
-      </section>
-
       <!-- MAP -->
       <section id="map" class="card card-map" aria-labelledby="h-map">
         <header class="card-head">
@@ -365,7 +333,7 @@
       </section>
     </div>
 
-    <footer class="footnote" data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Alle Daten bleiben auf diesem Gerät.</footer>
+    <footer class="footnote" data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert nur E-Mail-Adresse und Nutzername.</footer>
   </main>
 
   <!-- Vollbild-Ansicht der Map -->
@@ -379,6 +347,150 @@
       </div>
     </div>
     <div id="viewer-scroll" class="viewer-scroll"><img id="viewer-img" data-i18n-attr="alt=map.viewerAlt" alt="Fortnite-Map, große Ansicht"></div>
+  </div>
+
+  <!-- Konto: Anmelden, Registrieren, Passwort, Profil -->
+  <dialog id="account-dialog" class="dlg" aria-labelledby="dlg-title">
+    <div class="dlg-body">
+      <div class="dlg-head">
+        <img class="dlg-mark" src="krevo-symbol.svg" alt="" width="26" height="26" decoding="async">
+        <h2 id="dlg-title" class="dlg-title" tabindex="-1"></h2>
+        <button id="dlg-close" class="btn btn-icon dlg-x" type="button" data-i18n-attr="aria-label=auth.close" aria-label="Schließen"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <p id="dlg-banner" class="dlg-banner" role="status" hidden></p>
+
+      <section data-view="notconfigured" hidden>
+        <p class="dlg-text" data-i18n="auth.nc.lead">Konten sind auf dieser Installation noch nicht aktiviert. Alle Werkzeuge funktionieren ohne Konto.</p>
+        <p class="hint" data-i18n="auth.nc.owner">Für den Betreiber: Projekt-URL und öffentlichen Schlüssel in config.js eintragen (siehe SETUP-ACCOUNTS.md).</p>
+        <button class="btn btn-primary" type="button" data-action="close" data-i18n="auth.ok">OK</button>
+      </section>
+
+      <form data-view="signin" novalidate hidden>
+        <div class="fld">
+          <label class="fld-label" for="si-email" data-i18n="auth.email">E-Mail-Adresse</label>
+          <input id="si-email" name="email" class="auth-input" type="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="254" required>
+        </div>
+        <div class="fld">
+          <label class="fld-label" for="si-password" data-i18n="auth.password">Passwort</label>
+          <div class="pw-wrap">
+            <input id="si-password" name="password" class="auth-input" type="password" autocomplete="current-password" enterkeyhint="go" maxlength="128" required>
+            <button class="pw-toggle" type="button" data-pw-toggle="si-password" aria-pressed="false" data-i18n-attr="aria-label=auth.pw.showLabel" aria-label="Passwort anzeigen"><span data-i18n="auth.pw.show">Anzeigen</span></button>
+          </div>
+        </div>
+        <p class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.signin">Anmelden</button>
+        <button class="link-btn" type="button" data-view-go="forgot" data-i18n="auth.link.forgot">Passwort vergessen?</button>
+        <div class="or"><span data-i18n="auth.or">oder</span></div>
+        <button class="btn btn-google btn-block" type="button" data-google>
+          <svg class="g-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          <span data-i18n="auth.google">Mit Google fortfahren</span>
+        </button>
+        <p class="hint google-off" hidden data-i18n="auth.google.off">Die Google-Anmeldung ist noch nicht eingerichtet.</p>
+        <button class="link-btn" type="button" data-view-go="signup" data-i18n="auth.link.toSignup">Noch kein Konto? Registrieren</button>
+      </form>
+
+      <form data-view="signup" novalidate hidden>
+        <div class="fld">
+          <label class="fld-label" for="su-username" data-i18n="auth.username">Nutzername</label>
+          <input id="su-username" name="username" class="auth-input" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="40" aria-describedby="su-username-hint" required>
+          <p id="su-username-hint" class="field-hint" aria-live="polite" data-i18n="auth.hint.username">3 bis 20 Zeichen: Buchstaben, Ziffern und Unterstrich.</p>
+        </div>
+        <div class="fld">
+          <label class="fld-label" for="su-email" data-i18n="auth.email">E-Mail-Adresse</label>
+          <input id="su-email" name="email" class="auth-input" type="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="254" required>
+        </div>
+        <div class="fld">
+          <label class="fld-label" for="su-password" data-i18n="auth.password">Passwort</label>
+          <div class="pw-wrap">
+            <input id="su-password" name="password" class="auth-input" type="password" autocomplete="new-password" enterkeyhint="go" maxlength="128" aria-describedby="su-password-hint" required>
+            <button class="pw-toggle" type="button" data-pw-toggle="su-password" aria-pressed="false" data-i18n-attr="aria-label=auth.pw.showLabel" aria-label="Passwort anzeigen"><span data-i18n="auth.pw.show">Anzeigen</span></button>
+          </div>
+          <p id="su-password-hint" class="field-hint" data-i18n="auth.hint.password">Mindestens 8 Zeichen.</p>
+        </div>
+        <p class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.signup">Konto erstellen</button>
+        <div class="or"><span data-i18n="auth.or">oder</span></div>
+        <button class="btn btn-google btn-block" type="button" data-google>
+          <svg class="g-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          <span data-i18n="auth.google">Mit Google fortfahren</span>
+        </button>
+        <p class="hint google-off" hidden data-i18n="auth.google.off">Die Google-Anmeldung ist noch nicht eingerichtet.</p>
+        <p class="hint" data-i18n="auth.privacy">Gespeichert werden E-Mail-Adresse und Nutzername. Timer, Notizen, Presets und Map bleiben auf deinem Gerät.</p>
+        <button class="link-btn" type="button" data-view-go="signin" data-i18n="auth.link.toSignin">Schon ein Konto? Anmelden</button>
+      </form>
+
+      <form data-view="forgot" novalidate hidden>
+        <div class="fld">
+          <label class="fld-label" for="fp-email" data-i18n="auth.email">E-Mail-Adresse</label>
+          <input id="fp-email" name="email" class="auth-input" type="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" maxlength="254" required>
+        </div>
+        <p class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.forgot">Link senden</button>
+        <button class="link-btn" type="button" data-view-go="signin" data-i18n="auth.link.back">Zurück zur Anmeldung</button>
+      </form>
+
+      <form data-view="recovery" novalidate hidden>
+        <div class="fld">
+          <label class="fld-label" for="rc-password" data-i18n="auth.passwordNew">Neues Passwort</label>
+          <div class="pw-wrap">
+            <input id="rc-password" name="password" class="auth-input" type="password" autocomplete="new-password" enterkeyhint="next" maxlength="128" aria-describedby="rc-hint" required>
+            <button class="pw-toggle" type="button" data-pw-toggle="rc-password" aria-pressed="false" data-i18n-attr="aria-label=auth.pw.showLabel" aria-label="Passwort anzeigen"><span data-i18n="auth.pw.show">Anzeigen</span></button>
+          </div>
+          <p id="rc-hint" class="field-hint" data-i18n="auth.hint.password">Mindestens 8 Zeichen.</p>
+        </div>
+        <div class="fld">
+          <label class="fld-label" for="rc-repeat" data-i18n="auth.passwordRepeat">Neues Passwort wiederholen</label>
+          <input id="rc-repeat" name="repeat" class="auth-input" type="password" autocomplete="new-password" enterkeyhint="go" maxlength="128" required>
+        </div>
+        <p class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.recovery">Passwort speichern</button>
+      </form>
+
+      <section data-view="notice" hidden>
+        <p id="notice-text" class="dlg-text"></p>
+        <button class="btn btn-primary btn-block" type="button" data-view-go="signin" data-i18n="auth.link.back">Zurück zur Anmeldung</button>
+      </section>
+
+      <section data-view="profile" hidden>
+        <div class="prof-top">
+          <span id="prof-avatar" class="avatar avatar-lg" aria-hidden="true"></span>
+          <div class="prof-id">
+            <p id="prof-name" class="prof-name"></p>
+            <p id="prof-mail" class="prof-mail"></p>
+          </div>
+        </div>
+        <div id="prof-state" class="prof-state" hidden>
+          <p id="prof-state-text" class="status" role="status"></p>
+          <button id="prof-retry" class="btn" type="button" data-i18n="prof.retry" hidden>Erneut versuchen</button>
+        </div>
+        <form id="prof-form" novalidate>
+          <div class="fld">
+            <label class="fld-label" for="prof-username" data-i18n="auth.username">Nutzername</label>
+            <input id="prof-username" class="auth-input" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="40" aria-describedby="prof-username-hint">
+            <p id="prof-username-hint" class="field-hint" aria-live="polite" data-i18n="auth.hint.username">3 bis 20 Zeichen: Buchstaben, Ziffern und Unterstrich.</p>
+          </div>
+          <button id="prof-save" class="btn btn-primary btn-block" type="submit" data-i18n="prof.save">Speichern</button>
+        </form>
+        <dl class="prof-meta">
+          <div><dt data-i18n="prof.email">E-Mail-Adresse</dt><dd id="prof-email" class="prof-email"></dd></div>
+          <div id="prof-since-row"><dt data-i18n="prof.since">Mitglied seit</dt><dd id="prof-since"></dd></div>
+        </dl>
+        <p class="form-error" id="prof-error" role="alert" hidden></p>
+        <button id="prof-signout" class="btn btn-danger btn-block" type="button" data-i18n="prof.signOut">Abmelden</button>
+      </section>
+    </div>
+  </dialog>
+
+  <!-- Willkommens-Intro (reines CSS, siehe intro.js und styles.css). Startet nur, wenn JavaScript es freigibt. -->
+  <div id="intro" class="intro" aria-hidden="true" hidden>
+    <div class="intro-stage">
+      <svg class="intro-mark" viewBox="0 0 200 200" focusable="false">
+        <path class="im-left" fill="#F4F1E8" d="M126.76 3.65L52.4 78L52.4 126.54L123.15 197.28A100 100 0 1 1 126.76 3.65Z"/>
+        <path class="im-right" fill="#F4F1E8" d="M98.1 114.79L176.86 36.02A100 100 0 0 1 161.87 178.56Z"/>
+        <path class="im-bar" fill="#E6CF6E" d="M72.81 80.48L143.39 9.9A100 100 0 0 1 165.76 24.66L91.38 99.05Z"/>
+      </svg>
+      <svg class="intro-word" viewBox="0 0 766 102.94" focusable="false"><path fill="#F4F1E8" fill-rule="evenodd" d="M0 0L0 102.94L27.91 102.94L27.91 0ZM42.75 39.87L42.75 60.78L94.54 102.94L135.53 102.94L72.6 51.05L135.53 0L94.54 0ZM169.56 0L169.56 102.94L198.5 102.94L198.5 55.4L255.38 102.94L295.88 102.94L258.12 69.94L274.56 69.94L295.88 50.31L295.88 20.53L274.56 0ZM198.5 23.57L263.69 23.57L267.94 28.07L267.94 42.15L263.69 45.78L198.5 45.78ZM333 0L333 102.94L445.38 102.94L445.38 78.85L361.77 78.85L361.77 63.03L436.56 63.03L436.56 39.87L361.77 39.87L361.77 23.57L445.38 23.57L445.38 0ZM472.25 0L527.69 102.94L559.62 102.94L614 0L583.12 0L542.69 73.81L503.75 0ZM766 23.57L742.44 0L660.75 0L637.12 23.57L637.12 80.72L660.75 102.94L742.44 102.94L766 80.72ZM665.75 28.07L669.88 23.57L733.31 23.57L737.81 28.07L737.81 73.81L733.31 78.85L669.88 78.85L665.75 73.81Z"/></svg>
+    </div>
   </div>
 
   <script type="module" src="app.js"></script>

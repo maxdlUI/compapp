@@ -1,7 +1,8 @@
 {
-  "name": "Match Tools",
-  "short_name": "Match Tools",
-  "description": "Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen. Unabhängiges Fanprojekt.",
+  "id": "./",
+  "name": "KREVO",
+  "short_name": "KREVO",
+  "description": "Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",

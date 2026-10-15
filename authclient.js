@@ -1,0 +1,464 @@
+// Schlanker Client für Supabase Auth (GoTrue) und die Profil-Tabelle (PostgREST).
+// Bewusst ohne Fremdbibliothek: nur fetch, Web Crypto und localStorage.
+//
+// Sicherheitsgrundsätze:
+//  * Im Browser steckt nur der öffentliche Schlüssel (anon/publishable). Der Service-Role-Schlüssel gehört NIE hierher.
+//  * Passwörter prüft und speichert ausschließlich der Auth-Server. Der Browser sendet sie nur per HTTPS an ihn.
+//  * Google-Anmeldung läuft über PKCE (Code-Verifier bleibt im Browser, wird nie in einer URL übertragen).
+//  * Alle Berechtigungen (eigene Profile, eindeutige Namen) setzt die Datenbank durch (siehe supabase/001_krevo_profiles.sql).
+//    Der Browser zeigt nur an und fängt Fehler verständlich ab.
+//  * Rohe Servertexte werden nicht angezeigt, nur kurze Fehlercodes (siehe mapAuthError).
+
+import { validateUsername } from './username.js';
+
+export const SESSION_KEY = 'fnc.v1.auth';
+export const FLOW_KEY = 'fnc.v1.authFlow';
+
+export class AuthError extends Error {
+  constructor(code, { status = 0, detail = '' } = {}) {
+    super(code);
+    this.name = 'AuthError';
+    this.code = code;
+    this.status = status;
+    this.detail = detail;
+  }
+}
+
+// ---------- Fehler vereinheitlichen ----------
+
+/** Wandelt eine Antwort von Auth-Server oder PostgREST in einen kurzen Fehlercode. */
+export function mapAuthError(status, body) {
+  const b = body && typeof body === 'object' ? body : {};
+  const rawCode = String(b.error_code || (typeof b.code === 'string' ? b.code : '') || '').toLowerCase();
+  const msg = String(b.msg || b.message || b.error_description || b.error || '').toLowerCase();
+
+  // PostgREST / Postgres
+  if (/^pgrst30[0-9]$/.test(rawCode) || (status === 401 && msg.includes('jwt'))) return 'session_expired';
+  if (rawCode === '23505') return 'username_taken';
+  if (rawCode === '23514') {
+    if (msg.includes('username_reserved')) return 'username_reserved';
+    return 'username_invalid';
+  }
+  if (rawCode === 'pgrst202' || rawCode === 'pgrst205' || rawCode === '42p01' || rawCode === '42883') return 'schema_missing';
+  if (rawCode === '42501') return 'forbidden';
+
+  // Auth-Server
+  if (rawCode === 'invalid_credentials' || msg.includes('invalid login credentials')) return 'invalid_credentials';
+  if (rawCode === 'email_not_confirmed' || msg.includes('email not confirmed')) return 'email_not_confirmed';
+  if (rawCode === 'user_already_exists' || rawCode === 'email_exists' || msg.includes('already registered')) return 'user_exists';
+  if (rawCode === 'weak_password' || msg.includes('password should be at least') || msg.includes('weak password')) return 'weak_password';
+  if (rawCode === 'same_password' || msg.includes('different from the old password')) return 'same_password';
+  if (rawCode === 'signup_disabled' || msg.includes('signups not allowed')) return 'signup_disabled';
+  if (rawCode === 'over_request_rate_limit' || rawCode === 'over_email_send_rate_limit' || status === 429) return 'rate_limited';
+  if (rawCode === 'otp_expired' || rawCode === 'flow_state_expired' || rawCode === 'flow_state_not_found' || rawCode === 'bad_code_verifier'
+      || msg.includes('expired') || msg.includes('invalid flow state')) return 'link_expired';
+  if (rawCode === 'access_denied' || msg.includes('access_denied') || msg.includes('access denied')) return 'access_denied';
+  if (rawCode === 'provider_disabled' || msg.includes('provider is not enabled') || msg.includes('unsupported provider')) return 'provider_disabled';
+  if (['refresh_token_not_found', 'refresh_token_already_used', 'session_not_found', 'session_expired'].includes(rawCode)
+      || (b.error === 'invalid_grant' && msg.includes('refresh'))) return 'session_expired';
+  if (rawCode === 'validation_failed' || rawCode === 'email_address_invalid' || msg.includes('unable to validate email')) {
+    return msg.includes('email') ? 'invalid_email' : 'invalid_input';
+  }
+  if (status === 401 || status === 403) return 'forbidden';
+  if (status >= 500) return 'server';
+  return 'unknown';
+}
+
+// ---------- kleine Hilfen ----------
+
+const b64url = (bytes) => {
+  let s = '';
+  bytes.forEach((b) => { s += String.fromCharCode(b); });
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+export async function makePkce(cryptoApi) {
+  if (!cryptoApi || !cryptoApi.subtle || !cryptoApi.getRandomValues) throw new AuthError('insecure_context');
+  const raw = new Uint8Array(32);
+  cryptoApi.getRandomValues(raw);
+  const verifier = b64url(raw);
+  const digest = new Uint8Array(await cryptoApi.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  return { verifier, challenge: b64url(digest) };
+}
+
+/** Liest die Rückkehr-Parameter nach Google-Login, E-Mail-Link oder Fehler. Gibt null zurück, wenn nichts zu tun ist. */
+export function parseReturn(loc) {
+  const search = new URLSearchParams(loc.search || '');
+  const hashRaw = String(loc.hash || '').replace(/^#/, '');
+  const hash = hashRaw.includes('=') ? new URLSearchParams(hashRaw) : new URLSearchParams('');
+  const pick = (k) => hash.get(k) || search.get(k) || '';
+  if (pick('error') || pick('error_code')) {
+    return { kind: 'error', code: pick('error_code') || pick('error'), description: pick('error_description'), fromHash: hash.has('error') || hash.has('error_code') };
+  }
+  if (hash.get('access_token') && hash.get('refresh_token')) {
+    return {
+      kind: 'tokens',
+      access_token: hash.get('access_token'),
+      refresh_token: hash.get('refresh_token'),
+      expires_in: Number(hash.get('expires_in')) || 3600,
+      type: hash.get('type') || '',
+      fromHash: true,
+    };
+  }
+  if (search.get('code')) return { kind: 'code', code: search.get('code'), fromHash: false };
+  return null;
+}
+
+const looksLikeJwt = (k) => typeof k === 'string' && k.startsWith('eyJ');
+
+/**
+ * @param {object} o
+ * @param {string} o.url            Projekt-URL, z. B. https://abcd.supabase.co
+ * @param {string} o.anonKey        öffentlicher Schlüssel (anon JWT oder sb_publishable_…)
+ * @param {object} o.storage        { get(key), set(key, value), remove(key) } (synchron, darf nie werfen)
+ * @param {Function} [o.fetch]
+ * @param {object} [o.location]     window.location
+ * @param {object} [o.history]      window.history
+ * @param {object} [o.crypto]
+ * @param {object} [o.locks]        navigator.locks
+ * @param {Function} [o.now]        () => Millisekunden
+ */
+export function createAuthClient(o) {
+  const base = String(o.url || '').replace(/\/+$/, '');
+  const anonKey = String(o.anonKey || '');
+  const configured = /^https:\/\/[^/\s]+$/.test(base) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(base);
+  const ok = configured && anonKey.length > 10;
+  const doFetch = o.fetch || ((...a) => fetch(...a));
+  const now = o.now || (() => Date.now());
+  const storage = o.storage;
+  const loc = o.location || { origin: '', pathname: '/', search: '', hash: '' };
+  const hist = o.history || { replaceState() {} };
+  const timeoutMs = o.timeoutMs || 15000;
+  const listeners = new Set();
+  const redirectUrl = () => `${loc.origin}${loc.pathname}`;
+
+  let state = { status: ok ? 'loading' : 'out', session: null, profile: null, profileStatus: 'idle', configured: ok, returnError: null, returnType: '' };
+  let settingsPromise = null;
+  let refreshTimer = null;
+  let inflightRefresh = null;
+
+  const emit = () => { const snap = { ...state }; listeners.forEach((fn) => { try { fn(snap); } catch { /* Anzeige darf nichts blockieren */ } }); };
+  const setState = (patch) => { state = { ...state, ...patch }; emit(); };
+
+  // ---------- Speicher ----------
+  const readJson = (key) => { try { const raw = storage.get(key); return raw ? JSON.parse(raw) : null; } catch { return null; } };
+  const writeJson = (key, v) => { try { storage.set(key, JSON.stringify(v)); } catch { /* ohne Speicher gilt die Sitzung nur bis zum Schließen */ } };
+  function readSession() {
+    const s = readJson(SESSION_KEY);
+    if (!s || typeof s.access_token !== 'string' || typeof s.refresh_token !== 'string' || typeof s.expires_at !== 'number' || !s.user || typeof s.user.id !== 'string') return null;
+    return s;
+  }
+  const writeSession = (s) => writeJson(SESSION_KEY, s);
+  const clearSession = () => { try { storage.remove(SESSION_KEY); } catch { /* ignorieren */ } };
+  const nowSec = () => Math.floor(now() / 1000);
+  const expiresSoon = (s, margin = 60) => s.expires_at - nowSec() <= margin;
+
+  function toSession(body) {
+    if (!body || typeof body.access_token !== 'string' || typeof body.refresh_token !== 'string' || !body.user) throw new AuthError('unknown', { detail: 'bad session body' });
+    const expires_at = typeof body.expires_at === 'number' ? body.expires_at : nowSec() + (Number(body.expires_in) || 3600);
+    return { access_token: body.access_token, refresh_token: body.refresh_token, expires_at, user: body.user };
+  }
+
+  // ---------- HTTP ----------
+  async function http(path, { method = 'GET', query, body, token, prefer, signal } = {}) {
+    if (!ok) throw new AuthError('not_configured');
+    const qs = query ? '?' + Object.entries(query).filter(([, v]) => v !== undefined && v !== null).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&') : '';
+    const headers = { apikey: anonKey, Accept: 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    else if (looksLikeJwt(anonKey)) headers.Authorization = `Bearer ${anonKey}`;
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    if (prefer) headers.Prefer = prefer;
+    const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = ctl ? setTimeout(() => ctl.abort(), timeoutMs) : null;
+    let res;
+    try {
+      res = await doFetch(base + path + qs, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined, signal: signal || (ctl && ctl.signal), credentials: 'omit' });
+    } catch {
+      throw new AuthError('network');
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+    let data = null;
+    try {
+      const text = await res.text();
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null; // z. B. HTML-Fehlerseite eines Proxys
+    }
+    if (!res.ok) throw new AuthError(mapAuthError(res.status, data), { status: res.status, detail: data && (data.message || data.msg || data.error_description || '') });
+    return data;
+  }
+
+  // ---------- Einstellungen des Projekts ----------
+  function settings() {
+    if (!ok) return Promise.resolve(null);
+    if (!settingsPromise) {
+      settingsPromise = http('/auth/v1/settings').then((s) => ({
+        google: !!(s && s.external && s.external.google),
+        email: !s || !s.external || s.external.email !== false,
+        autoconfirm: !!(s && s.mailer_autoconfirm),
+        signupDisabled: !!(s && s.disable_signup),
+      })).catch(() => { settingsPromise = null; return null; });
+    }
+    return settingsPromise;
+  }
+
+  // ---------- Sitzung ----------
+  function scheduleRefresh() {
+    clearTimeout(refreshTimer);
+    const s = readSession();
+    if (!s || typeof setTimeout !== 'function') return;
+    const wait = Math.min(Math.max((s.expires_at - nowSec() - 60) * 1000, 5000), 6 * 3600 * 1000);
+    refreshTimer = setTimeout(() => { refreshSession().catch(() => {}); }, wait);
+    if (refreshTimer && refreshTimer.unref) refreshTimer.unref();
+  }
+
+  // Eine Sitzung aus dem Passwort-Reset-Link wird als solche gemerkt (recovery), bis ein neues Passwort gesetzt ist,
+  // auch wenn die Seite dazwischen neu geladen wird.
+  function adopt(session, status = 'in', extra = {}) {
+    const { recovery, ...clean } = session;
+    const persisted = status === 'recovery' ? { ...clean, recovery: true } : clean;
+    writeSession(persisted);
+    setState({ status, session: persisted, ...extra });
+    scheduleRefresh();
+  }
+
+  function dropSession(extra = {}) {
+    clearTimeout(refreshTimer);
+    clearSession();
+    setState({ status: 'out', session: null, profile: null, profileStatus: 'idle', ...extra });
+  }
+
+  async function withLock(fn) {
+    const locks = o.locks;
+    if (locks && typeof locks.request === 'function') return locks.request('fnc.v1.auth-refresh', fn);
+    return fn();
+  }
+
+  /** Erneuert den Token. Parallele Aufrufe (auch aus anderen Tabs) teilen sich eine Anfrage. */
+  function refreshSession() {
+    if (inflightRefresh) return inflightRefresh;
+    inflightRefresh = withLock(async () => {
+      const cur = readSession();
+      if (!cur) throw new AuthError('session_expired');
+      if (!expiresSoon(cur, 10)) { // ein anderer Tab war schneller
+        if (!state.session || state.session.access_token !== cur.access_token) setState({ status: cur.recovery ? 'recovery' : 'in', session: cur });
+        return cur;
+      }
+      try {
+        const body = await http('/auth/v1/token', { method: 'POST', query: { grant_type: 'refresh_token' }, body: { refresh_token: cur.refresh_token } });
+        const fresh = toSession(body);
+        adopt(fresh, cur.recovery ? 'recovery' : 'in');
+        return fresh;
+      } catch (e) {
+        if (e instanceof AuthError && e.code !== 'network' && e.code !== 'server' && e.code !== 'rate_limited') {
+          dropSession();
+          throw new AuthError('session_expired');
+        }
+        throw e; // Netzwerkfehler: Sitzung bleibt erhalten, später erneut versuchen
+      }
+    }).finally(() => { inflightRefresh = null; });
+    return inflightRefresh;
+  }
+
+  async function freshToken() {
+    let s = readSession();
+    if (!s) throw new AuthError('not_signed_in');
+    if (expiresSoon(s, 15)) {
+      try { s = await refreshSession(); } catch (e) { if (e.code === 'network' && s.expires_at > nowSec()) return s.access_token; throw e; }
+    }
+    return s.access_token;
+  }
+
+  async function rest(path, opts = {}) {
+    let token = await freshToken();
+    try {
+      return await http('/rest/v1' + path, { ...opts, token });
+    } catch (e) {
+      if (e instanceof AuthError && e.code === 'session_expired') { // Token war abgelaufen: einmal erneuern, einmal wiederholen
+        const cur = readSession();
+        if (cur) { try { cur.expires_at = 0; writeSession(cur); token = (await refreshSession()).access_token; } catch (e2) { throw e2; } }
+        return http('/rest/v1' + path, { ...opts, token });
+      }
+      throw e;
+    }
+  }
+
+  // ---------- Rückkehr von Google / E-Mail-Link ----------
+  function cleanUrl(ret) {
+    try {
+      const search = new URLSearchParams(loc.search || '');
+      ['code', 'error', 'error_code', 'error_description'].forEach((k) => search.delete(k));
+      const rest = search.toString();
+      hist.replaceState(null, '', loc.pathname + (rest ? `?${rest}` : ''));
+    } catch { /* nur Kosmetik */ }
+  }
+
+  async function handleReturn(ret) {
+    cleanUrl(ret);
+    if (ret.kind === 'error') {
+      const code = mapAuthError(400, { error_code: ret.code, error_description: ret.description });
+      setState({ returnError: new AuthError(code === 'unknown' ? 'oauth_failed' : code, { detail: ret.description }) });
+      return false;
+    }
+    if (ret.kind === 'tokens') {
+      const user = await http('/auth/v1/user', { token: ret.access_token }); // prüft den Token beim Server
+      const session = { access_token: ret.access_token, refresh_token: ret.refresh_token, expires_at: nowSec() + ret.expires_in, user };
+      adopt(session, ret.type === 'recovery' ? 'recovery' : 'in', { returnType: ret.type });
+      return true;
+    }
+    if (ret.kind === 'code') {
+      const flow = readJson(FLOW_KEY);
+      try { storage.remove(FLOW_KEY); } catch { /* ignorieren */ }
+      if (!flow || !flow.verifier || now() - (flow.ts || 0) > 15 * 60 * 1000) throw new AuthError('flow_missing');
+      const body = await http('/auth/v1/token', { method: 'POST', query: { grant_type: 'pkce' }, body: { auth_code: ret.code, code_verifier: flow.verifier } });
+      adopt(toSession(body), 'in', { returnType: 'oauth' });
+      return true;
+    }
+    return false;
+  }
+
+  async function init() {
+    if (!ok) { setState({ status: 'out' }); return state; }
+    const ret = parseReturn(loc);
+    let handled = false;
+    if (ret) {
+      try { handled = await handleReturn(ret); } catch (e) { setState({ returnError: e instanceof AuthError ? e : new AuthError('unknown') }); }
+    }
+    if (!handled) {
+      const s = readSession();
+      if (!s) setState({ status: 'out' });
+      else if (!expiresSoon(s, 30)) { setState({ status: s.recovery ? 'recovery' : 'in', session: s }); scheduleRefresh(); }
+      else {
+        try { await refreshSession(); }
+        catch (e) {
+          // Netzwerk-, Server- oder Limit-Fehler: Sitzung behalten und später erneut versuchen. Sonst ist sie ungültig.
+          if (e.code === 'network' || e.code === 'server' || e.code === 'rate_limited') { setState({ status: s.recovery ? 'recovery' : 'in', session: s }); scheduleRefresh(); }
+          else setState({ status: 'out' });
+        }
+      }
+    }
+    if (typeof addEventListener === 'function' && o.listenGlobal !== false) {
+      addEventListener('storage', (e) => { if (e.key === SESSION_KEY) syncFromStorage(); });
+      addEventListener('online', () => { const s = readSession(); if (s && expiresSoon(s, 60)) refreshSession().catch(() => {}); });
+      if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (!document.hidden) { const s = readSession(); if (s && expiresSoon(s, 60)) refreshSession().catch(() => {}); } });
+    }
+    return state;
+  }
+
+  function syncFromStorage() { // anderer Tab hat sich an- oder abgemeldet
+    const s = readSession();
+    if (!s && state.session) { clearTimeout(refreshTimer); setState({ status: 'out', session: null, profile: null, profileStatus: 'idle' }); }
+    else if (s && (!state.session || state.session.access_token !== s.access_token)) { setState({ status: s.recovery ? 'recovery' : 'in', session: s }); scheduleRefresh(); }
+  }
+
+  // ---------- Aktionen ----------
+  async function signUp({ email, password, username }) {
+    const data = username ? { username } : undefined;
+    const body = await http('/auth/v1/signup', { method: 'POST', query: { redirect_to: redirectUrl() }, body: { email, password, data } });
+    if (body && body.access_token) {
+      adopt(toSession(body), 'in', { returnType: '' }); // direkte Registrierung ohne E-Mail-Bestätigung ist keine "Rückkehr"
+      return { status: 'signed_in', requestedUsername: username || '' };
+    }
+    return { status: 'confirm_email' };
+  }
+
+  async function signIn({ email, password }) {
+    const body = await http('/auth/v1/token', { method: 'POST', query: { grant_type: 'password' }, body: { email, password } });
+    adopt(toSession(body), 'in');
+    return state;
+  }
+
+  async function signInWithGoogle() {
+    const s = await settings();
+    if (!s) throw new AuthError('network'); // Projekt nicht erreichbar: nicht auf eine tote Adresse weiterleiten
+    if (!s.google) throw new AuthError('provider_disabled');
+    const { verifier, challenge } = await makePkce(o.crypto || (typeof crypto !== 'undefined' ? crypto : null));
+    writeJson(FLOW_KEY, { verifier, ts: now() });
+    const url = `${base}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl())}&code_challenge=${challenge}&code_challenge_method=s256`;
+    if (o.navigate) o.navigate(url); else loc.assign(url);
+  }
+
+  async function signOut() {
+    const s = readSession();
+    if (s) { try { await http('/auth/v1/logout', { method: 'POST', query: { scope: 'local' }, token: s.access_token }); } catch { /* lokal abmelden genügt */ } }
+    dropSession({ returnType: '' });
+  }
+
+  async function requestPasswordReset(email) {
+    await http('/auth/v1/recover', { method: 'POST', query: { redirect_to: redirectUrl() }, body: { email } });
+  }
+
+  async function updatePassword(password) {
+    const token = await freshToken();
+    const user = await http('/auth/v1/user', { method: 'PUT', token, body: { password } });
+    const s = readSession();
+    if (s) adopt({ ...s, user: user && user.id ? user : s.user }, 'in', { returnType: '' });
+  }
+
+  // ---------- Profil ----------
+  async function loadProfile() {
+    const s = readSession();
+    if (!s) { setState({ profile: null, profileStatus: 'idle' }); return null; }
+    setState({ profileStatus: 'loading' });
+    try {
+      const select = () => rest('/profiles', { query: { select: 'id,username,created_at', id: `eq.${s.user.id}` } });
+      let rows = await select();
+      if (!Array.isArray(rows) || rows.length === 0) {
+        await rest('/rpc/ensure_profile', { method: 'POST', body: {} });
+        rows = await select();
+      }
+      const profile = Array.isArray(rows) && rows[0] ? rows[0] : null;
+      if (!profile) throw new AuthError('profile_missing');
+      setState({ profile, profileStatus: 'ready' });
+      return profile;
+    } catch (e) {
+      setState({ profile: null, profileStatus: 'error', profileError: e instanceof AuthError ? e.code : 'unknown' });
+      throw e;
+    }
+  }
+
+  /** Vorabprüfung für das Formular. Endgültig entscheidet die Datenbank beim Speichern. */
+  async function checkUsername(name) {
+    const v = validateUsername(name);
+    if (!v.ok) return v.code === 'reserved' ? 'reserved' : 'invalid';
+    const body = { candidate: v.value };
+    // Mit Sitzung über rest(): erneuert abgelaufene Token selbst. Ohne Sitzung (Registrierung) mit dem öffentlichen Schlüssel.
+    const res = readSession()
+      ? await rest('/rpc/username_available', { method: 'POST', body })
+      : await http('/rest/v1/rpc/username_available', { method: 'POST', body });
+    return ['available', 'taken', 'invalid', 'reserved'].includes(res) ? res : 'invalid';
+  }
+
+  async function updateUsername(name) {
+    const v = validateUsername(name);
+    if (!v.ok) throw new AuthError(v.code === 'reserved' ? 'username_reserved' : 'username_invalid');
+    const s = readSession();
+    if (!s) throw new AuthError('not_signed_in');
+    const rows = await rest('/profiles', { method: 'PATCH', query: { id: `eq.${s.user.id}` }, body: { username: v.value }, prefer: 'return=representation' });
+    if (!Array.isArray(rows) || rows.length === 0) throw new AuthError('profile_missing');
+    setState({ profile: { ...state.profile, ...rows[0] }, profileStatus: 'ready' });
+    return rows[0];
+  }
+
+  return {
+    get configured() { return ok; },
+    get state() { return state; },
+    onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+    init, settings, signUp, signIn, signInWithGoogle, signOut, requestPasswordReset, updatePassword,
+    loadProfile, checkUsername, updateUsername, refreshSession,
+    clearReturn() { setState({ returnError: null, returnType: '' }); },
+  };
+}
+
+/** Sicherer Speicher-Adapter: localStorage, bei Fehlern (privater Modus) nur im Arbeitsspeicher. */
+export function makeStorage() {
+  const mem = new Map();
+  let ls = null;
+  try { ls = globalThis.localStorage; ls.setItem('fnc.probe', '1'); ls.removeItem('fnc.probe'); } catch { ls = null; }
+  return {
+    get(k) { try { return ls ? ls.getItem(k) : (mem.get(k) ?? null); } catch { return mem.get(k) ?? null; } },
+    set(k, v) { try { if (ls) { ls.setItem(k, v); return; } } catch { /* Rückfall */ } mem.set(k, v); },
+    remove(k) { try { if (ls) ls.removeItem(k); } catch { /* ignorieren */ } mem.delete(k); },
+  };
+}

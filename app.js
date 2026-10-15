@@ -2,7 +2,6 @@ import * as L from './logic.js';
 import * as P from './presets.js';
 import { initMap } from './map.js';
 import { initPresetUI } from './presets-ui.js';
-import { initSurge } from './surge-ui.js';
 import { t, getLang, getLocale, initLanguage, setLanguage, onLanguageChange } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
@@ -243,8 +242,6 @@ function showFieldError(input, errEl, err) {
   }
 }
 
-let surge = null; // wird weiter unten angelegt
-
 function renderNet() {
   const r = L.computeNet(netEls.dealt.value, netEls.taken.value, getLocale());
   showFieldError(netEls.dealt, netEls.dealtErr, r.dealtError);
@@ -263,7 +260,6 @@ function renderNet() {
     netEls.icon.setAttribute('href', r.kind === 'positive' ? '#i-up' : r.kind === 'negative' ? '#i-down' : '#i-even');
   }
   updateUndo();
-  if (surge) surge.render();
 }
 function onNetInput() {
   renderNet();
@@ -598,19 +594,6 @@ noteEls.confirmOk.addEventListener('click', () => {
 // ---------- Karte (Bild-Upload) ----------
 initMap();
 
-// ---------- Storm Surge (historische Einordnung, kein Live-Status) ----------
-surge = initSurge({
-  getUserValues() {
-    const dealt = L.parseDamageInput(netEls.dealt.value);
-    const taken = L.parseDamageInput(netEls.taken.value);
-    return {
-      dealt: dealt.ok ? dealt.value : null,
-      net: dealt.ok && taken.ok ? L.netDamage(dealt.value, taken.value) : null,
-      hasInput: String(netEls.dealt.value).trim() !== '' || String(netEls.taken.value).trim() !== '',
-    };
-  },
-});
-
 // ---------- Sprachumschaltung ----------
 document.querySelectorAll('[data-lang]').forEach((btn) => {
   btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
@@ -705,7 +688,38 @@ renderNet();
 renderNotes();
 renderSoundToggle();
 tick();
-document.documentElement.dataset.ready = '1'; // Seite sichtbar machen (siehe styles.css)
+// Intro (reine Anzeige): Overlay über der bereits fertigen App, es blockiert nichts. Es wird nachgeladen, damit eine
+// fehlende oder fehlerhafte intro.js die Werkzeuge nie lahmlegt. Die Seite wird erst danach sichtbar (styles.css:
+// html:not([data-ready]) body), damit die App nicht kurz hinter dem Intro aufblitzt; styles.css zeigt sie spätestens nach 1,5 s.
+import('./intro.js')
+  .then((m) => m.initIntro())
+  .catch(() => { const el = $('intro'); if (el) el.remove(); })
+  .finally(() => { document.documentElement.dataset.ready = '1'; });
+
+// ---------- Konten ----------
+// Optional und erst nach den Werkzeugen geladen. Ein Fehler hier (fehlende Datei, Netzwerk,
+// falsche Konfiguration) darf die App nie beeinträchtigen.
+
+(async () => {
+  try {
+    const [{ CONFIG }, client, ui] = await Promise.all([import('./config.js'), import('./authclient.js'), import('./auth-ui.js')]);
+    const auth = client.createAuthClient({
+      url: CONFIG.supabaseUrl,
+      anonKey: CONFIG.supabaseAnonKey,
+      storage: client.makeStorage(),
+      location,
+      history,
+      crypto: window.crypto,
+      locks: navigator.locks,
+      navigate: (url) => location.assign(url),
+    });
+    ui.initAccounts({ auth }); // zuerst Oberfläche anbinden, dann Sitzung prüfen (nicht abwarten)
+    auth.init().catch(() => {});
+  } catch {
+    const btn = $('account-btn');
+    if (btn) btn.hidden = true; // Konto-Code nicht ladbar: Werkzeuge laufen unverändert weiter
+  }
+})();
 
 // ---------- Service Worker (nur über HTTPS oder localhost) ----------
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
