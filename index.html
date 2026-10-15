@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Match Tools</title>
-  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <meta name="description" content="Storm-Timer, Net Damage, Rotation-Countdown, Storm-Surge-Info, Map und Match-Notizen. Unabhängiges Fanprojekt, nicht von Epic Games.">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#14120d">
   <meta name="mobile-web-app-capable" content="yes">
@@ -43,22 +43,34 @@
       <symbol id="i-even" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
       <symbol id="i-sound-on" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4V5.5l-5 4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/></symbol>
       <symbol id="i-sound-off" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4V5.5l-5 4z"/><path d="M17 9.5l4 5M21 9.5l-4 5"/></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 5L4 10l5 5"/><path d="M4 10h10.5a5.5 5.5 0 0 1 0 11H10"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l1-4.5L16.5 4a2 2 0 0 1 3 3L8 18.5z"/><path d="M14.5 6l3.5 3.5"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-surge" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></symbol>
       <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
     </defs>
   </svg>
 
+  <div class="langbar">
+    <div class="lang" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache">
+      <button type="button" class="lang-btn" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="true">DE</button>
+      <button type="button" class="lang-btn" data-lang="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+    </div>
+  </div>
+
   <header class="topbar">
-    <nav class="tabs" aria-label="Bereiche">
-      <a class="tab" href="#storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span>Storm</span></a>
-      <a class="tab" href="#damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span>Damage</span></a>
-      <a class="tab" href="#rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span>Rotation</span></a>
-      <a class="tab" href="#map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span>Map</span></a>
-      <a class="tab" href="#notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span>Notizen</span></a>
+    <nav class="tabs" data-i18n-attr="aria-label=nav.label" aria-label="Bereiche">
+      <a class="tab" href="#storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span data-i18n="nav.storm">Storm</span></a>
+      <a class="tab" href="#damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span data-i18n="nav.damage">Damage</span></a>
+      <a class="tab" href="#rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span data-i18n="nav.rotation">Rotation</span></a>
+      <a class="tab" href="#surge"><svg class="i" aria-hidden="true"><use href="#i-surge"/></svg><span data-i18n="nav.surge">Surge</span></a>
+      <a class="tab" href="#map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="nav.map">Map</span></a>
+      <a class="tab" href="#notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span data-i18n="nav.notes">Notizen</span></a>
     </nav>
   </header>
 
   <main class="app">
-    <p id="storage-warning" class="notice" role="status" hidden>
+    <p id="storage-warning" class="notice" role="status" data-i18n="storage.warning" hidden>
       Speichern auf diesem Gerät ist nicht möglich (z. B. privater Modus). Daten gehen beim Schließen verloren.
     </p>
 
@@ -66,9 +78,9 @@
       <!-- STORM -->
       <section id="storm" class="card card-storm" aria-labelledby="h-storm">
         <header class="card-head">
-          <h2 id="h-storm" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg>Storm</h2>
+          <h2 id="h-storm" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span data-i18n="storm.title">Storm</span></h2>
           <div class="select-wrap">
-            <label for="storm-rate" class="sr-only">Storm-Schaden pro Sekunde</label>
+            <label for="storm-rate" class="sr-only" data-i18n="storm.rateLabel">Storm-Schaden pro Sekunde</label>
             <select id="storm-rate">
               <option value="1">1 Schaden pro Sekunde</option>
               <option value="2">2 Schaden pro Sekunde</option>
@@ -82,16 +94,16 @@
         <div class="storm-grid">
           <div class="storm-main">
             <div class="hero">
-              <div class="hero-top"><span class="hero-label">Zeit</span><span id="storm-pill" class="pill" data-state="idle">Bereit</span></div>
+              <div class="hero-top"><span class="hero-label" data-i18n="storm.time">Zeit</span><span id="storm-pill" class="pill" data-state="idle">Bereit</span></div>
               <div id="storm-time" class="hero-value" role="timer" aria-live="off">00:00</div>
             </div>
             <div class="stats">
               <div class="stat">
-                <div class="stat-label">Schaden pro Sekunde</div>
+                <div class="stat-label" data-i18n="storm.statRate">Schaden pro Sekunde</div>
                 <div id="storm-rate-out" class="stat-value">5</div>
               </div>
               <div class="stat">
-                <div class="stat-label">Geschätzter Schaden</div>
+                <div class="stat-label" data-i18n="storm.statDamage">Geschätzter Schaden</div>
                 <div id="storm-damage" class="stat-value stat-accent">0</div>
               </div>
             </div>
@@ -99,7 +111,7 @@
 
           <div class="storm-side">
             <div class="meter">
-              <div id="storm-bar" class="bar" role="progressbar" aria-label="Storm-Schaden bis 600" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0">
+              <div id="storm-bar" class="bar" role="progressbar" data-i18n-attr="aria-label=storm.barLabel" aria-label="Storm-Schaden bis 600" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0">
                 <div id="storm-fill" class="bar-fill"></div>
                 <span class="bar-tick" style="left:83.333%"></span>
               </div>
@@ -125,56 +137,62 @@
           <button id="storm-toggle" class="btn btn-primary" type="button">
             <svg class="i" aria-hidden="true"><use href="#i-play"/></svg><span>Start</span>
           </button>
-          <button id="storm-reset" class="btn" type="button" aria-label="Storm-Timer zurücksetzen">
-            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          <button id="storm-reset" class="btn" type="button" data-i18n-attr="aria-label=storm.resetLabel" aria-label="Storm-Timer zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="common.reset">Reset</span>
           </button>
         </div>
-        <p class="hint">Schätzung. Der Timer liest keine Live-Daten aus Fortnite aus. Wähle den Schaden passend zur aktuellen Phase.</p>
+        <p class="hint" data-i18n="storm.hint">Schätzung. Der Timer liest keine Live-Daten aus Fortnite aus. Wähle den Schaden passend zur aktuellen Phase.</p>
       </section>
 
       <!-- NET DAMAGE -->
       <section id="damage" class="card card-net" aria-labelledby="h-net">
         <header class="card-head">
-          <h2 id="h-net" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg>Net Damage</h2>
+          <h2 id="h-net" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span data-i18n="net.title">Net Damage</span></h2>
+          <button id="net-undo" class="chip-toggle" type="button" data-i18n-attr="aria-label=net.undoLabel" aria-label="Letzte Änderung rückgängig machen" disabled>
+            <svg class="i" aria-hidden="true"><use href="#i-undo"/></svg><span data-i18n="net.undo">Rückgängig</span>
+          </button>
         </header>
+        <p class="hint formula" data-i18n="net.formula">Net Damage = Damage Dealt − Damage Taken</p>
 
         <div class="fields">
-          <div class="field">
-            <label for="dmg-dealt">Damage Dealt</label>
+          <div class="field field-dealt">
+            <label for="dmg-dealt"><span class="dot" aria-hidden="true"></span><span data-i18n="net.dealt">Damage Dealt</span></label>
             <input id="dmg-dealt" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="dealt-error">
             <p id="dealt-error" class="field-error" hidden></p>
-            <div class="qgrid" role="group" aria-label="Damage Dealt ändern">
-              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-10" aria-label="Damage Dealt minus 10">−10</button>
-              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-5" aria-label="Damage Dealt minus 5">−5</button>
-              <button class="qbtn qminus" type="button" data-target="dealt" data-delta="-1" aria-label="Damage Dealt minus 1">−1</button>
-              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="1" aria-label="Damage Dealt plus 1">+1</button>
-              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="5" aria-label="Damage Dealt plus 5">+5</button>
-              <button class="qbtn qplus" type="button" data-target="dealt" data-delta="10" aria-label="Damage Dealt plus 10">+10</button>
+            <p class="qcaption" data-i18n="net.dealtHint">Verursachten Schaden hinzufügen</p>
+            <div class="qgrid qgrid-3" role="group" data-i18n-attr="aria-label=net.dealtGroup" aria-label="Damage Dealt erhöhen">
+              <button class="qbtn qdealt" type="button" data-target="dealt" data-delta="1" aria-label="1 Damage zu Damage Dealt hinzufügen">+1</button>
+              <button class="qbtn qdealt" type="button" data-target="dealt" data-delta="5" aria-label="5 Damage zu Damage Dealt hinzufügen">+5</button>
+              <button class="qbtn qdealt" type="button" data-target="dealt" data-delta="10" aria-label="10 Damage zu Damage Dealt hinzufügen">+10</button>
             </div>
+            <button class="btn btn-ghost btn-clear" type="button" data-clear="dealt" data-i18n-attr="aria-label=net.clearDealtLabel" aria-label="Damage Dealt auf 0 zurücksetzen">
+              <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="net.clearDealt">Dealt leeren</span>
+            </button>
           </div>
-          <div class="field">
-            <label for="dmg-taken">Damage Taken</label>
+          <div class="field field-taken">
+            <label for="dmg-taken"><span class="dot" aria-hidden="true"></span><span data-i18n="net.taken">Damage Taken</span></label>
             <input id="dmg-taken" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" placeholder="0" aria-describedby="taken-error">
             <p id="taken-error" class="field-error" hidden></p>
-            <div class="qgrid" role="group" aria-label="Damage Taken ändern">
-              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-10" aria-label="Damage Taken minus 10">−10</button>
-              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-5" aria-label="Damage Taken minus 5">−5</button>
-              <button class="qbtn qminus" type="button" data-target="taken" data-delta="-1" aria-label="Damage Taken minus 1">−1</button>
-              <button class="qbtn qplus" type="button" data-target="taken" data-delta="1" aria-label="Damage Taken plus 1">+1</button>
-              <button class="qbtn qplus" type="button" data-target="taken" data-delta="5" aria-label="Damage Taken plus 5">+5</button>
-              <button class="qbtn qplus" type="button" data-target="taken" data-delta="10" aria-label="Damage Taken plus 10">+10</button>
+            <p class="qcaption" data-i18n="net.takenHint">Erlittenen Schaden hinzufügen</p>
+            <div class="qgrid qgrid-2" role="group" data-i18n-attr="aria-label=net.takenGroup" aria-label="Eingehenden Schaden zu Damage Taken addieren">
+              <button class="qbtn qtaken" type="button" data-target="taken" data-delta="5" aria-label="5 Damage zu Damage Taken hinzufügen"><span class="q-num">+5</span><span class="q-word" data-i18n="net.damageWord">Damage</span></button>
+              <button class="qbtn qtaken" type="button" data-target="taken" data-delta="10" aria-label="10 Damage zu Damage Taken hinzufügen"><span class="q-num">+10</span><span class="q-word" data-i18n="net.damageWord">Damage</span></button>
             </div>
+            <button class="btn btn-ghost btn-clear" type="button" data-clear="taken" data-i18n-attr="aria-label=net.clearTakenLabel" aria-label="Damage Taken auf 0 zurücksetzen">
+              <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="net.clearTaken">Taken leeren</span>
+            </button>
           </div>
         </div>
 
         <div id="net-result" class="net-result" data-kind="even" aria-live="polite">
           <div class="net-label"><svg class="i" aria-hidden="true"><use id="net-icon" href="#i-even"/></svg><span id="net-label">Ausgeglichen</span></div>
           <div id="net-value" class="net-value">0</div>
+          <div id="net-calc" class="net-calc">0 − 0 = 0</div>
         </div>
 
         <div class="controls controls-single">
-          <button id="net-reset" class="btn" type="button" aria-label="Net Damage zurücksetzen">
-            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          <button id="net-reset" class="btn" type="button" data-i18n-attr="aria-label=net.resetLabel" aria-label="Net Damage zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="common.reset">Reset</span>
           </button>
         </div>
       </section>
@@ -182,38 +200,104 @@
       <!-- ROTATION -->
       <section id="rotation" class="card card-rot" aria-labelledby="h-rot">
         <header class="card-head">
-          <h2 id="h-rot" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg>Rotation</h2>
-          <button id="sound-toggle" class="chip-toggle" type="button" aria-pressed="true" aria-label="Ton bei Ablauf">
-            <svg class="i on" aria-hidden="true"><use href="#i-sound-on"/></svg>
-            <svg class="i off" aria-hidden="true"><use href="#i-sound-off"/></svg>
-            <span id="sound-text">Ton an</span>
-          </button>
+          <h2 id="h-rot" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span data-i18n="rot.title">Rotation</span></h2>
+          <div class="head-tools">
+            <button id="preset-edit" class="chip-toggle" type="button" aria-expanded="false" aria-controls="preset-editor">
+              <svg class="i" aria-hidden="true"><use href="#i-edit"/></svg><span data-i18n="rot.edit">Presets bearbeiten</span>
+            </button>
+            <button id="sound-toggle" class="chip-toggle" type="button" aria-pressed="true" data-i18n-attr="aria-label=rot.soundLabel" aria-label="Ton bei Ablauf">
+              <svg class="i on" aria-hidden="true"><use href="#i-sound-on"/></svg>
+              <svg class="i off" aria-hidden="true"><use href="#i-sound-off"/></svg>
+              <span id="sound-text">Ton an</span>
+            </button>
+          </div>
         </header>
 
-        <div id="presets" class="segmented" role="radiogroup" aria-label="Rotation-Dauer"></div>
+        <div id="presets" class="segmented" role="radiogroup" data-i18n-attr="aria-label=rot.presets" aria-label="Rotation-Dauer"></div>
+        <p id="preset-locked" class="hint" data-i18n="rot.locked" hidden>Zum Wechseln des Presets zuerst Reset drücken.</p>
+
+        <div id="preset-editor" class="editor" role="group" aria-labelledby="pe-title" hidden>
+          <h3 id="pe-title" class="editor-title" data-i18n="pe.title" tabindex="-1">Presets bearbeiten</h3>
+          <p class="hint" data-i18n="pe.intro">Name und Dauer festlegen, Reihenfolge ändern. Änderungen gelten nach „Speichern“.</p>
+          <ul id="pe-list" class="pe-list"></ul>
+          <p id="pe-error" class="field-error" role="alert" hidden></p>
+          <p id="pe-note" class="hint" hidden></p>
+          <div class="pe-tools">
+            <button id="pe-add" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span data-i18n="pe.add">Preset hinzufügen</span></button>
+            <button id="pe-defaults" class="btn btn-ghost" type="button" data-i18n-attr="aria-label=pe.defaultsLabel" aria-label="Standard-Presets in den Entwurf laden"><span data-i18n="pe.defaults">Standard-Presets</span></button>
+          </div>
+          <div class="pe-actions">
+            <button id="pe-cancel" class="btn" type="button" data-i18n="pe.cancel">Abbrechen</button>
+            <button id="pe-save" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-save"/></svg><span data-i18n="pe.save">Speichern</span></button>
+          </div>
+        </div>
+        <p id="pe-status" class="status" role="status" aria-live="polite"></p>
 
         <div class="hero">
-          <div class="hero-top"><span class="hero-label">Restzeit</span><span id="rot-status" class="pill" data-state="idle">Bereit</span></div>
+          <div class="hero-top"><span class="hero-label" data-i18n="rot.remaining">Restzeit</span><span id="rot-status" class="pill" data-state="idle">Bereit</span></div>
           <div id="rot-time" class="hero-value" role="timer" aria-live="off">2:00</div>
         </div>
 
-        <p id="rot-warning" class="banner banner-warn" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>Noch 10 Sekunden</p>
-        <p id="rot-done" class="banner banner-done" role="alert" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>Zeit abgelaufen. Rotation jetzt!</p>
+        <p id="rot-warning" class="banner banner-warn" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg><span data-i18n="rot.warn">Noch 10 Sekunden</span></p>
+        <p id="rot-done" class="banner banner-done" role="alert" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg><span data-i18n="rot.done">Zeit abgelaufen. Rotation jetzt!</span></p>
 
         <div class="controls">
           <button id="rot-toggle" class="btn btn-primary" type="button">
             <svg class="i" aria-hidden="true"><use href="#i-play"/></svg><span>Start</span>
           </button>
-          <button id="rot-reset" class="btn" type="button" aria-label="Rotation-Countdown zurücksetzen">
-            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span>
+          <button id="rot-reset" class="btn" type="button" data-i18n-attr="aria-label=rot.resetLabel" aria-label="Rotation-Countdown zurücksetzen">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span data-i18n="common.reset">Reset</span>
           </button>
         </div>
+      </section>
+
+      <!-- STORM SURGE -->
+      <section id="surge" class="card card-surge" aria-labelledby="h-surge">
+        <header class="card-head">
+          <h2 id="h-surge" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-surge"/></svg><span data-i18n="surge.title">Storm Surge</span></h2>
+          <span id="surge-badge" class="pill" data-state="loading">Lädt …</span>
+        </header>
+
+        <p id="surge-error" class="banner banner-warn" role="status" hidden></p>
+        <button id="surge-retry" class="btn" type="button" data-i18n="surge.retry" hidden>Erneut versuchen</button>
+        <p id="surge-fixture" class="banner banner-warn" hidden></p>
+        <p id="surge-dropped" class="hint" hidden></p>
+
+        <div id="surge-empty" class="surge-empty" hidden>
+          <p class="surge-title" data-i18n="surge.emptyTitle">Nicht genügend verlässliche Daten</p>
+          <p class="hint" data-i18n="surge.emptyLead">Es gibt hier noch keine belastbare Auswertung. Es wird bewusst nichts geschätzt.</p>
+          <ul class="surge-why">
+            <li data-i18n="surge.why1">Es wurde keine öffentlich zugängliche, überprüfbare Datenreihe mit Storm-Surge-Werten pro Zone gefunden.</li>
+            <li data-i18n="surge.why2">Die echte Schwelle ist nach den geprüften Quellen relativ zur Lobby und wird im Spiel angezeigt. Sie lässt sich nicht aus alten Matches ableiten.</li>
+            <li data-i18n="surge.why3">Surge bezieht sich laut Quellen auf Damage Dealt. Net Damage (Dealt − Taken) ist nicht automatisch dieselbe Kennzahl.</li>
+          </ul>
+        </div>
+
+        <div id="surge-data" class="surge-data" hidden>
+          <div class="surge-pick">
+            <div class="select-wrap">
+              <label for="surge-group" class="sr-only" data-i18n="surge.group">Datengruppe</label>
+              <select id="surge-group"></select>
+            </div>
+            <div id="surge-zones" class="zone-chips" role="radiogroup" data-i18n-attr="aria-label=surge.zones" aria-label="Zone"></div>
+          </div>
+          <p class="hint" data-i18n="surge.context">Die App erkennt weder deine aktuelle Zone noch Spielversion oder Format. Wähle die Zone selbst; die Vergleichbarkeit ist eingeschränkt.</p>
+          <div id="surge-detail" class="surge-detail" aria-live="polite"></div>
+        </div>
+
+        <p class="surge-limits" data-i18n="surge.noLive">Die App zeigt keinen Live-Schwellenwert und kein „über/unter Surge“. Historische Werte sind keine aktuelle Schwelle.</p>
+
+        <details id="surge-sources" class="surge-sources">
+          <summary data-i18n="surge.sourcesTitle">Geprüfte Quellen und Methode</summary>
+          <div id="surge-sources-body" class="surge-sources-body"></div>
+        </details>
+        <p id="surge-meta" class="hint"></p>
       </section>
 
       <!-- MAP -->
       <section id="map" class="card card-map" aria-labelledby="h-map">
         <header class="card-head">
-          <h2 id="h-map" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Map</h2>
+          <h2 id="h-map" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="map.title">Map</span></h2>
         </header>
 
         <input id="map-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
@@ -227,22 +311,22 @@
             <circle cx="170" cy="88" r="4" fill="#f2efe6"/>
             <path d="M52 134l42-30 30 12 26-28" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <p class="map-empty-title">Lade deine Fortnite-Map hoch</p>
-          <p class="hint">PNG, JPG oder WEBP. Das Bild bleibt nur auf diesem Gerät gespeichert.</p>
-          <button id="map-upload" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg><span>Map hochladen</span></button>
+          <p class="map-empty-title" data-i18n="map.emptyTitle">Lade deine Fortnite-Map hoch</p>
+          <p class="hint" data-i18n="map.emptyHint">PNG, JPG oder WEBP. Das Bild bleibt nur auf diesem Gerät gespeichert.</p>
+          <button id="map-upload" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg><span data-i18n="map.upload">Map hochladen</span></button>
         </div>
 
         <div id="map-view" class="map-layout" hidden>
-          <figure class="map-stage"><img id="map-img" alt="Hochgeladene Fortnite-Map" decoding="async"></figure>
+          <figure class="map-stage"><img id="map-img" data-i18n-attr="alt=map.alt" alt="Hochgeladene Fortnite-Map" decoding="async"></figure>
           <div class="map-side">
-            <div class="eyebrow-text">Deine Karte</div>
-            <h3 class="map-title">Fortnite-Map</h3>
-            <ul id="map-chips" class="chips" aria-label="Bildinformationen"></ul>
+            <div class="eyebrow-text" data-i18n="map.yours">Deine Karte</div>
+            <h3 class="map-title" data-i18n="map.name">Fortnite-Map</h3>
+            <ul id="map-chips" class="chips" data-i18n-attr="aria-label=map.chips" aria-label="Bildinformationen"></ul>
             <p id="map-note" class="hint"></p>
             <div class="map-actions">
-              <button id="map-fullscreen" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg><span>Vollbild</span></button>
-              <button id="map-replace" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-swap"/></svg><span>Ersetzen</span></button>
-              <button id="map-remove" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span>Entfernen</span></button>
+              <button id="map-fullscreen" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg><span data-i18n="map.fullscreen">Vollbild</span></button>
+              <button id="map-replace" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-swap"/></svg><span data-i18n="map.replace">Ersetzen</span></button>
+              <button id="map-remove" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="map.remove">Entfernen</span></button>
             </div>
           </div>
         </div>
@@ -253,48 +337,48 @@
       <!-- NOTIZEN -->
       <section id="notes" class="card card-notes" aria-labelledby="h-notes">
         <header class="card-head">
-          <h2 id="h-notes" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg>Match-Notizen</h2>
+          <h2 id="h-notes" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span data-i18n="notes.title">Match-Notizen</span></h2>
         </header>
 
-        <label for="note-input" class="sr-only">Notiz zum aktuellen Match</label>
-        <textarea id="note-input" rows="5" placeholder="Notizen zum aktuellen Match …" autocomplete="off" spellcheck="false"></textarea>
+        <label for="note-input" class="sr-only" data-i18n="notes.inputLabel">Notiz zum aktuellen Match</label>
+        <textarea id="note-input" rows="5" data-i18n-attr="placeholder=notes.placeholder" placeholder="Notizen zum aktuellen Match …" autocomplete="off" spellcheck="false"></textarea>
 
         <div class="note-actions">
-          <button id="note-save" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-save"/></svg><span>Speichern</span></button>
-          <button id="note-export" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg><span>Export .txt</span></button>
-          <button id="note-share" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span>Teilen</span></button>
-          <button id="note-delete" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span>Löschen</span></button>
+          <button id="note-save" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-save"/></svg><span data-i18n="notes.save">Speichern</span></button>
+          <button id="note-export" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg><span data-i18n="notes.export">Export .txt</span></button>
+          <button id="note-share" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="notes.share">Teilen</span></button>
+          <button id="note-delete" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="notes.delete">Löschen</span></button>
         </div>
 
         <div id="note-confirm" class="confirm" role="alertdialog" aria-labelledby="note-confirm-text" hidden>
-          <p id="note-confirm-text">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer, Net Damage und Map bleiben unverändert.</p>
+          <p id="note-confirm-text" data-i18n="notes.confirmText">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer, Net Damage und Map bleiben unverändert.</p>
           <div class="confirm-actions">
-            <button id="note-confirm-cancel" class="btn" type="button">Abbrechen</button>
-            <button id="note-confirm-ok" class="btn btn-danger-solid" type="button">Endgültig löschen</button>
+            <button id="note-confirm-cancel" class="btn" type="button" data-i18n="notes.confirmCancel">Abbrechen</button>
+            <button id="note-confirm-ok" class="btn btn-danger-solid" type="button" data-i18n="notes.confirmOk">Endgültig löschen</button>
           </div>
         </div>
 
         <p id="note-status" class="status" role="status" aria-live="polite"></p>
 
-        <ul id="note-list" class="note-list" aria-label="Gespeicherte Notizen"></ul>
-        <p id="note-empty" class="note-empty">Noch keine gespeicherten Notizen.</p>
+        <ul id="note-list" class="note-list" data-i18n-attr="aria-label=notes.list" aria-label="Gespeicherte Notizen"></ul>
+        <p id="note-empty" class="note-empty" data-i18n="notes.empty">Noch keine gespeicherten Notizen.</p>
       </section>
     </div>
 
-    <footer class="footnote">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Alle Daten bleiben auf diesem Gerät.</footer>
+    <footer class="footnote" data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Alle Daten bleiben auf diesem Gerät.</footer>
   </main>
 
   <!-- Vollbild-Ansicht der Map -->
-  <div id="map-viewer" class="viewer" role="dialog" aria-modal="true" aria-label="Map im Vollbild" hidden>
+  <div id="map-viewer" class="viewer" role="dialog" aria-modal="true" data-i18n-attr="aria-label=map.viewer" aria-label="Map im Vollbild" hidden>
     <div class="viewer-bar">
-      <button id="viewer-close" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg><span>Schließen</span></button>
-      <div class="viewer-zoom" role="group" aria-label="Zoom">
-        <button id="zoom-out" class="btn btn-icon" type="button" aria-label="Verkleinern">−</button>
+      <button id="viewer-close" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg><span data-i18n="common.close">Schließen</span></button>
+      <div class="viewer-zoom" role="group" data-i18n-attr="aria-label=map.zoom" aria-label="Zoom">
+        <button id="zoom-out" class="btn btn-icon" type="button" data-i18n-attr="aria-label=map.zoomOut" aria-label="Verkleinern">−</button>
         <span id="zoom-level" class="zoom-level" aria-live="polite">100 %</span>
-        <button id="zoom-in" class="btn btn-icon" type="button" aria-label="Vergrößern">+</button>
+        <button id="zoom-in" class="btn btn-icon" type="button" data-i18n-attr="aria-label=map.zoomIn" aria-label="Vergrößern">+</button>
       </div>
     </div>
-    <div id="viewer-scroll" class="viewer-scroll"><img id="viewer-img" alt="Fortnite-Map, große Ansicht"></div>
+    <div id="viewer-scroll" class="viewer-scroll"><img id="viewer-img" data-i18n-attr="alt=map.viewerAlt" alt="Fortnite-Map, große Ansicht"></div>
   </div>
 
   <script type="module" src="app.js"></script>

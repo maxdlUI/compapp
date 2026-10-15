@@ -1,7 +1,7 @@
 // Service Worker: legt die App-Dateien beim ersten Besuch in den Cache.
 // Danach startet die App auch ohne Internet. Updates laden im Hintergrund nach
 // und sind beim nächsten Öffnen aktiv. CACHE hochzählen, wenn Dateien geändert werden.
-const CACHE = 'match-tools-v2';
+const CACHE = 'match-tools-v3';
 const ASSETS = [
   './',
   'index.html',
@@ -9,6 +9,12 @@ const ASSETS = [
   'app.js',
   'logic.js',
   'map.js',
+  'i18n.js',
+  'presets.js',
+  'presets-ui.js',
+  'surge.js',
+  'surge-ui.js',
+  'surge-data.json',
   'manifest.webmanifest',
   'icon-192.png',
   'icon-512.png',

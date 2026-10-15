@@ -1,12 +1,20 @@
 import * as L from './logic.js';
+import * as P from './presets.js';
 import { initMap } from './map.js';
+import { initPresetUI } from './presets-ui.js';
+import { initSurge } from './surge-ui.js';
+import { t, getLang, getLocale, initLanguage, setLanguage, onLanguageChange } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
+
+// Sprache zuerst setzen, damit die statischen Texte schon vor der ersten Anzeige stimmen
+initLanguage();
 
 // ---------- Lokaler Speicher (mit Fehlerbehandlung) ----------
 const KEYS = {
   storm: 'fnc.v1.storm',
   rotation: 'fnc.v1.rotation',
+  rotPresets: 'fnc.v1.rotPresets',
   net: 'fnc.v1.net',
   notes: 'fnc.v1.notes',
   draft: 'fnc.v1.draft',
@@ -45,12 +53,15 @@ if (!store.available()) $('storage-warning').hidden = false;
 
 // ---------- Zustand ----------
 let storm = L.restoreStorm(store.read(KEYS.storm), Date.now());
-let rotation = L.restoreRotation(store.read(KEYS.rotation), Date.now());
+// Fehlt der Schlüssel (Version 1 und 2), gelten die Standard-Presets. Beim Laden wird nichts überschrieben.
+let presets = P.restorePresets(store.read(KEYS.rotPresets));
+let rotation = L.restoreRotation(store.read(KEYS.rotation), Date.now(), presets);
 let prefs = { sound: true, ...(store.read(KEYS.prefs) || {}) };
 let notes = L.restoreNotes(store.read(KEYS.notes));
 
 // Ein Countdown, der abgelaufen ist, während die App geschlossen war, zeigt still "abgelaufen" (kein Ton).
 rotation = L.rotationTick(rotation, Date.now()).state;
+rotation = L.rotationSyncPresets(rotation, presets);
 
 const saveStorm = () => store.write(KEYS.storm, storm);
 const saveRotation = () => store.write(KEYS.rotation, rotation);
@@ -105,10 +116,9 @@ function setButton(btn, icon, label) {
   btn.querySelector('use').setAttribute('href', `#i-${icon}`);
   setText(btn.querySelector('span'), label);
 }
-const fmt = (n) => n.toLocaleString('de-DE');
+const fmt = (n) => L.formatNumber(n, getLocale());
 
 // ---------- Storm ----------
-const STORM_STATUS = { idle: 'Bereit', running: 'Läuft', paused: 'Pausiert' };
 const stormEls = {
   pill: $('storm-pill'),
   rate: $('storm-rate'),
@@ -124,7 +134,19 @@ const stormEls = {
     { li: $('th-600'), text: $('th-600-text') },
   ],
 };
-stormEls.rate.value = String(storm.rate);
+
+function buildStormOptions() {
+  stormEls.rate.replaceChildren(
+    ...L.STORM_RATES.map((rate) => {
+      const o = document.createElement('option');
+      o.value = String(rate);
+      o.textContent = t('storm.rateOption', { n: rate });
+      return o;
+    })
+  );
+  stormEls.rate.value = String(storm.rate);
+}
+buildStormOptions();
 
 function renderStorm(now = Date.now()) {
   const st = L.stormStats(storm, now);
@@ -133,20 +155,20 @@ function renderStorm(now = Date.now()) {
   setText(stormEls.rateOut, String(st.rate));
   stormEls.fill.style.width = `${(st.progress * 100).toFixed(2)}%`;
   stormEls.bar.setAttribute('aria-valuenow', String(Math.min(600, st.damage)));
-  stormEls.bar.setAttribute('aria-valuetext', `${st.damage} von 600 Schaden`);
-  st.thresholds.forEach((t, i) => {
+  stormEls.bar.setAttribute('aria-valuetext', t('storm.barValue', { n: fmt(st.damage) }));
+  st.thresholds.forEach((th, i) => {
     const { li, text } = stormEls.th[i];
-    li.dataset.reached = String(t.reached);
+    li.dataset.reached = String(th.reached);
     setText(
       text,
-      t.reached
-        ? `Erreicht (${t.target} Schaden)`
-        : `Noch ${fmt(t.remaining)} Schaden · ca. ${L.formatClock(t.secondsLeft)}`
+      th.reached
+        ? t('storm.thReached', { n: th.target })
+        : t('storm.thLeft', { n: fmt(th.remaining), t: L.formatClock(th.secondsLeft) })
     );
   });
-  const label = storm.status === 'running' ? ['pause', 'Pause'] : storm.status === 'paused' ? ['play', 'Fortsetzen'] : ['play', 'Start'];
+  const label = storm.status === 'running' ? ['pause', t('common.pause')] : storm.status === 'paused' ? ['play', t('common.resume')] : ['play', t('common.start')];
   setButton(stormEls.toggle, label[0], label[1]);
-  setText(stormEls.pill, STORM_STATUS[storm.status]);
+  setText(stormEls.pill, t(`storm.status.${storm.status}`));
   if (stormEls.pill.dataset.state !== storm.status) stormEls.pill.dataset.state = storm.status;
 }
 
@@ -178,8 +200,10 @@ const netEls = {
   result: $('net-result'),
   label: $('net-label'),
   value: $('net-value'),
+  calc: $('net-calc'),
   icon: $('net-icon'),
   reset: $('net-reset'),
+  undo: $('net-undo'),
 };
 const savedNet = store.read(KEYS.net);
 if (savedNet && typeof savedNet === 'object') {
@@ -187,10 +211,30 @@ if (savedNet && typeof savedNet === 'object') {
   netEls.taken.value = typeof savedNet.taken === 'string' ? savedNet.taken.slice(0, 7) : '';
 }
 
-function showFieldError(input, errEl, message) {
-  if (message) {
+// Rückgängig-Verlauf: nur im Speicher, nicht gespeichert. Jeder Eintrag ist der Zustand vor einer Änderung.
+let netHistory = [];
+let netCommitted = L.netSnapshot(netEls.dealt.value, netEls.taken.value);
+const netCurrent = () => L.netSnapshot(netEls.dealt.value, netEls.taken.value);
+
+/** Übernimmt den aktuellen Stand in den Verlauf (der vorherige Stand wird zum Rückgängig-Schritt). */
+function commitNet() {
+  const cur = netCurrent();
+  if (!L.sameSnapshot(cur, netCommitted)) {
+    netHistory = L.historyPush(netHistory, netCommitted);
+    netCommitted = cur;
+  }
+  updateUndo();
+}
+function updateUndo() {
+  const canUndo = netHistory.length > 0 || !L.sameSnapshot(netCurrent(), netCommitted);
+  if (netEls.undo.disabled === canUndo) netEls.undo.disabled = !canUndo;
+}
+const persistNet = () => store.write(KEYS.net, { dealt: netEls.dealt.value, taken: netEls.taken.value });
+
+function showFieldError(input, errEl, err) {
+  if (err) {
     errEl.hidden = false;
-    setText(errEl, message);
+    setText(errEl, t(`net.err.${err.code}`, { max: err.max !== undefined ? fmt(err.max) : '' }));
     input.setAttribute('aria-invalid', 'true');
   } else {
     errEl.hidden = true;
@@ -199,32 +243,50 @@ function showFieldError(input, errEl, message) {
   }
 }
 
+let surge = null; // wird weiter unten angelegt
+
 function renderNet() {
-  const r = L.computeNet(netEls.dealt.value, netEls.taken.value);
+  const r = L.computeNet(netEls.dealt.value, netEls.taken.value, getLocale());
   showFieldError(netEls.dealt, netEls.dealtErr, r.dealtError);
   showFieldError(netEls.taken, netEls.takenErr, r.takenError);
   if (!r.ok) {
     netEls.result.dataset.kind = 'invalid';
-    setText(netEls.label, 'Ungültige Eingabe');
+    setText(netEls.label, t('net.kind.invalid'));
     setText(netEls.value, '–');
+    setText(netEls.calc, '');
     netEls.icon.setAttribute('href', '#i-alert');
-    return;
+  } else {
+    netEls.result.dataset.kind = r.kind;
+    setText(netEls.label, t(`net.kind.${r.kind}`));
+    setText(netEls.value, r.text);
+    setText(netEls.calc, `${fmt(r.dealt)} − ${fmt(r.taken)} = ${r.text}`);
+    netEls.icon.setAttribute('href', r.kind === 'positive' ? '#i-up' : r.kind === 'negative' ? '#i-down' : '#i-even');
   }
-  netEls.result.dataset.kind = r.kind;
-  setText(netEls.label, r.label);
-  setText(netEls.value, r.text);
-  netEls.icon.setAttribute('href', r.kind === 'positive' ? '#i-up' : r.kind === 'negative' ? '#i-down' : '#i-even');
+  updateUndo();
+  if (surge) surge.render();
 }
 function onNetInput() {
   renderNet();
-  store.write(KEYS.net, { dealt: netEls.dealt.value, taken: netEls.taken.value });
+  persistNet();
 }
 netEls.dealt.addEventListener('input', onNetInput);
 netEls.taken.addEventListener('input', onNetInput);
-// Schnellbuttons: lesen immer den aktuellen Feldwert, daher gehen schnelle Mehrfachtipps nicht verloren
+netEls.dealt.addEventListener('change', commitNet);
+netEls.taken.addEventListener('change', commitNet);
+
+// Schnellbuttons: lesen immer den aktuellen Feldwert, daher gehen schnelle Mehrfachtipps nicht verloren.
+// Es gibt nur Plus-Schritte. Dealt: +1, +5, +10. Taken: "5 Damage" und "10 Damage" (eingehender Schaden).
+// Die Beschriftung für Screenreader nennt Menge und Ziel und wird mit der Sprache neu gesetzt.
+function labelQuickButtons() {
+  document.querySelectorAll('.qbtn').forEach((btn) => {
+    btn.setAttribute('aria-label', t(btn.dataset.target === 'dealt' ? 'net.addDealt' : 'net.addTaken', { n: btn.dataset.delta }));
+  });
+}
+labelQuickButtons();
 document.querySelectorAll('.qbtn').forEach((btn) => {
   btn.addEventListener('click', () => {
     const input = btn.dataset.target === 'dealt' ? netEls.dealt : netEls.taken;
+    commitNet(); // noch nicht bestätigten Tipptext sichern
     const result = L.applyDelta(input.value, Number(btn.dataset.delta));
     if (!result.ok) {
       renderNet(); // ungültiger Text im Feld: Fehlermeldung bleibt sichtbar, nichts wird überschrieben
@@ -232,18 +294,39 @@ document.querySelectorAll('.qbtn').forEach((btn) => {
     }
     input.value = String(result.value);
     onNetInput();
+    commitNet();
+  });
+});
+// Ein Feld leeren (die Eingabe des anderen bleibt)
+document.querySelectorAll('[data-clear]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    commitNet();
+    (btn.dataset.clear === 'dealt' ? netEls.dealt : netEls.taken).value = '';
+    onNetInput();
+    commitNet();
   });
 });
 netEls.reset.addEventListener('click', () => {
+  commitNet();
   netEls.dealt.value = '';
   netEls.taken.value = '';
+  onNetInput();
+  commitNet();
+});
+netEls.undo.addEventListener('click', () => {
+  commitNet();
+  const { stack, snap } = L.historyPop(netHistory);
+  if (!snap) return;
+  netHistory = stack;
+  netEls.dealt.value = snap.dealt;
+  netEls.taken.value = snap.taken;
+  netCommitted = snap;
   onNetInput();
 });
 
 // ---------- Rotation ----------
 const rotEls = {
   card: document.querySelector('.card-rot'),
-  presets: $('presets'),
   time: $('rot-time'),
   status: $('rot-status'),
   warn: $('rot-warning'),
@@ -254,48 +337,55 @@ const rotEls = {
   soundText: $('sound-text'),
 };
 
-L.ROTATION_PRESETS.forEach((sec) => {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'preset';
-  b.setAttribute('role', 'radio');
-  b.dataset.sec = String(sec);
-  b.textContent = L.formatPreset(sec);
-  b.setAttribute('aria-label', `${L.formatPreset(sec)} Minuten`);
-  b.addEventListener('click', () => {
-    if (rotation.status === 'running') return;
-    rotation = L.rotationSetPreset(rotation, sec);
+const presetUI = initPresetUI({
+  getPresets: () => presets,
+  getRotation: () => rotation,
+  onSelect(preset) {
+    const next = L.rotationSelectPreset(rotation, preset);
+    if (next === rotation) return;
+    rotation = next;
     saveRotation();
     renderRotation();
-  });
-  rotEls.presets.appendChild(b);
+  },
+  onSave(items) {
+    presets = items;
+    const persisted = store.write(KEYS.rotPresets, P.serializePresets(items));
+    const synced = L.rotationSyncPresets(rotation, presets);
+    if (synced !== rotation) {
+      rotation = synced;
+      saveRotation();
+    }
+    renderRotation();
+    presetUI.renderPicker();
+    return { persisted };
+  },
 });
 
-const STATUS_LABELS = { idle: 'Bereit', running: 'Läuft', paused: 'Pausiert', finished: 'Abgelaufen' };
-
+let pickerKey = '';
 function renderRotation(now = Date.now()) {
   const secs = L.rotationDisplaySeconds(rotation, now);
   setText(rotEls.time, L.formatPreset(secs));
   const warn = L.rotationInWarning(rotation, now);
   const state = rotation.status === 'finished' ? 'finished' : warn ? 'warn' : rotation.status;
   if (rotEls.card.dataset.state !== state) rotEls.card.dataset.state = state;
-  setText(rotEls.status, STATUS_LABELS[rotation.status]);
+  setText(rotEls.status, t(`rot.status.${rotation.status}`));
   if (rotEls.status.dataset.state !== rotation.status) rotEls.status.dataset.state = rotation.status;
   if (rotEls.warn.hidden === warn) rotEls.warn.hidden = !warn;
   const finished = rotation.status === 'finished';
   if (rotEls.done.hidden === finished) rotEls.done.hidden = !finished;
-  const label = rotation.status === 'running' ? ['pause', 'Pause'] : rotation.status === 'paused' ? ['play', 'Fortsetzen'] : finished ? ['play', 'Neu starten'] : ['play', 'Start'];
+  const label = rotation.status === 'running' ? ['pause', t('common.pause')] : rotation.status === 'paused' ? ['play', t('common.resume')] : finished ? ['play', t('common.restart')] : ['play', t('common.start')];
   setButton(rotEls.toggle, label[0], label[1]);
-  rotEls.presets.querySelectorAll('.preset').forEach((b) => {
-    b.setAttribute('aria-checked', String(Number(b.dataset.sec) === rotation.presetSec));
-    b.setAttribute('aria-disabled', String(rotation.status === 'running'));
-    b.tabIndex = Number(b.dataset.sec) === rotation.presetSec ? 0 : -1;
-  });
+  // Die Preset-Auswahl wird nur neu gezeichnet, wenn sich Status oder Auswahl ändern (nicht bei jedem Tick)
+  const key = `${rotation.status}|${rotation.presetId}|${rotation.presetSec}`;
+  if (key !== pickerKey) {
+    pickerKey = key;
+    presetUI.renderPicker();
+  }
 }
 
 function renderSoundToggle() {
   rotEls.sound.setAttribute('aria-pressed', String(prefs.sound));
-  setText(rotEls.soundText, prefs.sound ? 'Ton an' : 'Ton aus');
+  setText(rotEls.soundText, t(prefs.sound ? 'rot.soundOn' : 'rot.soundOff'));
 }
 
 rotEls.toggle.addEventListener('click', () => {
@@ -306,7 +396,8 @@ rotEls.toggle.addEventListener('click', () => {
   renderRotation(now);
 });
 rotEls.reset.addEventListener('click', () => {
-  rotation = L.rotationReset(rotation);
+  // Reset übernimmt auch geänderte Preset-Dauern, die während eines laufenden Countdowns gespeichert wurden
+  rotation = L.rotationSyncPresets(L.rotationReset(rotation), presets);
   saveRotation();
   renderRotation();
 });
@@ -315,17 +406,6 @@ rotEls.sound.addEventListener('click', () => {
   if (prefs.sound) unlockAudio();
   savePrefs();
   renderSoundToggle();
-});
-// Pfeiltasten innerhalb der Preset-Gruppe
-rotEls.presets.addEventListener('keydown', (e) => {
-  if (!['ArrowLeft', 'ArrowRight'].includes(e.key) || rotation.status === 'running') return;
-  const idx = L.ROTATION_PRESETS.indexOf(rotation.presetSec);
-  const next = L.ROTATION_PRESETS[(idx + (e.key === 'ArrowRight' ? 1 : -1) + L.ROTATION_PRESETS.length) % L.ROTATION_PRESETS.length];
-  rotation = L.rotationSetPreset(rotation, next);
-  saveRotation();
-  renderRotation();
-  rotEls.presets.querySelector(`[data-sec="${next}"]`).focus();
-  e.preventDefault();
 });
 
 function tickRotation(now) {
@@ -355,12 +435,23 @@ const noteEls = {
 const savedDraft = store.read(KEYS.draft);
 if (typeof savedDraft === 'string') noteEls.input.value = savedDraft;
 
+// Statusmeldung merkt sich den Schlüssel und wird beim Sprachwechsel neu übersetzt
+let noteStatus = null;
 let statusTimer = null;
-function say(message, kind = 'ok') {
-  noteEls.status.dataset.kind = kind;
-  setText(noteEls.status, message);
+function renderNoteStatus() {
+  noteEls.status.dataset.kind = noteStatus ? noteStatus.kind : '';
+  setText(noteEls.status, noteStatus ? t(noteStatus.key) : '');
+}
+function say(key, kind = 'ok') {
+  noteStatus = { key, kind };
+  renderNoteStatus();
   clearTimeout(statusTimer);
-  if (kind === 'ok') statusTimer = setTimeout(() => setText(noteEls.status, ''), 4000);
+  if (kind === 'ok') {
+    statusTimer = setTimeout(() => {
+      noteStatus = null;
+      renderNoteStatus();
+    }, 4000);
+  }
 }
 
 function renderNotes() {
@@ -369,10 +460,10 @@ function renderNotes() {
       const li = document.createElement('li');
       const time = document.createElement('span');
       time.className = 'note-time';
-      time.textContent = L.formatTimestamp(n.ts);
+      time.textContent = L.formatTimestamp(n.ts, getLang());
       const text = document.createElement('span');
       text.className = 'note-text';
-      text.textContent = n.text;
+      text.textContent = n.text; // Nutzertext, bleibt unverändert
       li.append(time, text);
       return li;
     })
@@ -394,29 +485,29 @@ function flushDraft() {
 noteEls.save.addEventListener('click', () => {
   const entry = L.makeNoteEntry(noteEls.input.value, Date.now());
   if (!entry) {
-    say('Nichts zu speichern. Das Feld ist leer.', 'error');
+    say('notes.say.empty', 'error');
     return;
   }
   const next = [entry, ...notes];
   if (!store.write(KEYS.notes, { entries: next })) {
-    say('Speichern fehlgeschlagen. Der Text bleibt im Feld erhalten.', 'error');
+    say('notes.say.saveFail', 'error');
     return;
   }
   notes = next;
   noteEls.input.value = '';
   store.write(KEYS.draft, '');
   renderNotes();
-  say('Notiz gespeichert.');
+  say('notes.say.saved');
 });
 
 function currentExport() {
-  return L.buildNotesExport(notes, noteEls.input.value);
+  return L.buildNotesExport(notes, noteEls.input.value, { draftLabel: t('notes.draftLabel'), lang: getLang() });
 }
 
 noteEls.exp.addEventListener('click', () => {
   const text = currentExport();
   if (!text) {
-    say('Keine Notizen zum Exportieren.', 'error');
+    say('notes.say.noExport', 'error');
     return;
   }
   try {
@@ -424,14 +515,14 @@ noteEls.exp.addEventListener('click', () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = L.notesFileName(Date.now());
+    a.download = L.notesFileName(Date.now(), getLang());
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
-    say('Textdatei erstellt.');
+    say('notes.say.exported');
   } catch {
-    say('Export fehlgeschlagen. Nutze „Teilen“ oder kopiere den Text.', 'error');
+    say('notes.say.exportFail', 'error');
   }
 });
 
@@ -455,19 +546,19 @@ async function copyText(text) {
 noteEls.share.addEventListener('click', async () => {
   const text = currentExport();
   if (!text) {
-    say('Keine Notizen zum Teilen.', 'error');
+    say('notes.say.noShare', 'error');
     return;
   }
-  const name = L.notesFileName(Date.now());
+  const name = L.notesFileName(Date.now(), getLang());
   try {
     if (navigator.share) {
       const file = typeof File === 'function' ? new File([text], name, { type: 'text/plain' }) : null;
       if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Match-Notizen' });
+        await navigator.share({ files: [file], title: t('notes.shareTitle') });
       } else {
-        await navigator.share({ title: 'Match-Notizen', text });
+        await navigator.share({ title: t('notes.shareTitle'), text });
       }
-      say('Geteilt.');
+      say('notes.say.shared');
       return;
     }
   } catch (err) {
@@ -476,9 +567,9 @@ noteEls.share.addEventListener('click', async () => {
   // Fallback: Teilen nicht verfügbar oder fehlgeschlagen -> kopieren
   try {
     await copyText(text);
-    say('Teilen ist hier nicht verfügbar. Der Text wurde in die Zwischenablage kopiert.');
+    say('notes.say.copied');
   } catch {
-    say('Teilen und Kopieren sind nicht möglich. Nutze „Export .txt“.', 'error');
+    say('notes.say.shareFail', 'error');
   }
 });
 
@@ -494,25 +585,56 @@ noteEls.confirmOk.addEventListener('click', () => {
   const ok = store.write(KEYS.notes, { entries: [] }) && store.write(KEYS.draft, '');
   noteEls.confirm.hidden = true;
   if (!ok) {
-    say('Löschen im Speicher fehlgeschlagen.', 'error');
+    say('notes.say.deleteFail', 'error');
     return;
   }
   notes = [];
   noteEls.input.value = '';
   renderNotes();
-  say('Notizen gelöscht.');
+  say('notes.say.deleted');
   noteEls.del.focus();
 });
 
 // ---------- Karte (Bild-Upload) ----------
 initMap();
 
+// ---------- Storm Surge (historische Einordnung, kein Live-Status) ----------
+surge = initSurge({
+  getUserValues() {
+    const dealt = L.parseDamageInput(netEls.dealt.value);
+    const taken = L.parseDamageInput(netEls.taken.value);
+    return {
+      dealt: dealt.ok ? dealt.value : null,
+      net: dealt.ok && taken.ok ? L.netDamage(dealt.value, taken.value) : null,
+      hasInput: String(netEls.dealt.value).trim() !== '' || String(netEls.taken.value).trim() !== '',
+    };
+  },
+});
+
+// ---------- Sprachumschaltung ----------
+document.querySelectorAll('[data-lang]').forEach((btn) => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
+// Alle dynamisch erzeugten Texte neu zeichnen. Nutzerdaten (Notizen, Preset-Namen, Zahlen) bleiben unverändert.
+onLanguageChange(() => {
+  labelQuickButtons();
+  buildStormOptions();
+  renderStorm();
+  renderRotation();
+  renderSoundToggle();
+  renderNet();
+  renderNotes();
+  renderNoteStatus();
+  presetUI.render();
+});
+
 // ---------- Navigation: aktiven Bereich markieren ----------
 (function setupNav() {
   const tabs = [...document.querySelectorAll('.tab')];
   const sections = tabs.map((t) => document.querySelector(t.getAttribute('href'))).filter(Boolean);
   if (!sections.length) return;
-  const PROBE = 120; // Höhe der Navigationsleiste plus etwas Abstand
+  const bar = document.querySelector('.topbar');
+  const probe = () => (bar ? bar.getBoundingClientRect().bottom : 84) + 36; // Unterkante der Leiste plus etwas Abstand
   let lockUntil = 0; // nach einem Tipp auf einen Tab bleibt dessen Markierung bis das Scrollen fertig ist
   let ticking = false;
 
@@ -534,7 +656,7 @@ initMap();
     let bestTop = -Infinity;
     sections.forEach((sec) => {
       const top = sec.getBoundingClientRect().top;
-      if (top <= PROBE && top > bestTop + 2) {
+      if (top <= probe() && top > bestTop + 2) {
         best = sec;
         bestTop = top;
       }
@@ -583,6 +705,7 @@ renderNet();
 renderNotes();
 renderSoundToggle();
 tick();
+document.documentElement.dataset.ready = '1'; // Seite sichtbar machen (siehe styles.css)
 
 // ---------- Service Worker (nur über HTTPS oder localhost) ----------
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {

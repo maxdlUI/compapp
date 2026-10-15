@@ -4,6 +4,7 @@ import {
   isSupportedImage, fitSize, formatBytes, nextZoom,
   MAP_MAX_EDGE, MAP_KEEP_BYTES, MAP_MAX_FILE_BYTES,
 } from './logic.js';
+import { t, getLocale, onLanguageChange } from './i18n.js';
 
 const DB_NAME = 'fnc-map';
 const STORE = 'files';
@@ -127,9 +128,24 @@ export function initMap() {
   let zoom = 1;
   let lastFocus = null;
 
-  const say = (message, kind = 'ok') => {
-    ui.status.dataset.kind = kind;
-    ui.status.textContent = message;
+  // Statusmeldungen merken Schlüssel und Parameter, damit sie beim Sprachwechsel neu übersetzt werden.
+  // params darf eine Funktion sein, die erst beim Anzeigen ausgewertet wird (Zahlenformat der aktuellen Sprache).
+  let lastStatus = null;
+  let shown = null; // { w, h, size, stored } des aktuell angezeigten Bildes
+
+  function renderStatus() {
+    if (!lastStatus) {
+      ui.status.dataset.kind = '';
+      ui.status.textContent = '';
+      return;
+    }
+    const params = typeof lastStatus.params === 'function' ? lastStatus.params() : lastStatus.params;
+    ui.status.dataset.kind = lastStatus.kind;
+    ui.status.textContent = t(lastStatus.key, params);
+  }
+  const say = (key, kind = 'ok', params) => {
+    lastStatus = { key, kind, params };
+    renderStatus();
   };
 
   function chip(text, cls = '') {
@@ -144,21 +160,25 @@ export function initMap() {
     currentUrl = URL.createObjectURL(blob);
     ui.img.onerror = () => {
       clearUi();
-      say('Das Bild konnte nicht angezeigt werden.', 'error');
+      say('map.say.displayFail', 'error');
     };
     ui.img.width = meta.w;
     ui.img.height = meta.h;
     ui.img.src = currentUrl;
-    ui.chips.replaceChildren(
-      chip(`${meta.w} × ${meta.h}`, 'chip-blue'),
-      chip(formatBytes(blob.size)),
-      stored ? chip('Lokal gespeichert', 'chip-green') : chip('Nicht gespeichert', 'chip-warn'),
-    );
-    ui.note.textContent = stored
-      ? 'Das Bild liegt nur auf diesem Gerät und bleibt nach dem Neuladen erhalten.'
-      : 'Das Bild wird nur in dieser Sitzung angezeigt. Nach dem Neuladen ist es weg.';
+    shown = { w: meta.w, h: meta.h, size: blob.size, stored };
+    renderInfo();
     ui.empty.hidden = true;
     ui.view.hidden = false;
+  }
+
+  function renderInfo() {
+    if (!shown) return;
+    ui.chips.replaceChildren(
+      chip(`${shown.w} × ${shown.h}`, 'chip-blue'),
+      chip(formatBytes(shown.size, getLocale())),
+      shown.stored ? chip(t('map.chipStored'), 'chip-green') : chip(t('map.chipNotStored'), 'chip-warn'),
+    );
+    ui.note.textContent = t(shown.stored ? 'map.noteStored' : 'map.noteNotStored');
   }
 
   function clearUi() {
@@ -166,6 +186,7 @@ export function initMap() {
     if (currentUrl) URL.revokeObjectURL(currentUrl);
     currentUrl = null;
     ui.img.removeAttribute('src');
+    shown = null;
     ui.chips.replaceChildren();
     ui.view.hidden = true;
     ui.empty.hidden = false;
@@ -175,19 +196,19 @@ export function initMap() {
     if (!file) return;
     const token = ++seq;
     if (!isSupportedImage(file)) {
-      say('Dieses Dateiformat wird nicht unterstützt. Bitte wähle ein PNG, JPG oder WEBP.', 'error');
+      say('map.say.unsupported', 'error');
       return;
     }
     if (file.size > MAP_MAX_FILE_BYTES) {
-      say(`Die Datei ist zu groß (${formatBytes(file.size)}). Erlaubt sind bis zu ${formatBytes(MAP_MAX_FILE_BYTES)}.`, 'error');
+      say('map.say.tooLarge', 'error', () => ({ size: formatBytes(file.size, getLocale()), max: formatBytes(MAP_MAX_FILE_BYTES, getLocale()) }));
       return;
     }
-    say('Bild wird geladen …', 'info');
+    say('map.say.loading', 'info');
     let result;
     try {
       result = await processImage(file);
     } catch {
-      if (token === seq) say('Das Bild konnte nicht geladen werden. Die Datei ist beschädigt oder wird nicht unterstützt.', 'error');
+      if (token === seq) say('map.say.loadFail', 'error');
       return;
     }
     if (token !== seq) return;
@@ -203,9 +224,9 @@ export function initMap() {
 
     showImage(result.blob, result, { stored });
     if (stored) {
-      say(result.resized ? 'Map gespeichert. Das Bild wurde für den Speicher verkleinert.' : 'Map gespeichert.');
+      say(result.resized ? 'map.say.savedResized' : 'map.say.saved');
     } else {
-      say('Die Map wird angezeigt, konnte aber nicht gespeichert werden (Speicher voll oder gesperrt). Nach dem Neuladen ist sie weg.', 'warn');
+      say('map.say.saveFail', 'warn');
     }
   }
 
@@ -214,9 +235,9 @@ export function initMap() {
     clearUi();
     try {
       await clearStored();
-      say('Map entfernt. Du kannst jetzt ein neues Bild hochladen.');
+      say('map.say.removed');
     } catch {
-      say('Die Map wurde ausgeblendet, konnte aber nicht aus dem Speicher gelöscht werden. Nach dem Neuladen kann sie zurückkommen.', 'warn');
+      say('map.say.removeFail', 'warn');
     }
   }
 
@@ -259,7 +280,7 @@ export function initMap() {
       img.classList.add('zoomed');
       img.style.width = `${zoom * 100}%`;
     }
-    ui.zoomLevel.textContent = `${Math.round(zoom * 100)} %`;
+    ui.zoomLevel.textContent = new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 0 }).format(zoom);
     ui.zoomOut.disabled = zoom === 1;
     ui.zoomIn.disabled = zoom === 4;
   }
@@ -286,6 +307,12 @@ export function initMap() {
   ui.zoomOut.addEventListener('click', () => { zoom = nextZoom(zoom, -1); applyZoom(); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !ui.viewer.hidden) closeViewer();
+  });
+
+  onLanguageChange(() => {
+    renderInfo();
+    renderStatus();
+    applyZoom();
   });
 
   // Gespeicherte Map beim Start laden. Ein Fehler hier lässt einfach den Leerzustand stehen.
