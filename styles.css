@@ -694,3 +694,96 @@ body:has(dialog[open]) { overflow: hidden; }
 @keyframes im-right { from { opacity: 0; transform: translate(12px, 10px); } to { opacity: 1; transform: none; } }
 @keyframes im-bar { from { opacity: 0; transform: translate(-16px, 16px); } to { opacity: 1; transform: none; } }
 @keyframes iw-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Estimated Qual (öffentlicher Banner) ----------
+   Entsteht nur, wenn eingeschaltet und gültig veröffentlicht (qual-public.js); sonst gibt es kein Element und keinen Platz.
+   Farben: Hintergrund #14120D, Text #F4F1E8, Gold #E6CF6E nur für die Beschriftung und eine feine Linie. Keine Leucht- oder 3D-Effekte. */
+.qual {
+  position: relative; isolation: isolate; overflow: hidden;
+  margin: 0 0 var(--gap);
+  min-height: clamp(120px, 28vw, 168px);
+  display: flex; align-items: center;
+  padding: clamp(18px, 4.5vw, 30px) clamp(18px, 5vw, 36px);
+  background: #14120d;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-card);
+  color: #f4f1e8;
+}
+.qual::before { /* feine Goldlinie links: Anklang an den Balken im KREVO-Logo */
+  content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; width: 3px; z-index: 2;
+  background: #e6cf6e; border-radius: 0 3px 3px 0;
+}
+.qual-bg { position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 38%),
+  linear-gradient(180deg, #1b1913 0%, #14120d 100%); }
+.qual-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;
+  display: block; opacity: 0;
+}
+.qual-img[data-loaded="1"] { opacity: 1; }
+.qual-bg::after { /* abdunkelnde Fläche: Text bleibt auf jedem Bild gut lesbar */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(20, 18, 13, 0.9) 0%, rgba(20, 18, 13, 0.74) 55%, rgba(20, 18, 13, 0.55) 100%);
+}
+.qual[data-image="none"] .qual-bg::after, .qual[data-image="failed"] .qual-bg::after { background: none; }
+.qual-body { position: relative; margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.qual-label {
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #e6cf6e;
+}
+.qual-value { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.45em; min-width: 0; }
+.qual-num {
+  font-family: var(--mono); font-weight: 800; font-variant-numeric: tabular-nums;
+  font-size: clamp(2.8rem, 12vw, 4.75rem); line-height: 1.04; letter-spacing: -0.04em; color: #f4f1e8;
+  overflow-wrap: anywhere;
+}
+.qual-unit {
+  font-family: var(--mono); font-size: clamp(0.9rem, 3.2vw, 1.15rem); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(244, 241, 232, 0.72);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .qual[data-qual="live"] { animation: qual-in 0.28s ease-out both; }
+  .qual-img { transition: opacity 0.3s ease-out; }
+}
+@keyframes qual-in { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 960px) { .qual { min-height: 176px; } }
+
+/* ---------- Verwaltung (nur für Administratoren erreichbar) ---------- */
+.dlg-admin { width: min(560px, calc(100vw - 24px)); }
+.adm-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.adm-sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; margin: 0; }
+.adm-h { margin: 0; font-family: var(--mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.adm-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.adm-switch-label { font-size: 0.98rem; line-height: 1.3; min-width: 0; }
+.switch {
+  position: relative; flex: none; min-width: 92px; min-height: 44px; padding: 0 12px 0 40px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: flex-end;
+  background: var(--field); border: 1px solid var(--border-strong); border-radius: 999px; color: var(--muted);
+  font-family: var(--mono); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.switch-knob {
+  position: absolute; left: 6px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%;
+  background: var(--muted);
+}
+.switch[aria-checked="true"] { background: rgba(230, 207, 110, 0.12); border-color: #e6cf6e; color: #e6cf6e; justify-content: flex-start; padding: 0 40px 0 14px; }
+.switch[aria-checked="true"] .switch-knob { left: auto; right: 6px; background: #e6cf6e; }
+.switch:disabled { opacity: 0.6; cursor: default; }
+.adm-points { font-family: var(--mono) !important; font-weight: 700 !important; font-size: 1.4rem !important; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.adm-image { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: start; }
+.adm-thumb {
+  position: relative; width: 112px; height: 84px; overflow: hidden; border-radius: var(--r-inner);
+  background: linear-gradient(180deg, #1b1913, #14120d); border: 1px dashed var(--border-strong);
+}
+.adm-thumb[data-has="1"] { border-style: solid; }
+.adm-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-image-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.adm-image-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.adm-preview .qual { margin: 0; }
+.adm-actions { gap: 12px; }
+.adm-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.adm-buttons .btn:disabled { opacity: 0.5; }
+@media (max-width: 400px) {
+  .adm-image { grid-template-columns: minmax(0, 1fr); }
+  .adm-thumb { width: 100%; height: 120px; }
+  .adm-buttons { grid-template-columns: minmax(0, 1fr); }
+}

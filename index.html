@@ -476,8 +476,78 @@
           <div id="prof-since-row"><dt data-i18n="prof.since">Mitglied seit</dt><dd id="prof-since"></dd></div>
         </dl>
         <p class="form-error" id="prof-error" role="alert" hidden></p>
+        <button id="prof-admin" class="btn btn-block" type="button" data-i18n="admin.open" hidden>Estimated Qual verwalten</button>
         <button id="prof-signout" class="btn btn-danger btn-block" type="button" data-i18n="prof.signOut">Abmelden</button>
       </section>
+    </div>
+  </dialog>
+
+  <!-- Verwaltung von Estimated Qual. Der Zugang erscheint nur für Administratoren; die Berechtigung prüft bei jeder Änderung die Datenbank. -->
+  <dialog id="admin-dialog" class="dlg dlg-admin" aria-labelledby="adm-title">
+    <div class="dlg-body">
+      <div class="dlg-head">
+        <img class="dlg-mark" src="krevo-symbol.svg" alt="" width="26" height="26" decoding="async">
+        <h2 id="adm-title" class="dlg-title" tabindex="-1" data-i18n="admin.title">Verwaltung: Estimated Qual</h2>
+        <button id="adm-close" class="btn btn-icon dlg-x" type="button" data-i18n-attr="aria-label=auth.close" aria-label="Schließen"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+
+      <div id="adm-state" class="prof-state">
+        <p id="adm-state-text" class="status" role="status"></p>
+        <button id="adm-retry" class="btn" type="button" data-i18n="prof.retry" hidden>Erneut versuchen</button>
+      </div>
+
+      <div id="adm-main" class="adm-main" hidden>
+        <section class="adm-sec" aria-labelledby="adm-h-status">
+          <h3 id="adm-h-status" class="adm-h" data-i18n="admin.status.title">Anzeige</h3>
+          <div class="adm-switch-row">
+            <span id="adm-switch-label" class="adm-switch-label" data-i18n="admin.status.label">Estimated Qual auf der Website anzeigen</span>
+            <button id="adm-switch" class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="adm-switch-label"><span id="adm-switch-text" class="switch-text"></span><span class="switch-knob" aria-hidden="true"></span></button>
+          </div>
+          <p class="field-hint" data-i18n="admin.status.hint">Standardmäßig aus. Der Banner erscheint für alle Besucher nur, wenn er eingeschaltet ist und ein gültiger Stand veröffentlicht wurde.</p>
+          <p id="adm-live" class="status" role="status"></p>
+        </section>
+
+        <section class="adm-sec" aria-labelledby="adm-h-points">
+          <h3 id="adm-h-points" class="adm-h" data-i18n="admin.points.label">Punkte</h3>
+          <div class="fld">
+            <input id="adm-points" class="auth-input adm-points" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="12" aria-labelledby="adm-h-points" aria-describedby="adm-points-hint">
+            <p id="adm-points-hint" class="field-hint" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <section class="adm-sec" aria-labelledby="adm-h-image">
+          <h3 id="adm-h-image" class="adm-h" data-i18n="admin.image.title">Hintergrundbild</h3>
+          <div class="adm-image">
+            <div id="adm-thumb" class="adm-thumb" aria-hidden="true"></div>
+            <div class="adm-image-side">
+              <p id="adm-image-status" class="field-hint" aria-live="polite"></p>
+              <div class="adm-image-actions">
+                <button id="adm-choose" class="btn" type="button"></button>
+                <button id="adm-remove" class="btn" type="button" data-i18n="admin.image.remove" hidden>Bild entfernen</button>
+              </div>
+            </div>
+          </div>
+          <input id="adm-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <p class="field-hint" data-i18n="admin.image.hint">JPG, PNG oder WebP, höchstens 5 MB. Das Bild wird zugeschnitten, nie verzerrt. Ohne Bild erscheint ein dezenter KREVO-Hintergrund.</p>
+        </section>
+
+        <section class="adm-sec" aria-labelledby="adm-h-preview">
+          <h3 id="adm-h-preview" class="adm-h" data-i18n="admin.preview.title">Vorschau</h3>
+          <p class="field-hint" data-i18n="admin.preview.note">So sehen Besucher den Banner, sobald du diesen Stand veröffentlichst. Die Vorschau ist noch nicht öffentlich.</p>
+          <div id="adm-preview" class="adm-preview"></div>
+          <p id="adm-preview-empty" class="field-hint" data-i18n="admin.preview.empty">Gib gültige Punkte ein, um die Vorschau zu sehen.</p>
+        </section>
+
+        <section class="adm-sec adm-actions" aria-label="Aktionen" data-i18n-attr="aria-label=admin.actions">
+          <p id="adm-draft-state" class="status" role="status"></p>
+          <div class="adm-buttons">
+            <button id="adm-save" class="btn" type="button" data-i18n="admin.draft.save">Entwurf speichern</button>
+            <button id="adm-publish" class="btn btn-primary" type="button" data-i18n="admin.publish">Veröffentlichen</button>
+          </div>
+          <p id="adm-published" class="status"></p>
+          <p id="adm-error" class="form-error" role="alert" hidden></p>
+        </section>
+      </div>
     </div>
   </dialog>
 

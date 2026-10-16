@@ -18,7 +18,7 @@ export function errorKey(code) {
   return t(key) === key ? 'auth.err.unknown' : key;
 }
 
-export function initAccounts({ auth, doc = document }) {
+export function initAccounts({ auth, doc = document, openAdmin = null }) {
   const $ = (id) => doc.getElementById(id);
   const dlg = $('account-dialog');
   const btn = $('account-btn');
@@ -32,7 +32,7 @@ export function initAccounts({ auth, doc = document }) {
     profSince: $('prof-since'), profSinceRow: $('prof-since-row'),
     profState: $('prof-state'), profStateText: $('prof-state-text'), profRetry: $('prof-retry'),
     profForm: $('prof-form'), profInput: $('prof-username'), profHint: $('prof-username-hint'), profSave: $('prof-save'),
-    profError: $('prof-error'), signOut: $('prof-signout'),
+    profError: $('prof-error'), signOut: $('prof-signout'), profAdmin: $('prof-admin'),
     suUser: $('su-username'), suHint: $('su-username-hint'),
   };
   const section = (name) => dlg.querySelector(`[data-view="${name}"]`);
@@ -483,6 +483,8 @@ export function initAccounts({ auth, doc = document }) {
       els.profStateText.textContent = code && code !== 'unknown' && t(`auth.err.${code}`) !== `auth.err.${code}` ? t(`auth.err.${code}`) : t('prof.error');
     }
     els.profInput.disabled = st !== 'ready';
+    // Admin-Zugang nur anzeigen, wenn die Datenbank dieses Konto als Administrator bestätigt hat (reine Anzeige, keine Sicherheitsgrenze)
+    if (els.profAdmin) els.profAdmin.hidden = !(openAdmin && s.status === 'in' && s.isAdmin === true);
     if (st === 'ready' && document.activeElement !== els.profInput && els.profInput.dataset.dirty !== '1') {
       els.profInput.value = s.profile.username;
       profCheck = { status: 'same', value: s.profile.username };
@@ -507,6 +509,13 @@ export function initAccounts({ auth, doc = document }) {
     announce(t('auth.announce.signedOut'));
   });
   els.profRetry.addEventListener('click', () => { profileFor = null; loadProfileOnce(auth.state); });
+  if (els.profAdmin) {
+    els.profAdmin.addEventListener('click', () => {
+      if (busy || !openAdmin) return;
+      closeDialog();
+      try { Promise.resolve(openAdmin()).catch(() => {}); } catch { /* Verwaltung nicht ladbar: Werkzeuge laufen weiter */ }
+    });
+  }
 
   // ---------------------------------------------------------------- Zustand -> Oberfläche
   function loadProfileOnce(s) {
@@ -527,10 +536,19 @@ export function initAccounts({ auth, doc = document }) {
     });
   }
 
+  let adminFor = null;
+  function checkAdminOnce(s) {
+    if (!openAdmin || s.status !== 'in' || !s.session) { if (s.status === 'out') adminFor = null; return; }
+    if (adminFor === s.session.user.id) return;
+    adminFor = s.session.user.id;
+    auth.checkAdmin().catch(() => {});
+  }
+
   function onState(s) {
     try {
       renderButton(s);
       loadProfileOnce(s);
+      checkAdminOnce(s);
       if (s.returnError) {
         const err = s.returnError;
         auth.clearReturn();

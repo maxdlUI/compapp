@@ -696,6 +696,19 @@ import('./intro.js')
   .catch(() => { const el = $('intro'); if (el) el.remove(); })
   .finally(() => { document.documentElement.dataset.ready = '1'; });
 
+// ---------- Estimated Qual (öffentlicher Banner) ----------
+// Optional: ohne Supabase-Konfiguration oder bei ausgeschaltetem Estimated Qual passiert nichts und es entsteht kein Element.
+// Eigener Block, damit ein Fehler im Konto-Code den Banner nicht verhindert (und umgekehrt).
+let qualBanner = null;
+(async () => {
+  try {
+    const [{ CONFIG }, qp] = await Promise.all([import('./config.js'), import('./qual-public.js')]);
+    qualBanner = qp.initQualBanner({ config: CONFIG });
+  } catch {
+    /* Banner nicht ladbar: Werkzeuge laufen unverändert weiter */
+  }
+})();
+
 // ---------- Konten ----------
 // Optional und erst nach den Werkzeugen geladen. Ein Fehler hier (fehlende Datei, Netzwerk,
 // falsche Konfiguration) darf die App nie beeinträchtigen.
@@ -713,7 +726,16 @@ import('./intro.js')
       locks: navigator.locks,
       navigate: (url) => location.assign(url),
     });
-    ui.initAccounts({ auth }); // zuerst Oberfläche anbinden, dann Sitzung prüfen (nicht abwarten)
+    // Verwaltung (Estimated Qual): wird erst geladen, wenn ein Administrator sie öffnet
+    let adminApi = null;
+    const openAdmin = async () => {
+      if (!adminApi) {
+        const m = await import('./admin-ui.js');
+        adminApi = m.initAdmin({ auth, baseUrl: CONFIG.supabaseUrl, onPublicChange: () => { if (qualBanner) qualBanner.refresh(); } });
+      }
+      if (adminApi) adminApi.open();
+    };
+    ui.initAccounts({ auth, openAdmin }); // zuerst Oberfläche anbinden, dann Sitzung prüfen (nicht abwarten)
     auth.init().catch(() => {});
   } catch {
     const btn = $('account-btn');

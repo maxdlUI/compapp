@@ -36,11 +36,16 @@ export function mapAuthError(status, body) {
   if (/^pgrst30[0-9]$/.test(rawCode) || (status === 401 && msg.includes('jwt'))) return 'session_expired';
   if (rawCode === '23505') return 'username_taken';
   if (rawCode === '23514') {
+    if (msg.includes('estimated_qual')) return 'qual_invalid';
     if (msg.includes('username_reserved')) return 'username_reserved';
     return 'username_invalid';
   }
+  if (msg.includes('no_valid_draft')) return 'no_valid_draft';
   if (rawCode === 'pgrst202' || rawCode === 'pgrst205' || rawCode === '42p01' || rawCode === '42883') return 'schema_missing';
-  if (rawCode === '42501') return 'forbidden';
+  if (rawCode === '42501' || msg.includes('row-level security')) return 'forbidden';
+  // Speicherdienst (Bilder): Größe und Dateityp prüft der Server noch einmal
+  if (status === 413 || rawCode === '413' || msg.includes('exceeded the maximum allowed size') || msg.includes('payload too large')) return 'file_too_large';
+  if (status === 415 || rawCode === '415' || rawCode === 'invalid_mime_type' || msg.includes('mime type')) return 'file_type';
 
   // Auth-Server
   if (rawCode === 'invalid_credentials' || msg.includes('invalid login credentials')) return 'invalid_credentials';
@@ -132,7 +137,7 @@ export function createAuthClient(o) {
   const listeners = new Set();
   const redirectUrl = () => `${loc.origin}${loc.pathname}`;
 
-  let state = { status: ok ? 'loading' : 'out', session: null, profile: null, profileStatus: 'idle', configured: ok, returnError: null, returnType: '' };
+  let state = { status: ok ? 'loading' : 'out', session: null, profile: null, profileStatus: 'idle', configured: ok, returnError: null, returnType: '', isAdmin: null };
   let settingsPromise = null;
   let refreshTimer = null;
   let inflightRefresh = null;
@@ -160,19 +165,21 @@ export function createAuthClient(o) {
   }
 
   // ---------- HTTP ----------
-  async function http(path, { method = 'GET', query, body, token, prefer, signal } = {}) {
+  async function http(path, { method = 'GET', query, body, token, prefer, signal, rawBody, contentType, extraHeaders, timeout } = {}) {
     if (!ok) throw new AuthError('not_configured');
     const qs = query ? '?' + Object.entries(query).filter(([, v]) => v !== undefined && v !== null).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&') : '';
     const headers = { apikey: anonKey, Accept: 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
     else if (looksLikeJwt(anonKey)) headers.Authorization = `Bearer ${anonKey}`;
     if (body !== undefined) headers['Content-Type'] = 'application/json';
+    if (rawBody !== undefined && contentType) headers['Content-Type'] = contentType; // FormData: Typ und Trennzeichen setzt der Browser
+    if (extraHeaders) Object.assign(headers, extraHeaders);
     if (prefer) headers.Prefer = prefer;
     const ctl = typeof AbortController === 'function' ? new AbortController() : null;
-    const timer = ctl ? setTimeout(() => ctl.abort(), timeoutMs) : null;
+    const timer = ctl ? setTimeout(() => ctl.abort(), timeout || timeoutMs) : null;
     let res;
     try {
-      res = await doFetch(base + path + qs, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined, signal: signal || (ctl && ctl.signal), credentials: 'omit' });
+      res = await doFetch(base + path + qs, { method, headers, body: rawBody !== undefined ? rawBody : (body !== undefined ? JSON.stringify(body) : undefined), signal: signal || (ctl && ctl.signal), credentials: 'omit' });
     } catch {
       throw new AuthError('network');
     } finally {
@@ -219,14 +226,15 @@ export function createAuthClient(o) {
     const { recovery, ...clean } = session;
     const persisted = status === 'recovery' ? { ...clean, recovery: true } : clean;
     writeSession(persisted);
-    setState({ status, session: persisted, ...extra });
+    const sameUser = state.session && state.session.user && persisted.user && state.session.user.id === persisted.user.id;
+    setState({ status, session: persisted, ...(sameUser ? {} : { isAdmin: null }), ...extra });
     scheduleRefresh();
   }
 
   function dropSession(extra = {}) {
     clearTimeout(refreshTimer);
     clearSession();
-    setState({ status: 'out', session: null, profile: null, profileStatus: 'idle', ...extra });
+    setState({ status: 'out', session: null, profile: null, profileStatus: 'idle', isAdmin: null, ...extra });
   }
 
   async function withLock(fn) {
@@ -270,19 +278,21 @@ export function createAuthClient(o) {
     return s.access_token;
   }
 
-  async function rest(path, opts = {}) {
+  /** Anfrage mit dem Token des angemeldeten Nutzers (erneuert ihn bei Bedarf einmal selbst). */
+  async function authed(fullPath, opts = {}) {
     let token = await freshToken();
     try {
-      return await http('/rest/v1' + path, { ...opts, token });
+      return await http(fullPath, { ...opts, token });
     } catch (e) {
       if (e instanceof AuthError && e.code === 'session_expired') { // Token war abgelaufen: einmal erneuern, einmal wiederholen
         const cur = readSession();
         if (cur) { try { cur.expires_at = 0; writeSession(cur); token = (await refreshSession()).access_token; } catch (e2) { throw e2; } }
-        return http('/rest/v1' + path, { ...opts, token });
+        return http(fullPath, { ...opts, token });
       }
       throw e;
     }
   }
+  const rest = (path, opts) => authed('/rest/v1' + path, opts);
 
   // ---------- Rückkehr von Google / E-Mail-Link ----------
   function cleanUrl(ret) {
@@ -348,7 +358,7 @@ export function createAuthClient(o) {
 
   function syncFromStorage() { // anderer Tab hat sich an- oder abgemeldet
     const s = readSession();
-    if (!s && state.session) { clearTimeout(refreshTimer); setState({ status: 'out', session: null, profile: null, profileStatus: 'idle' }); }
+    if (!s && state.session) { clearTimeout(refreshTimer); setState({ status: 'out', session: null, profile: null, profileStatus: 'idle', isAdmin: null }); }
     else if (s && (!state.session || state.session.access_token !== s.access_token)) { setState({ status: s.recovery ? 'recovery' : 'in', session: s }); scheduleRefresh(); }
   }
 
@@ -441,12 +451,56 @@ export function createAuthClient(o) {
     return rows[0];
   }
 
+  // ---------- Administrator ----------
+  /**
+   * Fragt die Datenbank, ob dieses Konto Administrator ist. Das Ergebnis dient nur dazu, den Zugang anzuzeigen oder zu verbergen:
+   * Die eigentliche Prüfung passiert bei jeder Änderung noch einmal in der Datenbank (is_admin() in den Zugriffsregeln).
+   */
+  async function checkAdmin() {
+    const s = readSession();
+    if (!s) { setState({ isAdmin: false }); return false; }
+    const uid = s.user.id;
+    try {
+      const res = await rest('/rpc/is_admin', { method: 'POST', body: {} });
+      const yes = res === true;
+      if (readSession() && readSession().user.id === uid) setState({ isAdmin: yes });
+      return yes;
+    } catch {
+      if (readSession() && readSession().user.id === uid) setState({ isAdmin: false }); // bei Fehlern: kein Zugang anzeigen
+      return false;
+    }
+  }
+
+  const BUCKET_RE = /^[a-z0-9-]+$/;
+  const OBJECT_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/;
+  /** Öffentliche Adresse einer Bilddatei (nur gültige Namen, sonst null). */
+  function publicFileUrl(bucket, name) {
+    if (!ok || !BUCKET_RE.test(bucket) || !OBJECT_RE.test(name)) return null;
+    return `${base}/storage/v1/object/public/${bucket}/${name}`;
+  }
+  /**
+   * Lädt eine Datei in den Speicher (wie supabase-js: multipart/form-data). Die Zugriffsregeln der Datenbank lassen das nur
+   * für Administratoren zu; Größe und Dateityp prüft der Speicherdienst noch einmal. Vorhandene Dateien werden nie überschrieben.
+   */
+  async function uploadFile(bucket, name, blob, contentType) {
+    if (!BUCKET_RE.test(bucket) || !OBJECT_RE.test(name)) throw new AuthError('invalid_input');
+    const form = new FormData();
+    form.append('cacheControl', '3600');
+    form.append('', blob.type === contentType ? blob : new Blob([blob], { type: contentType }));
+    return authed(`/storage/v1/object/${bucket}/${name}`, { method: 'POST', rawBody: form, extraHeaders: { 'x-upsert': 'false' }, timeout: 60000 });
+  }
+  async function deleteFile(bucket, name) {
+    if (!BUCKET_RE.test(bucket) || !OBJECT_RE.test(name)) throw new AuthError('invalid_input');
+    return authed(`/storage/v1/object/${bucket}/${name}`, { method: 'DELETE' });
+  }
+
   return {
     get configured() { return ok; },
     get state() { return state; },
     onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     init, settings, signUp, signIn, signInWithGoogle, signOut, requestPasswordReset, updatePassword,
     loadProfile, checkUsername, updateUsername, refreshSession,
+    checkAdmin, rest, publicFileUrl, uploadFile, deleteFile,
     clearReturn() { setState({ returnError: null, returnType: '' }); },
   };
 }
