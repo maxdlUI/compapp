@@ -1,4 +1,4 @@
-# KREVO: Fortnite-Competitive-Companion (PWA), Version 6
+# KREVO: Fortnite-Competitive-Companion (PWA), Version 6.1
 
 Unabhängiges Fanprojekt, nicht von Epic Games oder Fortnite unterstützt oder betrieben. Läuft als Web-App in Safari auf iPhone, iPad und Desktop. Reines HTML, CSS und JavaScript (ES-Module), kein Build-Schritt, keine Abhängigkeiten, nichts wird von Fremdservern nachgeladen.
 
@@ -11,6 +11,20 @@ Werkzeuge: **Storm-Timer** (Schätzung, 1/2/5/8/10 Schaden pro Sekunde), **Net D
 **Version 4:** Marke KREVO, Konten (E-Mail und Passwort, Google), Profil mit eindeutigem Nutzernamen, kurzes Willkommens-Intro. **Entfernt:** Storm Surge.
 
 > **Ehrlicher Stand in einem Satz:** Alles ist gebaut und getestet, aber nicht gegen ein echtes Supabase-Projekt. Konten sind erst „live“, wenn du ein Supabase-Projekt angelegt, die SQL-Dateien ausgeführt und zwei öffentliche Werte in `config.js` eingetragen hast (`SETUP-ACCOUNTS.md`). Admin und Estimated Qual brauchen zusätzlich `supabase/002_…sql` und einen Admin-Eintrag (`docs/ADMIN.md`), der Team-Modus `supabase/003_…sql` (`docs/TEAM.md`). Google-Login braucht die Einrichtung bei Google. Bis dahin läuft die App wie bisher, und der Konto-Knopf sagt offen, was fehlt.
+
+## Was in Version 6.1 geändert wurde (Auffindbarkeit, Datenschutz, 404)
+
+Keine Änderung an Werkzeugen, Berechnungen, Konten, Team-Modus oder Datenbank.
+
+- **Seitentitel** nennt jetzt den Zweck („KREVO · Storm-Timer und Net Damage für Fortnite Competitive“) und wechselt mit der Sprache. Der Name auf dem Homescreen bleibt „KREVO“ (`apple-mobile-web-app-title`, Manifest).
+- **Vorschau beim Teilen:** `canonical`, Open Graph (`og:title`, `og:description`, `og:image`, `og:url`, `og:type`) und Twitter-Karte. Das Vorschaubild `icons/og-image.png` (1200×630) besteht nur aus Logo, Wortmarke und Text, ohne Fortnite-Assets.
+- **Eine `h1`** für Suchmaschinen und Screenreader: die Wortmarke in der Kopfzeile plus ein nur vorgelesener Zusatz. Optisch unverändert.
+- **Fußzeile:** Der Satz zu Konten war seit dem Team-Modus ungenau und nennt jetzt auch die Team-Werte. Neuer Link **Datenschutz**.
+- **`datenschutz.html`:** Entwurf, der beschreibt, was die App tatsächlich verarbeitet (Gerätespeicher, GitHub Pages, Supabase mit Server in Frankfurt, Google-Login, Team-Modus, Estimated Qual). **Die Angaben zum Verantwortlichen fehlen** und müssen ergänzt werden. Bis dahin steht die Seite auf `noindex` und nicht in der Sitemap. Keine Rechtsberatung.
+- **`404.html`:** eigene Fehlerseite im KREVO-Stil. GitHub Pages liefert sie für unbekannte Adressen mit Status 404 aus. Links zeigen absolut auf `/compapp/`.
+- **`robots.txt` und `sitemap.xml`** (nur die Startseite). Hinweis: Suchmaschinen lesen `robots.txt` nur im Wurzelverzeichnis der Domain (`maxdlui.github.io/robots.txt`). Unter `/compapp/` wirkt sie erst mit eigener Domain. Die Sitemap kann man in der Google Search Console direkt einreichen.
+- `sw.js` auf `krevo-v8`, `datenschutz.html` ist im Offline-Cache.
+- Nicht eingebaut, mit Absicht: Cookie-Banner (die App setzt keine Cookies und nutzt keine Analyse), Analytics, AGB und eine feste Aktionsleiste auf dem Handy (sie würde Tracker-Knöpfe verdecken).
 
 ## Was in Version 6 geändert wurde
 

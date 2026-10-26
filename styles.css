@@ -86,7 +86,7 @@ button { touch-action: manipulation; }
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 2px max(14px, env(safe-area-inset-left));
 }
-.brand { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 0 1 auto; }
+.brand { display: flex; align-items: center; gap: 9px; min-width: 0; flex: 0 1 auto; margin: 0; font-size: inherit; color: inherit; text-decoration: none; }
 .brand img { display: block; flex: none; }
 .brand-symbol { width: 30px; height: 30px; }
 .brand-word { width: 127px; height: auto; }
@@ -289,6 +289,9 @@ button { touch-action: manipulation; }
 
 .hint, .footnote { margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.4; }
 .footnote { text-align: center; padding: 18px 8px 0; }
+.footnote p { margin: 0; }
+.foot-links { margin-top: 8px !important; }
+.foot-links a { color: var(--text); text-underline-offset: 3px; display: inline-block; padding: 6px 4px; }
 
 .select-wrap { position: relative; min-width: 0; flex: 1 1 260px; }
 @container (min-width: 520px) { .card-storm .select-wrap { flex: 0 1 290px; } }
@@ -852,3 +855,20 @@ body:has(dialog[open]) { overflow: hidden; }
   #team-open { min-width: 44px; justify-content: center; padding: 0 10px; }
   #team-open span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+/* Textseiten (Datenschutz): gleiche Kopfzeile wie die App, ruhiger Lesesatz */
+.doc {
+  max-width: 720px; margin: 0 auto;
+  padding: 28px max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.doc h1 { font-family: var(--mono); font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1.15; margin: 0 0 14px; }
+.doc h2 {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin: 30px 0 8px;
+}
+.doc p { margin: 0 0 12px; line-height: 1.55; }
+.doc a { color: var(--text); text-underline-offset: 3px; }
+.doc-lead { color: var(--muted); font-size: 1.05rem; }
+.doc-todo { margin: 18px 0 4px; }
+.doc-foot { margin-top: 32px !important; }
+.doc-back { min-height: 44px; padding: 0 16px; text-decoration: none; }

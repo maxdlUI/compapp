@@ -1,0 +1,6 @@
+# KREVO. Hinweis: Suchmaschinen lesen robots.txt nur im Wurzelverzeichnis einer Domain
+# (https://maxdlui.github.io/robots.txt). Unter /compapp/ wirkt diese Datei erst mit einer eigenen Domain.
+User-agent: *
+Allow: /
+
+Sitemap: https://maxdlui.github.io/compapp/sitemap.xml

@@ -8,6 +8,8 @@ export const LANGS = ['de', 'en'];
 export const LANG_KEY = 'fnc.v1.lang';
 
 const de = {
+  'meta.title': 'KREVO · Storm-Timer und Net Damage für Fortnite Competitive',
+  'brand.tagline': 'Storm-Timer und Net Damage für Fortnite Competitive',
   'meta.description': 'KREVO: Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt, nicht von Epic Games.',
   'lang.label': 'Sprache',
   'nav.label': 'Bereiche',
@@ -17,7 +19,8 @@ const de = {
   'nav.map': 'Map',
   'nav.notes': 'Notizen',
   'storage.warning': 'Speichern auf diesem Gerät ist nicht möglich (z. B. privater Modus). Daten gehen beim Schließen verloren.',
-  'footer': 'Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert nur E-Mail-Adresse und Nutzername.',
+  'footer': 'Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert E-Mail-Adresse und Nutzername, im Team-Modus zusätzlich deine Team-Werte.',
+  'footer.privacy': 'Datenschutz',
 
   'common.start': 'Start',
   'common.pause': 'Pause',
@@ -395,6 +398,8 @@ const de = {
 };
 
 const en = {
+  'meta.title': 'KREVO · Storm timer and net damage for Fortnite Competitive',
+  'brand.tagline': 'Storm timer and net damage for Fortnite Competitive',
   'meta.description': 'KREVO: storm timer, net damage, rotation countdown, map and match notes for Fortnite Competitive. Independent fan project, not affiliated with Epic Games.',
   'lang.label': 'Language',
   'nav.label': 'Sections',
@@ -404,7 +409,8 @@ const en = {
   'nav.map': 'Map',
   'nav.notes': 'Notes',
   'storage.warning': 'Saving on this device is not possible (e.g. private mode). Data is lost when you close the page.',
-  'footer': 'Independent fan project. Not endorsed or operated by Epic Games or Fortnite. Timers, notes, presets and map stay on this device. An account stores only your email address and username.',
+  'footer': 'Independent fan project. Not endorsed or operated by Epic Games or Fortnite. Timers, notes, presets and map stay on this device. An account stores your email address and username, and in team mode also your team values.',
+  'footer.privacy': 'Privacy (German)',
 
   'common.start': 'Start',
   'common.pause': 'Pause',
@@ -834,6 +840,7 @@ export function setLanguage(lang, { persist = true } = {}) {
   document.documentElement.lang = lang;
   const meta = document.querySelector('meta[name="description"]');
   if (meta) meta.setAttribute('content', t('meta.description'));
+  document.title = t('meta.title');
   applyStatic();
   document.querySelectorAll('[data-lang]').forEach((btn) => {
     btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));

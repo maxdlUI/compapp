@@ -3,8 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>KREVO</title>
+  <title>KREVO · Storm-Timer und Net Damage für Fortnite Competitive</title>
   <meta name="description" content="KREVO: Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <link rel="canonical" href="https://maxdlui.github.io/compapp/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KREVO">
+  <meta property="og:title" content="KREVO · Storm-Timer und Net Damage für Fortnite Competitive">
+  <meta property="og:description" content="Storm-Schaden schätzen, Net Damage solo oder im Duo/Trio mitzählen, Rotation-Countdown, eigene Map und Match-Notizen. Läuft im Browser und offline.">
+  <meta property="og:url" content="https://maxdlui.github.io/compapp/">
+  <meta property="og:image" content="https://maxdlui.github.io/compapp/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="KREVO-Logo mit dem Text: Storm-Timer und Net Damage für Fortnite Competitive">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#14120d">
   <meta name="mobile-web-app-capable" content="yes">
@@ -56,10 +69,11 @@
   </svg>
 
   <div class="brandbar">
-    <div class="brand">
+    <h1 class="brand">
       <img class="brand-symbol" src="krevo-symbol.svg" alt="" width="30" height="30" decoding="async">
       <img class="brand-word" src="krevo-wordmark.svg" alt="KREVO" width="127" height="17" decoding="async">
-    </div>
+      <span class="sr-only" data-i18n="brand.tagline">Storm-Timer und Net Damage für Fortnite Competitive</span>
+    </h1>
     <div class="bar-tools">
       <div class="lang" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache">
         <button type="button" class="lang-btn" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="true">DE</button>
@@ -362,7 +376,10 @@
       </section>
     </div>
 
-    <footer class="footnote" data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert nur E-Mail-Adresse und Nutzername.</footer>
+    <footer class="footnote">
+      <p data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert E-Mail-Adresse und Nutzername, im Team-Modus zusätzlich deine Team-Werte.</p>
+      <p class="foot-links"><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a></p>
+    </footer>
   </main>
 
   <!-- Vollbild-Ansicht der Map -->
