@@ -230,6 +230,41 @@ function updateUndo() {
 }
 const persistNet = () => store.write(KEYS.net, { dealt: netEls.dealt.value, taken: netEls.taken.value });
 
+// Anbindung für den Team-Modus (team-ui.js). Ohne Team ändert sich nichts: gespeichert wird wie bisher in KEYS.net.
+// Im Team benutzt derselbe Tracker die eigenen Team-Werte; die Solo-Werte in KEYS.net bleiben unberührt und kommen nach dem
+// Verlassen des Teams zurück. Die Team-Werte werden nie unter KEYS.net gespeichert.
+const netBridge = {
+  team: false,
+  listeners: new Set(),
+  values: () => ({ dealt: netEls.dealt.value, taken: netEls.taken.value }),
+  onChange(fn) { netBridge.listeners.add(fn); },
+  enterTeam() {
+    netBridge.team = true;
+    netEls.dealt.value = '';
+    netEls.taken.value = '';
+    netHistory = [];
+    netCommitted = netCurrent();
+    renderNet();
+  },
+  setValues(dealt, taken) {
+    netEls.dealt.value = dealt;
+    netEls.taken.value = taken;
+    netHistory = [];
+    netCommitted = netCurrent();
+    renderNet();
+  },
+  leaveTeam() {
+    if (!netBridge.team) return;
+    netBridge.team = false;
+    const solo = store.read(KEYS.net);
+    netEls.dealt.value = solo && typeof solo.dealt === 'string' ? solo.dealt.slice(0, 7) : '';
+    netEls.taken.value = solo && typeof solo.taken === 'string' ? solo.taken.slice(0, 7) : '';
+    netHistory = [];
+    netCommitted = netCurrent();
+    renderNet();
+  },
+};
+
 function showFieldError(input, errEl, err) {
   if (err) {
     errEl.hidden = false;
@@ -263,7 +298,8 @@ function renderNet() {
 }
 function onNetInput() {
   renderNet();
-  persistNet();
+  if (netBridge.team) netBridge.listeners.forEach((fn) => fn());
+  else persistNet();
 }
 netEls.dealt.addEventListener('input', onNetInput);
 netEls.taken.addEventListener('input', onNetInput);
@@ -736,6 +772,10 @@ let qualBanner = null;
       if (adminApi) adminApi.open();
     };
     ui.initAccounts({ auth, openAdmin }); // zuerst Oberfläche anbinden, dann Sitzung prüfen (nicht abwarten)
+    // Team-Modus (Net Damage): eigener Block, ein Fehler hier beeinträchtigt weder Konten noch Werkzeuge
+    import('./team-ui.js')
+      .then((tm) => tm.initTeam({ auth, net: netBridge, openAccount: () => { const b = $('account-btn'); if (b) b.click(); } }))
+      .catch(() => { const c = $('team-open'); if (c) c.hidden = true; });
     auth.init().catch(() => {});
   } catch {
     const btn = $('account-btn');

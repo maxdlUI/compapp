@@ -787,3 +787,68 @@ body:has(dialog[open]) { overflow: hidden; }
   .adm-thumb { width: 100%; height: 120px; }
   .adm-buttons { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---------- Team-Modus (Net Damage) ---------- */
+.team-me {
+  margin: 0; display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.04em; color: var(--gold);
+}
+.team-me::before { content: ""; width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--gold); }
+.team-panel {
+  display: flex; flex-direction: column; gap: 10px; min-width: 0; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-strong);
+}
+.team-surge {
+  display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; min-width: 0;
+  background: var(--surface-2); border: 1px solid var(--border-strong); border-left: 3px solid var(--gold); border-radius: var(--r-inner);
+}
+.team-surge-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.team-surge-label { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.team-conn { font-family: var(--mono); font-size: 0.68rem; color: var(--warn); text-align: right; }
+.team-surge-value { font-family: var(--mono); font-weight: 800; font-size: 2.1rem; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.team-surge[data-kind="positive"] .team-surge-value { color: var(--pos); }
+.team-surge[data-kind="negative"] .team-surge-value { color: var(--neg); }
+.team-surge-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.team-surge[data-complete="false"] .team-surge-meta { color: var(--warn); }
+.team-roster { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.team-roster li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 48px; padding: 6px 12px;
+  border: 1px solid var(--border); border-radius: var(--r-inner);
+}
+.team-roster li[data-me="true"] { border-color: rgba(230, 207, 110, 0.55); }
+.team-roster li[data-kind="free"] { border-style: dashed; color: var(--muted); min-height: 44px; }
+.team-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.team-who { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.team-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.team-tag {
+  flex: none; padding: 1px 6px; border: 1px solid var(--border-strong); border-radius: 6px; color: var(--muted);
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.5;
+}
+.team-tag-me { color: var(--gold); border-color: rgba(230, 207, 110, 0.5); }
+.team-sub { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.team-val { font-family: var(--mono); font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; text-align: right; }
+.team-roster li[data-tone="positive"] .team-val { color: var(--pos); }
+.team-roster li[data-tone="negative"] .team-val { color: var(--neg); }
+.team-roster li[data-tone="wait"] .team-val { color: var(--muted); }
+.team-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.team-actions #team-end { grid-column: 1 / -1; }
+.team-actions .btn[data-confirm="true"] { border-color: var(--neg); color: var(--neg); }
+.team-link { font-family: var(--mono); font-size: 0.78rem; }
+.team-note { margin-top: 8px; }
+.dlg-team .tm-start { display: flex; flex-direction: column; gap: 22px; }
+.dlg-team .tm-block { display: flex; flex-direction: column; gap: 10px; }
+.tm-size-btn {
+  min-height: 52px; min-width: 0; padding: 4px 3px; border-radius: 12px; background: transparent; border: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.1;
+  font-family: var(--mono); font-weight: 700; font-size: 0.92rem; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer;
+}
+.tm-size-n { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.tm-size-btn[aria-checked="true"] { background: var(--white); color: var(--ink); }
+.tm-join-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.tm-join-row .btn { min-width: 110px; }
+
+/* Ist die Karte schmal (Handy, aber auch zwei Spalten auf dem iPad), ist der Team-Knopf ein reines Symbol; die Beschriftung bleibt für
+   Screenreader. So bleibt die Kopfzeile des Trackers auch in deutscher Sprache einzeilig und der Solo-Tracker sieht aus wie vorher. */
+@container (max-width: 379px) {
+  .card-net .head-tools { gap: 6px; }
+  #team-open { min-width: 44px; justify-content: center; padding: 0 10px; }
+  #team-open span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
