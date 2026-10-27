@@ -34,7 +34,7 @@ Prüfen (muss genau deine Adresse zeigen, eine Zeile):
 select a.user_id, u.email from public.admins a join auth.users u on u.id = a.user_id;
 ```
 
-Kommt keine Zeile: Die Adresse stimmt nicht mit dem Konto überein (Schreibfehler, anderes Konto, Google-Konto mit anderer Adresse). Unter **Authentication → Users** siehst du die Adresse und die **User UID**.
+Kommt keine Zeile: Die Adresse stimmt nicht mit dem Konto überein (Schreibfehler, anderes Konto, Discord-Konto mit anderer Adresse). Unter **Authentication → Users** siehst du die Adresse und die **User UID**.
 
 **Alternative mit der Nutzer-ID** (falls du die Adresse nicht eintragen willst): die User UID aus **Authentication → Users** kopieren und ausführen:
 

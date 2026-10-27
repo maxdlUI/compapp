@@ -2,7 +2,7 @@
   "id": "./",
   "name": "KREVO",
   "short_name": "KREVO",
-  "description": "Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt.",
+  "description": "Storm-Timer mit Storm-Sickness-Warnung, Net Damage solo oder im Team, Rotation-Countdown und Map für Fortnite Competitive. Unabhängiges Fanprojekt.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",

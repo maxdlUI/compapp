@@ -26,7 +26,7 @@ create unique index profiles_username_lower_key on public.profiles (lower(userna
 - Zwei gleichzeitige Anfragen mit demselben Namen: Postgres lässt genau eine durch, die andere bekommt `23505 unique_violation` (HTTP 409). Die App zeigt dann „Dieser Nutzername ist bereits vergeben.“ und ändert nichts.
 - Die Vorabprüfung kann veraltet sein (jemand anderes war schneller). Das ist ungefährlich, weil beim Speichern der Index entscheidet.
 - **Registrierung:** Der Wunschname reist als Metadatum mit. Ein Trigger legt das Profil an. Ist der Name belegt (auch durch eine gleichzeitige Registrierung), bekommt das Konto einen **erzeugten Ersatznamen** (z. B. `Max_1234`), die Registrierung scheitert nicht. Die App sagt das nach dem Anmelden: „Dein Wunschname „…“ war inzwischen vergeben. Du heißt jetzt „…“. Du kannst ihn hier ändern.“
-- **Google-Konten** bekommen einen aus ihrem Anzeigenamen abgeleiteten Namen (Umlaute werden umgesetzt, Sonderzeichen entfernt, bei Konflikt vier Ziffern angehängt).
+- **Discord-Konten** bekommen einen aus ihrem Discord-Namen abgeleiteten Namen (Umlaute werden umgesetzt, Sonderzeichen entfernt, bei Konflikt vier Ziffern angehängt).
 
 ## Weitere Schutzmaßnahmen (Datenbank)
 

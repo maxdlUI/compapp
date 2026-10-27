@@ -4,7 +4,11 @@
 // Sicherheitsgrundsätze:
 //  * Im Browser steckt nur der öffentliche Schlüssel (anon/publishable). Der Service-Role-Schlüssel gehört NIE hierher.
 //  * Passwörter prüft und speichert ausschließlich der Auth-Server. Der Browser sendet sie nur per HTTPS an ihn.
-//  * Google-Anmeldung läuft über PKCE (Code-Verifier bleibt im Browser, wird nie in einer URL übertragen).
+//  * Discord-Anmeldung und -Verknüpfung laufen über Supabase Auth mit PKCE: Der Code-Verifier bleibt im Browser und wird nie in
+//    einer URL übertragen. Ein fremder Rückkehr-Code lässt sich ohne diesen Verifier nicht einlösen (Schutz gegen CSRF und
+//    untergeschobene Anmeldungen). Das Discord-Client-Secret liegt nur in Supabase, nie im Frontend.
+//  * Ein Konto ist immer die interne Supabase-Nutzer-ID (UUID). Discord hängt als Identität mit der festen Discord-User-ID daran,
+//    nicht mit dem änderbaren Discord-Namen.
 //  * Alle Berechtigungen (eigene Profile, eindeutige Namen) setzt die Datenbank durch (siehe supabase/001_krevo_profiles.sql).
 //    Der Browser zeigt nur an und fängt Fehler verständlich ab.
 //  * Rohe Servertexte werden nicht angezeigt, nur kurze Fehlercodes (siehe mapAuthError).
@@ -58,6 +62,9 @@ export function mapAuthError(status, body) {
   if (rawCode === 'otp_expired' || rawCode === 'flow_state_expired' || rawCode === 'flow_state_not_found' || rawCode === 'bad_code_verifier'
       || msg.includes('expired') || msg.includes('invalid flow state')) return 'link_expired';
   if (rawCode === 'access_denied' || msg.includes('access_denied') || msg.includes('access denied')) return 'access_denied';
+  if (rawCode === 'identity_already_exists' || msg.includes('identity is already linked')) return 'identity_taken';
+  if (rawCode === 'manual_linking_disabled' || msg.includes('manual linking')) return 'linking_disabled';
+  if (rawCode === 'single_identity_not_deletable' || msg.includes('only identity')) return 'last_identity';
   if (rawCode === 'provider_disabled' || msg.includes('provider is not enabled') || msg.includes('unsupported provider')) return 'provider_disabled';
   if (['refresh_token_not_found', 'refresh_token_already_used', 'session_not_found', 'session_expired'].includes(rawCode)
       || (b.error === 'invalid_grant' && msg.includes('refresh'))) return 'session_expired';
@@ -86,7 +93,7 @@ export async function makePkce(cryptoApi) {
   return { verifier, challenge: b64url(digest) };
 }
 
-/** Liest die Rückkehr-Parameter nach Google-Login, E-Mail-Link oder Fehler. Gibt null zurück, wenn nichts zu tun ist. */
+/** Liest die Rückkehr-Parameter nach Discord-Login, E-Mail-Link oder Fehler. Gibt null zurück, wenn nichts zu tun ist. */
 export function parseReturn(loc) {
   const search = new URLSearchParams(loc.search || '');
   const hashRaw = String(loc.hash || '').replace(/^#/, '');
@@ -201,7 +208,7 @@ export function createAuthClient(o) {
     if (!ok) return Promise.resolve(null);
     if (!settingsPromise) {
       settingsPromise = http('/auth/v1/settings').then((s) => ({
-        google: !!(s && s.external && s.external.google),
+        discord: !!(s && s.external && s.external.discord),
         email: !s || !s.external || s.external.email !== false,
         autoconfirm: !!(s && s.mailer_autoconfirm),
         signupDisabled: !!(s && s.disable_signup),
@@ -294,7 +301,7 @@ export function createAuthClient(o) {
   }
   const rest = (path, opts) => authed('/rest/v1' + path, opts);
 
-  // ---------- Rückkehr von Google / E-Mail-Link ----------
+  // ---------- Rückkehr von Discord / E-Mail-Link ----------
   function cleanUrl(ret) {
     try {
       const search = new URLSearchParams(loc.search || '');
@@ -322,7 +329,10 @@ export function createAuthClient(o) {
       try { storage.remove(FLOW_KEY); } catch { /* ignorieren */ }
       if (!flow || !flow.verifier || now() - (flow.ts || 0) > 15 * 60 * 1000) throw new AuthError('flow_missing');
       const body = await http('/auth/v1/token', { method: 'POST', query: { grant_type: 'pkce' }, body: { auth_code: ret.code, code_verifier: flow.verifier } });
-      adopt(toSession(body), 'in', { returnType: 'oauth' });
+      const session = toSession(body);
+      // Verknüpfen darf nie das Konto wechseln: Die Rückkehr muss zum selben internen Konto gehören wie beim Start.
+      if (flow.intent === 'link' && (!session.user || session.user.id !== flow.uid)) throw new AuthError('link_mismatch');
+      adopt(session, 'in', { returnType: flow.intent === 'link' ? 'link' : 'oauth' });
       return true;
     }
     return false;
@@ -379,14 +389,74 @@ export function createAuthClient(o) {
     return state;
   }
 
-  async function signInWithGoogle() {
+  async function startDiscordFlow(intent) {
     const s = await settings();
     if (!s) throw new AuthError('network'); // Projekt nicht erreichbar: nicht auf eine tote Adresse weiterleiten
-    if (!s.google) throw new AuthError('provider_disabled');
+    if (!s.discord) throw new AuthError('provider_disabled');
     const { verifier, challenge } = await makePkce(o.crypto || (typeof crypto !== 'undefined' ? crypto : null));
-    writeJson(FLOW_KEY, { verifier, ts: now() });
-    const url = `${base}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl())}&code_challenge=${challenge}&code_challenge_method=s256`;
+    let url;
+    if (intent === 'link') {
+      const token = await freshToken();
+      const cur = readSession();
+      writeJson(FLOW_KEY, { verifier, ts: now(), intent, uid: cur.user.id });
+      try {
+        // Supabase liefert die Discord-Adresse nur für den angemeldeten Nutzer (Bearer-Token) und hängt die Identität an genau dieses Konto
+        const res = await http('/auth/v1/user/identities/authorize', {
+          token, query: { provider: 'discord', skip_http_redirect: 'true', redirect_to: redirectUrl(), code_challenge: challenge, code_challenge_method: 's256' },
+        });
+        // Nur echte Weiterleitungsziele annehmen: HTTPS (Discord) oder die eigene Supabase-Adresse
+        if (!res || typeof res.url !== 'string' || !(/^https:\/\//.test(res.url) || res.url.startsWith(`${base}/`))) throw new AuthError('server');
+        url = res.url;
+      } catch (e) {
+        try { storage.remove(FLOW_KEY); } catch { /* ignorieren */ }
+        throw e;
+      }
+    } else {
+      writeJson(FLOW_KEY, { verifier, ts: now(), intent: 'signin' });
+      url = `${base}/auth/v1/authorize?provider=discord&redirect_to=${encodeURIComponent(redirectUrl())}&code_challenge=${challenge}&code_challenge_method=s256`;
+    }
     if (o.navigate) o.navigate(url); else loc.assign(url);
+  }
+
+  /** Anmelden oder Registrieren mit Discord (verlässt die Seite). */
+  const signInWithDiscord = () => startDiscordFlow('signin');
+  /** Discord mit dem angemeldeten KREVO-Konto verbinden (verlässt die Seite). */
+  async function linkDiscord() {
+    if (!readSession()) throw new AuthError('not_signed_in');
+    return startDiscordFlow('link');
+  }
+
+  /** Verknüpfte Anmeldewege des Kontos. Discord wird über die feste Discord-User-ID erkannt, angezeigt wird nur der Name. */
+  function identities() {
+    const s = readSession();
+    const list = (s && s.user && Array.isArray(s.user.identities)) ? s.user.identities : [];
+    return list.map((i) => {
+      const d = (i && i.identity_data) || {};
+      return {
+        id: String(i.identity_id || i.id || ''),
+        provider: String(i.provider || ''),
+        name: i.provider === 'discord' ? String((d.custom_claims && d.custom_claims.global_name) || d.full_name || d.name || '') : '',
+      };
+    });
+  }
+
+  async function refreshUser() {
+    const token = await freshToken();
+    const user = await http('/auth/v1/user', { token });
+    const s = readSession();
+    if (s && user && user.id === s.user.id) adopt({ ...s, user }, 'in', { returnType: state.returnType });
+    return user;
+  }
+
+  /** Discord trennen. Nur möglich, wenn noch ein anderer Anmeldeweg bleibt (prüft auch der Auth-Server). */
+  async function unlinkDiscord() {
+    const all = identities();
+    const d = all.find((i) => i.provider === 'discord');
+    if (!d) return;
+    if (all.length < 2) throw new AuthError('last_identity');
+    const token = await freshToken();
+    await http(`/auth/v1/user/identities/${encodeURIComponent(d.id)}`, { method: 'DELETE', token });
+    await refreshUser();
   }
 
   async function signOut() {
@@ -498,7 +568,7 @@ export function createAuthClient(o) {
     get configured() { return ok; },
     get state() { return state; },
     onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
-    init, settings, signUp, signIn, signInWithGoogle, signOut, requestPasswordReset, updatePassword,
+    init, settings, signUp, signIn, signInWithDiscord, linkDiscord, unlinkDiscord, identities, refreshUser, signOut, requestPasswordReset, updatePassword,
     loadProfile, checkUsername, updateUsername, refreshSession,
     checkAdmin, rest, publicFileUrl, uploadFile, deleteFile,
     clearReturn() { setState({ returnError: null, returnType: '' }); },

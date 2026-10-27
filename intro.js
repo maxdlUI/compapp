@@ -5,7 +5,7 @@
 //   * wiederkehrend, neue Browser-Sitzung       -> 'short'  (ca. 0,9 s)
 //   * Bewegung reduziert (prefers-reduced-motion) -> 'static' (ca. 0,8 s, ohne Bewegung, nur Einblenden/Ausblenden)
 //   * gleiche Sitzung (Neuladen, Navigation)    -> gar nicht
-//   * Rückkehr von Google/E-Mail-Link, Tab im Hintergrund -> gar nicht
+//   * Rückkehr von Discord/E-Mail-Link, Tab im Hintergrund -> gar nicht
 // Das Intro blockiert nichts: Die App ist darunter längst bereit, Eingaben und Tastendrücke beenden es sofort
 // (der Tipp geht trotzdem an die App darunter), und es beendet sich per CSS selbst, auch wenn dieses Skript fehlschlägt.
 
@@ -20,7 +20,7 @@ export function decideIntro({ reducedMotion = false, seenBefore = false, seenThi
   return seenBefore ? 'short' : 'full';
 }
 
-/** Erkennt Rückkehr von Google-Login oder E-Mail-Link: dann soll nichts den Blick auf das Ergebnis verzögern. */
+/** Erkennt Rückkehr von Discord-Login oder E-Mail-Link: dann soll nichts den Blick auf das Ergebnis verzögern. */
 export function isAuthReturn(loc) {
   const search = new URLSearchParams(loc.search || '');
   const hash = String(loc.hash || '').replace(/^#/, '');

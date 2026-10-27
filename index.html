@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>KREVO · Storm-Timer und Net Damage für Fortnite Competitive</title>
-  <meta name="description" content="KREVO: Storm-Timer, Net Damage, Rotation-Countdown, Map und Match-Notizen für Fortnite Competitive. Unabhängiges Fanprojekt, nicht von Epic Games.">
+  <meta name="description" content="KREVO: Storm-Timer mit Storm-Sickness-Warnung, Net Damage solo oder im Team, Rotation-Countdown und Map für Fortnite Competitive. Unabhängiges Fanprojekt, nicht von Epic Games.">
   <link rel="canonical" href="https://maxdlui.github.io/compapp/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="KREVO">
   <meta property="og:title" content="KREVO · Storm-Timer und Net Damage für Fortnite Competitive">
-  <meta property="og:description" content="Storm-Schaden schätzen, Net Damage solo oder im Duo/Trio mitzählen, Rotation-Countdown, eigene Map und Match-Notizen. Läuft im Browser und offline.">
+  <meta property="og:description" content="Storm-Schaden schätzen mit deutlicher Storm-Sickness-Warnung, Net Damage solo oder im Duo/Trio mitzählen, Rotation-Countdown und eigene Map. Läuft im Browser und offline.">
   <meta property="og:url" content="https://maxdlui.github.io/compapp/">
   <meta property="og:image" content="https://maxdlui.github.io/compapp/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -42,17 +42,13 @@
       <symbol id="i-storm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><path d="M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 7a5 5 0 0 1 5 5M12 17a5 5 0 0 1-5-5"/></symbol>
       <symbol id="i-rotate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"/></symbol>
       <symbol id="i-net" viewBox="0 0 24 24"><path d="M3.5 17l5.5-5.5 4 3.5 7.5-8"/><path d="M15 7h5.5v5.5"/></symbol>
-      <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z"/><path d="M9 12h7M9 16h7"/></symbol>
       <symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
       <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4.5M7.5 9L12 4.5 16.5 9M5 20h14"/></symbol>
       <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
       <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></symbol>
       <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></symbol>
-      <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7.5l4-4 4 4"/><path d="M5 11.5V20h14v-8.5"/></symbol>
       <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
       <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
-      <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
       <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
       <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
       <symbol id="i-even" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
@@ -65,6 +61,10 @@
       <symbol id="i-team" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 20c.7-3.4 3-5 6-5s5.3 1.6 6 5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.5 14.8c2.6 0 4.2 1.4 4.8 4.2"/></symbol>
       <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></symbol>
       <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
+      <!-- Storm Sickness: eigenes Gefahrensymbol (Dreieck mit Biohazard-Zeichen), nachgezeichnet, kein Fortnite-Asset -->
+      <linearGradient id="hz-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a46cf5"/><stop offset="1" stop-color="#6a2fd4"/></linearGradient>
+      <mask id="hz-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect width="100" height="100" fill="#fff"/><g fill="#000"><circle cx="50.00" cy="39.50" r="9.2"/><circle cx="65.16" cy="65.75" r="9.2"/><circle cx="34.84" cy="65.75" r="9.2"/><circle cx="50" cy="57" r="4.3"/></g><g stroke="#000" stroke-width="2.2"><line x1="50.00" y1="57.00" x2="50.00" y2="47.00"/><line x1="50.00" y1="57.00" x2="58.66" y2="62.00"/><line x1="50.00" y1="57.00" x2="41.34" y2="62.00"/></g></mask>
+      <symbol id="i-hazard" viewBox="0 0 100 100"><path d="M50 9L91 82H9Z" fill="#c4c4c4" stroke="#c4c4c4" stroke-width="12" stroke-linejoin="round"/><path d="M50 14L86.5 79H13.5Z" fill="url(#hz-fill)" stroke="url(#hz-fill)" stroke-width="5" stroke-linejoin="round"/><g mask="url(#hz-cut)" fill="#fff"><circle cx="50.00" cy="44.00" r="12.5"/><circle cx="61.26" cy="63.50" r="12.5"/><circle cx="38.74" cy="63.50" r="12.5"/><circle cx="50" cy="57" r="10.5" fill="none" stroke="#fff" stroke-width="2.6"/></g><circle cx="50" cy="57" r="2.6" fill="#fff"/></symbol>
     </defs>
   </svg>
 
@@ -92,7 +92,6 @@
       <a class="tab" href="#damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span data-i18n="nav.damage">Damage</span></a>
       <a class="tab" href="#rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span data-i18n="nav.rotation">Rotation</span></a>
       <a class="tab" href="#map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="nav.map">Map</span></a>
-      <a class="tab" href="#notes"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span data-i18n="nav.notes">Notizen</span></a>
     </nav>
   </header>
 
@@ -124,6 +123,13 @@
               <div class="hero-top"><span class="hero-label" data-i18n="storm.time">Zeit</span><span id="storm-pill" class="pill" data-state="idle">Bereit</span></div>
               <div id="storm-time" class="hero-value" role="timer" aria-live="off">00:00</div>
             </div>
+            <div id="storm-alert" class="storm-alert" data-level="normal" data-anim="off" role="status" aria-live="polite">
+              <svg class="sa-icon" aria-hidden="true" focusable="false"><use href="#i-hazard"/></svg>
+              <p class="sa-copy">
+                <span id="storm-alert-title" class="sa-title" data-i18n="storm.sick.normal.title">Storm Sickness</span>
+                <span class="sa-text"><span id="storm-alert-text" data-i18n="storm.sick.normal.text">Noch keine Warnung. Warnung ab 500 Schaden.</span> <strong id="storm-alert-cta" class="sa-cta"></strong></span>
+              </p>
+            </div>
             <div class="stats">
               <div class="stat">
                 <div class="stat-label" data-i18n="storm.statRate">Schaden pro Sekunde</div>
@@ -146,15 +152,15 @@
             </div>
 
             <ul class="thresholds">
-              <li id="th-500" data-reached="false">
+              <li id="th-500" data-reached="false" data-level="warning">
                 <span class="th-target">500</span>
                 <span class="th-text" id="th-500-text">Noch 500 Schaden</span>
-                <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+                <svg class="th-icon" aria-hidden="true" focusable="false"><use href="#i-hazard"/></svg>
               </li>
-              <li id="th-600" data-reached="false">
+              <li id="th-600" data-reached="false" data-level="active">
                 <span class="th-target">600</span>
                 <span class="th-text" id="th-600-text">Noch 600 Schaden</span>
-                <svg class="i th-check" aria-hidden="true"><use href="#i-check"/></svg>
+                <svg class="th-icon" aria-hidden="true" focusable="false"><use href="#i-hazard"/></svg>
               </li>
             </ul>
           </div>
@@ -345,39 +351,10 @@
         <p id="map-status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <!-- NOTIZEN -->
-      <section id="notes" class="card card-notes" aria-labelledby="h-notes">
-        <header class="card-head">
-          <h2 id="h-notes" class="eyebrow"><svg class="i" aria-hidden="true"><use href="#i-note"/></svg><span data-i18n="notes.title">Match-Notizen</span></h2>
-        </header>
-
-        <label for="note-input" class="sr-only" data-i18n="notes.inputLabel">Notiz zum aktuellen Match</label>
-        <textarea id="note-input" rows="5" data-i18n-attr="placeholder=notes.placeholder" placeholder="Notizen zum aktuellen Match …" autocomplete="off" spellcheck="false"></textarea>
-
-        <div class="note-actions">
-          <button id="note-save" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-save"/></svg><span data-i18n="notes.save">Speichern</span></button>
-          <button id="note-export" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg><span data-i18n="notes.export">Export .txt</span></button>
-          <button id="note-share" class="btn" type="button"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="notes.share">Teilen</span></button>
-          <button id="note-delete" class="btn btn-danger" type="button"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="notes.delete">Löschen</span></button>
-        </div>
-
-        <div id="note-confirm" class="confirm" role="alertdialog" aria-labelledby="note-confirm-text" hidden>
-          <p id="note-confirm-text" data-i18n="notes.confirmText">Alle gespeicherten Notizen und den Entwurf endgültig löschen? Timer, Net Damage und Map bleiben unverändert.</p>
-          <div class="confirm-actions">
-            <button id="note-confirm-cancel" class="btn" type="button" data-i18n="notes.confirmCancel">Abbrechen</button>
-            <button id="note-confirm-ok" class="btn btn-danger-solid" type="button" data-i18n="notes.confirmOk">Endgültig löschen</button>
-          </div>
-        </div>
-
-        <p id="note-status" class="status" role="status" aria-live="polite"></p>
-
-        <ul id="note-list" class="note-list" data-i18n-attr="aria-label=notes.list" aria-label="Gespeicherte Notizen"></ul>
-        <p id="note-empty" class="note-empty" data-i18n="notes.empty">Noch keine gespeicherten Notizen.</p>
-      </section>
     </div>
 
     <footer class="footnote">
-      <p data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Notizen, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert E-Mail-Adresse und Nutzername, im Team-Modus zusätzlich deine Team-Werte.</p>
+      <p data-i18n="footer">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben. Timer, Presets und Map bleiben auf diesem Gerät. Ein Konto speichert E-Mail-Adresse und Nutzername, mit Discord zusätzlich deine Discord-ID, im Team-Modus deine Team-Werte.</p>
       <p class="foot-links"><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a></p>
     </footer>
   </main>
@@ -412,6 +389,12 @@
       </section>
 
       <form data-view="signin" novalidate hidden>
+        <button class="btn btn-discord btn-block" type="button" data-discord>
+          <svg class="d-mark" viewBox="0 0 127.14 96.36" aria-hidden="true" focusable="false"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg>
+          <span data-i18n="auth.discord">Mit Discord fortfahren</span>
+        </button>
+        <p class="hint discord-off" hidden data-i18n="auth.discord.off">Die Discord-Anmeldung ist noch nicht eingerichtet.</p>
+        <div class="or"><span data-i18n="auth.orEmail">oder mit E-Mail</span></div>
         <div class="fld">
           <label class="fld-label" for="si-email" data-i18n="auth.email">E-Mail-Adresse</label>
           <input id="si-email" name="email" class="auth-input" type="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="254" required>
@@ -426,16 +409,16 @@
         <p class="form-error" role="alert" hidden></p>
         <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.signin">Anmelden</button>
         <button class="link-btn" type="button" data-view-go="forgot" data-i18n="auth.link.forgot">Passwort vergessen?</button>
-        <div class="or"><span data-i18n="auth.or">oder</span></div>
-        <button class="btn btn-google btn-block" type="button" data-google>
-          <svg class="g-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-          <span data-i18n="auth.google">Mit Google fortfahren</span>
-        </button>
-        <p class="hint google-off" hidden data-i18n="auth.google.off">Die Google-Anmeldung ist noch nicht eingerichtet.</p>
         <button class="link-btn" type="button" data-view-go="signup" data-i18n="auth.link.toSignup">Noch kein Konto? Registrieren</button>
       </form>
 
       <form data-view="signup" novalidate hidden>
+        <button class="btn btn-discord btn-block" type="button" data-discord>
+          <svg class="d-mark" viewBox="0 0 127.14 96.36" aria-hidden="true" focusable="false"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg>
+          <span data-i18n="auth.discord">Mit Discord fortfahren</span>
+        </button>
+        <p class="hint discord-off" hidden data-i18n="auth.discord.off">Die Discord-Anmeldung ist noch nicht eingerichtet.</p>
+        <div class="or"><span data-i18n="auth.orEmail">oder mit E-Mail</span></div>
         <div class="fld">
           <label class="fld-label" for="su-username" data-i18n="auth.username">Nutzername</label>
           <input id="su-username" name="username" class="auth-input" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="40" aria-describedby="su-username-hint" required>
@@ -455,13 +438,7 @@
         </div>
         <p class="form-error" role="alert" hidden></p>
         <button class="btn btn-primary btn-block" type="submit" data-i18n="auth.submit.signup">Konto erstellen</button>
-        <div class="or"><span data-i18n="auth.or">oder</span></div>
-        <button class="btn btn-google btn-block" type="button" data-google>
-          <svg class="g-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-          <span data-i18n="auth.google">Mit Google fortfahren</span>
-        </button>
-        <p class="hint google-off" hidden data-i18n="auth.google.off">Die Google-Anmeldung ist noch nicht eingerichtet.</p>
-        <p class="hint" data-i18n="auth.privacy">Gespeichert werden E-Mail-Adresse und Nutzername. Timer, Notizen, Presets und Map bleiben auf deinem Gerät.</p>
+        <p class="hint" data-i18n="auth.privacy">Gespeichert werden E-Mail-Adresse und Nutzername, mit Discord zusätzlich deine Discord-ID. Timer, Presets und Map bleiben auf deinem Gerät.</p>
         <button class="link-btn" type="button" data-view-go="signin" data-i18n="auth.link.toSignin">Schon ein Konto? Anmelden</button>
       </form>
 
@@ -520,7 +497,10 @@
         <dl class="prof-meta">
           <div><dt data-i18n="prof.email">E-Mail-Adresse</dt><dd id="prof-email" class="prof-email"></dd></div>
           <div id="prof-since-row"><dt data-i18n="prof.since">Mitglied seit</dt><dd id="prof-since"></dd></div>
+          <div id="prof-discord-row"><dt>Discord</dt><dd id="prof-discord"></dd></div>
         </dl>
+        <button id="prof-discord-btn" class="btn btn-discord btn-block" type="button" hidden><span id="prof-discord-label"></span></button>
+        <p id="prof-discord-hint" class="hint" hidden></p>
         <p class="form-error" id="prof-error" role="alert" hidden></p>
         <button id="prof-admin" class="btn btn-block" type="button" data-i18n="admin.open" hidden>Estimated Qual verwalten</button>
         <button id="prof-signout" class="btn btn-danger btn-block" type="button" data-i18n="prof.signOut">Abmelden</button>

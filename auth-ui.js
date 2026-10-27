@@ -33,6 +33,7 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
     profState: $('prof-state'), profStateText: $('prof-state-text'), profRetry: $('prof-retry'),
     profForm: $('prof-form'), profInput: $('prof-username'), profHint: $('prof-username-hint'), profSave: $('prof-save'),
     profError: $('prof-error'), signOut: $('prof-signout'), profAdmin: $('prof-admin'),
+    profDiscord: $('prof-discord'), profDiscordBtn: $('prof-discord-btn'), profDiscordLabel: $('prof-discord-label'), profDiscordHint: $('prof-discord-hint'),
     suUser: $('su-username'), suHint: $('su-username-hint'),
   };
   const section = (name) => dlg.querySelector(`[data-view="${name}"]`);
@@ -45,7 +46,8 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
 
   let view = null;
   let busy = false;
-  let googleEnabled = null;
+  let discordEnabled = null;
+  let unlinkArmed = 0; // Trennen braucht ein zweites Tippen innerhalb weniger Sekunden
   let wantedName = '';
   let profileFor = null;
   let banner = null; // { key, params, kind }
@@ -128,7 +130,7 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
       submit.disabled = flag;
       submit.textContent = flag ? t('auth.busy') : t(submit.dataset.i18n);
     }
-    form.querySelectorAll('[data-google]').forEach((b) => { b.disabled = flag || googleEnabled === false; });
+    form.querySelectorAll('[data-discord]').forEach((b) => { b.disabled = flag || discordEnabled === false; });
     form.setAttribute('aria-busy', String(flag));
   }
 
@@ -155,18 +157,19 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
     return 'signin';
   }
 
-  function ensureGoogleState() {
-    if (googleEnabled !== null || !auth.configured) return renderGoogle();
-    auth.settings().then((s) => { if (s) googleEnabled = !!s.google; renderGoogle(); }).catch(() => {});
+  function ensureDiscordState() {
+    if (discordEnabled !== null || !auth.configured) return renderDiscord();
+    auth.settings().then((s) => { if (s) discordEnabled = !!s.discord; renderDiscord(); }).catch(() => {});
     return undefined;
   }
-  function renderGoogle() {
-    dlg.querySelectorAll('[data-google]').forEach((b) => {
-      const off = googleEnabled === false;
+  function renderDiscord() {
+    dlg.querySelectorAll('[data-discord]').forEach((b) => {
+      const off = discordEnabled === false;
       b.disabled = busy || off;
       b.setAttribute('aria-disabled', String(off));
     });
-    dlg.querySelectorAll('.google-off').forEach((p) => { p.hidden = googleEnabled !== false; });
+    dlg.querySelectorAll('.discord-off').forEach((p) => { p.hidden = discordEnabled !== false; });
+    if (view === 'profile') renderDiscordLink();
   }
 
   function setView(name) {
@@ -175,7 +178,7 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
     els.title.textContent = t(`auth.title.${name}`);
     dlg.querySelectorAll('.form-error').forEach((e) => setErr(e, null));
     setErr(els.profError, null);
-    if (name === 'signin' || name === 'signup') ensureGoogleState();
+    if (name === 'signin' || name === 'signup' || name === 'profile') ensureDiscordState();
     if (name === 'profile') renderProfile();
     if (name === 'signup') updateSignupHint();
     const sec = section(name);
@@ -351,8 +354,8 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
     }
   });
 
-  // Google
-  dlg.querySelectorAll('[data-google]').forEach((b) => {
+  // Discord: Anmelden und Registrieren sind derselbe Ablauf (Supabase legt bei der ersten Anmeldung das Konto an)
+  dlg.querySelectorAll('[data-discord]').forEach((b) => {
     b.addEventListener('click', async () => {
       if (busy || b.disabled) return;
       const form = b.closest('form');
@@ -363,15 +366,62 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
       const original = textEl.textContent;
       textEl.textContent = t('auth.redirecting');
       try {
-        await auth.signInWithGoogle(); // verlässt die Seite
+        await auth.signInWithDiscord(); // verlässt die Seite
       } catch (err) {
         busy = false;
-        b.disabled = googleEnabled === false;
+        b.disabled = discordEnabled === false;
         textEl.textContent = original;
-        if (err && err.code === 'provider_disabled') { googleEnabled = false; renderGoogle(); }
+        if (err && err.code === 'provider_disabled') { discordEnabled = false; renderDiscord(); }
         showError(form, err);
       }
     });
+  });
+
+  // Discord im Profil verbinden oder trennen
+  function renderDiscordLink() {
+    if (!els.profDiscordBtn) return;
+    const ids = auth.identities();
+    const d = ids.find((i) => i.provider === 'discord');
+    els.profDiscord.textContent = d ? (d.name || t('prof.discord.linked')) : t('prof.discord.none');
+    const canUnlink = !!d && ids.length > 1;
+    els.profDiscordBtn.hidden = d ? !canUnlink : discordEnabled === false;
+    els.profDiscordBtn.classList.toggle('btn-discord-quiet', !!d);
+    if (!busy) els.profDiscordBtn.disabled = false;
+    const armed = Date.now() < unlinkArmed;
+    els.profDiscordLabel.textContent = !d ? t('prof.discord.link') : armed ? t('prof.discord.unlinkConfirm') : t('prof.discord.unlink');
+    const hintKey = discordEnabled === false && !d ? 'auth.discord.off' : d && !canUnlink ? 'prof.discord.only' : '';
+    els.profDiscordHint.hidden = !hintKey;
+    els.profDiscordHint.textContent = hintKey ? t(hintKey) : '';
+  }
+  els.profDiscordBtn.addEventListener('click', async () => {
+    if (busy) return;
+    const linked = auth.identities().some((i) => i.provider === 'discord');
+    setErr(els.profError, null);
+    if (linked && Date.now() >= unlinkArmed) {
+      unlinkArmed = Date.now() + 4000;
+      renderDiscordLink();
+      setTimeout(renderDiscordLink, 4100);
+      return;
+    }
+    busy = true;
+    els.profDiscordBtn.disabled = true;
+    els.profDiscordLabel.textContent = linked ? t('auth.busy') : t('auth.redirecting');
+    try {
+      if (linked) {
+        await auth.unlinkDiscord();
+        unlinkArmed = 0;
+        showBanner('prof.discord.unlinked', 'ok');
+      } else {
+        await auth.linkDiscord(); // verlässt die Seite
+        return;
+      }
+    } catch (err) {
+      unlinkArmed = 0;
+      setErr(els.profError, errorKey(err && err.code));
+    } finally {
+      busy = false;
+      renderDiscordLink();
+    }
   });
 
   function showNotice(key) {
@@ -483,6 +533,7 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
       els.profStateText.textContent = code && code !== 'unknown' && t(`auth.err.${code}`) !== `auth.err.${code}` ? t(`auth.err.${code}`) : t('prof.error');
     }
     els.profInput.disabled = st !== 'ready';
+    renderDiscordLink();
     // Admin-Zugang nur anzeigen, wenn die Datenbank dieses Konto als Administrator bestätigt hat (reine Anzeige, keine Sicherheitsgrenze)
     if (els.profAdmin) els.profAdmin.hidden = !(openAdmin && s.status === 'in' && s.isAdmin === true);
     if (st === 'ready' && document.activeElement !== els.profInput && els.profInput.dataset.dirty !== '1') {
@@ -552,7 +603,7 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
       if (s.returnError) {
         const err = s.returnError;
         auth.clearReturn();
-        openDialog('signin');
+        openDialog(s.status === 'in' ? 'profile' : 'signin'); // z. B. Discord-Verknüpfung abgelehnt: das Konto bleibt angemeldet
         showBanner(errorKey(err.code), 'error');
         return;
       }
@@ -563,7 +614,13 @@ export function initAccounts({ auth, doc = document, openAdmin = null }) {
         showBanner('auth.notice.emailConfirmed', 'ok');
         return;
       }
-      if (s.returnType === 'oauth') auth.clearReturn(); // Google-Anmeldung abgeschlossen: der Kopfzeilen-Knopf zeigt das Konto
+      if (s.returnType === 'link' && s.status === 'in') {
+        auth.clearReturn(); // Discord wurde mit dem bestehenden Konto verbunden
+        openDialog('profile');
+        showBanner('prof.discord.linkedNow', 'ok');
+        return;
+      }
+      if (s.returnType === 'oauth') auth.clearReturn(); // Discord-Anmeldung abgeschlossen: der Kopfzeilen-Knopf zeigt das Konto
       if (dlg.open) {
         if (s.status === 'out' && ['profile', 'recovery'].includes(view)) { // z. B. in einem anderen Tab abgemeldet
           if (!busy) { setView('signin'); showBanner('auth.err.session_expired', 'info'); }

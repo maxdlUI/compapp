@@ -90,6 +90,17 @@ export function stormStats(s, now) {
   return { elapsedSec, damage, rate: s.rate, thresholds, progress: Math.min(1, damage / max) };
 }
 
+/**
+ * Warnstufe der Storm-Sickness-Anzeige, nur aus den vorhandenen Schwellen (500 und 600) abgeleitet:
+ * 'normal' darunter, 'warning' ab der ersten Schwelle, 'active' ab der letzten. Keine eigenen Grenzwerte.
+ */
+export function stormSicknessLevel(stats) {
+  const th = (stats && stats.thresholds) || [];
+  if (th.length && th[th.length - 1].reached) return 'active';
+  if (th.some((x) => x.reached)) return 'warning';
+  return 'normal';
+}
+
 export function restoreStorm(raw, now) {
   const d = createStorm();
   if (!raw || typeof raw !== 'object') return d;
@@ -249,44 +260,6 @@ export function computeNet(rawDealt, rawTaken, locale = 'de-DE') {
   }
   const value = netDamage(dealt.value, taken.value);
   return { ok: true, dealtError: null, takenError: null, ...describeNet(value, locale), value, dealt: dealt.value, taken: taken.value };
-}
-
-// ---------- Notizen ----------
-
-export function makeNoteEntry(text, now) {
-  const clean = String(text ?? '').replace(/\r\n/g, '\n').trim();
-  if (!clean) return null;
-  return { id: `${now}-${Math.random().toString(36).slice(2, 8)}`, ts: now, text: clean };
-}
-
-export function restoreNotes(raw) {
-  if (!raw || typeof raw !== 'object' || !Array.isArray(raw.entries)) return [];
-  return raw.entries
-    .filter((e) => e && typeof e.text === 'string' && e.text.trim() && isNum(e.ts))
-    .map((e) => ({ id: String(e.id ?? e.ts), ts: e.ts, text: e.text }));
-}
-
-/** Deutsch bleibt wie bisher "14.10.2026 19:05". Englisch: "10/14/2026, 07:05 PM". */
-export function formatTimestamp(ts, lang = 'de') {
-  const d = new Date(ts);
-  if (lang === 'en') {
-    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(d);
-  }
-  return `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}.${d.getFullYear()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-}
-
-export function notesFileName(now, lang = 'de') {
-  const d = new Date(now);
-  const stem = lang === 'en' ? 'match-notes' : 'match-notizen';
-  return `${stem}-${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}.txt`;
-}
-
-/** Text für Export und Teilen: gespeicherte Notizen (neueste zuerst) und ein nicht gespeicherter Entwurf. Die Notiztexte selbst bleiben unverändert. */
-export function buildNotesExport(entries, draft, { draftLabel = 'Entwurf, nicht gespeichert', lang = 'de' } = {}) {
-  const parts = entries.map((e) => `[${formatTimestamp(e.ts, lang)}]\n${e.text}`);
-  const d = String(draft ?? '').trim();
-  if (d) parts.unshift(`[${draftLabel}]\n${d}`);
-  return parts.join('\n\n---\n\n');
 }
 
 // ---------- Net Damage: Schnellbuttons und Verlauf ----------

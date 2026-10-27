@@ -1,8 +1,8 @@
 // Service Worker: legt die App-Dateien beim ersten Besuch in den Cache.
 // Danach startet die App auch ohne Internet. Updates laden im Hintergrund nach
 // und sind beim nächsten Öffnen aktiv. CACHE hochzählen, wenn Dateien geändert werden (auch config.js).
-// Anfragen an andere Server (Supabase, Google) fasst der Service Worker nicht an.
-const CACHE = 'krevo-v8';
+// Anfragen an andere Server (Supabase, Discord) fasst der Service Worker nicht an.
+const CACHE = 'krevo-v9';
 const ASSETS = [
   './',
   'index.html',
@@ -61,7 +61,7 @@ self.addEventListener('fetch', (event) => {
     caches.match(req, { ignoreSearch: true }).then((cached) => {
       const network = fetch(req)
         .then((res) => {
-          // Adressen mit Parametern (z. B. ?code= nach der Google-Anmeldung) landen nicht im Cache
+          // Adressen mit Parametern (z. B. ?code= nach der Discord-Anmeldung) landen nicht im Cache
           if (res && res.ok && !url.search) {
             const copy = res.clone();
             caches.open(CACHE).then((c) => c.put(req, copy));

@@ -1,16 +1,44 @@
-# KREVO: Fortnite-Competitive-Companion (PWA), Version 6.1
+# KREVO: Fortnite-Competitive-Companion (PWA), Version 7
 
 Unabhängiges Fanprojekt, nicht von Epic Games oder Fortnite unterstützt oder betrieben. Läuft als Web-App in Safari auf iPhone, iPad und Desktop. Reines HTML, CSS und JavaScript (ES-Module), kein Build-Schritt, keine Abhängigkeiten, nichts wird von Fremdservern nachgeladen.
 
-Werkzeuge: **Storm-Timer** (Schätzung, 1/2/5/8/10 Schaden pro Sekunde), **Net Damage**, **Rotation-Countdown** mit eigenen Presets, **Map** (eigenes Bild hochladen und groß ansehen), **Match-Notizen** (lokal, Export als .txt, Teilen). Oberfläche auf **Deutsch und Englisch**.
+Werkzeuge: **Storm-Timer** (Schätzung, 1/2/5/8/10 Schaden pro Sekunde) mit **Storm-Sickness-Warnung**, **Net Damage** (solo oder im Team), **Rotation-Countdown** mit eigenen Presets, **Map** (eigenes Bild hochladen und groß ansehen). Oberfläche auf **Deutsch und Englisch**.
+
+**Neu in Version 7:** Anmeldung mit **Discord** (erste Option, E-Mail und Passwort bleiben, Google entfernt), Discord im Profil verbinden und trennen, Datenbank-Grundlage für spätere Käufe, deutlich bedrohlichere **Storm-Sickness-Warnung** mit zwei Warnstufen und Animation. **Entfernt:** Match-Notizen. Anleitung Discord: `docs/DISCORD.md`.
 
 **Neu in Version 6:** optionaler **Team-Modus** für Net Damage (Duo/Trio, Einladungslink, „Team Net Surge“ als Summe). Solo bleibt unverändert und braucht kein Konto. Anleitung: `docs/TEAM.md`.
 
 **Version 5:** Admin-Rechte (in der Datenbank abgesichert) und der optionale Banner **„Estimated Qual“** mit Verwaltung. Standardmäßig **aus**: dann ist die Seite identisch zu vorher. Anleitung: `docs/ADMIN.md`.
 
-**Version 4:** Marke KREVO, Konten (E-Mail und Passwort, Google), Profil mit eindeutigem Nutzernamen, kurzes Willkommens-Intro. **Entfernt:** Storm Surge.
+**Version 4:** Marke KREVO, Konten (E-Mail und Passwort, damals auch Google), Profil mit eindeutigem Nutzernamen, kurzes Willkommens-Intro. **Entfernt:** Storm Surge.
 
-> **Ehrlicher Stand in einem Satz:** Alles ist gebaut und getestet, aber nicht gegen ein echtes Supabase-Projekt. Konten sind erst „live“, wenn du ein Supabase-Projekt angelegt, die SQL-Dateien ausgeführt und zwei öffentliche Werte in `config.js` eingetragen hast (`SETUP-ACCOUNTS.md`). Admin und Estimated Qual brauchen zusätzlich `supabase/002_…sql` und einen Admin-Eintrag (`docs/ADMIN.md`), der Team-Modus `supabase/003_…sql` (`docs/TEAM.md`). Google-Login braucht die Einrichtung bei Google. Bis dahin läuft die App wie bisher, und der Konto-Knopf sagt offen, was fehlt.
+> **Ehrlicher Stand in einem Satz:** Alles ist gebaut und getestet, aber nicht gegen ein echtes Supabase-Projekt. Konten sind erst „live“, wenn du ein Supabase-Projekt angelegt, die SQL-Dateien ausgeführt und zwei öffentliche Werte in `config.js` eingetragen hast (`SETUP-ACCOUNTS.md`). Admin und Estimated Qual brauchen zusätzlich `supabase/002_…sql` und einen Admin-Eintrag (`docs/ADMIN.md`), der Team-Modus `supabase/003_…sql` (`docs/TEAM.md`). Discord-Login braucht die Einrichtung bei Discord und in Supabase (`docs/DISCORD.md`). Bis dahin läuft die App wie bisher, und der Konto-Knopf sagt offen, was fehlt.
+
+## Was in Version 7 geändert wurde
+
+### Discord statt Google
+- **Mit Discord fortfahren** steht in Anmelden und Registrieren ganz oben (Discord-Blau, Discord-Logo), darunter „oder mit E-Mail“ und die bisherigen Felder. Anmelden und Registrieren mit Discord sind derselbe Ablauf: Beim ersten Mal legt Supabase das Konto an, der KREVO-Nutzername wird aus dem Discord-Namen abgeleitet (eindeutig, bei Konflikt mit Ziffern).
+- Ablauf über **Supabase Auth mit PKCE**: Das Discord-Client-Secret liegt nur in Supabase, Supabase prüft den OAuth-`state`, die App nimmt einen Rückkehr-Code nur mit dem eigenen Verifier an. Details: `docs/DISCORD.md`.
+- **Konto = interne UUID.** Discord hängt als Identität mit der **festen Discord-User-ID** daran. Ein neuer Discord-Name ändert weder das Konto noch den KREVO-Nutzernamen (im Browsertest geprüft).
+- **Profil:** Zeile „Discord“ (verbunden mit Anzeigename oder „Nicht verbunden“), **Mit Discord verbinden** für bestehende E-Mail-Konten (nur angemeldet, die App prüft nach der Rückkehr, dass es dasselbe Konto ist), **Discord trennen** mit zweitem Tippen, nur wenn ein anderer Anmeldeweg bleibt. Ein Discord-Konto, das schon an einem anderen KREVO-Konto hängt, wird abgewiesen („schon mit einem anderen KREVO-Konto verbunden“), es entsteht kein Doppelkonto.
+- **Google** ist vollständig aus Oberfläche, Auth-Client, Texten, Tests und Doku entfernt. Im Projekt gab es kein Google-Konto (geprüft am 27.10.2026), niemand wird ausgesperrt.
+- Hinweis: Supabase verknüpft eine Discord-Anmeldung automatisch mit einem bestehenden Konto, wenn beide E-Mail-Adressen bestätigt und gleich sind. Das ist festes Supabase-Verhalten (siehe `docs/DISCORD.md`).
+
+### Grundlage für Käufe
+- `supabase/004_krevo_entitlements.sql`: Tabelle `entitlements` je interner Konto-ID, nur eigene Zeilen lesbar, über die API nicht beschreibbar, doppelte Kauf-Ereignisse ausgeschlossen, Funktion `has_entitlement()`. Noch ohne Zahlungsanbieter und ohne Anzeige in der App.
+
+### Storm-Sickness-Warnung
+- Die Warnstufen kommen ausschließlich aus den bisherigen Schwellen: **normal** unter 500 Schaden, **Warnung** ab 500, **akut** ab 600 (geschätzter Storm-Schaden wie bisher). Keine neuen Grenzwerte, Timer und Berechnung unverändert.
+- Neues Warnfeld unter der Zeit nach dem Vorbild der Fortnite-Meldung: lila, Dreieck mit Biohazard-Zeichen (selbst nachgezeichnet, kein Spiel-Asset), weiße Großbuchstaben, Handlungsaufforderung in Orange („Verlasse den Storm.“ bzw. „Sofort raus aus dem Storm!“). Normal ist es ruhig und grau.
+- **Warnung** pulsiert langsam (1,8 s), **akut** schneller (0,75 s) mit kräftigerem Lila, breiterem Rahmen und pochendem Symbol. Die Stufen unterscheiden sich auch ohne Farbe (Titel, Text, Symbolgröße). Die Animation läuft nur, solange der Timer läuft; pausiert bleibt die Warnung stehen, Reset beendet sie sofort. Bei „Bewegung reduzieren“ gibt es keine Animation, die Stufen bleiben an Farbe, Rahmen und Text erkennbar.
+- Die grünen Haken an den Schwellen 500 und 600 sind durch das Gefahrensymbol ersetzt (500 lila umrandet, 600 lila gefüllt).
+- Das Warnfeld hat eine feste Höhe, die Karte springt beim Stufenwechsel nicht (gemessen bei 320 bis 1280 px).
+
+### Match-Notizen entfernt
+- Bereich, Navigationspunkt, Code, Texte, Styles und Tests sind entfernt. Notizen lagen nur im Browser, es gab keine Datenbank-Tabelle. Vorhandene alte Notizen im Browser (`fnc.v1.notes`, `fnc.v1.draft`) werden nicht mehr angezeigt, aber auch **nicht gelöscht**.
+
+### Sonst
+- Datenschutzseite, Meta-Beschreibungen, Manifest und Vorschaubild ohne Notizen, mit Discord. `sw.js` auf `krevo-v9`.
 
 ## Was in Version 6.1 geändert wurde (Auffindbarkeit, Datenschutz, 404)
 
@@ -158,6 +186,20 @@ Die flache Variante lässt sich genauso prüfen: `python3 -m http.server 8098 -d
 Nach jeder Änderung an App-Dateien (auch `config.js`) in `sw.js` die Zeile `const CACHE = 'krevo-v6';` hochzählen (die mitgelieferte Version von V6 steht auf `krevo-v7`, die nächste wäre `krevo-v8`), sonst bleiben alte Dateien im Cache.
 
 **Konten einschalten:** `SETUP-ACCOUNTS.md`.
+
+## Was in Version 7 getestet wurde (ausgeführt am 27.10.2026)
+
+| Suite | Ergebnis | Neu in Version 7 |
+|---|---|---|
+| Unit-Tests (`npm test`) | 162 von 162 | Discord-Weiterleitung mit PKCE, Rückkehr, Verknüpfen (nur angemeldet, gleiches Konto), Konto-Wechsel bei der Rückkehr wird verworfen, Discord an fremdem Konto, Trennen nur mit zweitem Anmeldeweg, kein liegengebliebener Verifier; Notiz-Tests entfernt |
+| Browser, Werkzeuge (`e2e_check.py`) | 414 von 414 | Storm Sickness: normal, Warnung ab 500, akut ab 600 (auch bei 1/s), Animation je Stufe, Pause stoppt sie, Reset beendet sie, keine grünen Haken, keine Höhenänderung, Sprachwechsel, „Bewegung reduzieren“, 320/390/1280 px; Notizen vollständig entfernt (kein Bereich, Tab oder verstecktes Element), alte Notiz-Daten werden nicht gelöscht |
+| Browser, Konten (`e2e_auth.py`) | 327 von 327 | Discord anmelden, abbrechen, Sitzung nach Neuladen, Namensänderung bei Discord ohne neues Konto, reservierter Name, E-Mail-Konto verbinden und trennen, Discord an fremdem Konto abgewiesen, gleiche bestätigte E-Mail ohne Doppelkonto, Verknüpfen nicht freigeschaltet, Discord nicht eingerichtet, kein Google mehr |
+| Browser, Team (`e2e_team.py`) | 184 von 184 | unverändert grün |
+| Browser, Admin (`e2e_admin.py`) | 237 von 237 | unverändert grün |
+| Datenbank (`db_test.py`) | 476 von 476 | Migrationen 001 bis 003 unverändert |
+| Datenbank Käufe (`db_test_entitlements.py`) | 18 von 18 | Migration 004: wiederholbar, nur eigene Zeilen, kein Schreiben über die API, doppelte Kauf-Ereignisse, Ablauf, Entzug, Bindung an die interne ID, 2 Gegenproben |
+
+Alle Browser-Suiten liefen zuletzt gegen genau die flachen Dateien, die auf GitHub liegen (Chromium, Supabase-Nachbau mit Discord-Attrappe auf echtem PostgreSQL 16). **Nicht** gegen echtes Discord, echtes Supabase oder ein echtes iPhone.
 
 ## Was getestet wurde (ausgeführt am 17.10.2026)
 

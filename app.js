@@ -2,7 +2,7 @@ import * as L from './logic.js';
 import * as P from './presets.js';
 import { initMap } from './map.js';
 import { initPresetUI } from './presets-ui.js';
-import { t, getLang, getLocale, initLanguage, setLanguage, onLanguageChange } from './i18n.js';
+import { t, getLocale, initLanguage, setLanguage, onLanguageChange } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -15,8 +15,6 @@ const KEYS = {
   rotation: 'fnc.v1.rotation',
   rotPresets: 'fnc.v1.rotPresets',
   net: 'fnc.v1.net',
-  notes: 'fnc.v1.notes',
-  draft: 'fnc.v1.draft',
   prefs: 'fnc.v1.prefs',
 };
 
@@ -56,7 +54,6 @@ let storm = L.restoreStorm(store.read(KEYS.storm), Date.now());
 let presets = P.restorePresets(store.read(KEYS.rotPresets));
 let rotation = L.restoreRotation(store.read(KEYS.rotation), Date.now(), presets);
 let prefs = { sound: true, ...(store.read(KEYS.prefs) || {}) };
-let notes = L.restoreNotes(store.read(KEYS.notes));
 
 // Ein Countdown, der abgelaufen ist, während die App geschlossen war, zeigt still "abgelaufen" (kein Ton).
 rotation = L.rotationTick(rotation, Date.now()).state;
@@ -132,7 +129,31 @@ const stormEls = {
     { li: $('th-500'), text: $('th-500-text') },
     { li: $('th-600'), text: $('th-600-text') },
   ],
+  card: $('storm'),
+  alert: $('storm-alert'),
+  alertTitle: $('storm-alert-title'),
+  alertText: $('storm-alert-text'),
+  alertCta: $('storm-alert-cta'),
 };
+let sickShown = ''; // zuletzt angezeigte Stufe und Sprache: Texte (und die Ansage für Screenreader) nur bei einem Wechsel neu setzen
+
+// Storm Sickness: Stufe aus den Schwellen, Animation nur solange der Timer läuft. Wechselt die Stufe (auch durch Reset oder
+// eine andere Schadensrate), ersetzt das neue data-level die alte CSS-Animation sofort, es läuft nichts weiter.
+function renderStormSickness(st) {
+  const level = L.stormSicknessLevel(st);
+  const anim = level !== 'normal' && storm.status === 'running' ? 'on' : 'off';
+  if (stormEls.alert.dataset.level !== level) stormEls.alert.dataset.level = level;
+  if (stormEls.card.dataset.sickness !== level) stormEls.card.dataset.sickness = level;
+  if (stormEls.alert.dataset.anim !== anim) stormEls.alert.dataset.anim = anim;
+  const key = `${level}|${getLocale()}`;
+  if (key === sickShown) return;
+  sickShown = key;
+  stormEls.alertTitle.removeAttribute('data-i18n');
+  stormEls.alertText.removeAttribute('data-i18n');
+  setText(stormEls.alertTitle, t(`storm.sick.${level}.title`));
+  setText(stormEls.alertText, t(`storm.sick.${level}.text`));
+  setText(stormEls.alertCta, level === 'normal' ? '' : t(`storm.sick.${level}.cta`));
+}
 
 function buildStormOptions() {
   stormEls.rate.replaceChildren(
@@ -165,6 +186,7 @@ function renderStorm(now = Date.now()) {
         : t('storm.thLeft', { n: fmt(th.remaining), t: L.formatClock(th.secondsLeft) })
     );
   });
+  renderStormSickness(st);
   const label = storm.status === 'running' ? ['pause', t('common.pause')] : storm.status === 'paused' ? ['play', t('common.resume')] : ['play', t('common.start')];
   setButton(stormEls.toggle, label[0], label[1]);
   setText(stormEls.pill, t(`storm.status.${storm.status}`));
@@ -450,183 +472,6 @@ function tickRotation(now) {
   }
 }
 
-// ---------- Notizen ----------
-const noteEls = {
-  input: $('note-input'),
-  save: $('note-save'),
-  exp: $('note-export'),
-  share: $('note-share'),
-  del: $('note-delete'),
-  confirm: $('note-confirm'),
-  confirmOk: $('note-confirm-ok'),
-  confirmCancel: $('note-confirm-cancel'),
-  status: $('note-status'),
-  list: $('note-list'),
-  empty: $('note-empty'),
-};
-const savedDraft = store.read(KEYS.draft);
-if (typeof savedDraft === 'string') noteEls.input.value = savedDraft;
-
-// Statusmeldung merkt sich den Schlüssel und wird beim Sprachwechsel neu übersetzt
-let noteStatus = null;
-let statusTimer = null;
-function renderNoteStatus() {
-  noteEls.status.dataset.kind = noteStatus ? noteStatus.kind : '';
-  setText(noteEls.status, noteStatus ? t(noteStatus.key) : '');
-}
-function say(key, kind = 'ok') {
-  noteStatus = { key, kind };
-  renderNoteStatus();
-  clearTimeout(statusTimer);
-  if (kind === 'ok') {
-    statusTimer = setTimeout(() => {
-      noteStatus = null;
-      renderNoteStatus();
-    }, 4000);
-  }
-}
-
-function renderNotes() {
-  noteEls.list.replaceChildren(
-    ...notes.map((n) => {
-      const li = document.createElement('li');
-      const time = document.createElement('span');
-      time.className = 'note-time';
-      time.textContent = L.formatTimestamp(n.ts, getLang());
-      const text = document.createElement('span');
-      text.className = 'note-text';
-      text.textContent = n.text; // Nutzertext, bleibt unverändert
-      li.append(time, text);
-      return li;
-    })
-  );
-  noteEls.empty.hidden = notes.length > 0;
-}
-
-let draftTimer = null;
-noteEls.input.addEventListener('input', () => {
-  clearTimeout(draftTimer);
-  draftTimer = setTimeout(() => store.write(KEYS.draft, noteEls.input.value), 400);
-});
-// Entwurf nicht verlieren, wenn die App in den Hintergrund geht
-function flushDraft() {
-  clearTimeout(draftTimer);
-  store.write(KEYS.draft, noteEls.input.value);
-}
-
-noteEls.save.addEventListener('click', () => {
-  const entry = L.makeNoteEntry(noteEls.input.value, Date.now());
-  if (!entry) {
-    say('notes.say.empty', 'error');
-    return;
-  }
-  const next = [entry, ...notes];
-  if (!store.write(KEYS.notes, { entries: next })) {
-    say('notes.say.saveFail', 'error');
-    return;
-  }
-  notes = next;
-  noteEls.input.value = '';
-  store.write(KEYS.draft, '');
-  renderNotes();
-  say('notes.say.saved');
-});
-
-function currentExport() {
-  return L.buildNotesExport(notes, noteEls.input.value, { draftLabel: t('notes.draftLabel'), lang: getLang() });
-}
-
-noteEls.exp.addEventListener('click', () => {
-  const text = currentExport();
-  if (!text) {
-    say('notes.say.noExport', 'error');
-    return;
-  }
-  try {
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = L.notesFileName(Date.now(), getLang());
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 10_000);
-    say('notes.say.exported');
-  } catch {
-    say('notes.say.exportFail', 'error');
-  }
-});
-
-async function copyText(text) {
-  if (navigator.clipboard && window.isSecureContext) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.setAttribute('readonly', '');
-  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px';
-  document.body.appendChild(ta);
-  ta.select();
-  ta.setSelectionRange(0, text.length);
-  const ok = document.execCommand && document.execCommand('copy');
-  ta.remove();
-  if (!ok) throw new Error('copy failed');
-}
-
-noteEls.share.addEventListener('click', async () => {
-  const text = currentExport();
-  if (!text) {
-    say('notes.say.noShare', 'error');
-    return;
-  }
-  const name = L.notesFileName(Date.now(), getLang());
-  try {
-    if (navigator.share) {
-      const file = typeof File === 'function' ? new File([text], name, { type: 'text/plain' }) : null;
-      if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: t('notes.shareTitle') });
-      } else {
-        await navigator.share({ title: t('notes.shareTitle'), text });
-      }
-      say('notes.say.shared');
-      return;
-    }
-  } catch (err) {
-    if (err && err.name === 'AbortError') return; // Nutzer hat das Teilen-Menü geschlossen
-  }
-  // Fallback: Teilen nicht verfügbar oder fehlgeschlagen -> kopieren
-  try {
-    await copyText(text);
-    say('notes.say.copied');
-  } catch {
-    say('notes.say.shareFail', 'error');
-  }
-});
-
-noteEls.del.addEventListener('click', () => {
-  noteEls.confirm.hidden = false;
-  noteEls.confirmCancel.focus();
-});
-noteEls.confirmCancel.addEventListener('click', () => {
-  noteEls.confirm.hidden = true;
-  noteEls.del.focus();
-});
-noteEls.confirmOk.addEventListener('click', () => {
-  const ok = store.write(KEYS.notes, { entries: [] }) && store.write(KEYS.draft, '');
-  noteEls.confirm.hidden = true;
-  if (!ok) {
-    say('notes.say.deleteFail', 'error');
-    return;
-  }
-  notes = [];
-  noteEls.input.value = '';
-  renderNotes();
-  say('notes.say.deleted');
-  noteEls.del.focus();
-});
-
 // ---------- Karte (Bild-Upload) ----------
 initMap();
 
@@ -634,7 +479,7 @@ initMap();
 document.querySelectorAll('[data-lang]').forEach((btn) => {
   btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
 });
-// Alle dynamisch erzeugten Texte neu zeichnen. Nutzerdaten (Notizen, Preset-Namen, Zahlen) bleiben unverändert.
+// Alle dynamisch erzeugten Texte neu zeichnen. Nutzerdaten (Preset-Namen, Zahlen) bleiben unverändert.
 onLanguageChange(() => {
   labelQuickButtons();
   buildStormOptions();
@@ -642,8 +487,6 @@ onLanguageChange(() => {
   renderRotation();
   renderSoundToggle();
   renderNet();
-  renderNotes();
-  renderNoteStatus();
   presetUI.render();
 });
 
@@ -713,15 +556,12 @@ setInterval(() => {
 
 // Nach App-Wechsel oder Sperrbildschirm sofort neu berechnen (Zeitstempel statt Hintergrund-Timer)
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) flushDraft();
-  else tick();
+  if (!document.hidden) tick();
 });
 window.addEventListener('pageshow', tick);
 window.addEventListener('focus', tick);
-window.addEventListener('pagehide', flushDraft);
 
 renderNet();
-renderNotes();
 renderSoundToggle();
 tick();
 // Intro (reine Anzeige): Overlay über der bereits fertigen App, es blockiert nichts. Es wird nachgeladen, damit eine
