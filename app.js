@@ -3,11 +3,13 @@ import * as P from './presets.js';
 import { initMap } from './map.js';
 import { initPresetUI } from './presets-ui.js';
 import { t, getLocale, initLanguage, setLanguage, onLanguageChange } from './i18n.js';
+import { initNav } from './nav.js';
 
 const $ = (id) => document.getElementById(id);
 
 // Sprache zuerst setzen, damit die statischen Texte schon vor der ersten Anzeige stimmen
 initLanguage();
+initNav(); // Startseite oder Werkzeuge, Seitenmenü
 
 // ---------- Lokaler Speicher (mit Fehlerbehandlung) ----------
 const KEYS = {

@@ -2,13 +2,14 @@
 // Danach startet die App auch ohne Internet. Updates laden im Hintergrund nach
 // und sind beim nächsten Öffnen aktiv. CACHE hochzählen, wenn Dateien geändert werden (auch config.js).
 // Anfragen an andere Server (Supabase, Discord) fasst der Service Worker nicht an.
-const CACHE = 'krevo-v9';
+const CACHE = 'krevo-v10';
 const ASSETS = [
   './',
   'index.html',
   'datenschutz.html',
   'styles.css',
   'app.js',
+  'nav.js',
   'logic.js',
   'map.js',
   'i18n.js',
@@ -26,6 +27,14 @@ const ASSETS = [
   'team-sync.js',
   'team-ui.js',
   'manifest.webmanifest',
+  'unbounded-500.woff2',
+  'unbounded-600.woff2',
+  'unbounded-700.woff2',
+  'manrope-400.woff2',
+  'manrope-500.woff2',
+  'manrope-600.woff2',
+  'manrope-700.woff2',
+  'manrope-800.woff2',
   'krevo-symbol.svg',
   'krevo-wordmark.svg',
   'favicon.svg',

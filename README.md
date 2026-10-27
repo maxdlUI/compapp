@@ -1,8 +1,10 @@
-# KREVO: Fortnite-Competitive-Companion (PWA), Version 7
+# KREVO: Fortnite-Competitive-Companion (PWA), Version 8
 
 Unabhängiges Fanprojekt, nicht von Epic Games oder Fortnite unterstützt oder betrieben. Läuft als Web-App in Safari auf iPhone, iPad und Desktop. Reines HTML, CSS und JavaScript (ES-Module), kein Build-Schritt, keine Abhängigkeiten, nichts wird von Fremdservern nachgeladen.
 
 Werkzeuge: **Storm-Timer** (Schätzung, 1/2/5/8/10 Schaden pro Sekunde) mit **Storm-Sickness-Warnung**, **Net Damage** (solo oder im Team), **Rotation-Countdown** mit eigenen Presets, **Map** (eigenes Bild hochladen und groß ansehen). Oberfläche auf **Deutsch und Englisch**.
+
+**Neu in Version 8:** neues Design **„Midnight Storm“** (Nachtblau mit Storm-Lila, Glas-Karten, Schriften Unbounded und Manrope), Logo in den neuen Farben, **Startseite** mit Vorstellung, Werkzeug-Übersicht, Q&A und Discord-Kasten (Discord-Server noch nicht verfügbar), **Seitenmenü** mit Werkzeugen, Team, Konto, Sprache und Hilfe. Alle Funktionen bleiben.
 
 **Neu in Version 7:** Anmeldung mit **Discord** (erste Option, E-Mail und Passwort bleiben, Google entfernt), Discord im Profil verbinden und trennen, Datenbank-Grundlage für spätere Käufe, deutlich bedrohlichere **Storm-Sickness-Warnung** mit zwei Warnstufen und Animation. **Entfernt:** Match-Notizen. Anleitung Discord: `docs/DISCORD.md`.
 
@@ -13,6 +15,24 @@ Werkzeuge: **Storm-Timer** (Schätzung, 1/2/5/8/10 Schaden pro Sekunde) mit **St
 **Version 4:** Marke KREVO, Konten (E-Mail und Passwort, damals auch Google), Profil mit eindeutigem Nutzernamen, kurzes Willkommens-Intro. **Entfernt:** Storm Surge.
 
 > **Ehrlicher Stand in einem Satz:** Alles ist gebaut und getestet, aber nicht gegen ein echtes Supabase-Projekt. Konten sind erst „live“, wenn du ein Supabase-Projekt angelegt, die SQL-Dateien ausgeführt und zwei öffentliche Werte in `config.js` eingetragen hast (`SETUP-ACCOUNTS.md`). Admin und Estimated Qual brauchen zusätzlich `supabase/002_…sql` und einen Admin-Eintrag (`docs/ADMIN.md`), der Team-Modus `supabase/003_…sql` (`docs/TEAM.md`). Discord-Login braucht die Einrichtung bei Discord und in Supabase (`docs/DISCORD.md`). Bis dahin läuft die App wie bisher, und der Konto-Knopf sagt offen, was fehlt.
+
+## Was in Version 8 geändert wurde
+
+### Design „Midnight Storm“
+- Farben: Hintergrund `#08070F` mit weichem lila Licht, Text `#EFEAFF`, Akzent Storm-Lila `#A78BFA`. Karten als Glas mit feiner Lichtkante. Gold `#E6CF6E` bleibt nur für den Banner „Estimated Qual“.
+- Schriften: **Unbounded** (Überschriften, große Zahlen) und **Manrope** (Text, Beschriftungen). Beide stehen unter der SIL Open Font License und liegen in `public/fonts/` (Lizenztexte daneben). Es wird nichts von fremden Servern geladen.
+- Knöpfe als Pillen, Hauptaktion lila mit Lichtkante. Werkzeug-Leiste, Dialoge und Karten im selben Stil. Die Storm-Sickness-Warnung bleibt unverändert.
+- **Logo** in den neuen Farben: Schriftzug und Symbol `#EFEAFF`, Balken `#A78BFA`. App-Icons und Favicon: helles Symbol auf nachtblauem Verlauf. Erzeugt mit `tools/recolor-brand.py` (ändert nur Farben, nicht die Form).
+
+### Startseite (kommt immer zuerst)
+- Beim Öffnen der App erscheint die Startseite: Vorstellung mit „Tools öffnen“ und „Mit Discord anmelden“ (angemeldet: „Konto öffnen“), eine als **Beispielansicht** beschriftete Vorschau, „Was KREVO kann“ (die Karten springen direkt zum Werkzeug), **Q&A** mit fünf Fragen und ein Discord-Kasten. Der Knopf „Discord beitreten“ ist deaktiviert und zeigt **„Noch nicht verfügbar“**, bis es einen Einladungslink gibt.
+- Direkt zu den Werkzeugen geht es bei Links auf ein Werkzeug (`#storm`, `#damage`, `#rotation`, `#map`, `#tools`), bei Team-Einladungslinks (`?team=`) und beim Neuladen innerhalb derselben Sitzung (z. B. Rückkehr von der Discord-Anmeldung). Gemerkt wird das nur in `sessionStorage` (`fnc.v1.view`).
+- Die Werkzeuge laufen auf der Startseite weiter (Timer, Team-Abgleich), nur die Anzeige ist versteckt.
+- Der Banner „Estimated Qual“ erscheint wie bisher oben in den Werkzeugen.
+
+### Kopfzeile und Seitenmenü
+- Kopfzeile als Glasleiste: Menü-Knopf, Marke, ab 960 px Breite die Navigation (Start, Tools, Team, Q&A, Discord mit „Bald“), Sprache und Konto. Auf dem Handy steht links der Menü-Knopf; das Symbol ist dort ausgeblendet, die Wortmarke bleibt.
+- **Seitenmenü:** „Tools öffnen“, Konto (öffnet den Konto-Dialog), Start, Werkzeuge (Storm, Net Damage, Rotation, Map), Team-Session, Profil & Discord, Sprache (DE/EN), Q&A, Discord-Server („Noch nicht verfügbar“), Datenschutz.
 
 ## Was in Version 7 geändert wurde
 

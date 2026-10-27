@@ -19,7 +19,7 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#14120d">
+  <meta name="theme-color" content="#08070f">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -65,15 +65,33 @@
       <linearGradient id="hz-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a46cf5"/><stop offset="1" stop-color="#6a2fd4"/></linearGradient>
       <mask id="hz-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect width="100" height="100" fill="#fff"/><g fill="#000"><circle cx="50.00" cy="39.50" r="9.2"/><circle cx="65.16" cy="65.75" r="9.2"/><circle cx="34.84" cy="65.75" r="9.2"/><circle cx="50" cy="57" r="4.3"/></g><g stroke="#000" stroke-width="2.2"><line x1="50.00" y1="57.00" x2="50.00" y2="47.00"/><line x1="50.00" y1="57.00" x2="58.66" y2="62.00"/><line x1="50.00" y1="57.00" x2="41.34" y2="62.00"/></g></mask>
       <symbol id="i-hazard" viewBox="0 0 100 100"><path d="M50 9L91 82H9Z" fill="#c4c4c4" stroke="#c4c4c4" stroke-width="12" stroke-linejoin="round"/><path d="M50 14L86.5 79H13.5Z" fill="url(#hz-fill)" stroke="url(#hz-fill)" stroke-width="5" stroke-linejoin="round"/><g mask="url(#hz-cut)" fill="#fff"><circle cx="50.00" cy="44.00" r="12.5"/><circle cx="61.26" cy="63.50" r="12.5"/><circle cx="38.74" cy="63.50" r="12.5"/><circle cx="50" cy="57" r="10.5" fill="none" stroke="#fff" stroke-width="2.6"/></g><circle cx="50" cy="57" r="2.6" fill="#fff"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 16.8v.2"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6z"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+      <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></symbol>
+      <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-discord" viewBox="0 0 127.14 96.36"><path fill="currentColor" stroke="none" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></symbol>
     </defs>
   </svg>
 
   <div class="brandbar">
+    <button id="menu-btn" class="round-btn menu-btn" type="button" aria-haspopup="dialog" aria-controls="menu" data-i18n-attr="aria-label=menu.open" aria-label="Menü öffnen"><svg class="i" aria-hidden="true"><use href="#i-menu"/></svg></button>
     <h1 class="brand">
       <img class="brand-symbol" src="krevo-symbol.svg" alt="" width="30" height="30" decoding="async">
       <img class="brand-word" src="krevo-wordmark.svg" alt="KREVO" width="127" height="17" decoding="async">
       <span class="sr-only" data-i18n="brand.tagline">Storm-Timer und Net Damage für Fortnite Competitive</span>
     </h1>
+    <nav class="hnav" data-i18n-attr="aria-label=menu.main" aria-label="Hauptnavigation">
+      <a class="hnav-link" href="#start" data-go="start" data-i18n="menu.start">Start</a>
+      <a class="hnav-link" href="#tools" data-go="tools" data-i18n="menu.tools">Tools</a>
+      <a class="hnav-link" href="#damage" data-go="team" data-i18n="menu.team">Team</a>
+      <a class="hnav-link" href="#faq" data-go="faq" data-i18n="menu.faq">Q&amp;A</a>
+      <span class="hnav-link is-soon" aria-disabled="true"><span data-i18n="menu.discord">Discord</span> <span class="soon" data-i18n="common.soon">Bald</span></span>
+    </nav>
     <div class="bar-tools">
       <div class="lang" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache">
         <button type="button" class="lang-btn" data-lang="de" lang="de" aria-label="Deutsch" aria-pressed="true">DE</button>
@@ -84,6 +102,77 @@
         <span id="acct-label" class="acct-label" data-i18n="auth.btn.signIn">Anmelden</span>
       </button>
     </div>
+  </div>
+
+  <!-- Startseite: Vorstellung, Werkzeuge, Q&A, Discord. Kommt beim Öffnen der App immer zuerst (nav.js). -->
+  <div id="start" class="start" data-i18n-attr="aria-label=start.label" aria-label="Start" role="region">
+    <section class="s-hero" aria-labelledby="s-title">
+      <p class="s-kicker"><span class="s-dot" aria-hidden="true"></span><span data-i18n="start.kicker">Storm · Net Damage · Team</span></p>
+      <h2 id="s-title" class="s-title"><span data-i18n="start.title1">Behalte den Storm</span> <em data-i18n="start.title2">im Griff.</em></h2>
+      <p class="s-lead" data-i18n="start.lead">Storm-Schaden, Net Damage, Rotation und deine Map an einem Ort. Solo sofort, im Duo und Trio mit Discord.</p>
+      <div class="s-cta">
+        <a class="btn btn-primary btn-pill" href="#tools" data-go="tools"><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg><span data-i18n="start.open">Tools öffnen</span></a>
+        <button id="start-account" class="btn btn-discord btn-pill" type="button" data-go="account"><svg class="i d-mark" aria-hidden="true"><use href="#i-discord"/></svg><span id="start-account-label" data-i18n="start.discord">Mit Discord anmelden</span></button>
+      </div>
+    </section>
+
+    <div class="s-stage" aria-hidden="true">
+      <div class="s-side s-side-l glass"><span class="s-lab" data-i18n="net.title">Net Damage</span><strong class="s-pos">+214</strong><span class="s-small" data-i18n="start.ex.net">1.240 dealt · 1.026 taken</span></div>
+      <div class="s-side s-side-r glass"><span class="s-lab" data-i18n="rot.title">Rotation</span><strong>0:48</strong><span class="s-small" data-i18n="start.ex.rot">Preset 2:00 · läuft</span></div>
+      <div class="s-card glass">
+        <div class="s-card-head"><span data-i18n="start.ex.storm">Storm · 10 Schaden/s</span><span class="s-live" data-i18n="storm.status.running">Läuft</span></div>
+        <div class="s-nums">
+          <div><span class="s-lab" data-i18n="storm.time">Zeit</span><strong>00:55</strong></div>
+          <div><span class="s-lab" data-i18n="start.ex.damage">Schaden</span><strong>550</strong></div>
+          <div><span class="s-lab" data-i18n="start.ex.to600">Bis 600</span><strong>0:05</strong></div>
+        </div>
+        <div class="s-bar"><i></i></div>
+        <div class="storm-alert" data-level="warning" data-anim="off">
+          <svg class="sa-icon"><use href="#i-hazard"/></svg>
+          <p class="sa-copy"><span class="sa-title" data-i18n="storm.sick.warning.title">Warnung: Storm Sickness</span><span class="sa-text"><span data-i18n="storm.sick.warning.text">500 Schaden erreicht (geschätzt).</span> <strong class="sa-cta" data-i18n="storm.sick.warning.cta">Verlasse den Storm.</strong></span></p>
+        </div>
+      </div>
+      <p class="s-example" data-i18n="start.example">Beispielansicht</p>
+    </div>
+
+    <section class="s-section" aria-labelledby="s-tools">
+      <p class="s-eyebrow" data-i18n="start.toolsEyebrow">Werkzeuge</p>
+      <h2 id="s-tools" class="s-h2" data-i18n="start.toolsTitle">Was KREVO kann</h2>
+      <p class="s-sub" data-i18n="start.toolsSub">Alles bleibt auf deinem Gerät. Nur der Team-Modus braucht ein Konto.</p>
+      <div class="s-features">
+        <a class="s-feat glass" href="#storm" data-go="storm"><span class="s-ic"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg></span><span class="s-feat-t" data-i18n="nav.storm">Storm</span><span class="s-feat-d" data-i18n="start.f.storm">Schaden schätzen, Storm-Sickness-Warnung ab 500.</span></a>
+        <a class="s-feat glass" href="#damage" data-go="damage"><span class="s-ic"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg></span><span class="s-feat-t" data-i18n="net.title">Net Damage</span><span class="s-feat-d" data-i18n="start.f.net">Dealt minus Taken, mit Schnellknöpfen und Rückgängig.</span></a>
+        <a class="s-feat glass" href="#damage" data-go="team"><span class="s-ic"><svg class="i" aria-hidden="true"><use href="#i-team"/></svg></span><span class="s-feat-t" data-i18n="menu.team">Team</span><span class="s-feat-d" data-i18n="start.f.team">Duo oder Trio per Link, Team Net Surge als Summe.</span></a>
+        <a class="s-feat glass" href="#rotation" data-go="rotation"><span class="s-ic"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg></span><span class="s-feat-t" data-i18n="nav.rotation">Rotation</span><span class="s-feat-d" data-i18n="start.f.rot">Countdown mit eigenen Presets und Ton.</span></a>
+        <a class="s-feat glass" href="#map" data-go="map"><span class="s-ic"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg></span><span class="s-feat-t" data-i18n="nav.map">Map</span><span class="s-feat-d" data-i18n="start.f.map">Eigene Map hochladen und im Vollbild zoomen.</span></a>
+      </div>
+    </section>
+
+    <section id="faq" class="s-section" aria-labelledby="s-faq">
+      <p class="s-eyebrow" data-i18n="menu.faq">Q&amp;A</p>
+      <h2 id="s-faq" class="s-h2" data-i18n="faq.title">Fragen &amp; Antworten</h2>
+      <p class="s-sub" data-i18n="faq.sub">Kurz erklärt, was KREVO kann und was nicht.</p>
+      <div class="faq">
+        <details class="faq-item glass"><summary><span data-i18n="faq.q1">Liest KREVO Daten aus Fortnite?</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><p data-i18n="faq.a1">Nein. KREVO greift nicht auf das Spiel zu. Den Storm-Schaden schätzt der Timer aus der gewählten Schadensrate, Net Damage und Map trägst du selbst ein.</p></details>
+        <details class="faq-item glass"><summary><span data-i18n="faq.q2">Brauche ich ein Konto?</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><p data-i18n="faq.a2">Nein. Storm, Net Damage, Rotation und Map funktionieren ohne Konto und bleiben auf deinem Gerät. Ein Konto (Discord oder E-Mail) brauchst du nur für den Team-Modus.</p></details>
+        <details class="faq-item glass"><summary><span data-i18n="faq.q3">Wie funktioniert der Team-Modus?</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><p data-i18n="faq.a3">Melde dich an, tippe bei Net Damage auf „Team“ und erstelle ein Duo oder Trio. Den Einladungslink schickst du deinen Mitspielern. Jeder trägt seine eigenen Werte ein, KREVO zeigt die Summe als Team Net Surge. Die Werte gleichen sich etwa alle 3 Sekunden ab.</p></details>
+        <details class="faq-item glass"><summary><span data-i18n="faq.q4">Werden meine Daten gespeichert?</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><p data-i18n="faq.a4">Timer, Presets und Map bleiben im Speicher deines Browsers. Mit Konto speichert KREVO E-Mail-Adresse und Nutzername, mit Discord zusätzlich deine Discord-ID und im Team-Modus deine Team-Werte. Mehr dazu auf der Datenschutzseite.</p></details>
+        <details class="faq-item glass"><summary><span data-i18n="faq.q5">Kostet KREVO etwas?</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><p data-i18n="faq.a5">Noch nicht. Im Moment ist alles kostenlos. In Zukunft könnte es Premium-Funktionen geben.</p></details>
+      </div>
+    </section>
+
+    <section class="s-discord" aria-labelledby="s-dc">
+      <svg class="s-dc-logo" aria-hidden="true"><use href="#i-discord"/></svg>
+      <h2 id="s-dc" class="s-h2" data-i18n="start.dcTitle">Komm in den Discord</h2>
+      <p data-i18n="start.dcText">Feedback, Ideen und Team-Partner finden.</p>
+      <button class="btn btn-pill s-dc-btn" type="button" disabled aria-describedby="s-dc-soon"><span data-i18n="start.dcJoin">Discord beitreten</span><svg class="i" aria-hidden="true"><use href="#i-ext"/></svg></button>
+      <p id="s-dc-soon" class="s-dc-soon" data-i18n="common.notYet">Noch nicht verfügbar</p>
+    </section>
+
+    <footer class="footnote s-foot">
+      <p data-i18n="footer.short">Unabhängiges Fanprojekt. Nicht von Epic Games oder Fortnite unterstützt oder betrieben.</p>
+      <p class="foot-links"><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a> · <a href="#faq" data-go="faq" data-i18n="menu.faq">Q&amp;A</a></p>
+    </footer>
   </div>
 
   <header class="topbar">
@@ -324,7 +413,7 @@
             <defs><pattern id="mapgrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-opacity=".14"/></pattern></defs>
             <rect width="320" height="170" rx="14" fill="url(#mapgrid)"/>
             <circle cx="170" cy="88" r="72" fill="none" stroke="#b79cff" stroke-opacity=".5" stroke-width="2" stroke-dasharray="4 7"/>
-            <circle cx="170" cy="88" r="43" fill="none" stroke="#e6cf6e" stroke-opacity=".7" stroke-width="2"/>
+            <circle cx="170" cy="88" r="43" fill="none" stroke="#a78bfa" stroke-opacity=".7" stroke-width="2"/>
             <circle cx="170" cy="88" r="4" fill="#f2efe6"/>
             <path d="M52 134l42-30 30 12 26-28" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -373,6 +462,41 @@
   </div>
 
   <!-- Konto: Anmelden, Registrieren, Passwort, Profil -->
+  <!-- Seitenmenü (nav.js) -->
+  <dialog id="menu" class="drawer" aria-labelledby="menu-title">
+    <div class="drawer-body">
+      <div class="drawer-head">
+        <img class="drawer-mark" src="krevo-symbol.svg" alt="" width="30" height="30" decoding="async">
+        <img class="drawer-word" src="krevo-wordmark.svg" alt="" width="110" height="15" decoding="async">
+        <h2 id="menu-title" class="sr-only" data-i18n="menu.title">Menü</h2>
+        <button id="menu-close" class="round-btn" type="button" data-i18n-attr="aria-label=auth.close" aria-label="Schließen"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <a class="btn btn-primary btn-pill btn-block" href="#tools" data-go="tools"><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg><span data-i18n="start.open">Tools öffnen</span></a>
+      <button id="menu-account" class="drawer-acct glass" type="button" data-go="account">
+        <span id="menu-avatar" class="avatar avatar-md" aria-hidden="true"><svg class="i"><use href="#i-user"/></svg></span>
+        <span class="drawer-acct-t"><b id="menu-acct-name" data-i18n="auth.btn.signIn">Anmelden</b><small id="menu-acct-sub" data-i18n="menu.acctOut">Mit Discord oder E-Mail</small></span>
+      </button>
+      <nav class="drawer-nav" data-i18n-attr="aria-label=menu.main" aria-label="Hauptnavigation">
+        <a class="dr" href="#start" data-go="start"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="menu.start">Start</span></a>
+        <p class="dg"><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg><span data-i18n="start.toolsEyebrow">Werkzeuge</span></p>
+        <a class="dr" href="#storm" data-go="storm"><svg class="i" aria-hidden="true"><use href="#i-storm"/></svg><span data-i18n="nav.storm">Storm</span></a>
+        <a class="dr" href="#damage" data-go="damage"><svg class="i" aria-hidden="true"><use href="#i-net"/></svg><span data-i18n="net.title">Net Damage</span></a>
+        <a class="dr" href="#rotation" data-go="rotation"><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg><span data-i18n="nav.rotation">Rotation</span></a>
+        <a class="dr" href="#map" data-go="map"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="nav.map">Map</span></a>
+        <p class="dg"><svg class="i" aria-hidden="true"><use href="#i-team"/></svg><span data-i18n="menu.team">Team</span></p>
+        <a class="dr" href="#damage" data-go="team"><svg class="i" aria-hidden="true"><use href="#i-team"/></svg><span data-i18n="menu.teamSession">Team-Session</span></a>
+        <p class="dg"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="menu.account">Konto</span></p>
+        <button class="dr" type="button" data-go="account"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="menu.profile">Profil &amp; Discord</span></button>
+        <div class="dr dr-lang"><svg class="i" aria-hidden="true"><use href="#i-globe"/></svg><span data-i18n="lang.label">Sprache</span>
+          <span class="dr-seg" role="group" data-i18n-attr="aria-label=lang.label" aria-label="Sprache"><button type="button" data-menu-lang="de" lang="de" aria-pressed="true">DE</button><button type="button" data-menu-lang="en" lang="en" aria-pressed="false">EN</button></span></div>
+        <p class="dg"><svg class="i" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="menu.help">Hilfe</span></p>
+        <a class="dr" href="#faq" data-go="faq"><svg class="i" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="menu.faq">Q&amp;A</span></a>
+        <span class="dr is-soon" aria-disabled="true"><svg class="i" aria-hidden="true"><use href="#i-discord"/></svg><span class="dr-t"><span data-i18n="menu.discordServer">Discord-Server</span><small class="dr-soon" data-i18n="common.notYet">Noch nicht verfügbar</small></span></span>
+        <a class="dr" href="datenschutz.html"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="footer.privacy">Datenschutz</span></a>
+      </nav>
+    </div>
+  </dialog>
+
   <dialog id="account-dialog" class="dlg" aria-labelledby="dlg-title">
     <div class="dlg-body">
       <div class="dlg-head">
@@ -628,11 +752,11 @@
   <div id="intro" class="intro" aria-hidden="true" hidden>
     <div class="intro-stage">
       <svg class="intro-mark" viewBox="0 0 200 200" focusable="false">
-        <path class="im-left" fill="#F4F1E8" d="M126.76 3.65L52.4 78L52.4 126.54L123.15 197.28A100 100 0 1 1 126.76 3.65Z"/>
-        <path class="im-right" fill="#F4F1E8" d="M98.1 114.79L176.86 36.02A100 100 0 0 1 161.87 178.56Z"/>
-        <path class="im-bar" fill="#E6CF6E" d="M72.81 80.48L143.39 9.9A100 100 0 0 1 165.76 24.66L91.38 99.05Z"/>
+        <path class="im-left" fill="#EFEAFF" d="M126.76 3.65L52.4 78L52.4 126.54L123.15 197.28A100 100 0 1 1 126.76 3.65Z"/>
+        <path class="im-right" fill="#EFEAFF" d="M98.1 114.79L176.86 36.02A100 100 0 0 1 161.87 178.56Z"/>
+        <path class="im-bar" fill="#A78BFA" d="M72.81 80.48L143.39 9.9A100 100 0 0 1 165.76 24.66L91.38 99.05Z"/>
       </svg>
-      <svg class="intro-word" viewBox="0 0 766 102.94" focusable="false"><path fill="#F4F1E8" fill-rule="evenodd" d="M0 0L0 102.94L27.91 102.94L27.91 0ZM42.75 39.87L42.75 60.78L94.54 102.94L135.53 102.94L72.6 51.05L135.53 0L94.54 0ZM169.56 0L169.56 102.94L198.5 102.94L198.5 55.4L255.38 102.94L295.88 102.94L258.12 69.94L274.56 69.94L295.88 50.31L295.88 20.53L274.56 0ZM198.5 23.57L263.69 23.57L267.94 28.07L267.94 42.15L263.69 45.78L198.5 45.78ZM333 0L333 102.94L445.38 102.94L445.38 78.85L361.77 78.85L361.77 63.03L436.56 63.03L436.56 39.87L361.77 39.87L361.77 23.57L445.38 23.57L445.38 0ZM472.25 0L527.69 102.94L559.62 102.94L614 0L583.12 0L542.69 73.81L503.75 0ZM766 23.57L742.44 0L660.75 0L637.12 23.57L637.12 80.72L660.75 102.94L742.44 102.94L766 80.72ZM665.75 28.07L669.88 23.57L733.31 23.57L737.81 28.07L737.81 73.81L733.31 78.85L669.88 78.85L665.75 73.81Z"/></svg>
+      <svg class="intro-word" viewBox="0 0 766 102.94" focusable="false"><path fill="#EFEAFF" fill-rule="evenodd" d="M0 0L0 102.94L27.91 102.94L27.91 0ZM42.75 39.87L42.75 60.78L94.54 102.94L135.53 102.94L72.6 51.05L135.53 0L94.54 0ZM169.56 0L169.56 102.94L198.5 102.94L198.5 55.4L255.38 102.94L295.88 102.94L258.12 69.94L274.56 69.94L295.88 50.31L295.88 20.53L274.56 0ZM198.5 23.57L263.69 23.57L267.94 28.07L267.94 42.15L263.69 45.78L198.5 45.78ZM333 0L333 102.94L445.38 102.94L445.38 78.85L361.77 78.85L361.77 63.03L436.56 63.03L436.56 39.87L361.77 39.87L361.77 23.57L445.38 23.57L445.38 0ZM472.25 0L527.69 102.94L559.62 102.94L614 0L583.12 0L542.69 73.81L503.75 0ZM766 23.57L742.44 0L660.75 0L637.12 23.57L637.12 80.72L660.75 102.94L742.44 102.94L766 80.72ZM665.75 28.07L669.88 23.57L733.31 23.57L737.81 28.07L737.81 73.81L733.31 78.85L669.88 78.85L665.75 73.81Z"/></svg>
     </div>
   </div>
 
