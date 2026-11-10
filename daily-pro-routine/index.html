@@ -1,6 +1,6 @@
-<title>Daily Pro Routine</title>
+<title>Repline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Daily Pro Routine: Ziel wählen, Länge wählen, Block für Block trainieren.">
+<meta name="description" content="Repline · Daily Pro Routine: Ziel wählen, Länge wählen, Block für Block trainieren.">
 <style>
 /* Layout: schwarze Apple-Produktseite (iPhone 18 Pro, Refero). Ein Homescreen, dann ein geführter Ablauf
    Ziel → Länge → Plan → Training → Geschafft. Blau nur für Hauptaktionen; die Blockfarben Cyan → Violett sind die "Gerätefarbe". */
@@ -293,7 +293,7 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 
 <header class="top">
   <div class="top-in">
-    <a class="brand" href="#" aria-label="Zum Homescreen"><span class="ph">***</span></a>
+    <a class="brand" href="#" aria-label="Repline, zum Homescreen">Repline</a>
     <nav aria-label="Hauptnavigation"><a href="#ziel">Routinen</a><a href="#ki">KI-Training</a><a href="#" data-scroll="fortschritt">Fortschritt</a><a href="#" data-scroll="fragen">Fragen</a></nav>
     <a class="pill sm" href="#ziel">Routine starten</a>
   </div>
@@ -452,7 +452,7 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 </main>
 
 <footer>
-  <div class="wrap"><span><span class="ph">***</span> · Unabhängiges Angebot, nicht mit Epic Games verbunden.</span><span>Impressum <span class="ph">***</span> · Datenschutz <span class="ph">***</span></span></div>
+  <div class="wrap"><span>Repline · Unabhängiges Angebot, nicht mit Epic Games verbunden.</span><span>Impressum <span class="ph">***</span> · Datenschutz <span class="ph">***</span></span></div>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -716,7 +716,7 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     main.disabled = kill && S.status !== "fertig";
     $("b-restart").disabled = kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
-    document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Daily Pro Routine` : "Daily Pro Routine";
+    document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
   }
   function loop() {
     if (S.status !== "laeuft") return;
