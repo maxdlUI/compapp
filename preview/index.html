@@ -1,0 +1,678 @@
+<title>KREVO Vorschau</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Vorschau der neuen KREVO-Webseite im Apple-Design, mit Scroll-Animationen.">
+<style>
+/* Layout: lange schwarze Produktseite (Apple iPhone 18 Pro, Refero). Tall sticky scenes drive scroll-linked animation.
+   Lila (#a78bfa) erscheint nur im "Produkt", Blau nur für Hauptaktionen. */
+:root {
+  color-scheme: dark;
+  --obsidian: #000000;
+  --graphite: #0e0e0e;
+  --nav-open: #161617;
+  --carbon: #1d1d1f;
+  --steel: #333336;
+  --slate: #6e6e73;
+  --ash: #86868b;
+  --dim: #424245;
+  --porcelain: #f5f5f7;
+  --white: #ffffff;
+  --blue: #0071e3;
+  --blue-hover: #0077ed;
+  --link: #2997ff;
+  --link-pale: #0066cc;
+  --copper: #b64400;
+  --pos: #5ed39a;
+  --neg: #ff7d6e;
+  --storm: #a78bfa;
+  --storm-deep: #3b1d7a;
+  --sick: #6421c4;
+  --keyline: #282828;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --ease: cubic-bezier(.28, .11, .32, 1);
+  --gut-l: max(16px, env(safe-area-inset-left, 0px));
+  --gut-r: max(16px, env(safe-area-inset-right, 0px));
+}
+* { box-sizing: border-box; }
+html { background: var(--obsidian); }
+body {
+  margin: 0; background: var(--obsidian); color: var(--porcelain);
+  font-family: var(--text); font-size: 17px; line-height: 1.47; letter-spacing: -0.374px;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--obsidian); }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 1060px; margin: 0 auto; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* ---------- Typo ---------- */
+.d-xl { font-family: var(--display); font-weight: 600; font-size: clamp(48px, 7.6vw, 96px); line-height: 1.04; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.d-l { font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5.6vw, 80px); line-height: 1.05; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.d-m { font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4vw, 56px); line-height: 1.07; letter-spacing: -0.005em; margin: 0; text-wrap: balance; }
+.pname { font-family: var(--display); font-weight: 600; font-size: clamp(24px, 2.4vw, 32px); line-height: 1.13; letter-spacing: 0.004em; margin: 0; }
+.lead { font-size: clamp(17px, 1.6vw, 21px); line-height: 1.38; color: var(--ash); margin: 0; max-width: 40ch; letter-spacing: 0.01em; }
+.lead b { color: var(--porcelain); font-weight: 600; }
+.new { color: var(--copper); font-weight: 600; font-size: 14px; letter-spacing: -0.224px; }
+.more { font-size: 17px; }
+.more::after { content: " ›"; }
+
+/* ---------- Knöpfe ---------- */
+.pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 980px; background: var(--blue); color: var(--white); font-size: 17px; letter-spacing: -0.374px; padding: 11px 22px; cursor: pointer; white-space: nowrap; transition: background .2s; text-decoration: none; }
+.pill:hover { background: var(--blue-hover); text-decoration: none; }
+.pill.sm { font-size: 12px; letter-spacing: -0.12px; padding: 4px 12px; }
+.pill.out { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--porcelain); }
+.pill.out:hover { box-shadow: inset 0 0 0 1px var(--porcelain); background: transparent; }
+.pill[disabled] { opacity: .55; cursor: default; }
+.capsule { display: inline-flex; align-items: center; border-radius: 36px; background: rgba(66, 66, 69, .72); color: rgba(255, 255, 255, .8); font-size: 14px; letter-spacing: -0.224px; padding: 11px 20px; white-space: nowrap; }
+
+/* ---------- Navigation ---------- */
+.gnav { height: 44px; background: var(--obsidian); position: relative; z-index: 40; }
+.gnav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1024px; }
+.gnav a { color: rgba(255, 255, 255, .8); font-size: 12px; letter-spacing: -0.12px; }
+.gnav a:hover { color: var(--white); text-decoration: none; }
+.gnav .logo { display: flex; color: #ccc; }
+.gnav .logo svg { width: 16px; height: 16px; }
+.gnav .links { display: flex; gap: 32px; }
+.menu-btn { display: none; background: none; border: 0; width: 44px; height: 44px; margin-right: -12px; cursor: pointer; color: #ccc; }
+.menu-btn span { display: block; width: 17px; height: 1px; background: currentColor; margin: 5px auto; transition: transform .3s var(--ease); }
+body.menu-open .menu-btn span:first-child { transform: translateY(3px) rotate(45deg); }
+body.menu-open .menu-btn span:last-child { transform: translateY(-3px) rotate(-45deg); }
+@media (max-width: 833px) { .gnav .links { display: none; } .menu-btn { display: block; } }
+
+.flyout { position: fixed; inset: 44px 0 0; background: var(--nav-open); z-index: 39; padding-block: 24px 40px; padding-left: calc(var(--gut-l) + 16px); padding-right: var(--gut-r); visibility: hidden; opacity: 0; transition: opacity .3s var(--ease), visibility 0s .3s; }
+body.menu-open .flyout { visibility: visible; opacity: 1; transition: opacity .3s var(--ease); }
+.flyout a { display: block; color: var(--porcelain); font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.6; transform: translateY(-8px); opacity: 0; transition: transform .4s var(--ease), opacity .4s var(--ease); }
+body.menu-open .flyout a { transform: none; opacity: 1; }
+body.menu-open .flyout a:nth-child(2) { transition-delay: .03s; } body.menu-open .flyout a:nth-child(3) { transition-delay: .06s; }
+body.menu-open .flyout a:nth-child(4) { transition-delay: .09s; } body.menu-open .flyout a:nth-child(5) { transition-delay: .12s; }
+body.menu-open .flyout a:nth-child(6) { transition-delay: .15s; }
+.flyout .small { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.flyout .small a { font-family: var(--text); font-size: 14px; font-weight: 400; color: var(--ash); line-height: 1.4; }
+
+.strip { background: var(--carbon); text-align: center; font-size: 14px; letter-spacing: -0.224px; padding-block: 18px; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+
+.lnav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; padding-top: 10px; padding-left: var(--gut-l); padding-right: var(--gut-r); pointer-events: none; }
+.lnav-in { pointer-events: auto; max-width: 1024px; margin: 0 auto; height: 52px; border-radius: 20px; background: rgba(14, 14, 14, .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; gap: 24px; padding: 0 12px 0 20px; }
+.lnav .name { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.012em; margin-right: auto; color: var(--porcelain); }
+.lnav .name:hover { text-decoration: none; }
+.lnav nav { display: flex; gap: 22px; }
+.lnav nav a { color: var(--ash); font-size: 14px; letter-spacing: -0.224px; transition: color .2s; }
+.lnav nav a:hover, .lnav nav a.on { color: var(--porcelain); text-decoration: none; }
+@media (max-width: 760px) { .lnav nav { display: none; } }
+
+/* ---------- Reveal (nur mit Bewegung) ---------- */
+html.anim .rv { opacity: 0; transform: translateY(48px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+html.anim .rv.in { opacity: 1; transform: none; }
+html.anim .rv.d1 { transition-delay: .08s; } html.anim .rv.d2 { transition-delay: .16s; } html.anim .rv.d3 { transition-delay: .24s; }
+html.anim .rv.d4 { transition-delay: .32s; } html.anim .rv.d5 { transition-delay: .4s; }
+
+/* ---------- 1 Hero (sticky, scroll-gekoppelt) ---------- */
+.hero { position: relative; }
+html.anim .hero { height: 190vh; }
+.hero-stage { position: relative; min-height: min(100svh, 980px); display: grid; grid-template-rows: auto auto; align-content: start; justify-items: center; overflow: hidden; padding-top: 36px; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+html.anim .hero-stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
+.hero-glow { position: absolute; inset: auto 0 0; height: 70%; background: radial-gradient(50% 60% at 50% 100%, rgba(124, 58, 237, .35), transparent 70%); opacity: var(--glow, .6); pointer-events: none; }
+.phone-wrap { align-self: end; display: grid; place-items: end center; transform: translateY(var(--py, 0px)) scale(var(--ps, 1)); transform-origin: 50% 100%; will-change: transform; min-height: 0; }
+.hero-copy { position: relative; display: grid; justify-items: center; gap: 10px; text-align: center; padding-block: 20px 32px; opacity: var(--co, 1); transform: translateY(var(--cy, 0px)); }
+.hero-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+html.anim .intro-a { animation: rise 1.4s var(--ease) both; }
+html.anim .intro-b { animation: rise 1.4s var(--ease) .25s both; }
+html.anim .intro-c { animation: rise 1.4s var(--ease) .45s both; }
+html.anim .intro-p { animation: phoneIn 1.8s var(--ease) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes phoneIn { from { opacity: 0; transform: translateY(120px) scale(.94); } to { opacity: 1; transform: none; } }
+
+/* iPhone */
+.phone { position: relative; height: clamp(280px, 40svh, 520px); aspect-ratio: 9 / 19.3; max-width: 100%; border-radius: 15% / 7%; background: linear-gradient(145deg, #3a3a3d, #1a1a1c 40%, #2a2a2d); padding: 3.4%; box-shadow: inset 0 0 0 1px #4a4a4e; }
+.phone .scr { position: relative; height: 100%; border-radius: 12% / 5.6%; overflow: hidden; background: radial-gradient(120% 70% at 50% 0%, #2a1a52 0%, #0b0618 55%, #000 100%); display: grid; align-content: start; justify-items: center; padding-top: 22%; gap: 5%; }
+.phone .island { position: absolute; top: 2.6%; left: 50%; transform: translateX(-50%); width: 32%; height: 4%; border-radius: 99px; background: #000; }
+.phone .chip { font-size: clamp(9px, .8vw, 11px); padding: 3px 9px; border-radius: 99px; background: rgba(167, 139, 250, .18); color: #d9ccff; letter-spacing: 0; }
+.ring { --v: 0; position: relative; width: 70%; aspect-ratio: 1; border-radius: 50%; background: conic-gradient(var(--storm) calc(var(--v) * 1%), rgba(167, 139, 250, .14) 0); display: grid; place-items: center; }
+.ring::before { content: ""; position: absolute; inset: 7%; border-radius: 50%; background: #0b0618; }
+.ring > div { position: relative; text-align: center; }
+.ring b { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 3.2vw, 44px); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.ring small { font-size: clamp(9px, .8vw, 11px); color: var(--ash); letter-spacing: 0; }
+.phone .rows { width: 82%; display: grid; gap: 6px; }
+.phone .rows div { display: flex; justify-content: space-between; font-size: clamp(9px, .85vw, 12px); color: var(--ash); background: rgba(255, 255, 255, .06); border-radius: 10px; padding: 7px 10px; letter-spacing: 0; }
+.phone .rows b { color: var(--porcelain); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- 2 Storm-Scrollytelling ---------- */
+.storm { position: relative; }
+html.anim .storm { height: 320vh; }
+.storm-stage { position: relative; overflow: hidden; display: grid; align-content: center; padding-block: 96px; }
+html.anim .storm-stage { position: sticky; top: 0; height: 100svh; padding-block: 72px 24px; }
+.storm-glow { position: absolute; inset: 0; background: radial-gradient(55% 60% at 70% 55%, var(--storm-deep), transparent 75%); opacity: var(--sg, 1); transition: background .6s; pointer-events: none; }
+.storm-stage[data-level="2"] .storm-glow { background: radial-gradient(60% 65% at 70% 55%, var(--sick), transparent 78%); }
+.storm-in { position: relative; display: grid; gap: 28px; }
+.storm-steps { position: relative; min-height: 4.6em; }
+.storm-steps p { position: absolute; inset: 0 auto auto 0; margin: 0; max-width: 34ch; font-size: clamp(19px, 2vw, 24px); line-height: 1.35; color: var(--ash); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.storm-steps p b { color: var(--porcelain); font-weight: 600; }
+html.anim .storm-steps p:not(.on) { opacity: 0; transform: translateY(16px); }
+html:not(.anim) .storm-steps { min-height: 0; display: grid; gap: 12px; }
+html:not(.anim) .storm-steps p { position: static; }
+.big { font-family: var(--display); font-weight: 600; font-size: clamp(120px, 26vw, 340px); line-height: .85; letter-spacing: -0.045em; font-variant-numeric: tabular-nums; margin: 0; }
+.big em { font-style: normal; color: var(--storm); }
+.thr { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.thr span { font-size: 14px; letter-spacing: -0.224px; padding: 8px 16px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--steel); color: var(--ash); transition: all .4s var(--ease); }
+.thr span.on { box-shadow: inset 0 0 0 1px #c4a1ff; color: #efe6ff; }
+.thr span.hot { background: var(--sick); box-shadow: none; color: var(--white); }
+.thr .t { color: var(--ash); font-size: 14px; font-variant-numeric: tabular-nums; margin-left: 6px; }
+
+/* ---------- 3 Highlights-Karussell ---------- */
+.sec { padding-block: clamp(80px, 12vw, 160px); }
+.sec-head { display: grid; gap: 14px; margin-bottom: 40px; }
+.track { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-left: max(var(--gut-l), calc((100vw - 1060px) / 2 + 16px)); padding-right: var(--gut-r); scroll-padding-left: max(var(--gut-l), calc((100vw - 1060px) / 2 + 16px)); }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 min(86vw, 980px); scroll-snap-align: start; aspect-ratio: 16 / 9; max-height: 70svh; border-radius: 28px; overflow: hidden; position: relative; display: grid; align-content: space-between; padding: clamp(24px, 4vw, 48px); transition: opacity .6s var(--ease); }
+.slide:not(.cur) { opacity: .45; }
+@media (max-width: 640px) { .slide { aspect-ratio: 3 / 4; } }
+.slide h3 { font-family: var(--display); font-weight: 600; font-size: clamp(24px, 3vw, 40px); line-height: 1.1; margin: 0; max-width: 18ch; text-wrap: balance; }
+.slide .art { font-family: var(--display); font-weight: 600; font-size: clamp(72px, 13vw, 180px); line-height: .9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.slide .art small { font-size: .3em; letter-spacing: -0.01em; color: rgba(255,255,255,.7); margin-left: .2em; }
+.s1 { background: radial-gradient(70% 90% at 80% 60%, #3b1d7a, #0b0618 60%, #000); }
+.s2 { background: radial-gradient(70% 90% at 80% 60%, #6421c4, #1a0838 60%, #000); }
+.s3 { background: radial-gradient(70% 90% at 80% 60%, #0f4f45, #03140f 60%, #000); }
+.s4 { background: radial-gradient(70% 90% at 80% 60%, #0d3a57, #03111b 60%, #000); }
+.s3 .art { color: var(--pos); }
+.ctrl { display: flex; justify-content: center; gap: 12px; margin-top: 28px; }
+.pager { display: flex; align-items: center; gap: 12px; background: rgba(51, 51, 54, .8); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); padding: 0 20px; height: 56px; border-radius: 99px; }
+.pager button { position: relative; width: 8px; height: 8px; border-radius: 99px; background: var(--ash); border: 0; padding: 0; cursor: pointer; overflow: hidden; transition: width .5s var(--ease), background .3s; }
+.pager button.on { width: 48px; background: var(--slate); }
+.pager button.on::after { content: ""; position: absolute; inset: 0; background: var(--porcelain); transform-origin: left; animation: fill var(--dur, 5s) linear forwards; }
+.pager.paused button.on::after { animation-play-state: paused; }
+html:not(.anim) .pager button.on::after { animation: none; }
+@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.play { width: 56px; height: 56px; border-radius: 50%; border: 0; background: rgba(51, 51, 54, .8); cursor: pointer; display: grid; place-items: center; }
+.play svg { width: 18px; height: 18px; fill: var(--porcelain); }
+
+/* ---------- 4 Kacheln ---------- */
+.panel { border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 288px); padding: clamp(24px, 4vw, 48px); display: grid; gap: 40px; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+.tile { background: var(--obsidian); border-radius: 28px; padding: 28px; min-height: 240px; display: grid; align-content: space-between; gap: 40px; color: var(--porcelain); transition: background .3s; }
+a.tile:hover { background: #0b0b0c; text-decoration: none; }
+.tile svg { width: 40px; height: 40px; }
+.tile .stat { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1; letter-spacing: 0.007em; display: block; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+.tile .stat.pos { color: var(--pos); }
+.tile p { margin: 0; color: var(--ash); font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; }
+
+/* ---------- 5 Wort-für-Wort ---------- */
+.words { font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4.6vw, 64px); line-height: 1.12; letter-spacing: -0.01em; margin: 0; max-width: 20ch; text-wrap: balance; }
+html.anim .words .w { color: var(--dim); transition: color .35s; }
+html.anim .words .w.lit { color: var(--porcelain); }
+
+/* ---------- 6 Team ---------- */
+.team { background: linear-gradient(var(--carbon), var(--obsidian) 420px); }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+@media (max-width: 800px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.split .txt { display: grid; gap: 18px; justify-items: start; }
+.players { display: grid; gap: 12px; }
+.pl { display: flex; justify-content: space-between; align-items: center; gap: 16px; background: var(--obsidian); border-radius: 20px; padding: 20px 24px; box-shadow: 0 0 0 1px var(--keyline); }
+.pl span { color: var(--ash); }
+.pl b { font-family: var(--display); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pl b.neg { color: var(--neg); }
+.pl.sum { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); padding-block: 26px; }
+.pl.sum span { color: var(--porcelain); font-weight: 600; }
+.pl.sum b { font-size: clamp(36px, 4vw, 48px); }
+
+/* ---------- 7 Vergleich ---------- */
+.cmp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 700px) { .cmp { grid-template-columns: minmax(0, 1fr); } }
+.card-w { background: var(--white); color: var(--carbon); border-radius: 28px; padding: clamp(24px, 3.4vw, 40px); display: grid; align-content: start; gap: 16px; }
+.card-w h3 { font-family: var(--display); font-weight: 600; font-size: 32px; line-height: 1.13; margin: 0; }
+.card-w > p { margin: 0; color: #424245; }
+.card-w ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; }
+.card-w li { border-top: 1px solid #d2d2d7; padding-block: 14px; display: flex; justify-content: space-between; gap: 16px; font-size: 14px; letter-spacing: -0.224px; }
+.card-w li em { font-style: normal; color: var(--slate); text-align: right; }
+.card-w a { color: var(--link-pale); }
+
+/* ---------- 8 FAQ ---------- */
+.faq { max-width: 820px; }
+.qa { border-top: 1px solid var(--steel); }
+.qa details { border-bottom: 1px solid var(--steel); }
+.qa summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 24px; font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2vw, 24px); line-height: 1.25; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa summary i { flex: none; position: relative; width: 18px; height: 18px; }
+.qa summary i::before, .qa summary i::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: var(--ash); transition: transform .4s var(--ease); }
+.qa summary i::after { transform: rotate(90deg); }
+.qa details[open] summary i::after { transform: rotate(0); }
+.qa .ans { overflow: hidden; transition: height .45s var(--ease); }
+.qa .ans p { margin: 0; padding-bottom: 24px; color: var(--ash); max-width: 62ch; }
+
+/* ---------- 9 Discord + Footer ---------- */
+.dc { text-align: center; display: grid; justify-items: center; gap: 18px; }
+.dc svg { width: 64px; height: 64px; color: var(--porcelain); }
+footer { background: var(--carbon); color: var(--ash); font-size: 12px; letter-spacing: -0.12px; line-height: 1.33; padding-block: 28px 40px; }
+footer .wrap { max-width: 1024px; display: grid; gap: 20px; }
+.cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 700px) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cols div { display: grid; gap: 8px; align-content: start; }
+.cols b { color: var(--porcelain); font-weight: 600; }
+.cols a { color: var(--ash); }
+.legal { border-top: 1px solid var(--steel); padding-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+/* ---------- App-Ansicht (#app) ---------- */
+.app { padding-block: 32px 96px; }
+.app-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 24px; }
+.app-head p:not(.pname) { margin: 4px 0 0; color: var(--ash); }
+.app-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 800px) { .app-grid { grid-template-columns: minmax(0, 1fr); } }
+.app-main { position: relative; overflow: hidden; border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 360px); padding: clamp(24px, 4vw, 40px); display: grid; justify-items: center; gap: 24px; transition: box-shadow .5s; }
+.app-main::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 50% at 50% 45%, var(--sick), transparent 75%); opacity: 0; transition: opacity .6s; pointer-events: none; }
+.app-main[data-level="1"]::before { opacity: .45; }
+.app-main[data-level="2"]::before { opacity: .9; }
+html.anim .app-main[data-level="2"]::before { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .5; } }
+.app-main .ring { width: min(320px, 72vw); }
+.app-main .ring::before { background: #07050f; }
+.app-main .ring b { font-size: clamp(56px, 8vw, 84px); }
+.app-main .ring small { font-size: 14px; }
+.warn { position: relative; min-height: 48px; display: grid; place-items: center; text-align: center; }
+.warn span { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.012em; }
+.warn em { display: block; font-style: normal; font-size: 14px; color: #ffc266; letter-spacing: -0.224px; }
+.app-actions { position: relative; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.app-side { display: grid; gap: 16px; align-content: start; }
+.app-side .tile { min-height: 0; gap: 16px; background: var(--carbon); }
+.rates { display: flex; flex-wrap: wrap; gap: 8px; }
+.rates button { min-width: 52px; height: 44px; border-radius: 99px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--porcelain); font-size: 17px; cursor: pointer; transition: background .25s, box-shadow .25s; font-variant-numeric: tabular-nums; }
+.rates button[aria-pressed="true"] { background: var(--blue); box-shadow: none; }
+.bar { height: 6px; border-radius: 99px; background: var(--steel); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--storm); transition: width .2s linear; }
+.label { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; }
+.example { text-align: center; color: var(--ash); font-size: 12px; margin-top: 20px; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="k" viewBox="0 0 200 200"><path fill="currentColor" d="M126.76 3.65L52.4 78L52.4 126.54L123.15 197.28A100 100 0 1 1 126.76 3.65Z"/><path fill="currentColor" d="M98.1 114.79L176.86 36.02A100 100 0 0 1 161.87 178.56Z"/><path fill="#A78BFA" d="M72.81 80.48L143.39 9.9A100 100 0 0 1 165.76 24.66L91.38 99.05Z"/></symbol>
+  <symbol id="i-storm" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" d="M4 9a8 8 0 0 1 15-2M20 15a8 8 0 0 1-15 2M12 8v4l3 2"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" d="M5 19V11M12 19V5M19 19v-6"/></symbol>
+  <symbol id="i-rot" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" d="M20 12a8 8 0 1 1-3-6.2M20 4v4h-4"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c.8-3 2.8-4.5 5-4.5S12.2 16 13 19M11 19c.8-3 2.8-4.5 5-4.5s4.2 1.5 5 4.5"/></g></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></symbol>
+  <symbol id="i-lang" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></g></symbol>
+  <symbol id="i-dc" viewBox="0 0 24 24"><path fill="currentColor" d="M19.3 5.3A16.7 16.7 0 0 0 15.2 4l-.5 1a15.5 15.5 0 0 0-5.4 0l-.5-1a16.6 16.6 0 0 0-4.1 1.3C2.1 9.2 1.4 13 1.7 16.7a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.8 10.8 0 0 1-1.7-.8l.4-.3a11.9 11.9 0 0 0 10.8 0l.4.3a10.8 10.8 0 0 1-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.3-.7-8-3-11.4zM8.7 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></symbol>
+</svg>
+
+<script>
+  try { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim"); } catch (e) {}
+</script>
+
+<header class="gnav">
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="KREVO Startseite"><svg><use href="#k"/></svg></a>
+    <nav class="links" aria-label="Hauptnavigation">
+      <a href="#storm">Storm</a><a href="#highlights">Highlights</a><a href="#tools">Werkzeuge</a><a href="#team">Team</a><a href="#privacy">Datenschutz</a><a href="#faq">Fragen</a><a href="#app">App</a>
+    </nav>
+    <span class="links"><a href="#">DE</a></span>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="flyout" aria-label="Menü"><span></span><span></span></button>
+  </div>
+</header>
+<div class="flyout" id="flyout">
+  <a href="#storm">Storm</a><a href="#highlights">Highlights</a><a href="#tools">Werkzeuge</a><a href="#team">Team</a><a href="#faq">Fragen</a><a href="#app">App öffnen</a>
+  <div class="small"><a href="#privacy">Datenschutz</a><a href="#">Sprache: Deutsch</a><a href="#discord">Discord</a></div>
+</div>
+
+<div id="site">
+  <div class="strip">Neu: Team Net Surge für Duo und Trio. <a class="more" href="#team">Mehr erfahren</a></div>
+
+  <div class="lnav">
+    <div class="lnav-in">
+      <a class="name" href="#">KREVO</a>
+      <nav aria-label="Abschnitte"><a href="#storm" data-sec="storm">Storm</a><a href="#highlights" data-sec="highlights">Highlights</a><a href="#tools" data-sec="tools">Werkzeuge</a><a href="#team" data-sec="team">Team</a><a href="#faq" data-sec="faq">Fragen</a></nav>
+      <a class="pill sm" href="#app">Öffnen</a>
+    </div>
+  </div>
+
+  <!-- 1 Hero -->
+  <section class="hero" id="hero" aria-label="KREVO">
+    <div class="hero-stage">
+      <div class="hero-glow"></div>
+      <div class="phone-wrap intro-p">
+        <div class="phone" aria-hidden="true">
+          <div class="scr">
+            <div class="island"></div>
+            <span class="chip">Storm · 10 Schaden/s</span>
+            <div class="ring" id="hero-ring"><div><b id="hero-num">550</b><small>Schaden</small></div></div>
+            <div class="rows"><div><span>Bis 600</span><b id="hero-to">0:05</b></div><div><span>Net Damage</span><b>+214</b></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <p class="pname intro-a">KREVO</p>
+        <h1 class="d-l intro-b">Der Storm. Im&nbsp;Griff.</h1>
+        <div class="hero-cta intro-c"><span class="capsule">Kostenlos · ohne Konto</span><a class="pill" href="#app">Tools öffnen</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 Storm -->
+  <section class="storm" id="storm" aria-label="Storm-Timer">
+    <div class="storm-stage" id="storm-stage" data-level="0">
+      <div class="storm-glow"></div>
+      <div class="wrap storm-in">
+        <p class="pname">Storm-Timer</p>
+        <div class="storm-steps">
+          <p class="on" data-step="0"><b>Wähle deine Rate.</b> 1, 2, 5, 8 oder 10 Schaden pro Sekunde, und KREVO schätzt mit.</p>
+          <p data-step="1"><b>Ab 500 warnt KREVO.</b> Rechtzeitig, bevor die Storm Sickness einsetzt.</p>
+          <p data-step="2"><b>Ab 600 wird es akut.</b> Die Anzeige pulsiert, bis du draußen bist.</p>
+        </div>
+        <p class="big" aria-live="off"><span id="storm-num">600</span><em>.</em></p>
+        <div class="thr"><span id="thr-500">500 Warnung</span><span id="thr-600">600 Akut</span><span class="t" id="storm-time">1:00 im Storm</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Highlights -->
+  <section class="sec" id="highlights" aria-label="Highlights">
+    <div class="wrap sec-head"><h2 class="d-m rv">Sieh dir die Highlights an.</h2></div>
+    <div class="track" id="track" tabindex="0" aria-label="Highlights, horizontal wischen">
+      <article class="slide s1 cur"><h3>Storm-Schaden auf die Sekunde geschätzt.</h3><div class="art">550<small>Schaden</small></div></article>
+      <article class="slide s2"><h3>Storm Sickness, bevor sie dich erwischt.</h3><div class="art">600<small>akut</small></div></article>
+      <article class="slide s3"><h3>Net Damage. Dealt minus Taken.</h3><div class="art">+214<small>net</small></div></article>
+      <article class="slide s4"><h3>Rotation mit eigenen Presets und Ton.</h3><div class="art">0:48<small>bis Zone</small></div></article>
+    </div>
+    <div class="ctrl">
+      <div class="pager" id="pager" role="tablist" aria-label="Highlight wählen">
+        <button type="button" class="on" aria-label="Highlight 1"></button><button type="button" aria-label="Highlight 2"></button><button type="button" aria-label="Highlight 3"></button><button type="button" aria-label="Highlight 4"></button>
+      </div>
+      <button class="play" id="play" type="button" aria-label="Pausieren"><svg viewBox="0 0 24 24" id="play-ic"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg></button>
+    </div>
+  </section>
+
+  <!-- 4 Werkzeuge -->
+  <section class="wrap" id="tools" aria-label="Werkzeuge">
+    <div class="panel">
+      <div class="sec-head" style="margin:0">
+        <h2 class="d-m rv">Alles, was ein Match braucht.</h2>
+        <p class="lead rv d1">Sechs Werkzeuge auf einem Bildschirm. Ohne Konto, direkt auf deinem Gerät.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile rv" href="#app"><svg><use href="#i-storm"/></svg><div><span class="stat">5 Raten</span><p>Storm-Schaden von 1 bis 10 pro Sekunde.</p></div></a>
+        <a class="tile rv d1" href="#app"><svg><use href="#i-net"/></svg><div><span class="stat pos" data-count="214" data-prefix="+">+214</span><p>Net Damage: 1.240 dealt, 1.026 taken.</p></div></a>
+        <a class="tile rv d2" href="#app"><svg><use href="#i-rot"/></svg><div><span class="stat">0:48</span><p>Rotation-Countdown mit eigenen Presets.</p></div></a>
+        <a class="tile rv d3" href="#team"><svg><use href="#i-team"/></svg><div><span class="stat"><span data-count="3">3</span> Spieler</span><p>Duo oder Trio per Einladungslink.</p></div></a>
+        <a class="tile rv d4" href="#app"><svg><use href="#i-map"/></svg><div><span class="stat">Vollbild</span><p>Eigene Map hochladen und zoomen.</p></div></a>
+        <div class="tile rv d5"><svg><use href="#i-lang"/></svg><div><span class="stat">DE · EN</span><p>Komplett auf Deutsch und Englisch.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Statement -->
+  <section class="sec wrap" aria-label="Grundsatz">
+    <p class="words" id="words">Kein Download. Kein Zugriff aufs Spiel. Nur du, der Storm und die richtigen Zahlen.</p>
+  </section>
+
+  <!-- 6 Team -->
+  <section class="sec team" id="team" aria-label="Team-Modus">
+    <div class="wrap split">
+      <div class="txt">
+        <span class="new rv">Neu</span>
+        <h2 class="d-l rv d1">Zu dritt.<br>Eine Zahl.</h2>
+        <p class="lead rv d2">Erstelle ein Duo oder Trio, schick den Link, und jeder trägt seine Werte ein. KREVO zeigt die Summe als <b>Team Net Surge</b>, abgeglichen etwa alle 3 Sekunden.</p>
+        <a class="more rv d3" href="#faq">So funktioniert der Team-Modus</a>
+      </div>
+      <div class="players">
+        <div class="pl rv"><span>Du</span><b data-count="214" data-prefix="+">+214</b></div>
+        <div class="pl rv d1"><span>Mitspieler 2</span><b data-count="96" data-prefix="+">+96</b></div>
+        <div class="pl rv d2"><span>Mitspieler 3</span><b class="neg" data-count="-38">−38</b></div>
+        <div class="pl sum rv d3"><span>Team Net Surge</span><b data-count="272" data-prefix="+">+272</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 Datenschutz -->
+  <section class="sec wrap" id="privacy" aria-label="Datenschutz">
+    <div class="sec-head">
+      <h2 class="d-m rv">Deine Daten bleiben bei dir.</h2>
+      <p class="lead rv d1">Ein Konto brauchst du nur für den Team-Modus.</p>
+    </div>
+    <div class="cmp">
+      <div class="card-w rv"><h3>Ohne Konto</h3><p>Sofort loslegen. Alles bleibt im Browser.</p><ul><li>Storm, Net Damage, Rotation, Map<em>Ja</em></li><li>Presets und Map<em>auf deinem Gerät</em></li><li>Team-Modus<em>Nein</em></li></ul></div>
+      <div class="card-w rv d1"><h3>Mit Discord</h3><p>Ein Klick, kein neues Passwort.</p><ul><li>Alle Werkzeuge<em>Ja</em></li><li>Team Net Surge für Duo und Trio<em>Ja</em></li><li>Gespeichert<em>Nutzername, Discord-ID</em></li></ul><a class="more" href="#faq">Mehr zum Datenschutz</a></div>
+    </div>
+  </section>
+
+  <!-- 8 FAQ -->
+  <section class="sec" id="faq" aria-label="Fragen und Antworten">
+    <div class="wrap faq">
+      <h2 class="d-m rv" style="margin-bottom:32px">Fragen und Antworten.</h2>
+      <div class="qa rv d1">
+        <details open><summary>Liest KREVO Daten aus Fortnite?<i></i></summary><div class="ans"><p>Nein. KREVO greift nicht auf das Spiel zu. Den Storm-Schaden schätzt der Timer aus der gewählten Schadensrate, Net Damage und Map trägst du selbst ein.</p></div></details>
+        <details><summary>Brauche ich ein Konto?<i></i></summary><div class="ans"><p>Nein. Storm, Net Damage, Rotation und Map funktionieren ohne Konto und bleiben auf deinem Gerät. Ein Konto (Discord oder E-Mail) brauchst du nur für den Team-Modus.</p></div></details>
+        <details><summary>Wie funktioniert der Team-Modus?<i></i></summary><div class="ans"><p>Melde dich an, tippe bei Net Damage auf „Team“ und erstelle ein Duo oder Trio. Den Einladungslink schickst du deinen Mitspielern. Jeder trägt seine eigenen Werte ein, KREVO zeigt die Summe als Team Net Surge.</p></div></details>
+        <details><summary>Werden meine Daten gespeichert?<i></i></summary><div class="ans"><p>Timer, Presets und Map bleiben im Speicher deines Browsers. Mit Konto speichert KREVO E-Mail-Adresse und Nutzername, mit Discord zusätzlich deine Discord-ID und im Team-Modus deine Team-Werte.</p></div></details>
+        <details><summary>Kostet KREVO etwas?<i></i></summary><div class="ans"><p>Noch nicht. Im Moment ist alles kostenlos. In Zukunft könnte es Premium-Funktionen geben.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 Discord -->
+  <section class="sec wrap dc" id="discord" aria-label="Discord">
+    <svg class="rv"><use href="#i-dc"/></svg>
+    <h2 class="d-m rv d1">Komm in den Discord.</h2>
+    <p class="lead rv d2">Feedback, Ideen und Team-Partner finden.</p>
+    <button class="pill out rv d3" type="button" disabled>Noch nicht verfügbar</button>
+  </section>
+</div>
+
+<!-- App-Ansicht -->
+<main id="app" class="wrap app" hidden aria-label="KREVO Werkzeuge">
+  <div class="app-head">
+    <div><p class="pname">Storm</p><p id="app-status">Pausiert · 10 Schaden pro Sekunde</p></div>
+    <a class="more" href="#">Zurück zur Startseite</a>
+  </div>
+  <div class="app-grid">
+    <div class="app-main" id="app-main" data-level="0">
+      <div class="ring" id="app-ring" style="--v:0"><div><b id="app-num">0</b><small>Schaden</small></div></div>
+      <div class="warn" id="app-warn" aria-live="polite"></div>
+      <div class="app-actions">
+        <button class="pill" id="app-start" type="button">Start</button>
+        <button class="pill out" id="app-reset" type="button">Zurücksetzen</button>
+      </div>
+    </div>
+    <div class="app-side">
+      <div class="tile"><span class="label">Bis 600</span><span class="stat" id="app-to">1:00</span><div class="bar"><i id="app-bar"></i></div></div>
+      <div class="tile"><span class="label">Schadensrate pro Sekunde</span>
+        <div class="rates" id="rates"><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="false">2</button><button type="button" aria-pressed="false">5</button><button type="button" aria-pressed="false">8</button><button type="button" aria-pressed="true">10</button></div>
+      </div>
+      <div class="tile"><span class="label">Net Damage</span><span class="stat pos">+214</span><p>1.240 dealt · 1.026 taken</p></div>
+    </div>
+  </div>
+  <p class="example">Vorschau mit Beispielwerten. Die echte App bleibt unverändert.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><b>Werkzeuge</b><a href="#app">Storm</a><a href="#app">Net Damage</a><a href="#app">Rotation</a><a href="#app">Map</a></div>
+      <div><b>Team</b><a href="#team">Session erstellen</a><a href="#team">Beitreten</a></div>
+      <div><b>Konto</b><a href="#privacy">Mit Discord anmelden</a><a href="#privacy">Profil</a></div>
+      <div><b>Info</b><a href="#faq">Fragen</a><a href="#privacy">Datenschutz</a><a href="#">Sprache: Deutsch</a></div>
+    </div>
+    <div class="legal"><span>Unabhängiges Fanprojekt. Nicht von Epic Games unterstützt oder betrieben.</span><span>Vorschau · Version 9</span></div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var anim = function () { return root.classList.contains("anim"); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+  var fmt = function (s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* Menü */
+  var mb = $("menu-btn");
+  mb.addEventListener("click", function () { var o = document.body.classList.toggle("menu-open"); mb.setAttribute("aria-expanded", o); });
+  $("flyout").addEventListener("click", function (e) { if (e.target.closest("a")) { document.body.classList.remove("menu-open"); mb.setAttribute("aria-expanded", "false"); } });
+
+  /* Reveal + Zähler */
+  function countUp(el) {
+    var to = parseFloat(el.dataset.count), pre = el.dataset.prefix || "", t0 = null, dur = 1400;
+    if (!anim()) return;
+    function step(t) {
+      if (!t0) t0 = t;
+      var p = clamp((t - t0) / dur, 0, 1), v = Math.round(to * ease(p));
+      el.textContent = (v < 0 ? "−" + Math.abs(v) : pre + v);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll("[data-count]").forEach(countUp);
+      if (e.target.dataset.count) countUp(e.target);
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: "0px 0px -12% 0px" }) : null;
+  document.querySelectorAll(".rv").forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); });
+
+  /* Wort-für-Wort */
+  var words = $("words");
+  words.innerHTML = words.textContent.split(" ").map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
+  var wspans = words.querySelectorAll(".w");
+
+  /* Scroll-gekoppelte Szenen */
+  var hero = $("hero"), stage = hero.querySelector(".hero-stage"), stormSec = $("storm"), stormStage = $("storm-stage");
+  var steps = stormStage.querySelectorAll(".storm-steps p");
+  var navLinks = document.querySelectorAll(".lnav nav a");
+  function prog(el) { var r = el.getBoundingClientRect(), span = r.height - innerHeight; return span > 0 ? clamp(-r.top / span, 0, 1) : (r.top < 0 ? 1 : 0); }
+
+  function onScroll() {
+    if (anim()) {
+      var p = prog(hero);
+      stage.style.setProperty("--ps", (1 - 0.18 * ease(p)).toFixed(4));
+      stage.style.setProperty("--py", (-60 * ease(p)).toFixed(1) + "px");
+      stage.style.setProperty("--co", (1 - clamp(p * 2.2, 0, 1)).toFixed(3));
+      stage.style.setProperty("--cy", (-50 * p).toFixed(1) + "px");
+      stage.style.setProperty("--glow", (0.6 + 0.4 * p).toFixed(3));
+
+      var s = prog(stormSec), n = Math.round(600 * clamp(s / 0.85, 0, 1));
+      $("storm-num").textContent = n;
+      $("storm-time").textContent = fmt(n / 10) + " im Storm";
+      var lvl = n >= 600 ? 2 : n >= 500 ? 1 : 0;
+      stormStage.dataset.level = lvl;
+      $("thr-500").className = lvl >= 1 ? "on" : "";
+      $("thr-600").className = lvl >= 2 ? "hot" : "";
+      stormStage.style.setProperty("--sg", (0.35 + 0.65 * s).toFixed(3));
+      steps.forEach(function (el, i) { el.classList.toggle("on", i === lvl); });
+
+      var r = words.getBoundingClientRect(), wp = clamp((innerHeight * 0.85 - r.top) / (innerHeight * 0.55), 0, 1), lit = Math.round(wp * wspans.length);
+      wspans.forEach(function (w, i) { w.classList.toggle("lit", i < lit); });
+    }
+    var cur = null;
+    ["storm", "highlights", "tools", "team", "faq"].forEach(function (id) { var el = $(id); if (el && el.getBoundingClientRect().top < innerHeight * 0.4) cur = id; });
+    navLinks.forEach(function (a) { a.classList.toggle("on", a.dataset.sec === cur); });
+  }
+  var ticking = false;
+  addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; onScroll(); }); } }, { passive: true });
+  addEventListener("resize", onScroll);
+
+  /* Hero-Ring füllt sich einmal */
+  (function () {
+    var ring = $("hero-ring"), num = $("hero-num"), to = $("hero-to");
+    if (!anim()) { ring.style.setProperty("--v", 550 / 6); return; }
+    var t0 = null;
+    function step(t) {
+      if (!t0) t0 = t;
+      var p = clamp((t - t0 - 500) / 2200, 0, 1), v = Math.round(550 * ease(p));
+      num.textContent = v; to.textContent = fmt((600 - v) / 10); ring.style.setProperty("--v", (v / 6).toFixed(2));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    num.textContent = "0"; requestAnimationFrame(step);
+  })();
+
+  /* Highlights-Karussell */
+  var track = $("track"), slides = track.querySelectorAll(".slide"), dots = $("pager").querySelectorAll("button"), play = $("play");
+  var idx = 0, playing = anim(), timer = null, DUR = 5000;
+  function setPlayIcon() { $("play-ic").innerHTML = playing ? '<path d="M7 5h3v14H7zM14 5h3v14h-3z"/>' : '<path d="M8 5l11 7-11 7z"/>'; play.setAttribute("aria-label", playing ? "Pausieren" : "Abspielen"); $("pager").classList.toggle("paused", !playing); }
+  function mark(i) {
+    idx = i;
+    slides.forEach(function (s, j) { s.classList.toggle("cur", j === i); });
+    dots.forEach(function (d, j) { d.classList.remove("on"); void d.offsetWidth; d.classList.toggle("on", j === i); d.setAttribute("aria-selected", j === i); });
+  }
+  function go(i, smooth) {
+    var s = slides[i], pad = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+    track.scrollTo({ left: s.offsetLeft - pad, behavior: smooth && anim() ? "smooth" : "auto" });
+    mark(i); schedule();
+  }
+  function schedule() { clearTimeout(timer); if (playing) timer = setTimeout(function () { go((idx + 1) % slides.length, true); }, DUR); }
+  dots.forEach(function (d, i) { d.addEventListener("click", function () { go(i, true); }); });
+  play.addEventListener("click", function () { playing = !playing; setPlayIcon(); schedule(); });
+  var st;
+  track.addEventListener("scroll", function () {
+    clearTimeout(st);
+    st = setTimeout(function () {
+      var pad = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0, best = 0, bd = Infinity;
+      slides.forEach(function (s, j) { var dd = Math.abs(s.offsetLeft - pad - track.scrollLeft); if (dd < bd) { bd = dd; best = j; } });
+      if (best !== idx) { mark(best); schedule(); }
+    }, 120);
+  }, { passive: true });
+  track.style.setProperty("--dur", DUR + "ms");
+  $("pager").style.setProperty("--dur", DUR + "ms");
+  setPlayIcon();
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { mark(idx); schedule(); } else clearTimeout(timer); }); }, { threshold: 0.4 }).observe(track);
+  }
+
+  /* FAQ: weiches Auf- und Zuklappen, nur eine offen */
+  var dets = document.querySelectorAll(".qa details");
+  dets.forEach(function (d) {
+    var sum = d.querySelector("summary"), ans = d.querySelector(".ans");
+    sum.addEventListener("click", function (e) {
+      e.preventDefault();
+      var opening = !d.open;
+      if (opening) dets.forEach(function (o) { if (o !== d && o.open) toggle(o, false); });
+      toggle(d, opening);
+    });
+    function toggle(el, open) {
+      var a = el.querySelector(".ans");
+      if (!anim()) { el.open = open; return; }
+      if (open) { el.open = true; var h = a.scrollHeight; a.style.height = "0px"; requestAnimationFrame(function () { a.style.height = h + "px"; }); }
+      else { a.style.height = a.scrollHeight + "px"; requestAnimationFrame(function () { a.style.height = "0px"; }); setTimeout(function () { el.open = false; }, 450); }
+      setTimeout(function () { if (el.open) a.style.height = ""; }, 460);
+    }
+    d._toggle = toggle;
+  });
+  function toggle(el, open) { el._toggle(el, open); }
+
+  /* App-Demo: Storm-Timer */
+  var rate = 10, dmg = 0, running = false, last = 0, raf = 0;
+  var rates = $("rates").querySelectorAll("button");
+  function render() {
+    var lvl = dmg >= 600 ? 2 : dmg >= 500 ? 1 : 0;
+    $("app-num").textContent = Math.floor(dmg);
+    $("app-ring").style.setProperty("--v", Math.min(100, dmg / 6).toFixed(2));
+    $("app-to").textContent = dmg >= 600 ? "Erreicht" : fmt((600 - dmg) / rate);
+    $("app-bar").style.width = Math.min(100, dmg / 6) + "%";
+    $("app-main").dataset.level = lvl;
+    $("app-warn").innerHTML = lvl === 2 ? '<div><span>Storm Sickness akut</span><em>Raus aus dem Storm, sofort heilen.</em></div>' : lvl === 1 ? '<div><span>Storm Sickness droht</span><em>Ab 600 wird es akut.</em></div>' : "";
+    $("app-status").textContent = (running ? "Läuft" : "Pausiert") + " · " + rate + " Schaden pro Sekunde";
+    $("app-start").textContent = running ? "Pause" : (dmg > 0 ? "Weiter" : "Start");
+  }
+  function tick(t) { if (!running) return; dmg += (t - last) / 1000 * rate; last = t; render(); raf = requestAnimationFrame(tick); }
+  $("app-start").addEventListener("click", function () { running = !running; if (running) { last = performance.now(); raf = requestAnimationFrame(tick); } else cancelAnimationFrame(raf); render(); });
+  $("app-reset").addEventListener("click", function () { dmg = 0; render(); });
+  rates.forEach(function (b) { b.addEventListener("click", function () { rate = +b.textContent; rates.forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); render(); }); });
+  dmg = 430; render();
+
+  /* Ansicht per Hash */
+  function route() {
+    var app = location.hash === "#app";
+    $("site").hidden = app; $("app").hidden = !app;
+    if (app) scrollTo(0, 0);
+    onScroll();
+  }
+  addEventListener("hashchange", route);
+  route();
+})();
+</script>
