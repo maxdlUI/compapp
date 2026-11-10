@@ -180,7 +180,7 @@ footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-conten
 .stepper span { margin-left: 8px; }
 .back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; letter-spacing: -0.224px; margin-bottom: 28px; background: none; border: 0; color: var(--link); cursor: pointer; padding: 0; }
 .back::before { content: "‹"; font-size: 18px; line-height: 1; }
-.lens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.lens { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 36px; }
 @media (max-width: 680px) { .lens { grid-template-columns: minmax(0, 1fr); } }
 .len { border: 0; text-align: left; cursor: pointer; background: var(--carbon); color: var(--porcelain); border-radius: 28px; padding: 28px; display: grid; gap: 8px; min-height: 200px; align-content: space-between; transition: transform .4s var(--ease), box-shadow .3s, background .3s; }
 .len:hover { background: #242426; transform: translateY(-3px); }
@@ -431,7 +431,6 @@ html.no-scroll { overflow: hidden; }
       <div class="stepper" aria-hidden="true" style="margin:0"><i class="on"></i><i class="on"></i><i class="on"></i><span class="tiny">Step 3 of 3</span></div>
       <h1 class="d-l">Your plan.</h1>
       <p class="lead" id="plan-sum"></p>
-      <div class="seg" role="group" aria-label="Input device" id="dev"><button type="button" data-dev="mk" aria-pressed="true">Keyboard &amp; mouse</button><button type="button" data-dev="controller" aria-pressed="false">Controller</button></div>
       <div class="field" id="cup-field" hidden><label for="cup-time">Your cup starts at</label><input id="cup-time" type="time" value="19:00"></div>
       <p class="note" id="cup-note" hidden></p>
       <button class="pill big" type="button" id="plan-start">Start training</button>
@@ -525,49 +524,66 @@ html.no-scroll { overflow: hidden; }
 
 <script>
 /* =====================================================================
-   SITE — values that are still open (null shows ***).
+   SITE — site-wide values. Optional values that are null are simply hidden.
    ===================================================================== */
 const SITE = {
-  url: null,                 // e.g. "https://repline.gg"
-  contactEmail: null,        // support e-mail
-  imprintUrl: null,          // imprint / legal notice page
-  privacyUrl: null,          // privacy policy page
-  termsUrl: null,            // terms of service page
+  url: "https://repline.gg",
+  contactEmail: null,        // optional: shown in the account panel once set
+  imprintUrl: null,          // optional: imprint / legal notice page
+  privacyUrl: null,          // optional: privacy policy page
+  termsUrl: null,            // optional: terms of service page
   affiliate: {
-    commissionPercent: null, // e.g. 20
-    commissionMonths: null,  // how long a referral earns, e.g. 12 (months) or "lifetime"
-    currency: null,          // e.g. "EUR"
-    minPayout: null,         // e.g. 50
-    payoutMethod: null,      // e.g. "PayPal"
-    cookieDays: null         // how long a click is attributed, e.g. 30
+    commissionPercent: 40,   // per subscription
+    duration: "lifetime",    // a referral earns for as long as the subscription runs
+    currency: "€",
+    minPayout: 0,            // no minimum
+    payoutMethod: null,      // optional
+    cookieDays: null         // optional: how long a click is attributed
   }
 };
 
 /* =====================================================================
-   ROUTINES — fill in the real content here later. Every routine is the same for every player.
-   Block with a duration (countdown):
-     { name: "Name", min: 30, hint: "What to do", codes: [{ name: "Map code", value: "1234-5678-9012" }] }
-   Block with kill targets:
-     { name: "Name", kills: [{ name: "Mode", kills: 50 }, ...] }
-   null shows a placeholder (***). A block without a duration (min: null) runs as a stopwatch until you finish it.
-   A length can have its own list "controller", otherwise "blocks" is used.
+   ROUTINES — the same for every player. Map codes are placeholders until the real ones are added.
+   Block with a duration:  { name, min, hint, codes: [{ name, value }] }
+   Block with kill targets: add kills: [{ name, kills }] (min is still used for planning).
+   value: null shows ****-****-****.
    ===================================================================== */
-const GOALS = [
-  { id: "cup", name: "Cup warm-up", text: "Warm up before your cup, with a start time so you finish right on time.", icon: "i-cup", cupTime: true },
-  { id: "better", name: "Get better", text: "The routine for regular training days.", icon: "i-up" },
-  { id: "aim", name: "Quick: Aim", text: "Short and aim only, for when time is tight.", icon: "i-aim" },
-  { id: "mechanics", name: "Quick: Mechanics", text: "Short and mechanics only, for when time is tight.", icon: "i-mech" }
-];
-const LENGTHS = [
-  { id: "short", name: "Short", placeholderBlocks: 3 },
-  { id: "normal", name: "Normal", placeholderBlocks: 4 },
-  { id: "long", name: "Long", placeholderBlocks: 5 }
-];
-const ROUTINES = {
-  /* Example once content exists:
-  cup: { short: { blocks: [ { name: "***", min: 10, hint: "***", codes: [{ name: "Map code", value: "****-****-****" }] } ] } },
-  */
+const B = {
+  kovaaks: (min) => ({ name: "KovaaK's", min, hint: "Load the playlist in KovaaK's, then start the timer.", codes: [{ name: "Playlist share code", value: null }] }),
+  mech: (min) => ({ name: "Mechanics V5", min, hint: "Play the scenarios on the Mechanics V5 map in order. Restart a scenario when it gets sloppy.", codes: [{ name: "Map code", value: null }] }),
+  fast: (min) => ({ name: "Freebuild · 120% speed", min, hint: "Set the game speed to 120% (110% if it's too fast). Build fast and keep every piece clean.", codes: [{ name: "Map code", value: null }] }),
+  slow: (min) => ({ name: "Freebuild · 90% speed", min, hint: "Set the game speed to 90%. Slow down and place every piece exactly where it belongs.", codes: [{ name: "Map code", value: null }] }),
+  edit: (min) => ({ name: "Edit course", min, hint: "Example map. Run the course and keep your edits clean before going faster.", codes: [{ name: "Example map code", value: null }] }),
+  aim: (min) => ({ name: "Aim map", min, hint: "Example map. Flicks first, then tracking.", codes: [{ name: "Example map code", value: null }] }),
+  track: (min) => ({ name: "Tracking map", min, hint: "Example map. Stay on target through every movement.", codes: [{ name: "Example map code", value: null }] }),
+  duels: (min) => ({ name: "1v1 aim duels", min, hint: "Example map. First to five, then swap spawns.", codes: [{ name: "Example map code", value: null }] }),
+  piece: (min) => ({ name: "Piece control", min, hint: "Example map. Take walls and floors under pressure, then reset.", codes: [{ name: "Example map code", value: null }] }),
+  box: (min) => ({ name: "Box fights", min, hint: "Example map. Tick each mode once its kills are done.", codes: [{ name: "Example map code", value: null }], kills: [{ name: "Example mode 1", kills: 15 }, { name: "Example mode 2", kills: 15 }, { name: "Example mode 3", kills: 15 }] }),
+  real: (min) => ({ name: "Realistics", min, hint: "Example map. Play it like a real fight: high ground, then pressure.", codes: [{ name: "Example map code", value: null }] }),
+  zone: (min) => ({ name: "Zone wars", min, hint: "Example map. Rotate early and keep your mats up.", codes: [{ name: "Example map code", value: null }] })
 };
+const GOALS = [
+  { id: "cup", name: "Cup warm-up", text: "Warm up before your cup, with a start time so you finish right on time.", icon: "i-cup", cupTime: true, lengths: [
+    { id: "short", name: "Short", blocks: [B.kovaaks(10), B.mech(8), B.fast(6), B.slow(6)] },
+    { id: "normal", name: "Normal", blocks: [B.kovaaks(15), B.mech(15), B.fast(10), B.slow(10), B.edit(10)] }
+  ] },
+  { id: "better", name: "Get better", text: "The routine for regular training days.", icon: "i-up", lengths: [
+    { id: "short", name: "Short", blocks: [B.kovaaks(15), B.mech(15), B.fast(10), B.slow(10), B.edit(10)] },
+    { id: "normal", name: "Normal", blocks: [B.kovaaks(30), B.mech(30), B.fast(20), B.slow(20), B.edit(20), B.piece(20), B.box(40)] },
+    { id: "long", name: "Long", blocks: [B.kovaaks(30), B.mech(40), B.fast(30), B.slow(30), B.edit(30), B.piece(40), B.box(60), B.real(40)] },
+    { id: "full", name: "Full day", blocks: [B.kovaaks(45), B.mech(60), B.fast(45), B.slow(45), B.edit(45), B.piece(60), B.box(90), B.real(90), B.zone(120)] }
+  ] },
+  { id: "aim", name: "Quick: Aim", text: "Aim only, for when time is tight.", icon: "i-aim", lengths: [
+    { id: "short", name: "Short", blocks: [B.kovaaks(20), B.aim(10)] },
+    { id: "normal", name: "Normal", blocks: [B.kovaaks(30), B.aim(20), B.track(10)] },
+    { id: "long", name: "Long", blocks: [B.kovaaks(60), B.aim(45), B.track(30), B.duels(45)] }
+  ] },
+  { id: "mechanics", name: "Quick: Mechanics", text: "Mechanics only, for when time is tight.", icon: "i-mech", lengths: [
+    { id: "short", name: "Short", blocks: [B.mech(15), B.fast(8), B.slow(7)] },
+    { id: "normal", name: "Normal", blocks: [B.mech(25), B.fast(15), B.slow(10), B.edit(10)] },
+    { id: "long", name: "Long", blocks: [B.mech(50), B.fast(30), B.slow(30), B.edit(30), B.piece(40)] }
+  ] }
+];
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
 
 (function () {
@@ -591,35 +607,29 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Settings ---------- */
   const SET = "rl.settings";
-  const settings = Object.assign({ device: "mk", sound: true, awake: true }, store.get(SET, {}));
+  const settings = Object.assign({ sound: true, awake: true }, store.get(SET, {}));
   const saveSettings = () => store.set(SET, settings);
 
   /* ---------- Data ---------- */
   const goal = (id) => GOALS.find((z) => z.id === id);
-  const length = (id) => LENGTHS.find((l) => l.id === id);
-  function blocksFor(z, l, dev) {
-    const r = ROUTINES[z] && ROUTINES[z][l];
-    const list = r && ((dev === "controller" && r.controller) || r.blocks);
-    if (list && list.length) return list;
-    const n = length(l).placeholderBlocks;
-    return Array.from({ length: n }, (_, i) => i === 1
-      ? { name: null, kills: [{ name: null, kills: null }, { name: null, kills: null }, { name: null, kills: null }] }
-      : { name: null, min: null, hint: null, codes: [{ name: dev === "controller" ? "Map code" : "Code", value: null }] });
-  }
+  const length = (gid, lid) => { const g = goal(gid); return g && g.lengths.find((l) => l.id === lid); };
+  function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.blocks : []; }
   const isKill = (b) => Array.isArray(b.kills);
-  const nameOf = (b, i) => `Block ${i + 1} · ${b.name ? esc(b.name) : P}`;
-  const durOf = (b) => isKill(b) ? (b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " kills" : "*** kills") : (b.min != null ? b.min + " min" : "*** min");
-  const totalMin = (list) => list.every((b) => !isKill(b) && b.min != null) ? list.reduce((s, b) => s + b.min, 0) : null;
+  const nameOf = (b, i) => `${i + 1} · ${b.name ? esc(b.name) : P}`;
+  const fmtMin = (m) => m == null ? "*** min" : m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+  const killSum = (b) => b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " kills" : "*** kills";
+  const durOf = (b) => isKill(b) ? (b.min != null ? fmtMin(b.min) + " · " : "") + killSum(b) : fmtMin(b.min);
+  const totalMin = (list) => list.every((b) => b.min != null) ? list.reduce((s, b) => s + b.min, 0) : null;
 
   /* ---------- Session state ---------- */
   const KEY = "rl.session", DAYS = "rl.days", DONE = "rl.done";
   let S = store.get(KEY, null);
   if (S && S.day !== today()) { S = null; store.del(KEY); }
   if (!S) S = fresh();
-  function fresh() { return { day: today(), goal: null, len: null, dev: settings.device, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, active: false }; }
+  function fresh() { return { day: today(), goal: null, len: null, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, active: false }; }
   function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
   let since = 0;
-  const list = () => blocksFor(S.goal, S.len, S.dev);
+  const list = () => blocksFor(S.goal, S.len);
   const cur = () => list()[S.b];
   function elapsed() { return S.before + (S.status === "laeuft" ? performance.now() - since : 0); }
 
@@ -669,7 +679,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "Short routines for when time is tight.", icon: "i-aim" }));
     hg.appendChild(aiCard());
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
-    $("resume").hidden = !(S.active && S.goal && S.len);
+    $("resume").hidden = !(S.active && length(S.goal, S.len));
     $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Block by block";
     streakUI("home");
   }
@@ -688,11 +698,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function buildLen() {
     $("len-goal").textContent = goal(S.goal).name;
     const box = $("pick-len"); box.innerHTML = "";
-    LENGTHS.forEach((l) => {
-      const bl = blocksFor(S.goal, l.id, S.dev), t = totalMin(bl);
+    goal(S.goal).lengths.forEach((l) => {
+      const bl = l.blocks, t = totalMin(bl);
       const b = document.createElement("button");
       b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.len === l.id ? "true" : "false");
-      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${t != null ? t + " min" : "*** min"}</span><br><span class="small">${bl.length} blocks</span></span>`;
+      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${fmtMin(t)}</span><br><span class="small">${bl.length} blocks</span></span>`;
       b.addEventListener("click", () => { if (S.len !== l.id) { S.len = l.id; resetRun(); } save(); go("plan"); });
       box.appendChild(b);
     });
@@ -709,9 +719,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
   }
   function buildPlan() {
-    const z = goal(S.goal), l = length(S.len), bl = list(), t = totalMin(bl);
-    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${t != null ? t + " min" : "*** min"} · ${bl.length} blocks`;
-    $("dev").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.dev === S.dev ? "true" : "false"));
+    const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} blocks`;
     $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
     $("cup-time").value = S.cup || "";
     const times = startTimes();
@@ -723,7 +732,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       let body = "";
       if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
       body += codesHTML(b);
-      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `Mode ${j + 1} · ${k.name ? esc(k.name) : "***"} · ${k.kills != null ? k.kills : "***"} kills`).join("<br>")}</p>`;
+      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join("<br>")}</p>`;
       d.innerHTML = `<summary><i class="dot" style="background:${COLORS[i % COLORS.length]}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
       box.appendChild(d); observe(d);
     });
@@ -733,7 +742,6 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       box.appendChild(c);
     }
   }
-  $("dev").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.dataset.dev === S.dev) return; S.dev = b.dataset.dev; resetRun(); save(); buildPlan(); });
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
   $("plan-start").addEventListener("click", () => { S.active = true; save(); go("training"); });
 
@@ -769,16 +777,16 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     return S.status === "bereit" ? 0 : Math.min(0.92, 0.08 + elapsed() / 600000 * 0.84);
   }
   function buildTraining() {
-    const bl = list(), b = cur(), z = goal(S.goal), l = length(S.len);
+    const bl = list(), b = cur(), z = goal(S.goal), l = length(S.goal, S.len);
     drawDial($("tr-dial").querySelector("svg"), bl.map((x, i) => ({ w: x.min || 1, color: COLORS[i % COLORS.length], cur: i === S.b })), { fill: true });
     $("tr-pos").textContent = `${z.name} · ${l.name} · Block ${S.b + 1} of ${bl.length}`;
     $("tr-name").innerHTML = nameOf(b, S.b);
-    $("tr-hint").innerHTML = isKill(b) ? "Tick each mode once its kills are done." : (b.hint ? esc(b.hint) : (b.codes && b.codes.length ? "Load the code, then start the timer." : P));
+    $("tr-hint").innerHTML = b.hint ? esc(b.hint) : (isKill(b) ? "Tick each mode once its kills are done." : "Load the code, then start the timer.");
     $("tr-codes").innerHTML = codesHTML(b);
     const kl = $("tr-kills"); kl.hidden = !isKill(b); kl.innerHTML = "";
     if (isKill(b)) b.kills.forEach((k, j) => {
       const li = document.createElement("li"), id = `k-${S.b}-${j}`, on = !!(S.kills[S.b] || {})[j];
-      li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>Mode ${j + 1} · ${k.name ? esc(k.name) : P}</span><span>${k.kills != null ? k.kills : "***"} kills</span></label>`;
+      li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>${k.name ? esc(k.name) : "Mode " + (j + 1)}</span><span>${k.kills != null ? k.kills : "***"} kills</span></label>`;
       li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.done[S.b] = true; beep(); flash(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.done[S.b]; } save(); render(); });
       kl.appendChild(li);
     });
@@ -793,7 +801,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done" }[S.status];
     if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
     else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Block done" : "left"; $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
-    else { $("tr-kick").textContent = "Time in block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Length: *** min"; }
+    else { $("tr-kick").textContent = "Time in block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Finish when you're done"; }
     const last = S.b === bl.length - 1, main = $("b-main");
     if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next block";
     else if (kill) main.textContent = "Tick all targets";
@@ -839,9 +847,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const days = store.get(DAYS, []); const t = today();
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
     store.set(DONE, store.get(DONE, 0) + 1);
-    const z = goal(S.goal), l = length(S.len);
+    const z = goal(S.goal), l = length(S.goal, S.len);
     $("done-sum").textContent = `${z.name} · ${l.name} · all ${list().length} blocks done.${z.cupTime ? " Good luck in your cup." : ""}`;
-    const keep = { goal: S.goal, len: S.len, dev: S.dev, cup: S.cup };
+    const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
     go("done");
   }
@@ -897,7 +905,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("acct-open-in").hidden = !account;
     if (account) $("acct-open-in").textContent = account.name.slice(0, 1).toUpperCase();
   }
-  function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : `<div class="row"><span>${label}</span><span class="val">***</span></div>`; }
+  function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
@@ -911,15 +919,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">Free</span></div><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
-          <div class="reflink"><code>${esc(refLink())}</code><button class="pill sm" type="button" data-copy="${SITE.url ? esc(refLink()) : ""}" data-ok="Referral link copied" data-empty="The site address isn't set yet, so the link can't be copied.">Copy</button></div>
-          <div class="stats"><div><span class="tiny">Clicks</span><b>0</b></div><div><span class="tiny">Sign-ups</span><b>0</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>0.00 ${A.currency ? esc(A.currency) : "<span class='ph'>***</span>"}</b></div></div>
-          <div class="row"><span>Commission</span><span class="val">${A.commissionPercent != null ? esc(A.commissionPercent) + " %" : "*** %"}${A.commissionMonths != null ? " · " + esc(A.commissionMonths) + (typeof A.commissionMonths === "number" ? " months" : "") : " · ***"}</span></div>
-          <div class="row"><span>Payout</span><span class="val">${A.payoutMethod ? esc(A.payoutMethod) : "***"} · from ${A.minPayout != null ? esc(A.minPayout) : "***"} ${A.currency ? esc(A.currency) : "***"}</span></div>
-          <div class="row"><span>Referral window</span><span class="val">${A.cookieDays != null ? esc(A.cookieDays) + " days" : "*** days"}</span></div>
-        </div><p class="dr-foot">Share your link. You earn a commission on subscriptions from people who sign up through it. Subscriptions are coming soon, until then your link counts sign-ups. Demo numbers.</p></section>`;
+          <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
+          <div class="stats"><div><span class="tiny">Clicks</span><b>0</b></div><div><span class="tiny">Sign-ups</span><b>0</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
+          <div class="row"><span>Commission</span><span class="val">${esc(A.commissionPercent)} % per subscription · ${A.duration === "lifetime" ? "lifetime" : esc(A.duration)}</span></div>
+          <div class="row"><span>Payout</span><span class="val">${A.minPayout ? "from " + esc(A.minPayout) + " " + esc(A.currency) : "No minimum"}${A.payoutMethod ? " · " + esc(A.payoutMethod) : ""}</span></div>
+          ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
+        </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts sign-ups. Demo numbers.</p></section>`;
     }
     h += `<section class="dr-sec"><h3>Settings</h3><div class="group">
-        <div class="row"><span>Default input device</span><span class="seg" role="group" aria-label="Default input device" id="set-dev"><button type="button" data-dev="mk" aria-pressed="${settings.device === "mk"}">KBM</button><button type="button" data-dev="controller" aria-pressed="${settings.device === "controller"}">Controller</button></span></div>
         ${sw("set-sound", "Sound at the end of a block", settings.sound)}
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
         ${sw("set-motion", "Animations", anim())}
@@ -928,9 +935,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         <button class="row go" type="button" id="reset-today">Reset today's progress</button>
         <button class="row go" type="button" id="reset-streak">Reset streak</button>
       </div></section>`;
-    h += `<section class="dr-sec"><h3>Help &amp; legal</h3><div class="group">
+    h += `<section class="dr-sec"><h3>Help</h3><div class="group">
         <button class="row go" type="button" id="to-faq">FAQ</button>
-        ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : `<div class="row"><span>Contact</span><span class="val">***</span></div>`}
+        ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : ""}
         ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
       </div></section>`;
     if (account) {
@@ -949,7 +956,6 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       signingIn = true; renderDrawer();
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
     });
-    on("set-dev", "click", (e) => { const b = e.target.closest("button"); if (!b) return; settings.device = b.dataset.dev; saveSettings(); if (!S.active) S.dev = settings.device; renderDrawer(); toast("Default input device saved"); });
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
@@ -990,7 +996,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
   topAccount();
-  $("ft-legal").innerHTML = ["Imprint", "Privacy", "Terms"].map((n, i) => { const u = [SITE.imprintUrl, SITE.privacyUrl, SITE.termsUrl][i]; return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>` : `${n} <span class="ph">***</span>`; }).join(" · ");
+  $("ft-legal").innerHTML = ["Imprint", "Privacy", "Terms"].map((n, i) => { const u = [SITE.imprintUrl, SITE.privacyUrl, SITE.termsUrl][i]; return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>` : ""; }).filter(Boolean).join(" · ") || "repline.gg";
 
   /* ---------- Reveal ---------- */
   const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;
@@ -1020,7 +1026,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const asked = name;
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
-    if ((name === "plan" || name === "training") && (!S.goal || !S.len)) name = S.goal ? "length" : "goal";
+    if ((name === "plan" || name === "training") && (!S.goal || !length(S.goal, S.len))) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
     if (name === "training") S.active = true;
     if (view === "training" && name !== "training" && S.status === "laeuft") pause();
