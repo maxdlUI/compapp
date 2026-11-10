@@ -1,0 +1,850 @@
+<title>Daily Pro Routine</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Daily Pro Routine: Ziel wählen, Länge wählen, Block für Block trainieren.">
+<style>
+/* Layout: schwarze Apple-Produktseite (iPhone 18 Pro, Refero). Ein Homescreen, dann ein geführter Ablauf
+   Ziel → Länge → Plan → Training → Geschafft. Blau nur für Hauptaktionen; die Blockfarben Cyan → Violett sind die "Gerätefarbe". */
+:root {
+  color-scheme: dark;
+  --obsidian: #000000;
+  --graphite: #0e0e0e;
+  --carbon: #1d1d1f;
+  --steel: #333336;
+  --slate: #6e6e73;
+  --ash: #86868b;
+  --dim: #424245;
+  --porcelain: #f5f5f7;
+  --white: #ffffff;
+  --blue: #0071e3;
+  --blue-hover: #0077ed;
+  --link: #2997ff;
+  --copper: #b64400;
+  --pos: #5ed39a;
+  --keyline: #282828;
+  --c1: #38e0ff; --c2: #7debff; --c3: #3f8dff; --c4: #a855f7; --c5: #8f7bff;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.28, .11, .32, 1);
+  --gut-l: max(16px, env(safe-area-inset-left, 0px));
+  --gut-r: max(16px, env(safe-area-inset-right, 0px));
+}
+* { box-sizing: border-box; }
+html { background: var(--obsidian); }
+body { margin: 0; background: var(--obsidian); color: var(--porcelain); font-family: var(--text); font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--obsidian); }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+.wrap { max-width: 1060px; margin: 0 auto; padding-left: var(--gut-l); padding-right: var(--gut-r); }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ph { color: var(--ash); letter-spacing: .08em; }
+
+/* Typo */
+.d-xl { font-family: var(--display); font-weight: 600; font-size: clamp(44px, 7vw, 88px); line-height: 1.04; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.d-l { font-family: var(--display); font-weight: 600; font-size: clamp(36px, 5vw, 64px); line-height: 1.06; letter-spacing: -0.012em; margin: 0; text-wrap: balance; }
+.d-m { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; letter-spacing: -0.003em; margin: 0; text-wrap: balance; }
+.h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height: 1.17; letter-spacing: 0.009em; margin: 0; }
+.lead { font-size: clamp(17px, 1.6vw, 21px); line-height: 1.38; color: var(--ash); margin: 0; max-width: 46ch; letter-spacing: 0.01em; }
+.small { font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); margin: 0; }
+.tiny { font-size: 12px; line-height: 1.33; letter-spacing: -0.12px; color: var(--ash); }
+.soon { color: var(--copper); font-weight: 600; font-size: 12px; letter-spacing: -0.12px; }
+.more::after { content: " ›"; }
+
+/* Knöpfe */
+.pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 980px; background: var(--blue); color: var(--white); font-size: 17px; padding: 12px 24px; cursor: pointer; white-space: nowrap; transition: background .2s, transform .2s var(--ease), opacity .2s; text-decoration: none; min-height: 44px; }
+.pill:hover { background: var(--blue-hover); text-decoration: none; }
+.pill:active { transform: scale(.97); }
+.pill.sm { font-size: 12px; letter-spacing: -0.12px; padding: 5px 13px; min-height: 0; }
+.pill.out { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--porcelain); }
+.pill.out:hover { box-shadow: inset 0 0 0 1px var(--porcelain); }
+.pill.big { font-size: 19px; padding: 15px 36px; min-height: 56px; }
+.pill[disabled] { opacity: .4; cursor: default; }
+.round { width: 56px; height: 56px; border-radius: 50%; border: 0; background: rgba(66, 66, 69, .72); color: var(--porcelain); display: grid; place-items: center; cursor: pointer; transition: background .2s, transform .2s var(--ease); }
+.round:hover { background: rgba(86, 86, 90, .8); }
+.round:active { transform: scale(.94); }
+.round svg { width: 22px; height: 22px; }
+.round[disabled] { opacity: .35; cursor: default; }
+.icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; color: var(--ash); cursor: pointer; display: grid; place-items: center; }
+.icon-btn:hover { color: var(--porcelain); background: var(--carbon); }
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn[aria-pressed="false"] .on-i, .icon-btn[aria-pressed="true"] .off-i { display: none; }
+.seg { display: inline-flex; background: var(--carbon); border-radius: 99px; padding: 4px; gap: 2px; }
+.seg button { border: 0; background: transparent; color: var(--ash); padding: 8px 16px; border-radius: 99px; cursor: pointer; font-size: 14px; letter-spacing: -0.224px; transition: background .3s var(--ease), color .3s; white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--steel); color: var(--porcelain); }
+
+/* Navigation */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; padding-top: 10px; padding-left: var(--gut-l); padding-right: var(--gut-r); pointer-events: none; }
+.top-in { pointer-events: auto; max-width: 1024px; margin: 0 auto; height: 52px; border-radius: 20px; background: rgba(14, 14, 14, .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; gap: 22px; padding: 0 10px 0 20px; }
+.brand { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.012em; margin-right: auto; color: var(--porcelain); white-space: nowrap; }
+.brand:hover { text-decoration: none; }
+.top nav { display: flex; gap: 22px; }
+.top nav a { color: var(--ash); font-size: 14px; letter-spacing: -0.224px; transition: color .2s; }
+.top nav a:hover { color: var(--porcelain); text-decoration: none; }
+@media (max-width: 720px) { .top nav { display: none; } }
+
+/* Ansichten */
+.view { min-height: calc(100svh - 62px); }
+html.anim .view.enter-f { animation: inF .7s var(--ease) both; }
+html.anim .view.enter-b { animation: inB .7s var(--ease) both; }
+@keyframes inF { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes inB { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+html.anim .rv { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+html.anim .rv.in { opacity: 1; transform: none; }
+html.anim .d1 { transition-delay: .08s; } html.anim .d2 { transition-delay: .16s; } html.anim .d3 { transition-delay: .24s; } html.anim .d4 { transition-delay: .32s; }
+
+/* Zifferblatt */
+.dial { position: relative; aspect-ratio: 1; display: grid; place-items: center; }
+.dial svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.dial circle { fill: none; stroke-linecap: butt; }
+.dial .trk { opacity: .2; }
+.dial .seg-a { transition: stroke-dasharray 1.1s var(--ease); }
+.dial .fil { transition: stroke-dasharray .25s linear; }
+.dial .cur-glow { filter: drop-shadow(0 0 6px currentColor); }
+.dial-mid { position: relative; text-align: center; display: grid; gap: 6px; justify-items: center; padding: 0 14%; }
+.dial-mid .t { font-family: var(--display); font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.dial-glow { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(closest-side, rgba(56, 224, 255, .14), transparent 75%); pointer-events: none; }
+
+/* Home: Hero */
+.hero { display: grid; justify-items: center; text-align: center; gap: 22px; padding-block: 48px 64px; padding-left: var(--gut-l); padding-right: var(--gut-r); position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 20% -20% auto; height: 70%; background: radial-gradient(45% 55% at 50% 40%, rgba(63, 141, 255, .22), transparent 70%); pointer-events: none; }
+.hero .dial { width: min(360px, 74vw); transform: scale(var(--hs, 1)); transition: transform .1s linear; }
+.hero-copy { position: relative; display: grid; justify-items: center; gap: 14px; opacity: var(--ho, 1); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 6px; }
+html.anim .hero-copy > * { animation: rise 1.2s var(--ease) both; }
+html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-copy > :nth-child(3) { animation-delay: .24s; }
+@keyframes rise { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+
+.sec { padding-block: clamp(64px, 10vw, 128px); }
+.sec-head { display: grid; gap: 12px; margin-bottom: 36px; }
+
+/* Ziel-Kacheln */
+.goals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.goals.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 980px) { .goals.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .goals, .goals.four { grid-template-columns: minmax(0, 1fr); } }
+.goal { position: relative; overflow: hidden; border: 0; text-align: left; cursor: pointer; border-radius: 28px; min-height: 260px; padding: 28px; display: grid; align-content: space-between; gap: 32px; color: var(--porcelain); background: var(--obsidian); box-shadow: inset 0 0 0 1px var(--keyline); transition: transform .5s var(--ease), box-shadow .3s; text-decoration: none; }
+.goal:hover { text-decoration: none; transform: scale(1.012); }
+.goal::before { content: ""; position: absolute; inset: 0; background: var(--bg); opacity: .85; transition: opacity .5s var(--ease); }
+.goal:hover::before { opacity: 1; }
+.goal > * { position: relative; }
+.goal .gt { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.1; letter-spacing: 0.007em; }
+.goal .gd { font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: rgba(245, 245, 247, .74); max-width: 30ch; }
+.goal .gi { width: 36px; height: 36px; }
+.goal[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--blue); }
+.g-cup { --bg: radial-gradient(90% 90% at 100% 0%, #1b4a8f, #08142a 62%, #000); }
+.g-besser { --bg: radial-gradient(90% 90% at 100% 0%, #4b2a8f, #120a26 62%, #000); }
+.g-aim { --bg: radial-gradient(90% 90% at 100% 0%, #0f5a6b, #041a20 62%, #000); }
+.g-mechanics { --bg: radial-gradient(90% 90% at 100% 0%, #3b3b8f, #0d0d26 62%, #000); }
+.g-ki { --bg: linear-gradient(var(--carbon), var(--obsidian)); box-shadow: inset 0 0 0 1px var(--steel); }
+.goal.tall { min-height: 360px; }
+
+/* So geht's */
+.how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .how { grid-template-columns: minmax(0, 1fr); } }
+.how div { background: var(--carbon); border-radius: 28px; padding: 28px; display: grid; gap: 10px; align-content: start; }
+.how b { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; color: var(--ash); font-variant-numeric: tabular-nums; }
+
+/* Fortschritt */
+.progress { border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 300px); padding: clamp(28px, 4vw, 48px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+@media (max-width: 760px) { .progress { grid-template-columns: minmax(0, 1fr); } }
+.streak-n { font-family: var(--display); font-weight: 600; font-size: clamp(72px, 10vw, 120px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+.days div { display: grid; justify-items: center; gap: 8px; }
+.days i { width: 100%; max-width: 48px; aspect-ratio: 1; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--steel); display: block; transition: background .6s var(--ease), box-shadow .6s; }
+.days i.on { background: conic-gradient(var(--c1), var(--c3), var(--c4), var(--c1)); box-shadow: none; }
+.days i.today { box-shadow: inset 0 0 0 1.5px var(--porcelain); }
+.days i.on.today { box-shadow: none; }
+
+/* FAQ */
+.qa { border-top: 1px solid var(--steel); max-width: 820px; }
+.qa details { border-bottom: 1px solid var(--steel); }
+.qa summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 22px; font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2vw, 22px); line-height: 1.27; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa summary i { flex: none; position: relative; width: 16px; height: 16px; }
+.qa summary i::before, .qa summary i::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: var(--ash); transition: transform .4s var(--ease); }
+.qa summary i::after { transform: rotate(90deg); }
+.qa details[open] summary i::after { transform: rotate(0); }
+.qa p { margin: 0; padding-bottom: 22px; color: var(--ash); max-width: 62ch; }
+
+footer { background: var(--carbon); color: var(--ash); font-size: 12px; letter-spacing: -0.12px; line-height: 1.33; padding-block: 24px 36px; margin-top: 40px; }
+footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+/* Ablauf */
+.flowv { padding-block: 40px 96px; }
+.stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.stepper i { width: 32px; height: 4px; border-radius: 99px; background: var(--steel); display: block; transition: background .4s; }
+.stepper i.on { background: var(--porcelain); }
+.stepper span { margin-left: 8px; }
+.back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; letter-spacing: -0.224px; margin-bottom: 28px; background: none; border: 0; color: var(--link); cursor: pointer; padding: 0; }
+.back::before { content: "‹"; font-size: 18px; line-height: 1; }
+.lens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+@media (max-width: 680px) { .lens { grid-template-columns: minmax(0, 1fr); } }
+.len { border: 0; text-align: left; cursor: pointer; background: var(--carbon); color: var(--porcelain); border-radius: 28px; padding: 28px; display: grid; gap: 8px; min-height: 200px; align-content: space-between; transition: transform .4s var(--ease), box-shadow .3s, background .3s; }
+.len:hover { background: #242426; transform: translateY(-3px); }
+.len .stat { font-family: var(--display); font-weight: 600; font-size: 40px; line-height: 1; letter-spacing: -0.005em; }
+.len[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--blue); }
+
+.plan { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+@media (max-width: 820px) { .plan { grid-template-columns: minmax(0, 1fr); } }
+.plan-side { display: grid; gap: 20px; justify-items: start; position: sticky; top: 90px; }
+@media (max-width: 820px) { .plan-side { position: static; } }
+.field { display: flex; align-items: center; gap: 12px; border-radius: 980px; box-shadow: inset 0 0 0 1px var(--slate); background: rgba(255, 255, 255, .04); padding: 6px 8px 6px 22px; }
+.field:focus-within { box-shadow: inset 0 0 0 1px var(--blue); }
+.field label { font-size: 14px; color: var(--ash); letter-spacing: -0.224px; white-space: nowrap; }
+.field input { background: transparent; border: 0; color: var(--porcelain); font-size: 17px; padding: 8px; min-width: 0; color-scheme: dark; }
+.field input:focus { outline: none; }
+.blocks { display: grid; gap: 10px; }
+.blk { background: var(--carbon); border-radius: 20px; overflow: hidden; }
+.blk summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 18px 20px; }
+.blk summary::-webkit-details-marker { display: none; }
+.blk .dot { width: 10px; height: 10px; border-radius: 50%; }
+.blk .when { font-variant-numeric: tabular-nums; color: var(--ash); font-size: 14px; min-width: 44px; }
+.blk .nm { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.blk .du { color: var(--ash); font-size: 14px; white-space: nowrap; }
+.blk-body { padding: 0 20px 20px 44px; display: grid; gap: 10px; }
+.blk.cupline { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); }
+.code { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--obsidian); box-shadow: 0 0 0 1px var(--steel); border-radius: 16px; padding: 12px 12px 12px 18px; }
+.code div { min-width: 0; }
+.code b { display: block; font-family: var(--mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; overflow-wrap: anywhere; }
+.note { font-size: 14px; color: var(--ash); letter-spacing: -0.224px; margin: 0; }
+
+/* Training */
+.train { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .train { grid-template-columns: minmax(0, 1fr); } }
+.stage { position: relative; overflow: hidden; border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 420px); padding: clamp(20px, 3vw, 36px); display: grid; justify-items: center; gap: 24px; }
+.stage-top { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+.stage-top > span:last-child { display: flex; gap: 4px; }
+.stage .dial { width: min(380px, 78vw); }
+.stage .dial-mid .t { font-size: clamp(52px, 7vw, 76px); }
+.state { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; letter-spacing: -0.224px; color: var(--ash); }
+.state i { width: 8px; height: 8px; border-radius: 50%; background: var(--slate); }
+.stage[data-status="laeuft"] .state i { background: var(--c1); box-shadow: 0 0 10px var(--c1); }
+html.anim .stage[data-status="laeuft"] .state i { animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+.stage.flash::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 3px var(--c1); animation: flash 1.2s var(--ease) forwards; pointer-events: none; }
+@keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+.controls { display: flex; align-items: center; gap: 16px; }
+.controls .pill { min-width: 168px; }
+.keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; }
+kbd { font-family: var(--text); font-size: 12px; color: var(--ash); box-shadow: inset 0 0 0 1px var(--steel); border-radius: 6px; padding: 1px 6px; }
+.info { display: grid; gap: 16px; }
+.card { background: var(--carbon); border-radius: 28px; padding: 24px; display: grid; gap: 14px; }
+.card .h3 { overflow-wrap: anywhere; }
+.next-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.next-list li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; font-size: 14px; letter-spacing: -0.224px; padding: 10px 0; border-top: 1px solid var(--steel); }
+.next-list li:first-child { border-top: 0; }
+.next-list li.done { color: var(--ash); text-decoration: line-through; text-decoration-color: var(--dim); }
+.next-list .dot { width: 8px; height: 8px; border-radius: 50%; }
+.next-list span:last-child { color: var(--ash); white-space: nowrap; }
+.kills { list-style: none; margin: 0; padding: 0; display: grid; }
+.kills li { border-top: 1px solid var(--steel); }
+.kills li:first-child { border-top: 0; }
+.kills label { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 0; cursor: pointer; }
+.kills input { appearance: none; -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--slate); margin: 0; cursor: pointer; display: grid; place-items: center; transition: background .3s var(--ease), box-shadow .3s; }
+.kills input::after { content: ""; width: 7px; height: 12px; border: solid #000; border-width: 0 2.5px 2.5px 0; transform: translateY(-1px) rotate(45deg) scale(0); transition: transform .3s var(--ease); }
+.kills input:checked { background: var(--c2); box-shadow: none; }
+.kills input:checked::after { transform: translateY(-1px) rotate(45deg) scale(1); }
+.kills span:last-child { color: var(--ash); font-size: 14px; white-space: nowrap; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: rgba(51, 51, 54, .92); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); color: var(--porcelain); font-size: 14px; letter-spacing: -0.224px; padding: 12px 20px; border-radius: 99px; opacity: 0; pointer-events: none; transition: opacity .35s var(--ease), transform .35s var(--ease); z-index: 70; max-width: calc(100vw - 32px); text-align: center; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* Geschafft */
+.done { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 72px); align-items: center; padding-block: clamp(40px, 8vw, 96px); }
+@media (max-width: 760px) { .done { grid-template-columns: minmax(0, 1fr); } }
+.done .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+html.anim .burst { animation: burst 1.4s var(--ease) both; }
+@keyframes burst { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+
+/* KI */
+.ki { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 72px); align-items: center; padding-block: clamp(32px, 6vw, 80px); }
+@media (max-width: 820px) { .ki { grid-template-columns: minmax(0, 1fr); } }
+.ki-txt { display: grid; gap: 18px; justify-items: start; }
+.ki-demo { display: grid; gap: 12px; }
+.ki-demo textarea { width: 100%; min-height: 96px; resize: none; border-radius: 20px; border: 0; box-shadow: inset 0 0 0 1px var(--steel); background: rgba(255, 255, 255, .04); padding: 18px 20px; color: var(--ash); font-size: 17px; }
+.ki-demo .blk { opacity: .6; }
+html.anim .ki-demo .blk { animation: type 3.6s var(--ease) infinite; }
+html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-demo .blk:nth-child(4) { animation-delay: .5s; }
+@keyframes type { 0%, 12% { opacity: 0; transform: translateY(10px); } 30%, 80% { opacity: .6; transform: none; } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) { .dial .seg-a, .dial .fil, .goal, .len { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v3.8h3.8"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path fill="currentColor" d="M5.5 5.5v13l9-6.5zM16 5.5h2.5v13H16z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" d="M4 9.5h3.5L12 6v12l-4.5-3.5H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" d="M4 9.5h3.5L12 6v12l-4.5-3.5H4zM16 9.5l5 5M21 9.5l-5 5"/></symbol>
+  <symbol id="i-full" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M7 4h10v4a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M9.5 17h5v3h-5z"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M4 18l5.5-5.5 3.5 3.5L20 9M14.5 9H20v5.5"/></symbol>
+  <symbol id="i-aim" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/></g></symbol>
+  <symbol id="i-mech" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M4 20V10l4-4h8l4 4v10zM4 14h16M10 6v8M14 6v8"/></symbol>
+  <symbol id="i-ki" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+</svg>
+
+<script>
+  try { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim"); } catch (e) {}
+</script>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#" aria-label="Zum Homescreen"><span class="ph">***</span></a>
+    <nav aria-label="Hauptnavigation"><a href="#ziel">Routinen</a><a href="#ki">KI-Training</a><a href="#" data-scroll="fortschritt">Fortschritt</a><a href="#" data-scroll="fragen">Fragen</a></nav>
+    <a class="pill sm" href="#ziel">Routine starten</a>
+  </div>
+</header>
+
+<!-- Homescreen -->
+<main class="view" data-view="home" id="v-home">
+  <section class="hero" id="hero" aria-label="Daily Pro Routine">
+    <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Heute</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Bereit.</span><span class="tiny" id="hero-sub">Block für Block</span></div></div>
+    <div class="hero-copy">
+      <h1 class="d-xl">Daily Pro Routine.</h1>
+      <p class="lead">Wähle dein Ziel und deine Länge. Dann trainierst du Block für Block, mit Timer, Codes und Kill-Zielen.</p>
+      <div class="hero-cta"><a class="pill big" href="#ziel">Routine starten</a><a class="pill big out" href="#training" id="resume" hidden>Weitermachen</a></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" aria-labelledby="h-was" style="padding-top:24px">
+    <div class="sec-head"><h2 id="h-was" class="d-l rv">Was willst du heute?</h2></div>
+    <div class="goals four" id="home-goals"></div>
+  </section>
+
+  <section class="sec wrap" aria-labelledby="h-how" style="padding-top:0">
+    <div class="sec-head"><h2 id="h-how" class="d-m rv">In drei Schritten zum Training.</h2></div>
+    <div class="how">
+      <div class="rv"><b>1</b><span class="h3">Ziel</span><p class="small">Cup-Warm-up, Besser werden oder eine schnelle Aim- oder Mechanics-Routine.</p></div>
+      <div class="rv d1"><b>2</b><span class="h3">Länge</span><p class="small">Kurz, Normal oder Lang, passend zu deinem Ziel.</p></div>
+      <div class="rv d2"><b>3</b><span class="h3">Plan</span><p class="small">Alle Blöcke mit Codes auf einen Blick. Dann startest du den Timer.</p></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="fortschritt" aria-labelledby="h-prog" style="padding-top:0">
+    <div class="progress rv">
+      <div style="display:grid;gap:12px">
+        <h2 id="h-prog" class="d-m">Dein Fortschritt.</h2>
+        <p class="small">Jede fertige Routine zählt als Tag. Gespeichert wird nur in diesem Browser.</p>
+      </div>
+      <div style="display:grid;gap:20px">
+        <div><span class="streak-n" id="home-streak">0</span> <span class="lead" style="display:inline" id="home-streak-w">Tage am Stück</span></div>
+        <div class="days" id="home-days"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="fragen" aria-labelledby="h-faq" style="padding-top:0">
+    <h2 id="h-faq" class="d-m rv" style="margin-bottom:28px">Fragen und Antworten.</h2>
+    <div class="qa rv d1">
+      <details open><summary>Was ist die Daily Pro Routine?<i></i></summary><p>Ein Training in fester Reihenfolge. Jeder Block hat eine Dauer oder ein Kill-Ziel und die Codes, die du dafür brauchst.</p></details>
+      <details><summary>Ist die Routine für alle gleich?<i></i></summary><p>Ja. Die Routinen sind fest vorgegeben und für jeden Spieler gleich. Eine Routine nur für dich stellt später das KI-Training zusammen.</p></details>
+      <details><summary>Was passiert, wenn ich zwischendurch aufhöre?<i></i></summary><p>Dein Stand wird für heute in diesem Browser gemerkt. Auf dem Homescreen geht es mit „Weitermachen“ an derselben Stelle weiter.</p></details>
+      <details><summary>Welche Tasten kann ich benutzen?<i></i></summary><p>Leertaste startet und pausiert, R startet den Block neu, N geht zum nächsten Block, F schaltet Vollbild an und aus.</p></details>
+    </div>
+  </section>
+</main>
+
+<!-- Schritt 1: Ziel -->
+<main class="view wrap flowv" data-view="ziel" id="v-ziel" hidden>
+  <button class="back" type="button" data-go="">Homescreen</button>
+  <div class="stepper" aria-hidden="true"><i class="on"></i><i></i><i></i><span class="tiny">Schritt 1 von 3</span></div>
+  <h1 class="d-l">Wofür trainierst du heute?</h1>
+  <div class="goals" id="pick-goals" style="margin-top:36px"></div>
+</main>
+
+<!-- Schritt 2: Länge -->
+<main class="view wrap flowv" data-view="laenge" id="v-laenge" hidden>
+  <button class="back" type="button" data-go="ziel">Ziel</button>
+  <div class="stepper" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><span class="tiny">Schritt 2 von 3 · <span id="len-goal"></span></span></div>
+  <h1 class="d-l">Wie viel Zeit hast du?</h1>
+  <div class="lens" id="pick-len"></div>
+</main>
+
+<!-- Schritt 3: Plan -->
+<main class="view wrap flowv" data-view="plan" id="v-plan" hidden>
+  <button class="back" type="button" data-go="laenge">Länge</button>
+  <div class="plan">
+    <div class="plan-side">
+      <div class="stepper" aria-hidden="true" style="margin:0"><i class="on"></i><i class="on"></i><i class="on"></i><span class="tiny">Schritt 3 von 3</span></div>
+      <h1 class="d-l">Dein Plan.</h1>
+      <p class="lead" id="plan-sum"></p>
+      <div class="seg" role="group" aria-label="Eingabegerät" id="dev"><button type="button" data-dev="mk" aria-pressed="true">Maus &amp; Tastatur</button><button type="button" data-dev="controller" aria-pressed="false">Controller</button></div>
+      <div class="field" id="cup-field" hidden><label for="cup-time">Dein Cup beginnt um</label><input id="cup-time" type="time" value="19:00"></div>
+      <p class="note" id="cup-note" hidden></p>
+      <button class="pill big" type="button" id="plan-start">Training starten</button>
+    </div>
+    <div class="blocks" id="plan-blocks"></div>
+  </div>
+</main>
+
+<!-- Training -->
+<main class="view wrap flowv" data-view="training" id="v-training" hidden style="padding-top:24px">
+  <button class="back" type="button" data-go="plan">Plan</button>
+  <div class="train">
+    <section class="stage" id="stage" data-status="bereit" aria-label="Timer">
+      <div class="stage-top">
+        <span class="state" aria-live="polite"><i></i><span id="st-word">Bereit</span></span>
+        <span>
+          <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Ton am Blockende"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
+          <button class="icon-btn" type="button" id="full" aria-label="Vollbild"><svg><use href="#i-full"/></svg></button>
+        </span>
+      </div>
+      <div class="dial" id="tr-dial"><svg viewBox="0 0 200 200" aria-hidden="true"></svg><div class="dial-mid"><span class="tiny" id="tr-kick"></span><span class="t" id="tr-clock" role="timer" aria-live="off">0:00</span><span class="tiny" id="tr-under"></span></div></div>
+      <div class="controls">
+        <button class="round" type="button" id="b-restart" aria-label="Block neu starten (R)"><svg><use href="#i-restart"/></svg></button>
+        <button class="pill big" type="button" id="b-main">Start</button>
+        <button class="round" type="button" id="b-next" aria-label="Nächster Block (N)"><svg><use href="#i-next"/></svg></button>
+      </div>
+      <div class="keys tiny"><span><kbd>Leertaste</kbd> Start/Pause</span><span><kbd>R</kbd> Neu</span><span><kbd>N</kbd> Weiter</span><span><kbd>F</kbd> Vollbild</span></div>
+    </section>
+    <div class="info">
+      <section class="card" aria-labelledby="tr-name">
+        <span class="tiny" id="tr-pos"></span>
+        <h2 class="h3" id="tr-name"></h2>
+        <p class="small" id="tr-hint"></p>
+        <div id="tr-codes" style="display:grid;gap:10px"></div>
+        <ul class="kills" id="tr-kills" hidden></ul>
+      </section>
+      <section class="card" aria-labelledby="h-next">
+        <h2 class="tiny" id="h-next" style="margin:0">Als Nächstes</h2>
+        <ul class="next-list" id="tr-next"></ul>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- Geschafft -->
+<main class="view wrap" data-view="geschafft" id="v-geschafft" hidden>
+  <div class="done">
+    <div style="display:grid;gap:16px;justify-items:start">
+      <h1 class="d-xl burst">Geschafft.</h1>
+      <p class="lead" id="done-sum"></p>
+      <div class="acts"><a class="pill big" href="#">Zum Homescreen</a><a class="pill big out" href="#ziel">Noch eine Routine</a></div>
+    </div>
+    <div style="display:grid;gap:20px">
+      <div><span class="streak-n" id="done-streak">0</span> <span class="lead" style="display:inline" id="done-streak-w">Tage am Stück</span></div>
+      <div class="days" id="done-days"></div>
+    </div>
+  </div>
+</main>
+
+<!-- KI-Training -->
+<main class="view wrap" data-view="ki" id="v-ki" hidden>
+  <div class="ki">
+    <div class="ki-txt">
+      <button class="back" type="button" data-go="" style="margin:0">Homescreen</button>
+      <span class="soon" style="font-size:14px">Coming Soon</span>
+      <h1 class="d-l">KI-Training. Nur für dich.</h1>
+      <p class="lead">Du sagst, was du heute erreichen willst und wie viel Zeit du hast. Die KI stellt daraus deine eigene Routine zusammen, als Warm-up oder zum Besserwerden.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#ziel">Feste Routinen ansehen</a></div>
+    </div>
+    <div class="ki-demo" aria-hidden="true">
+      <textarea disabled tabindex="-1">Ich habe heute *** Zeit und will an *** arbeiten.</textarea>
+      <div class="blk"><summary><i class="dot" style="background:var(--c1)"></i><span class="when"></span><span class="nm">Block 1 · ***</span><span class="du">*** min</span></summary></div>
+      <div class="blk"><summary><i class="dot" style="background:var(--c3)"></i><span class="when"></span><span class="nm">Block 2 · ***</span><span class="du">*** min</span></summary></div>
+      <div class="blk"><summary><i class="dot" style="background:var(--c4)"></i><span class="when"></span><span class="nm">Block 3 · ***</span><span class="du">*** min</span></summary></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span><span class="ph">***</span> · Unabhängiges Angebot, nicht mit Epic Games verbunden.</span><span>Impressum <span class="ph">***</span> · Datenschutz <span class="ph">***</span></span></div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   ROUTINEN — hier trägst du später die echten Inhalte ein.
+   Jede Routine ist für jeden Spieler gleich.
+   Aufbau eines Blocks:
+     { name: "Name", min: 30,               // Block mit Dauer (Countdown)
+       hinweis: "Was zu tun ist",
+       codes: [{ name: "Map-Code", wert: "1234-5678-9012" }] }
+     { name: "Name", kills: [{ name: "Modus", kills: 50 }, ...] }  // Block mit Kill-Zielen
+   Steht ein Wert auf null, zeigt die Seite einen Platzhalter (***).
+   Ein Block ohne Dauer (min: null) läuft als Stoppuhr, bis du ihn abschließt.
+   Für Controller kann eine Länge eine eigene Liste "controller" haben, sonst gilt "bloecke".
+   ===================================================================== */
+const ZIELE = [
+  { id: "cup", name: "Cup-Warm-up", text: "Aufwärmen vor dem Cup. Mit Cup-Startzeit, damit du pünktlich fertig bist.", icon: "i-cup", cupzeit: true },
+  { id: "besser", name: "Besser werden", text: "Die Routine für normale Trainingstage.", icon: "i-up" },
+  { id: "aim", name: "Schnell: Aim", text: "Kurz und nur Aim, wenn wenig Zeit ist.", icon: "i-aim" },
+  { id: "mechanics", name: "Schnell: Mechanics", text: "Kurz und nur Mechanics, wenn wenig Zeit ist.", icon: "i-mech" }
+];
+const LAENGEN = [
+  { id: "kurz", name: "Kurz", platzhalterBloecke: 3 },
+  { id: "normal", name: "Normal", platzhalterBloecke: 4 },
+  { id: "lang", name: "Lang", platzhalterBloecke: 5 }
+];
+const ROUTINEN = {
+  /* Beispiel, sobald es Inhalte gibt:
+  cup: { kurz: { bloecke: [ { name: "***", min: 10, hinweis: "***", codes: [{ name: "Map-Code", wert: "****-****-****" }] } ] } },
+  */
+};
+const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
+
+(function () {
+  "use strict";
+  const root = document.documentElement;
+  const anim = () => root.classList.contains("anim");
+  const $ = (id) => document.getElementById(id);
+  const P = '<span class="ph">***</span>';
+  const PCODE = "****-****-****";
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const two = (n) => String(n).padStart(2, "0");
+  function clock(ms) { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${two(m)}:${two(x)}` : `${m}:${two(x)}`; }
+  function today(d) { d = d || new Date(); return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`; }
+  const store = {
+    get(k, f) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? f : v; } catch (e) { return f; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+
+  /* ---------- Daten ---------- */
+  const ziel = (id) => ZIELE.find((z) => z.id === id);
+  const laenge = (id) => LAENGEN.find((l) => l.id === id);
+  function bloecke(z, l, dev) {
+    const r = ROUTINEN[z] && ROUTINEN[z][l];
+    const list = r && ((dev === "controller" && r.controller) || r.bloecke);
+    if (list && list.length) return list;
+    const n = laenge(l).platzhalterBloecke;
+    return Array.from({ length: n }, (_, i) => i === 1
+      ? { name: null, kills: [{ name: null, kills: null }, { name: null, kills: null }, { name: null, kills: null }] }
+      : { name: null, min: null, hinweis: null, codes: [{ name: dev === "controller" ? "Map-Code" : "Code", wert: null }] });
+  }
+  const isKill = (b) => Array.isArray(b.kills);
+  const nameOf = (b, i) => `Block ${i + 1} · ${b.name ? esc(b.name) : P}`;
+  const durOf = (b) => isKill(b) ? (b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " Kills" : "*** Kills") : (b.min != null ? b.min + " min" : "*** min");
+  const totalMin = (list) => list.every((b) => !isKill(b) && b.min != null) ? list.reduce((s, b) => s + b.min, 0) : null;
+
+  /* ---------- Zustand ---------- */
+  const KEY = "dpr.sitzung", DAYS = "dpr.tage", SND = "dpr.ton";
+  let S = store.get(KEY, null);
+  if (S && S.tag !== today()) { S = null; store.del(KEY); }
+  if (!S) S = fresh();
+  function fresh() { return { tag: today(), ziel: null, laenge: null, dev: "mk", cup: "19:00", b: 0, status: "bereit", vorher: 0, fertig: {}, kills: {}, aktiv: false }; }
+  function save() { const c = Object.assign({}, S, { vorher: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
+  let seit = 0;
+  const list = () => bloecke(S.ziel, S.laenge, S.dev);
+  const cur = () => list()[S.b];
+  function elapsed() { return S.vorher + (S.status === "laeuft" ? performance.now() - seit : 0); }
+
+  /* ---------- Zifferblatt (SVG) ---------- */
+  const R = 88, C = 2 * Math.PI * R, GAP = 1.6;
+  function drawDial(svg, items, opts) {
+    opts = opts || {};
+    const total = items.reduce((s, x) => s + x.w, 0) || 1, gap = items.length > 1 ? GAP : 0;
+    let off = 0, html = "";
+    items.forEach((x, i) => {
+      const len = Math.max(0.5, x.w / total * C - gap), col = x.color;
+      const dash = opts.draw ? `0 ${C}` : `${len} ${C}`;
+      html += `<circle class="trk" cx="100" cy="100" r="${R}" stroke="${col}" stroke-width="9" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}"></circle>`;
+      html += `<circle class="seg-a${x.cur ? " cur-glow" : ""}" data-len="${len}" cx="100" cy="100" r="${R}" stroke="${col}" style="color:${col}" stroke-width="9" stroke-dasharray="${opts.fill ? (len * clamp(x.fill || 0, 0, 1)) + " " + C : dash}" stroke-dashoffset="${-off}" ${opts.fill ? 'data-fill="1"' : ""}></circle>`;
+      off += len + gap;
+    });
+    svg.innerHTML = html;
+    if (opts.draw) {
+      const segs = svg.querySelectorAll(".seg-a");
+      segs.forEach((c, i) => { c.style.transitionDelay = (0.25 + i * 0.16) + "s"; });
+      requestAnimationFrame(() => requestAnimationFrame(() => segs.forEach((c) => c.setAttribute("stroke-dasharray", `${c.dataset.len} ${C}`))));
+    }
+  }
+  function fillDial(svg, fills) {
+    svg.querySelectorAll(".seg-a").forEach((c, i) => { c.classList.add("fil"); c.setAttribute("stroke-dasharray", `${c.dataset.len * clamp(fills[i], 0, 1)} ${C}`); });
+  }
+
+  /* ---------- Home ---------- */
+  function goalCard(z, mode) {
+    const a = document.createElement(mode === "pick" ? "button" : "a");
+    a.className = `goal g-${z.id}${mode === "pick" && (z.id === "cup" || z.id === "besser") ? " tall" : ""}`;
+    if (mode === "pick") { a.type = "button"; a.setAttribute("aria-pressed", S.ziel === z.id ? "true" : "false"); }
+    else a.href = "#ziel";
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px"><span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span></span>`;
+    a.addEventListener("click", (e) => { e.preventDefault(); if (S.ziel !== z.id) { S.ziel = z.id; S.laenge = null; resetRun(); } save(); go("laenge"); });
+    return a;
+  }
+  function kiCard() {
+    const a = document.createElement("a");
+    a.className = "goal g-ki"; a.href = "#ki";
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">KI-Training</span><span class="gd">Die KI stellt eine Routine nur für dich zusammen.</span></span>`;
+    return a;
+  }
+  function buildHome() {
+    const hg = $("home-goals"); hg.innerHTML = "";
+    ZIELE.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
+    const quick = { id: "aim", name: "Schnell: Aim & Mechanics", text: "Kurze Routinen, wenn wenig Zeit ist.", icon: "i-aim" };
+    const q = goalCard(quick); q.addEventListener("click", (e) => { e.preventDefault(); go("ziel"); }, true); hg.appendChild(q);
+    hg.appendChild(kiCard());
+    hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
+    $("resume").hidden = !(S.aktiv && S.ziel && S.laenge);
+    $("hero-sub").textContent = S.aktiv ? "Deine Routine wartet" : "Block für Block";
+    streakUI("home");
+  }
+  let heroDrawn = false;
+  function heroDial() {
+    const items = [0, 1, 2, 3, 4].map((i) => ({ w: 1, color: FARBEN[i] }));
+    drawDial($("hero-dial").querySelector("svg"), items, { draw: anim() && !heroDrawn });
+    heroDrawn = true;
+  }
+
+  /* ---------- Schritte ---------- */
+  function buildPick() {
+    const g = $("pick-goals"); g.innerHTML = "";
+    ZIELE.forEach((z) => g.appendChild(goalCard(z, "pick")));
+    const k = kiCard(); k.style.gridColumn = "1 / -1"; k.style.minHeight = "160px"; g.appendChild(k);
+  }
+  function buildLen() {
+    const z = ziel(S.ziel); $("len-goal").textContent = z.name;
+    const box = $("pick-len"); box.innerHTML = "";
+    LAENGEN.forEach((l) => {
+      const bl = bloecke(S.ziel, l.id, S.dev), t = totalMin(bl);
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.laenge === l.id ? "true" : "false");
+      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${t != null ? t + " min" : "*** min"}</span><br><span class="small">${bl.length} Blöcke</span></span>`;
+      b.addEventListener("click", () => { if (S.laenge !== l.id) { S.laenge = l.id; resetRun(); } save(); go("plan"); });
+      box.appendChild(b);
+    });
+  }
+  function startTimes() {
+    const bl = list(), t = totalMin(bl), m = /^(\d{1,2}):(\d{2})$/.exec(S.cup || "");
+    if (!ziel(S.ziel).cupzeit || t == null || !m) return null;
+    let start = (+m[1]) * 60 + (+m[2]) - t, out = [];
+    bl.forEach((b) => { const v = ((start % 1440) + 1440) % 1440; out.push(`${two(Math.floor(v / 60))}:${two(v % 60)}`); start += b.min; });
+    return out;
+  }
+  function codesHTML(b) {
+    if (!b.codes || !b.codes.length) return "";
+    return b.codes.map((c, i) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}</span><b>${c.wert ? esc(c.wert) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.wert ? esc(c.wert) : ""}">Kopieren</button></div>`).join("");
+  }
+  function buildPlan() {
+    const z = ziel(S.ziel), l = laenge(S.laenge), bl = list(), t = totalMin(bl);
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${t != null ? t + " min" : "*** min"} · ${bl.length} Blöcke`;
+    $("dev").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.dev === S.dev ? "true" : "false"));
+    $("cup-field").hidden = !z.cupzeit; $("cup-note").hidden = !z.cupzeit;
+    $("cup-time").value = S.cup || "";
+    const times = startTimes();
+    $("cup-note").textContent = times ? "Die Startzeiten sind vom Cup-Beginn zurückgerechnet." : "Die Startzeiten erscheinen, sobald alle Blocklängen eingetragen sind.";
+    const box = $("plan-blocks"); box.innerHTML = "";
+    bl.forEach((b, i) => {
+      const d = document.createElement("details"); d.className = "blk rv" + (i < 4 ? " d" + i : ""); if (i === 0) d.open = true;
+      const when = z.cupzeit ? (times ? times[i] : "***") : "";
+      let body = "";
+      if (b.hinweis !== undefined) body += `<p class="note">${b.hinweis ? esc(b.hinweis) : P}</p>`;
+      body += codesHTML(b);
+      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `Modus ${j + 1} · ${k.name ? esc(k.name) : "***"} · ${k.kills != null ? k.kills : "***"} Kills`).join("<br>")}</p>`;
+      d.innerHTML = `<summary><i class="dot" style="background:${FARBEN[i % FARBEN.length]}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
+      box.appendChild(d); observe(d);
+    });
+    if (z.cupzeit) {
+      const c = document.createElement("div"); c.className = "blk cupline";
+      c.innerHTML = `<summary style="cursor:default"><i class="dot" style="background:var(--white)"></i><span class="when">${esc(S.cup || "***")}</span><span class="nm">Cup</span><span class="du">danach</span></summary>`;
+      box.appendChild(c);
+    }
+  }
+  $("dev").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.dataset.dev === S.dev) return; S.dev = b.dataset.dev; resetRun(); save(); buildPlan(); });
+  $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
+  $("plan-start").addEventListener("click", () => { S.aktiv = true; save(); go("training"); });
+
+  /* ---------- Training ---------- */
+  let raf = 0, wake = null, audio = null;
+  let sound = store.get(SND, true);
+  function resetRun() { S.b = 0; S.status = "bereit"; S.vorher = 0; S.fertig = {}; S.kills = {}; S.aktiv = false; }
+  function setSound(v) { sound = v; store.set(SND, v); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
+  setSound(sound);
+  $("snd").addEventListener("click", () => setSound(!sound));
+  function beep() {
+    if (!sound) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.22].forEach((t) => { const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = t ? 1175 : 880; g.gain.setValueAtTime(0.0001, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(0.25, audio.currentTime + t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + t + 0.35); o.connect(g).connect(audio.destination); o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.4); });
+    } catch (e) {}
+    try { navigator.vibrate && navigator.vibrate([120, 80, 120]); } catch (e) {}
+  }
+  async function keepAwake(on) {
+    try { if (on && !wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } else if (!on && wake) { await wake.release(); wake = null; } } catch (e) { wake = null; }
+  }
+  $("full").addEventListener("click", toggleFull);
+  function toggleFull() {
+    try { if (document.fullscreenElement) document.exitFullscreen(); else $("v-training").requestFullscreen().catch(() => toast("Vollbild ist hier nicht verfügbar.")); } catch (e) { toast("Vollbild ist hier nicht verfügbar."); }
+  }
+  function killsDone(i) { const b = list()[i], k = S.kills[i] || {}; return isKill(b) ? b.kills.filter((_, j) => k[j]).length : 0; }
+  function fillFor(i) {
+    const b = list()[i];
+    if (S.fertig[i]) return 1;
+    if (i !== S.b) return 0;
+    if (isKill(b)) return killsDone(i) / b.kills.length;
+    if (b.min != null) return elapsed() / (b.min * 60000);
+    return S.status === "bereit" ? 0 : Math.min(0.92, 0.08 + elapsed() / 600000 * 0.84);
+  }
+  function buildTraining() {
+    const bl = list(), b = cur(), z = ziel(S.ziel), l = laenge(S.laenge);
+    drawDial($("tr-dial").querySelector("svg"), bl.map((x, i) => ({ w: x.min || 1, color: FARBEN[i % FARBEN.length], cur: i === S.b })), { fill: true });
+    $("tr-pos").textContent = `${z.name} · ${l.name} · Block ${S.b + 1} von ${bl.length}`;
+    $("tr-name").innerHTML = nameOf(b, S.b);
+    $("tr-hint").innerHTML = isKill(b) ? "Hak jeden Modus ab, sobald seine Kills voll sind." : (b.hinweis ? esc(b.hinweis) : (b.codes && b.codes.length ? "Code laden, dann den Timer starten." : P));
+    $("tr-codes").innerHTML = codesHTML(b);
+    const kl = $("tr-kills"); kl.hidden = !isKill(b); kl.innerHTML = "";
+    if (isKill(b)) b.kills.forEach((k, j) => {
+      const li = document.createElement("li"), id = `k-${S.b}-${j}`, on = !!(S.kills[S.b] || {})[j];
+      li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>Modus ${j + 1} · ${k.name ? esc(k.name) : P}</span><span>${k.kills != null ? k.kills : "***"} Kills</span></label>`;
+      li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.fertig[S.b] = true; beep(); flash(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.fertig[S.b]; } save(); render(); });
+      kl.appendChild(li);
+    });
+    const nx = $("tr-next"); nx.innerHTML = "";
+    bl.forEach((x, i) => { if (i === S.b) return; const li = document.createElement("li"); if (S.fertig[i]) li.className = "done"; li.innerHTML = `<i class="dot" style="background:${FARBEN[i % FARBEN.length]}"></i><span>${nameOf(x, i)}</span><span>${durOf(x)}</span>`; nx.appendChild(li); });
+    if (nx.children.length === 0) nx.innerHTML = `<li><span></span><span>Das ist der letzte Block.</span><span></span></li>`;
+    render();
+  }
+  function render() {
+    const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
+    st.dataset.status = S.status;
+    const words = { bereit: "Bereit", laeuft: "Läuft", pause: "Pausiert", fertig: "Fertig" };
+    $("st-word").textContent = words[S.status];
+    if (kill) { $("tr-kick").textContent = "Kill-Ziele"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "geschafft"; }
+    else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Block fertig" : "noch"; $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} von ${clock(tot)}`; }
+    else { $("tr-kick").textContent = "Zeit im Block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Dauer: *** min"; }
+    const last = S.b === bl.length - 1, main = $("b-main");
+    if (S.status === "fertig") main.textContent = last ? "Routine abschließen" : "Nächster Block";
+    else if (kill) main.textContent = "Alle Ziele abhaken";
+    else main.textContent = S.status === "laeuft" ? "Pause" : (S.status === "pause" ? "Weiter" : "Start");
+    main.disabled = kill && S.status !== "fertig";
+    $("b-restart").disabled = kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
+    fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
+    document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Daily Pro Routine` : "Daily Pro Routine";
+  }
+  function loop() {
+    if (S.status !== "laeuft") return;
+    const b = cur();
+    if (b.min != null && elapsed() >= b.min * 60000) { S.vorher = b.min * 60000; S.status = "fertig"; S.fertig[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); return; }
+    render(); raf = requestAnimationFrame(loop);
+  }
+  function play() { if (isKill(cur()) || S.status === "fertig") return; seit = performance.now(); S.status = "laeuft"; keepAwake(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); save(); render(); }
+  function pause() { S.vorher = elapsed(); S.status = "pause"; cancelAnimationFrame(raf); keepAwake(false); save(); render(); }
+  function restart() { cancelAnimationFrame(raf); S.vorher = 0; S.status = "bereit"; delete S.fertig[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  function nextBlock() {
+    cancelAnimationFrame(raf); keepAwake(false);
+    if (!isKill(cur()) || S.status === "fertig") S.fertig[S.b] = true;
+    else S.fertig[S.b] = true;
+    const bl = list();
+    if (S.b >= bl.length - 1) { finish(); return; }
+    S.b += 1; S.vorher = 0; S.status = "bereit"; save(); buildTraining();
+    $("v-training").classList.remove("enter-f"); void $("v-training").offsetWidth; $("v-training").classList.add("enter-f");
+  }
+  function mainAction() { if (S.status === "fertig") nextBlock(); else if (S.status === "laeuft") pause(); else play(); }
+  function flash() { const st = $("stage"); st.classList.remove("flash"); void st.offsetWidth; st.classList.add("flash"); }
+  $("b-main").addEventListener("click", mainAction);
+  $("b-restart").addEventListener("click", restart);
+  $("b-next").addEventListener("click", nextBlock);
+  addEventListener("keydown", (e) => {
+    if (view !== "training" || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.code === "Space") { e.preventDefault(); if (!$("b-main").disabled) mainAction(); }
+    else if (e.key === "r" || e.key === "R") restart();
+    else if (e.key === "n" || e.key === "N") nextBlock();
+    else if (e.key === "f" || e.key === "F") toggleFull();
+  });
+  addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.status === "laeuft") keepAwake(true); save(); });
+
+  /* ---------- Geschafft & Streak ---------- */
+  function finish() {
+    const days = store.get(DAYS, []); const t = today();
+    if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
+    const z = ziel(S.ziel), l = laenge(S.laenge);
+    $("done-sum").textContent = `${z.name} · ${l.name} · alle ${list().length} Blöcke fertig.${z.cupzeit ? " Viel Erfolg im Cup." : ""}`;
+    const keep = { ziel: S.ziel, laenge: S.laenge, dev: S.dev, cup: S.cup };
+    S = Object.assign(fresh(), keep); store.del(KEY);
+    go("geschafft");
+  }
+  function streak() {
+    const set = new Set(store.get(DAYS, [])); let n = 0; const d = new Date();
+    if (!set.has(today(d))) d.setDate(d.getDate() - 1);
+    while (set.has(today(d))) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function streakUI(prefix) {
+    const set = new Set(store.get(DAYS, [])), box = $(prefix + "-days"), n = streak();
+    const names = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    box.innerHTML = "";
+    for (let k = 6; k >= 0; k--) {
+      const d = new Date(); d.setDate(d.getDate() - k);
+      const on = set.has(today(d)), div = document.createElement("div");
+      div.innerHTML = `<i class="${on ? "on" : ""}${k === 0 ? " today" : ""}"></i><span class="tiny">${names[d.getDay()]}</span>`;
+      if (anim() && on) div.querySelector("i").style.transitionDelay = (0.1 * (6 - k)) + "s";
+      box.appendChild(div);
+    }
+    countTo($(prefix + "-streak"), n);
+    $(prefix + "-streak-w").textContent = n === 1 ? "Tag am Stück" : "Tage am Stück";
+  }
+  function countTo(el, n) {
+    if (!anim() || n === 0) { el.textContent = n; return; }
+    const t0 = performance.now(), dur = 900;
+    (function step(t) { const p = clamp((t - t0) / dur, 0, 1); el.textContent = Math.round(n * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); })(t0);
+  }
+
+  /* ---------- Kopieren & Hinweis ---------- */
+  let tt;
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-copy]"); if (!b) return;
+    e.preventDefault();
+    const v = b.dataset.copy;
+    if (!v) { toast("Für diesen Block ist noch kein Code eingetragen."); return; }
+    const ok = () => { b.textContent = "Kopiert"; toast("Code kopiert"); setTimeout(() => { b.textContent = "Kopieren"; }, 1600); };
+    try { navigator.clipboard.writeText(v).then(ok, () => toast("Kopieren ging nicht. Markiere den Code und kopiere ihn selbst.")); } catch (err) { toast("Kopieren ging nicht. Markiere den Code und kopiere ihn selbst."); }
+  });
+
+  /* ---------- Reveal ---------- */
+  const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;
+  function observe(el) { if (!el.classList.contains("rv")) return; io ? io.observe(el) : el.classList.add("in"); }
+  document.querySelectorAll(".rv").forEach(observe);
+
+  /* ---------- Hero beim Scrollen ---------- */
+  addEventListener("scroll", () => {
+    if (!anim() || view !== "home") return;
+    const p = clamp(scrollY / 520, 0, 1), h = $("hero");
+    h.style.setProperty("--hs", (1 - 0.14 * p).toFixed(3));
+    h.style.setProperty("--ho", (1 - 0.7 * p).toFixed(3));
+  }, { passive: true });
+
+  /* ---------- Routing ---------- */
+  const ORDER = ["", "ziel", "laenge", "plan", "training", "geschafft", "ki"];
+  let view = null;
+  document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
+  document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); const id = a.dataset.scroll;
+    const doIt = () => $(id).scrollIntoView({ behavior: anim() ? "smooth" : "auto", block: "start" });
+    if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt();
+  }));
+  function go(name) { if (("#" + name) === location.hash || (!name && !location.hash)) route(); else location.hash = name ? name : ""; }
+  function route() {
+    let name = location.hash.replace("#", "");
+    const asked = name;
+    if (ORDER.indexOf(name) < 0) name = "";
+    if ((name === "laenge") && !S.ziel) name = "ziel";
+    if ((name === "plan" || name === "training") && (!S.ziel || !S.laenge)) name = S.ziel ? "laenge" : "ziel";
+    if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
+    if (name === "training" && !S.aktiv) S.aktiv = true;
+    if (view === "training" && name !== "training" && S.status === "laeuft") pause();
+    const from = ORDER.indexOf(view == null ? "" : (view === "home" ? "" : view)), to = ORDER.indexOf(name);
+    const id = name || "home";
+    document.querySelectorAll(".view").forEach((v) => { v.hidden = v.dataset.view !== id; v.classList.remove("enter-f", "enter-b"); });
+    const v = $("v-" + id);
+    if (view !== null) { void v.offsetWidth; v.classList.add(to >= from ? "enter-f" : "enter-b"); }
+    const first = view === null; view = id;
+    if (id === "home") { buildHome(); heroDial(); }
+    if (id === "ziel") buildPick();
+    if (id === "laenge") buildLen();
+    if (id === "plan") buildPlan();
+    if (id === "training") { if (S.status === "laeuft") S.status = "pause"; buildTraining(); }
+    if (id === "geschafft") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine fertig."; }
+    if (!first || id !== "home") scrollTo(0, 0);
+  }
+  addEventListener("hashchange", route);
+  route();
+})();
+</script>
