@@ -98,42 +98,69 @@ h1 { font-family: var(--display); font-weight: 600; margin: 0; font-size: clamp(
 .next-box ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
 .next-box li b { color: var(--porcelain); font-weight: 600; }
 </style>
+<style>
+/* Ergänzungen Version 2: Ablaufleiste, Zielkarten, Coming-Soon-Kennzeichen */
+.flowbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.flowbar span { font-size: 14px; letter-spacing: -0.224px; padding: 8px 16px; border-radius: 99px; background: var(--carbon); color: var(--porcelain); }
+.flowbar span.ai { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--ash); }
+.flowbar i { color: var(--ash); font-style: normal; }
+.goal { border-radius: 1.94cqw; padding: 1.8cqw; display: grid; align-content: space-between; gap: 2cqw; position: relative; overflow: hidden; }
+.goal .gt { font-family: var(--display); font-weight: 600; font-size: 1.8cqw; line-height: 1.1; }
+.goal .gd { font-size: .95cqw; color: rgba(245,245,247,.72); line-height: 1.35; }
+.goal.cup { background: radial-gradient(90% 90% at 100% 0%, #1b4a8f, #08142a 65%, #000); }
+.goal.imp { background: radial-gradient(90% 90% at 100% 0%, #4b2a8f, #120a26 65%, #000); }
+.goal.aim { background: radial-gradient(90% 90% at 100% 0%, #0f5a6b, #041a20 65%, #000); }
+.goal.mech { background: radial-gradient(90% 90% at 100% 0%, #3b3b8f, #0d0d26 65%, #000); }
+.goal.ai { background: var(--obsidian); box-shadow: inset 0 0 0 1px var(--steel); }
+.goal.sel { box-shadow: inset 0 0 0 .2cqw var(--blue); }
+.soon { display: inline-flex; font-size: .85cqw; font-weight: 600; color: var(--copper); }
+.stepper { display: flex; gap: .6cqw; align-items: center; font-size: .9cqw; color: var(--ash); }
+.stepper b { color: var(--porcelain); font-weight: 600; }
+.stepper i { width: 2.4cqw; height: .3cqw; border-radius: 99px; background: var(--steel); display: block; }
+.stepper i.on { background: var(--porcelain); }
+.len { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqw; }
+.len div { background: var(--carbon); border-radius: 1.94cqw; padding: 2cqw; display: grid; gap: .6cqw; }
+.len div.sel { box-shadow: inset 0 0 0 .2cqw var(--blue); }
+.len .stat { font-size: 3cqw; }
+</style>
 
 <header class="wrap intro">
-  <p class="eyebrow">Storyboard · Neue Webseite</p>
-  <h1>Daily Pro Routine im Apple-Design.</h1>
-  <p class="lead">Eine Seite, die sich nur um die Daily Pro Routine dreht: ein Trainingstag in festen Blöcken, mit Timer, Codes und Kill-Zielen. <strong>Elf Szenen</strong> zeigen in Scroll-Reihenfolge, was zu sehen ist und was passiert. Name, Marke, Preis, Blockinhalte und Codes sind <strong>bewusst Platzhalter</strong> (<code style="font-family:inherit">***</code>).</p>
+  <p class="eyebrow">Storyboard · Version 2</p>
+  <h1>Daily Pro Routine. Einfach starten.</h1>
+  <p class="lead">Eine eigenständige Webseite ohne Preise und ohne Kauf. Du kommst auf einen <strong>Homescreen</strong>, wählst dein <strong>Ziel</strong> und die <strong>Länge</strong>, siehst deinen <strong>Plan</strong> und trainierst mit dem <strong>Timer</strong>. Alle Routinen sind fest vorgegeben und für jeden Spieler gleich. Ihre Inhalte trägst du später ein, bis dahin stehen dort Platzhalter (<code style="font-family:inherit">***</code>). Nur das <strong>KI-Training</strong> ist als „Coming Soon“ markiert.</p>
 </header>
 
-<section class="wrap" aria-label="Grundlagen">
+<section class="wrap" aria-label="Ablauf">
   <div class="box">
+    <div style="grid-column:1/-1">
+      <h2>Ablauf</h2>
+      <div class="flowbar"><span>Homescreen</span><i>›</i><span>1 · Ziel</span><i>›</i><span>2 · Länge</span><i>›</i><span>3 · Dein Plan</span><i>›</i><span>Timer</span><i>›</i><span>Geschafft</span><span class="ai">KI-Training · Coming Soon</span></div>
+    </div>
     <div>
-      <h2>Übernommen aus dem Original</h2>
+      <h2>Ziele (Vorschlag)</h2>
       <ul>
-        <li><b>Tag:</b> Kein Cup oder Cup-Tag · 3 h, 6 h, 9 h+</li>
-        <li><b>Fassung:</b> Maus &amp; Tastatur, Controller, Trio</li>
-        <li><b>Blöcke:</b> 5, 9 oder 11 pro Tag, je mit Dauer oder Kill-Ziel</li>
-        <li><b>Timer:</b> Start/Pause (Leertaste), Neu (R), Überspringen (N), Vollbild (F), Ton am Ende</li>
-        <li><b>Extras:</b> Codes kopieren, „Jetzt“-Teilstücke 5/10 min, Als Nächstes, Cup-Startzeit, Streak, Bestellnummer, Kauf</li>
+        <li><b>Cup-Warm-up:</b> kurz und gezielt vor einem Cup</li>
+        <li><b>Besser werden:</b> die lange Routine für normale Trainingstage</li>
+        <li><b>Schnell: Aim</b> und <b>Schnell: Mechanics</b> für wenig Zeit</li>
+        <li><b>KI-Training:</b> stellt die Routine für dich zusammen · Coming Soon</li>
       </ul>
     </div>
     <div>
-      <h2>Was ich besser mache</h2>
+      <h2>Warum diese Reihenfolge</h2>
       <ul>
-        <li><b>Ein Zifferblatt für den ganzen Tag.</b> Jeder Block ist ein farbiges Segment, du siehst sofort, wo du stehst.</li>
-        <li><b>Erst erleben, dann kaufen.</b> Block 1 läuft in der Vorschau komplett, die gesperrten Blöcke sind sichtbar, aber verdeckt.</li>
-        <li><b>Tagesplan mit Uhrzeiten.</b> Am Cup-Tag rechnet die Seite rückwärts vom Cup-Start.</li>
-        <li><b>Weniger Menü.</b> Kein Shop, keine Coaching-Seiten, nur die Routine.</li>
+        <li><b>Erst das Ziel,</b> weil es bestimmt, welche Längen sinnvoll sind.</li>
+        <li><b>Dann die Länge,</b> passend zum Ziel: kurz beim Warm-up, lang beim Besserwerden.</li>
+        <li><b>Plan vor dem Start,</b> damit du die Codes schon laden kannst. Hier wählst du auch Maus &amp; Tastatur oder Controller.</li>
       </ul>
     </div>
     <div>
       <h2>Platzhalter</h2>
       <ul>
         <li>Name der Seite: <code>***</code></li>
-        <li>Preis: <code>*** €</code></li>
-        <li>Block 2 bis 11: <code>Block 2 · ***</code></li>
-        <li>Map- und Share-Codes: <code>****-****-****</code></li>
-        <li>Echte Werte aus der Vorschau: Kovaaks 30 min, Aim trainer 250 Kills in 4 Modi, Blocklängen</li>
+        <li>Blöcke: <code>Block 1 · ***</code>, Dauer <code>*** min</code></li>
+        <li>Codes: <code>****-****-****</code></li>
+        <li>Längen pro Ziel sind Vorschläge und änderbar</li>
+        <li>Kein Preis, kein Kauf, keine gesperrten Inhalte</li>
       </ul>
     </div>
   </div>
@@ -142,245 +169,220 @@ h1 { font-family: var(--display); font-weight: 600; margin: 0; font-size: clamp(
 <main class="wrap flow">
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 1: Hero mit Tages-Zifferblatt">
-      <div class="f" style="grid-template-rows:auto 1fr auto">
-        <div class="lnav"><span class="n">Daily Pro Routine</span><span>Ablauf</span><span>Timer</span><span>Cup-Tag</span><span>Streak</span><span>Fragen</span><span class="pill">Starten</span></div>
-        <div style="display:grid;place-items:center;padding-top:2cqw"><div class="dial g3" style="width:26cqw"><div><span class="small">Heute · 3 h · 5 Blöcke</span><span class="t" style="font-size:4.4cqw">3:30:00</span><span class="small">Block 1 · Kovaaks</span></div></div></div>
-        <div style="display:grid;justify-items:center;gap:1cqw;padding-bottom:2.6cqw;text-align:center"><p class="pname"><span class="ph">***</span></p><p class="disp">Daily Pro Routine.</p><div style="display:flex;gap:.8cqw"><span class="capsule">Einmalig *** € · kein Abo</span><span class="pill lg">Block 1 gratis testen</span></div></div>
+    <div class="frame" role="img" aria-label="Szene 1: Homescreen mit Übersicht">
+      <div class="f" style="grid-template-rows:auto auto 1fr">
+        <div class="lnav"><span class="n"><span class="ph">***</span></span><span>Routinen</span><span>KI-Training</span><span>Fortschritt</span><span>Fragen</span><span class="pill">Routine starten</span></div>
+        <div style="display:grid;justify-items:center;text-align:center;gap:1cqw;padding:3.4cqw 0 2.4cqw"><p class="disp">Daily Pro Routine.</p><p class="sub">Dein Training, Block für Block.</p><span class="pill lg">Routine starten</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.1cqw;padding:0 3cqw 3cqw">
+          <div class="goal cup"><span class="gt">Cup-Warm-up</span><span class="gd">Vor dem Cup, auf den Punkt.</span></div>
+          <div class="goal imp"><span class="gt">Besser werden</span><span class="gd">Die lange Routine für jeden Tag.</span></div>
+          <div class="goal aim"><span class="gt">Schnell: Aim<br>&amp; Mechanics</span><span class="gd">Wenn wenig Zeit ist.</span></div>
+          <div class="goal ai"><span class="soon">Coming Soon</span><span class="gt">KI-Training</span><span class="gd">Eine Routine nur für dich.</span></div>
+        </div>
       </div>
       <span class="cap">Desktop 1440 px</span>
     </div>
     <div class="notes">
-      <span class="step">Szene 1 von 11 · Erster Bildschirm</span>
-      <h3>Hero: der Trainingstag als Zifferblatt</h3>
+      <span class="step">Szene 1 von 9 · Homescreen</span>
+      <h3>Homescreen: alles auf einen Blick</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Wo bei Apple das iPhone steht, steht hier das Tages-Zifferblatt. Jeder Block ist ein Segment in Cyan, Blau oder Violett. Darunter der Name und zwei Aktionen.</dd></div>
-        <div><dt>Bewegung</dt><dd>Die Segmente zeichnen sich nacheinander im Uhrzeigersinn. Beim Scrollen wird das Zifferblatt kleiner und wandert nach oben.</dd></div>
-        <div><dt>Platzhalter</dt><dd>Seitenname <code>***</code>, Preis <code>*** €</code>.</dd></div>
+        <div><dt>Inhalt</dt><dd>Oben eine schlichte Leiste, darunter der Titel und ein blauer Knopf. Darunter vier Kacheln: drei Routine-Arten und das KI-Training. Unter den Kacheln (nicht im Bild): Fortschritt mit Streak und Fragen.</dd></div>
+        <div><dt>Bewegung</dt><dd>Der Titel steigt auf, die Kacheln gleiten nacheinander ein. Beim Überfahren wird der Farbschein einer Kachel etwas heller.</dd></div>
+        <div><dt>Interaktion</dt><dd>Eine Kachel startet den Ablauf mit diesem Ziel schon ausgewählt. „Routine starten“ beginnt bei Schritt 1.</dd></div>
       </dl>
     </div>
   </article>
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 2: Tag wählen, das Zifferblatt teilt sich neu">
+    <div class="frame" role="img" aria-label="Szene 2: Schritt 1, Ziel wählen">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-rows:auto auto 1fr;gap:2cqw">
+        <div class="stepper"><i class="on"></i><i></i><i></i><span><b>Schritt 1 von 3</b> · Ziel</span></div>
+        <p class="disp m">Wofür trainierst du heute?</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:1.1cqw">
+          <div class="goal cup sel" style="grid-row:span 2"><span class="gt">Cup-Warm-up</span><span class="gd">Aufwärmen vor dem Cup. Mit Cup-Startzeit, damit du pünktlich fertig bist.</span></div>
+          <div class="goal imp" style="grid-row:span 2"><span class="gt">Besser werden</span><span class="gd">Die Routine für normale Trainingstage.</span></div>
+          <div class="goal aim"><span class="gt">Schnell: Aim</span><span class="gd">Kurz und nur Aim.</span></div>
+          <div class="goal mech"><span class="gt">Schnell: Mechanics</span><span class="gd">Kurz und nur Mechanics.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 2 von 9 · Schritt 1</span>
+      <h3>Ziel wählen: vier große Karten</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Eine Frage, vier Karten. Die gewählte Karte bekommt einen blauen Rand. Oben zeigt eine Schrittleiste, wo du bist.</dd></div>
+        <div><dt>Interaktion</dt><dd>Ein Tipp wählt das Ziel und geht direkt weiter zu Schritt 2. Mit „Zurück“ kommst du wieder hierher.</dd></div>
+        <div><dt>Bewegung</dt><dd>Beim Wechsel schiebt sich der nächste Schritt von rechts herein, der alte blendet nach links aus.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 3: KI-Training, Coming Soon">
       <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
+        <div style="display:grid;gap:1.2cqw"><span class="soon" style="font-size:1cqw">Coming Soon</span><p class="disp m">KI-Training.<br>Nur für dich.</p><p class="sub">Du sagst, was du heute erreichen willst. Die KI stellt daraus deine eigene Routine zusammen, als Warm-up oder fürs Besserwerden.</p><span class="pill out" style="justify-self:start">Coming Soon</span></div>
+        <div style="display:grid;gap:1cqw">
+          <div class="field" style="border-radius:1.4cqw;padding:1.4cqw 1.6cqw">„Ich habe heute *** Stunden und will an *** arbeiten.“</div>
+          <div class="list" style="opacity:.55"><div class="li"><i style="background:var(--c1)"></i><span>Block 1 · ***</span><span>*** min</span></div><div class="li"><i style="background:var(--c3)"></i><span>Block 2 · ***</span><span>*** min</span></div><div class="li"><i style="background:var(--c4)"></i><span>Block 3 · ***</span><span>*** min</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 3 von 9 · KI-Training</span>
+      <h3>KI-Training als eigene Seite, Coming Soon</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die Kachel auf dem Homescreen führt hierher. Gezeigt wird, wie es später funktioniert: ein Satz als Eingabe, daraus eine Routine. Alles ist gedimmt und als Coming Soon gekennzeichnet.</dd></div>
+        <div><dt>Interaktion</dt><dd>Das Eingabefeld und der Knopf sind nicht aktiv. Darunter führt ein Link zurück zu den festen Routinen.</dd></div>
+        <div><dt>Bewegung</dt><dd>Die Beispielblöcke bauen sich langsam nacheinander auf, als würde die KI tippen.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 4: Schritt 2, Länge wählen">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-rows:auto auto 1fr;gap:2cqw">
+        <div class="stepper"><i class="on"></i><i class="on"></i><i></i><span><b>Schritt 2 von 3</b> · Länge · Cup-Warm-up</span></div>
+        <p class="disp m">Wie viel Zeit hast du?</p>
+        <div class="len" style="align-self:start">
+          <div><span class="small">Kurz</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+          <div class="sel"><span class="small">Normal</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+          <div><span class="small">Lang</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 4 von 9 · Schritt 2</span>
+      <h3>Länge wählen: drei Stufen pro Ziel</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Drei Karten Kurz, Normal und Lang. Welche Minuten dahinterstehen, hängt vom Ziel ab. Beim Besserwerden wären das zum Beispiel Stunden, beim schnellen Aim Minuten.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Minuten und Blockzahl sind <code>***</code>, bis du die Routinen festlegst.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 5: Schritt 3, dein Plan">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-columns:1fr 1.1fr;gap:3cqw;align-items:start">
         <div style="display:grid;gap:1.4cqw">
-          <p class="disp m">Dein Tag.<br>Deine Länge.</p>
-          <p class="sub">Kein Cup oder Cup-Tag, 3, 6 oder 9+ Stunden. Die Routine teilt sich in 5, 9 oder 11 Blöcke.</p>
-          <span class="seg"><span class="on">Kein Cup</span><span>Cup-Tag</span></span>
-          <span class="seg"><span>3 h</span><span class="on">6 h</span><span>9 h+</span></span>
+          <div class="stepper"><i class="on"></i><i class="on"></i><i class="on"></i><span><b>Schritt 3 von 3</b> · Plan</span></div>
+          <p class="disp m">Dein Plan.</p>
+          <p class="sub">Cup-Warm-up · Normal · *** min</p>
+          <span class="seg"><span class="on">Maus &amp; Tastatur</span><span>Controller</span></span>
+          <span class="field">Dein Cup beginnt um <b style="color:var(--porcelain)">***</b></span>
+          <span class="pill lg" style="justify-self:start">Start</span>
         </div>
-        <div class="dial g6" style="width:28cqw;justify-self:center"><div><span class="t" style="font-size:5cqw">9</span><span class="small">Blöcke · 6 h</span></div></div>
+        <div class="list">
+          <div class="li"><i style="background:var(--c1)"></i><span>*** · Block 1 · ***</span><span>*** min</span></div>
+          <div class="code" style="margin-left:2cqw"><div><span class="small">Map-Code</span><br><b>****-****-****</b></div><span class="pill">Kopieren</span></div>
+          <div class="li"><i style="background:var(--c2)"></i><span>*** · Block 2 · ***</span><span>*** Kills</span></div>
+          <div class="li"><i style="background:var(--c3)"></i><span>*** · Block 3 · ***</span><span>*** min</span></div>
+          <div class="li"><i style="background:var(--c4)"></i><span>*** · Block 4 · ***</span><span>*** min</span></div>
+          <div class="li" style="background:transparent;box-shadow:inset 0 0 0 1px var(--slate)"><i style="background:var(--white)"></i><span>*** · Cup</span><span>fertig</span></div>
+        </div>
       </div>
     </div>
     <div class="notes">
-      <span class="step">Szene 2 von 11 · Scroll-Story</span>
-      <h3>Tag wählen: das Zifferblatt teilt sich</h3>
+      <span class="step">Szene 5 von 9 · Schritt 3</span>
+      <h3>Plan: alle Blöcke vor dem Start</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Der Abschnitt bleibt stehen, während du scrollst. Er springt von 3 h über 6 h zu 9 h+, und das Zifferblatt teilt sich von 5 auf 9 auf 11 Segmente.</dd></div>
-        <div><dt>Interaktion</dt><dd>Die Schalter funktionieren auch direkt. Wählst du sie, wird diese Einstellung für den Timer übernommen.</dd></div>
-        <div><dt>Echte Werte</dt><dd>Blockzahl und Längen stammen aus der öffentlichen Vorschau des Originals.</dd></div>
+        <div><dt>Inhalt</dt><dd>Links die Wahl Maus &amp; Tastatur oder Controller und beim Cup-Warm-up die Cup-Startzeit. Rechts alle Blöcke mit Dauer oder Kill-Ziel. Ein Tipp auf einen Block klappt seine Codes auf.</dd></div>
+        <div><dt>Interaktion</dt><dd>Gibst du die Cup-Zeit ein, rechnet der Plan rückwärts und schreibt vor jeden Block seine Startzeit.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Blocknamen, Dauern, Kills, Uhrzeiten und Codes sind alle <code>***</code>.</dd></div>
       </dl>
     </div>
   </article>
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 3: Fassung wählen">
-      <div class="f" style="padding:3.4cqw 5cqw;grid-template-rows:auto 1fr;gap:2.4cqw">
-        <div><p class="disp m">Für deine Hände gemacht.</p><p class="sub" style="margin-top:.8cqw">Block 1 unterscheidet sich je nach Eingabegerät.</p></div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.2cqw">
-          <div class="tile c"><span class="small">Maus &amp; Tastatur</span><span class="stat">30 min</span><span class="small">Kovaaks · 2 Playlists</span></div>
-          <div class="tile c"><span class="small">Controller</span><span class="stat">250 Kills</span><span class="small">Aim trainer · 4 Modi</span></div>
-          <div class="tile c"><span class="small">Trio</span><span class="stat">3 Spieler</span><span class="small">Einer hakt ab, es zählt für alle drei.</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="notes">
-      <span class="step">Szene 3 von 11 · Fassungen</span>
-      <h3>Drei Kacheln, drei Fassungen</h3>
-      <dl>
-        <div><dt>Inhalt</dt><dd>Schwarze Bühne mit drei Carbon-Kacheln. Die Kennzahl zeigt, womit Block 1 beginnt.</dd></div>
-        <div><dt>Bewegung</dt><dd>Die Kacheln gleiten nacheinander ein, die Zahlen zählen hoch.</dd></div>
-      </dl>
-    </div>
-  </article>
-
-  <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 4: Timer im Fokus">
+    <div class="frame" role="img" aria-label="Szene 6: Timer">
       <div class="f" style="grid-template-columns:1.2fr 1fr;gap:2.4cqw;padding:2.4cqw">
         <div style="background:linear-gradient(var(--carbon),var(--obsidian) 30cqw);border-radius:1.94cqw;display:grid;place-items:center;gap:1.4cqw;padding:2cqw">
-          <div class="dial g1" style="width:24cqw"><div><span class="small" style="color:var(--c1)">● Läuft</span><span class="t" style="font-size:5cqw">20:52</span><span class="small">9:08 von 30:00</span></div></div>
+          <div class="dial g1" style="width:24cqw"><div><span class="small" style="color:var(--c1)">● Läuft</span><span class="t" style="font-size:5cqw">*:**</span><span class="small">noch in Block 1</span></div></div>
           <div style="display:flex;gap:1cqw;align-items:center"><span class="pill out">↺ R</span><span class="pill lg">Pause · Leertaste</span><span class="pill out">⏭ N</span></div>
         </div>
         <div style="display:grid;align-content:start;gap:1.2cqw;padding-top:1cqw">
-          <div class="row"><span class="small">Block 1 von 5</span><span class="small">🔔 Ton · ⛶ F</span></div>
-          <p class="pname">Kovaaks</p>
-          <p class="sub">Lade die Playlist in KovaaK's, dann starte den Timer.</p>
-          <div class="row"><span class="small">Jetzt</span><span class="seg"><span>5 min</span><span>10 min</span><span class="on">Ganz</span></span></div>
-          <span class="small" style="margin-top:1cqw">Als Nächstes</span>
-          <div class="list"><div class="li lock"><i style="background:var(--c2)"></i><span>Block 2 · ***</span><span>45 min</span></div><div class="li lock"><i style="background:var(--c3)"></i><span>Block 3 · ***</span><span>45 min</span></div></div>
+          <div class="row"><span class="small">Block 1 von ***</span><span class="small">Ton · Vollbild F</span></div>
+          <p class="pname">Block 1 · ***</p>
+          <p class="sub">Code laden, dann den Timer starten.</p>
+          <div class="code"><div><span class="small">Map-Code</span><br><b>****-****-****</b></div><span class="pill">Kopieren</span></div>
+          <span class="small" style="margin-top:.6cqw">Als Nächstes</span>
+          <div class="list"><div class="li"><i style="background:var(--c2)"></i><span>Block 2 · ***</span><span>*** Kills</span></div><div class="li"><i style="background:var(--c3)"></i><span>Block 3 · ***</span><span>*** min</span></div></div>
         </div>
       </div>
     </div>
     <div class="notes">
-      <span class="step">Szene 4 von 11 · Das Herzstück</span>
-      <h3>Der Timer: ein Block im Fokus</h3>
+      <span class="step">Szene 6 von 9 · Training</span>
+      <h3>Timer: ein Block im Fokus</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Links das Zifferblatt: Das aktuelle Segment füllt sich, die anderen sind gedimmt. Rechts der Block mit Anleitung, „Jetzt“-Teilstücken und „Als Nächstes“.</dd></div>
-        <div><dt>Interaktion</dt><dd>Leertaste für Start/Pause, R für Neu, N für Überspringen, F für Vollbild. Am Ende ertönt ein Ton, und auf dem Handy vibriert es. Der Stand des Tages wird gemerkt.</dd></div>
-        <div><dt>Echte Werte</dt><dd>Kovaaks 30 min und der Ladehinweis stammen aus dem Original, Block 2 und 3 sind <code>***</code>.</dd></div>
+        <div><dt>Inhalt</dt><dd>Links das Zifferblatt mit einem Segment pro Block. Rechts der aktuelle Block mit Code und „Als Nächstes“.</dd></div>
+        <div><dt>Interaktion</dt><dd>Leertaste für Start/Pause, R für Neu, N für Überspringen, F für Vollbild. Am Blockende ertönt ein Ton, auf dem Handy vibriert es. Der Stand wird für heute gemerkt.</dd></div>
+        <div><dt>Bewegung</dt><dd>Das Segment füllt sich gleichmäßig. Am Ende pulsiert es kurz, dann rückt das nächste Segment nach.</dd></div>
       </dl>
     </div>
   </article>
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 5: Codes kopieren">
+    <div class="frame" role="img" aria-label="Szene 7: Kill-Block">
       <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
-        <div style="display:grid;gap:1.2cqw"><p class="disp m">Code kopieren.<br>Reinladen. Los.</p><p class="sub">Jeder Block bringt seine Codes mit. Ein Tipp kopiert ihn.</p></div>
-        <div style="display:grid;gap:1cqw">
-          <div class="code"><div><span class="small">Playlist 1 · Share-Code</span><br><b>***</b></div><span class="pill">Kopieren</span></div>
-          <div class="code"><div><span class="small">Playlist 2 · Share-Code</span><br><b>***</b></div><span class="pill">Kopiert ✓</span></div>
-          <div class="code"><div><span class="small">Map-Code</span><br><b>****-****-****</b></div><span class="pill out">Verdeckt</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="notes">
-      <span class="step">Szene 5 von 11 · Codes</span>
-      <h3>Codes als ruhige Karten</h3>
-      <dl>
-        <div><dt>Inhalt</dt><dd>Jeder Code steht auf einer schwarzen Karte mit 1px-Linie. Gesperrte Codes zeigen „Verdeckt“, bis die Routine freigeschaltet ist.</dd></div>
-        <div><dt>Bewegung</dt><dd>Beim Kopieren wird der Knopf kurz zu „Kopiert ✓“.</dd></div>
-        <div><dt>Platzhalter</dt><dd>Alle Codes sind <code>***</code> bzw. <code>****-****-****</code>. Es gibt keine echten Codes.</dd></div>
-      </dl>
-    </div>
-  </article>
-
-  <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 6: Kill-Ziele abhaken">
-      <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
-        <div class="dial" style="width:24cqw;--g:conic-gradient(var(--c1) 0 50%, rgba(56,224,255,.16) 0);justify-self:center"><div><span class="t" style="font-size:5cqw">125</span><span class="small">von 250 Kills</span></div></div>
+        <div class="dial" style="width:24cqw;--g:conic-gradient(var(--c2) 0 50%, rgba(125,235,255,.16) 0);justify-self:center"><div><span class="t" style="font-size:4cqw">2 / 4</span><span class="small">Ziele geschafft</span></div></div>
         <div style="display:grid;gap:.4cqw">
-          <p class="pname" style="margin-bottom:1cqw">Aim trainer</p>
-          <div class="chk"><i class="on">✓</i><span>Modus 1 · ***</span><span>Kills ***</span></div>
-          <div class="chk"><i class="on">✓</i><span>Modus 2 · ***</span><span>Kills ***</span></div>
-          <div class="chk"><i></i><span>Modus 3 · ***</span><span>Kills ***</span></div>
-          <div class="chk"><i></i><span>Modus 4 · ***</span><span>Kills ***</span></div>
+          <p class="pname" style="margin-bottom:1cqw">Block 2 · ***</p>
+          <div class="chk"><i class="on">✓</i><span>Modus 1 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i class="on">✓</i><span>Modus 2 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i></i><span>Modus 3 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i></i><span>Modus 4 · ***</span><span>*** Kills</span></div>
           <p class="small" style="margin-top:1cqw">Hak jeden Modus ab, sobald seine Kills voll sind.</p>
         </div>
       </div>
     </div>
     <div class="notes">
-      <span class="step">Szene 6 von 11 · Kill-Ziele</span>
-      <h3>Kill-Blöcke statt Zeit</h3>
+      <span class="step">Szene 7 von 9 · Training</span>
+      <h3>Blöcke mit Kill-Ziel</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Blöcke mit Kill-Ziel haben statt einer Uhr einen Zähler. Jeder abgehakte Modus füllt den Ring weiter.</dd></div>
-        <div><dt>Echte Werte</dt><dd>250 Kills in 4 Modi stammen aus der Controller-Vorschau. Wie sich die Kills auf die Modi verteilen, ist <code>***</code>.</dd></div>
+        <div><dt>Inhalt</dt><dd>Statt einer Uhr gibt es eine Liste zum Abhaken. Jeder Haken füllt den Ring weiter. Sind alle Haken gesetzt, geht es zum nächsten Block.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Modi und Kills sind <code>***</code>.</dd></div>
       </dl>
     </div>
   </article>
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 7: Cup-Tag mit Uhrzeiten">
-      <div class="f" style="padding:3.4cqw 6cqw;grid-template-rows:auto 1fr;gap:2.4cqw;background:linear-gradient(var(--carbon),var(--obsidian) 30cqw)">
-        <div class="row" style="align-items:end"><div><p class="disp m">Cup-Tag. Rückwärts geplant.</p><p class="sub" style="margin-top:.8cqw">Sag, wann dein Cup beginnt. Der Plan rechnet zurück.</p></div><span class="field">Dein Cup beginnt um <b style="color:var(--porcelain)">19:00</b></span></div>
-        <div class="list">
-          <div class="li"><i style="background:var(--c1)"></i><span>14:35 · Block 1 · ***</span><span>*** min</span></div>
-          <div class="li"><i style="background:var(--c2)"></i><span>15:20 · Block 2 · ***</span><span>*** min</span></div>
-          <div class="li"><i style="background:var(--c3)"></i><span>16:50 · Block 3 · ***</span><span>*** min</span></div>
-          <div class="li"><i style="background:var(--c4)"></i><span>18:15 · Block 4 · ***</span><span>*** min</span></div>
-          <div class="li" style="background:transparent;box-shadow:inset 0 0 0 1px var(--slate)"><i style="background:var(--white)"></i><span>19:00 · Cup</span><span>4 h 25 vorher</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="notes">
-      <span class="step">Szene 7 von 11 · Cup-Tag</span>
-      <h3>Cup-Tag als Zeitplan</h3>
-      <dl>
-        <div><dt>Inhalt</dt><dd>Ein Uhrzeitfeld im Apple-Stil als runde Pille. Darunter der Plan mit Startzeit pro Block, zurückgerechnet vom Cup-Start.</dd></div>
-        <div><dt>Echte Werte</dt><dd>„4 h 25 vor dem Cup“ (6 h und 9 h+) und „85 min“ (3 h) stammen aus dem Original. Die Cup-Blöcke selbst sind <code>***</code>.</dd></div>
-        <div><dt>Hinweis</dt><dd>Die Uhrzeiten oben sind ein Beispiel für die Anordnung.</dd></div>
-      </dl>
-    </div>
-  </article>
-
-  <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 8: Streak">
+    <div class="frame" role="img" aria-label="Szene 8: Geschafft mit Streak">
       <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
-        <div style="display:grid;gap:1.2cqw"><span class="small" style="color:var(--copper);font-weight:600">Neu</span><p class="disp m">Jeden Tag.<br>Am Stück.</p><p class="sub">Eine fertige Sitzung zählt als Tag. Im Trio zählt die Team-Streak, wenn alle drei drin sind.</p></div>
+        <div style="display:grid;gap:1.2cqw"><p class="disp m">Geschafft.</p><p class="sub">Cup-Warm-up · Normal · alle Blöcke fertig. Viel Erfolg im Cup.</p><div style="display:flex;gap:.8cqw"><span class="pill">Zum Homescreen</span><span class="pill out">Noch eine Routine</span></div></div>
         <div style="display:grid;gap:2cqw">
-          <div><span class="t" style="font-family:var(--display);font-weight:600;font-size:7cqw;line-height:1">5</span><span class="sub"> Tage am Stück</span></div>
+          <div><span style="font-family:var(--display);font-weight:600;font-size:7cqw;line-height:1">5</span><span class="sub"> Tage am Stück</span></div>
           <div class="days"><div><i class="on"></i>Mo</div><div><i class="on"></i>Di</div><div><i class="on"></i>Mi</div><div><i class="on"></i>Do</div><div><i class="on"></i>Fr</div><div><i></i>Sa</div><div><i></i>So</div></div>
-          <span class="small">Heute: dein Tag fehlt noch.</span>
         </div>
       </div>
     </div>
     <div class="notes">
-      <span class="step">Szene 8 von 11 · Fortschritt</span>
-      <h3>Streak als Wochenreihe</h3>
+      <span class="step">Szene 8 von 9 · Abschluss</span>
+      <h3>Geschafft und Streak</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Eine große Zahl und sieben Kreise. Fertige Tage tragen den Farbverlauf der Routine.</dd></div>
-        <div><dt>Bewegung</dt><dd>Die Kreise füllen sich nacheinander, die Zahl zählt mit.</dd></div>
-        <div><dt>Hinweis</dt><dd>„5 Tage“ ist ein Beispiel. In der Vorschau wird die Streak nur im Browser gespeichert.</dd></div>
+        <div><dt>Inhalt</dt><dd>Eine ruhige Abschlussseite mit Zusammenfassung und Streak. Die Streak findest du auch auf dem Homescreen unter „Fortschritt“.</dd></div>
+        <div><dt>Bewegung</dt><dd>Der heutige Kreis füllt sich als Letzter, die Zahl springt um eins hoch.</dd></div>
+        <div><dt>Hinweis</dt><dd>„5 Tage“ ist ein Beispiel. Die Streak wird nur im Browser gespeichert, ohne Konto.</dd></div>
       </dl>
     </div>
   </article>
 
   <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 9: Kauf auf weißen Karten">
-      <div class="f" style="padding:3.6cqw 6cqw;grid-template-rows:auto 1fr;gap:2.4cqw">
-        <div><p class="disp m">Einmal kaufen. Für immer trainieren.</p><p class="sub" style="margin-top:.8cqw">Kein Abo. Du wählst die Fassung vor dem Kauf.</p></div>
-        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:1.4cqw">
-          <div class="card-w"><h4>Daily Pro Routine</h4><p>Alle Blöcke, alle Codes, alle Längen.</p><div style="font-family:var(--display);font-weight:600;font-size:3.4cqw">*** €</div><span class="seg" style="background:#f5f5f7"><span class="on" style="background:#fff;color:#1d1d1f">Maus &amp; Tastatur</span><span>Controller</span></span><span class="pill lg" style="justify-self:start">Kaufen</span></div>
-          <div class="card-w"><h4>Schon gekauft?</h4><p>Bestellnummer aus deiner Mail, 10 Zeichen.</p><span class="field" style="color:#86868b;box-shadow:inset 0 0 0 1px #d2d2d7;background:#fff">Bestellnummer</span><span style="color:var(--link-pale);font-size:1.05cqw">Wo finde ich die Nummer? ›</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="notes">
-      <span class="step">Szene 9 von 11 · Kauf</span>
-      <h3>Kauf als bewusster heller Moment</h3>
-      <dl>
-        <div><dt>Inhalt</dt><dd>Die einzigen weißen Flächen der Seite, wie Apples Vergleichskarten. Links der Kauf mit Fassungswahl, rechts das Freischalten per Bestellnummer.</dd></div>
-        <div><dt>In der Vorschau</dt><dd>„Kaufen“ und „Öffnen“ zeigen nur einen Hinweis, dass hier noch nichts angebunden ist. Es gibt keine Zahlung und keine Anmeldung.</dd></div>
-        <div><dt>Platzhalter</dt><dd>Preis <code>*** €</code>.</dd></div>
-      </dl>
-    </div>
-  </article>
-
-  <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 10: Fragen und Fußzeile">
-      <div class="f" style="grid-template-rows:1fr auto">
-        <div style="padding:3.4cqw 14cqw;display:grid;align-content:start;gap:1.6cqw">
-          <p class="disp m">Fragen und Antworten.</p>
-          <div class="chk" style="font-family:var(--display);font-weight:600;font-size:1.4cqw"><span>Was ist die Daily Pro Routine?</span><span>−</span></div>
-          <p class="small" style="margin:0">Ein Trainingstag in fester Reihenfolge. Jeder Block hat eine Dauer oder ein Kill-Ziel und die Codes zum Nachmachen.</p>
-          <div class="chk" style="font-family:var(--display);font-weight:600;font-size:1.4cqw"><span>Was passiert, wenn ich abbreche?</span><span>+</span></div>
-          <div class="chk" style="font-family:var(--display);font-weight:600;font-size:1.4cqw"><span>Gibt es die Routine für Controller?</span><span>+</span></div>
-        </div>
-        <div style="background:var(--carbon);padding:1.8cqw 6cqw;display:flex;justify-content:space-between;font-size:.83cqw;color:var(--ash)"><span>*** · Unabhängiges Angebot, nicht mit Epic Games verbunden.</span><span>Impressum *** · Datenschutz ***</span></div>
-      </div>
-    </div>
-    <div class="notes">
-      <span class="step">Szene 10 von 11 · Ende</span>
-      <h3>FAQ und schlichte Fußzeile</h3>
-      <dl>
-        <div><dt>Inhalt</dt><dd>Wenige Fragen mit Plus und Minus, eine Fußzeile in 12px-Text. Rechtliche Links bleiben Platzhalter.</dd></div>
-      </dl>
-    </div>
-  </article>
-
-  <article class="scene">
-    <div class="frame" role="img" aria-label="Szene 11: iPhone-Ansicht mit Timer">
+    <div class="frame" role="img" aria-label="Szene 9: iPhone-Ansicht">
       <div class="f" style="display:flex;justify-content:center;align-items:center;gap:5cqw">
-        <div class="mphone"><span class="small" style="font-size:1.1cqw">Daily Pro Routine</span><span style="font-family:var(--display);font-weight:600;font-size:3.4cqw;line-height:1.05">Daily Pro<br>Routine.</span><div class="dial g3" style="width:15cqw"><div><span class="t" style="font-size:2.4cqw">3:30:00</span></div></div><span class="pill" style="font-size:1.2cqw;padding:.7cqw 1.4cqw">Block 1 gratis testen</span></div>
-        <div class="mphone"><span class="small" style="font-size:1.1cqw">Block 1 von 5 · Kovaaks</span><div class="dial g1" style="width:17cqw"><div><span class="t" style="font-size:3.2cqw">20:52</span><span class="small" style="font-size:.9cqw">Läuft</span></div></div><span class="pill" style="font-size:1.4cqw;padding:.9cqw 2.4cqw">Pause</span><span class="small" style="font-size:1cqw">Als Nächstes: Block 2 · ***</span></div>
+        <div class="mphone" style="gap:.9cqw"><span style="font-family:var(--display);font-weight:600;font-size:3cqw;line-height:1.05">Daily Pro<br>Routine.</span><span class="pill" style="font-size:1.1cqw;padding:.6cqw 1.2cqw">Routine starten</span>
+          <div class="goal cup" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Cup-Warm-up</span></div>
+          <div class="goal imp" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Besser werden</span></div>
+          <div class="goal aim" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Schnell: Aim &amp; Mechanics</span></div>
+          <div class="goal ai" style="width:100%;padding:1.2cqw;gap:.4cqw"><span class="soon" style="font-size:.8cqw">Coming Soon</span><span class="gt" style="font-size:1.4cqw">KI-Training</span></div>
+        </div>
+        <div class="mphone"><span class="small" style="font-size:1.1cqw">Block 1 von *** · ***</span><div class="dial g1" style="width:17cqw"><div><span class="t" style="font-size:3cqw">*:**</span><span class="small" style="font-size:.9cqw">Läuft</span></div></div><span class="pill" style="font-size:1.4cqw;padding:.9cqw 2.4cqw">Pause</span><span class="small" style="font-size:1cqw">Als Nächstes: Block 2 · ***</span></div>
       </div>
       <span class="cap">iPhone 390 px</span>
     </div>
     <div class="notes">
-      <span class="step">Szene 11 von 11 · Mobil</span>
-      <h3>iPhone: Timer mit Daumen bedienbar</h3>
+      <span class="step">Szene 9 von 9 · Mobil</span>
+      <h3>iPhone: Kacheln untereinander, Timer mit dem Daumen</h3>
       <dl>
-        <div><dt>Inhalt</dt><dd>Links die Startseite, rechts der Timer: großes Zifferblatt, ein großer Knopf unten im Daumenbereich.</dd></div>
+        <div><dt>Inhalt</dt><dd>Auf dem Homescreen stehen die Kacheln untereinander. Im Timer liegt der große Knopf unten im Daumenbereich.</dd></div>
         <div><dt>Hinweis</dt><dd>Während der Timer läuft, bleibt der Bildschirm an, soweit der Browser das erlaubt.</dd></div>
       </dl>
     </div>
@@ -390,11 +392,11 @@ h1 { font-family: var(--display); font-weight: 600; margin: 0; font-size: clamp(
 <section class="wrap next">
   <div class="next-box">
     <h2>Als Nächstes: die Webseite.</h2>
-    <p>Nach deiner Freigabe baue ich daraus die komplette Seite mit Apple-Animationen.</p>
+    <p>Nach deiner Freigabe baue ich die Seite mit Apple-Animationen. Die Inhalte der Routinen kannst du mir danach jederzeit geben, dann ersetze ich die Platzhalter.</p>
     <ol>
-      <li><b>Startseite</b> mit den Szenen 1 bis 10, scroll-gekoppelt animiert.</li>
-      <li><b>Funktionierender Timer</b> mit allen Schaltern, Tastenkürzeln, Kill-Zielen, Cup-Zeitplan und Streak.</li>
-      <li><b>Platzhalter</b> für Name, Preis, gesperrte Blöcke und Codes. Kauf und Anmeldung sind nicht angebunden.</li>
+      <li><b>Homescreen</b> mit Übersicht, Fortschritt und Fragen.</li>
+      <li><b>Ablauf</b> Ziel, Länge und Plan, danach der funktionierende Timer mit Kill-Zielen, Codes, Cup-Zeit und Streak.</li>
+      <li><b>KI-Training</b> als eigene Seite mit „Coming Soon“.</li>
     </ol>
   </div>
 </section>
