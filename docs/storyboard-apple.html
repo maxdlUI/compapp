@@ -1,0 +1,494 @@
+<title>KREVO Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one long black "gallery" page. Each storyboard scene = a 16:10 frame (desktop 1440px, scaled with cqw) + notes. */
+:root {
+  color-scheme: dark;
+  --obsidian: #000000;
+  --graphite: #0e0e0e;
+  --carbon: #1d1d1f;
+  --steel: #333336;
+  --slate: #6e6e73;
+  --ash: #86868b;
+  --porcelain: #f5f5f7;
+  --white: #ffffff;
+  --blue: #0071e3;
+  --link: #2997ff;
+  --link-pale: #0066cc;
+  --copper: #b64400;
+  --yellow: #ffd500;
+  --storm: #a78bfa;   /* KREVO-Akzent: nur im "Produkt" (App-Screen), wie die Gerätefarbe bei Apple */
+  --keyline: #282828;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--obsidian);
+  color: var(--porcelain);
+  font-family: var(--text);
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ---------- Kopf des Storyboards ---------- */
+.intro { padding-block: 72px 40px; display: grid; gap: 20px; }
+.eyebrow { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: 0.228px; color: var(--ash); margin: 0; }
+.eyebrow .new { color: var(--copper); margin-right: 8px; }
+h1 {
+  font-family: var(--display); font-weight: 600; margin: 0;
+  font-size: clamp(44px, 8vw, 80px); line-height: 1.05; letter-spacing: -1.2px;
+  text-wrap: balance;
+}
+.lead { color: var(--ash); max-width: 640px; margin: 0; font-size: 19px; line-height: 1.42; }
+.lead strong { color: var(--porcelain); font-weight: 600; }
+
+/* Token-Leiste */
+.tokens {
+  background: linear-gradient(var(--carbon), var(--obsidian) 288px);
+  border-radius: 28px; padding: 28px; display: grid; gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.tokens h2 { font-family: var(--display); font-size: 21px; font-weight: 600; letter-spacing: 0.231px; margin: 0 0 12px; }
+.sw { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sw div { display: grid; gap: 6px; font-size: 12px; letter-spacing: -0.12px; color: var(--ash); min-width: 0; }
+.sw i { display: block; aspect-ratio: 1; border-radius: 14px; box-shadow: 0 0 0 1px var(--steel); }
+.ts { display: grid; gap: 8px; }
+.ts p { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--steel); padding-bottom: 8px; }
+.ts span:last-child { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; white-space: nowrap; }
+.rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); }
+.rules b { color: var(--porcelain); font-weight: 600; }
+
+/* ---------- Szenen ---------- */
+.flow { padding-block: 56px 24px; display: grid; gap: 72px; }
+.scene { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 860px) { .scene { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+.notes { display: grid; gap: 14px; min-width: 0; }
+.step { font-size: 12px; font-weight: 600; letter-spacing: -0.12px; color: var(--ash); font-variant-numeric: tabular-nums; }
+.notes h3 { font-family: var(--display); font-size: 32px; line-height: 1.13; letter-spacing: 0.128px; font-weight: 600; margin: 0; text-wrap: balance; }
+.notes dl { margin: 0; display: grid; gap: 12px; }
+.notes dt { font-size: 12px; font-weight: 600; letter-spacing: -0.12px; color: var(--porcelain); }
+.notes dd { margin: 2px 0 0; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); }
+.notes dd code { font-family: var(--text); color: var(--porcelain); background: var(--carbon); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+
+/* Rahmen: stellt eine 1440px breite Desktopseite dar. 1cqw = 14.4px */
+.frame {
+  container-type: inline-size;
+  aspect-ratio: 16 / 10; max-width: 100%;
+  border-radius: 28px; overflow: hidden; position: relative;
+  background: var(--obsidian);
+  box-shadow: 0 0 0 1px var(--keyline);
+  font-family: var(--text);
+}
+.frame.tall { aspect-ratio: 16 / 12; }
+.cap { position: absolute; left: 1.6cqw; bottom: 1.4cqw; font-size: 0.85cqw; color: var(--ash); background: rgba(29,29,31,.8); padding: .3cqw .8cqw; border-radius: 999px; z-index: 3; }
+
+/* Bausteine im Rahmen (alle Maße in cqw) */
+.gnav { height: 3.06cqw; display: flex; align-items: center; justify-content: center; gap: 3cqw; background: var(--obsidian); font-size: .83cqw; color: rgba(255,255,255,.8); letter-spacing: -.01cqw; }
+.gnav .logo { width: 1.1cqw; height: 1.1cqw; color: #ccc; }
+.strip { background: var(--carbon); text-align: center; font-size: .97cqw; padding: 1.2cqw 0; color: var(--porcelain); }
+.strip a { color: var(--link); }
+.lnav { margin: .8cqw 1.6cqw 0; height: 3.6cqw; border-radius: 1.39cqw; background: var(--graphite); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; padding: 0 1.6cqw; gap: 2cqw; }
+.lnav .name { font-family: var(--display); font-weight: 600; font-size: 1.32cqw; margin-right: auto; }
+.lnav span { font-size: 1.0cqw; font-weight: 500; color: var(--porcelain); }
+.lnav span.dim { color: var(--ash); }
+.pill { display: inline-flex; align-items: center; border-radius: 999px; background: var(--blue); color: var(--white); font-size: .83cqw; padding: .49cqw .97cqw; white-space: nowrap; }
+.pill.lg { font-size: 1.18cqw; padding: .8cqw 1.7cqw; }
+.pill.out { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--porcelain); }
+.capsule { display: inline-flex; border-radius: 2.5cqw; background: rgba(66,66,69,.72); color: rgba(255,255,255,.8); font-size: 1.0cqw; padding: .8cqw 1.5cqw; white-space: nowrap; }
+.disp { font-family: var(--display); font-weight: 600; font-size: 5.56cqw; line-height: 1.05; letter-spacing: -.083cqw; margin: 0; color: var(--porcelain); }
+.disp.m { font-size: 3.33cqw; letter-spacing: -.017cqw; line-height: 1.08; }
+.pname { font-family: var(--display); font-weight: 600; font-size: 2.22cqw; letter-spacing: .009cqw; margin: 0; }
+.sub { font-size: 1.18cqw; color: var(--ash); margin: 0; line-height: 1.4; }
+.stat { font-family: var(--display); font-weight: 600; font-size: 1.94cqw; line-height: 1; color: var(--porcelain); }
+.small { font-size: .97cqw; color: var(--ash); line-height: 1.35; }
+.lnk { color: var(--link); font-size: 1.18cqw; }
+
+/* iPhone-Silhouette mit KREVO-Screen */
+.phone { position: relative; width: 15cqw; aspect-ratio: 9 / 19.3; border-radius: 2.6cqw; background: #1b1b1d; box-shadow: inset 0 0 0 .25cqw #3a3a3d, inset 0 0 0 .55cqw #050505; padding: .7cqw; }
+.screen { position: absolute; inset: .7cqw; border-radius: 2cqw; background: radial-gradient(120% 70% at 50% 0%, #2a1a52 0%, #0b0618 55%, #000 100%); overflow: hidden; display: grid; align-content: start; justify-items: center; padding-top: 3cqw; gap: .7cqw; }
+.island { position: absolute; top: .6cqw; left: 50%; transform: translateX(-50%); width: 4cqw; height: 1.1cqw; border-radius: 99px; background: #000; }
+.ring { width: 9.5cqw; aspect-ratio: 1; border-radius: 50%; background: conic-gradient(var(--storm) 0 82%, rgba(167,139,250,.15) 82% 100%); display: grid; place-items: center; }
+.ring > div { width: 8.3cqw; aspect-ratio: 1; border-radius: 50%; background: #0b0618; display: grid; place-items: center; text-align: center; }
+.ring b { font-family: var(--display); font-size: 2.4cqw; font-weight: 600; line-height: 1; display: block; }
+.ring small { font-size: .62cqw; color: var(--ash); }
+.chip { font-size: .6cqw; padding: .25cqw .6cqw; border-radius: 99px; background: rgba(167,139,250,.18); color: #d9ccff; }
+.rows { width: 80%; display: grid; gap: .4cqw; }
+.rows div { display: flex; justify-content: space-between; font-size: .62cqw; color: var(--ash); background: rgba(255,255,255,.05); border-radius: .6cqw; padding: .45cqw .6cqw; }
+.rows b { color: var(--porcelain); font-weight: 600; }
+
+/* Szene-spezifisch */
+.hero { position: absolute; inset: 0; display: grid; grid-template-rows: auto auto 1fr auto; }
+.stage { display: grid; justify-items: center; align-content: end; padding-bottom: 1.4cqw; }
+.hero-foot { display: grid; justify-items: center; gap: 1cqw; padding-bottom: 2.6cqw; text-align: center; }
+.hero-foot .cta { display: flex; gap: .8cqw; align-items: center; }
+
+.media { position: absolute; inset: 2.4cqw; border-radius: 1.94cqw; overflow: hidden; background: radial-gradient(60% 80% at 70% 50%, #3b1d7a 0%, #160a33 45%, #000 85%); padding: 3.4cqw; display: grid; align-content: space-between; }
+.media .big { font-family: var(--display); font-weight: 600; font-size: 13cqw; line-height: .9; letter-spacing: -.3cqw; color: var(--porcelain); }
+.media .big em { font-style: normal; color: var(--storm); }
+.thr { display: flex; gap: 1.2cqw; }
+.thr span { font-size: 1cqw; padding: .5cqw 1cqw; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(196,161,255,.6); color: #e7dcff; }
+.thr span.on { background: #6421c4; box-shadow: none; }
+.pager { justify-self: center; display: flex; gap: .6cqw; background: rgba(51,51,54,.8); padding: .6cqw 1cqw; border-radius: 99px; }
+.pager i { width: .55cqw; height: .55cqw; border-radius: 99px; background: var(--ash); display: block; }
+.pager i.on { width: 3cqw; background: var(--porcelain); }
+
+.panel { position: absolute; inset: 2.4cqw; border-radius: 1.94cqw; background: linear-gradient(var(--carbon), var(--obsidian) 20cqw); padding: 2.8cqw; display: grid; grid-template-rows: auto 1fr; gap: 2.2cqw; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 1.1cqw; }
+.tile { background: var(--obsidian); border-radius: 1.94cqw; padding: 1.6cqw; display: grid; align-content: end; gap: .5cqw; position: relative; }
+.tile .ic { position: absolute; top: 1.6cqw; left: 1.6cqw; width: 2.6cqw; height: 2.6cqw; color: var(--porcelain); }
+.tile .stat.pos { color: #5ed39a; }
+
+.band { position: absolute; inset: 0; background: linear-gradient(var(--carbon), var(--obsidian) 22cqw); display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 0 6cqw; gap: 4cqw; }
+.band .txt { display: grid; gap: 1.2cqw; }
+.new { color: var(--copper); font-weight: 600; font-size: .97cqw; }
+.players { display: grid; gap: .9cqw; }
+.pl { display: flex; justify-content: space-between; align-items: center; background: var(--obsidian); border-radius: 1.4cqw; padding: 1.3cqw 1.6cqw; box-shadow: 0 0 0 1px var(--keyline); }
+.pl span { font-size: 1.1cqw; }
+.pl b { font-family: var(--display); font-size: 1.6cqw; font-weight: 600; }
+.pl.sum { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); }
+.pl.sum b { font-size: 2.6cqw; }
+
+.pale { position: absolute; inset: 0; background: var(--obsidian); padding: 3.6cqw 6cqw; display: grid; grid-template-rows: auto 1fr; gap: 2.4cqw; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; }
+.card-w { background: var(--white); color: var(--carbon); border-radius: 1.94cqw; padding: 2.2cqw; display: grid; align-content: start; gap: 1cqw; }
+.card-w h4 { font-family: var(--display); font-weight: 600; font-size: 2.2cqw; margin: 0; letter-spacing: .009cqw; }
+.card-w p { margin: 0; font-size: 1.05cqw; line-height: 1.4; color: #424245; }
+.card-w ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .7cqw; font-size: 1.05cqw; }
+.card-w li { border-top: 1px solid #d2d2d7; padding-top: .7cqw; display: flex; justify-content: space-between; }
+.card-w li em { font-style: normal; color: var(--slate); }
+.card-w a { color: var(--link-pale); font-size: 1.05cqw; }
+
+.faq { position: absolute; inset: 0; background: linear-gradient(var(--carbon), var(--obsidian) 24cqw); padding: 4cqw 14cqw; display: grid; align-content: start; gap: 2cqw; }
+.qa { display: grid; }
+.qa div { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--steel); padding: 1.4cqw 0; font-family: var(--display); font-size: 1.5cqw; font-weight: 600; }
+.qa div span:last-child { font-family: var(--text); font-weight: 400; color: var(--ash); font-size: 2cqw; line-height: 1; }
+.qa p { margin: 0; padding: 0 0 1.4cqw; font-size: 1.1cqw; color: var(--ash); border-bottom: 1px solid var(--steel); }
+
+.end { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto; }
+.dc { display: grid; justify-items: center; align-content: center; gap: 1.2cqw; text-align: center; }
+.dc svg { width: 4.4cqw; height: 4.4cqw; color: var(--porcelain); }
+.foot { background: var(--carbon); padding: 2cqw 6cqw; display: grid; gap: 1.2cqw; font-size: .83cqw; color: var(--ash); }
+.foot .cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqw; }
+.foot .cols div { display: grid; gap: .4cqw; }
+.foot .cols b { color: var(--porcelain); font-weight: 600; }
+.foot .legal { border-top: 1px solid var(--steel); padding-top: 1cqw; display: flex; justify-content: space-between; }
+
+/* Mobile Szene */
+.mob { display: flex; justify-content: center; gap: 5cqw; align-items: center; height: 100%; padding: 2cqw; background: var(--obsidian); }
+.mphone { width: 22cqw; aspect-ratio: 9 / 19.3; border-radius: 3.4cqw; background: #000; box-shadow: 0 0 0 .35cqw #2c2c2e; overflow: hidden; position: relative; display: grid; grid-template-rows: auto 1fr; }
+.mphone .mbar { height: 3.4cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 1.6cqw; margin-top: 2.6cqw; font-size: 1.1cqw; color: rgba(255,255,255,.8); }
+.mphone .mbody { padding: 1.6cqw; display: grid; align-content: start; gap: 1.2cqw; text-align: center; justify-items: center; }
+.mphone .mt { font-family: var(--display); font-weight: 600; font-size: 3.6cqw; line-height: 1.05; letter-spacing: -.05cqw; }
+.mphone .mini { width: 100%; aspect-ratio: 1.1; border-radius: 2cqw; background: radial-gradient(70% 70% at 50% 40%, #3b1d7a, #000 80%); display: grid; place-items: center; font-family: var(--display); font-size: 6cqw; font-weight: 600; }
+.mphone .menu { position: absolute; inset: 6cqw 0 0; background: rgba(22,22,23,.96); padding: 2.4cqw; display: grid; align-content: start; gap: 1.6cqw; font-family: var(--display); font-size: 2.6cqw; font-weight: 600; text-align: left; }
+.mphone .menu span.s { font-family: var(--text); font-size: 1.2cqw; font-weight: 400; color: var(--ash); }
+
+.next { padding-block: 24px 96px; }
+.next-box { border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 288px); padding: 40px 28px; display: grid; gap: 16px; justify-items: start; }
+.next-box h2 { font-family: var(--display); font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.12px; font-weight: 600; margin: 0; text-wrap: balance; }
+.next-box p { margin: 0; color: var(--ash); max-width: 620px; }
+.next-box ol { margin: 0; padding-left: 20px; color: var(--ash); display: grid; gap: 6px; font-size: 14px; letter-spacing: -0.224px; }
+.next-box ol b { color: var(--porcelain); font-weight: 600; }
+
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="k" viewBox="0 0 200 200"><path fill="currentColor" d="M126.76 3.65L52.4 78L52.4 126.54L123.15 197.28A100 100 0 1 1 126.76 3.65Z"/><path fill="currentColor" d="M98.1 114.79L176.86 36.02A100 100 0 0 1 161.87 178.56Z"/><path fill="#A78BFA" d="M72.81 80.48L143.39 9.9A100 100 0 0 1 165.76 24.66L91.38 99.05Z"/></symbol>
+  <symbol id="i-storm" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M4 9a8 8 0 0 1 15-2M20 15a8 8 0 0 1-15 2M12 8v4l3 2"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5 19V11M12 19V5M19 19v-6"/></symbol>
+  <symbol id="i-rot" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M20 12a8 8 0 1 1-3-6.2M20 4v4h-4"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c.8-3 2.8-4.5 5-4.5S12.2 16 13 19M11 19c.8-3 2.8-4.5 5-4.5s4.2 1.5 5 4.5"/></g></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></symbol>
+  <symbol id="i-lang" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></g></symbol>
+  <symbol id="i-dc" viewBox="0 0 24 24"><path fill="currentColor" d="M19.3 5.3A16.7 16.7 0 0 0 15.2 4l-.5 1a15.5 15.5 0 0 0-5.4 0l-.5-1a16.6 16.6 0 0 0-4.1 1.3C2.1 9.2 1.4 13 1.7 16.7a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.8 10.8 0 0 1-1.7-.8l.4-.3a11.9 11.9 0 0 0 10.8 0l.4.3a10.8 10.8 0 0 1-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.3-.7-8-3-11.4zM8.7 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></symbol>
+</svg>
+
+<header class="wrap intro">
+  <p class="eyebrow"><span class="new">Neu</span>Storyboard · KREVO Web, Version 9</p>
+  <h1>KREVO im Stil einer Apple-Produktseite.</h1>
+  <p class="lead">Die neue Startseite behandelt KREVO wie ein Gerät auf einer schwarzen Bühne. <strong>Neun Szenen</strong> zeigen in Scroll-Reihenfolge, was der Besucher sieht, was passiert und welche Regeln aus dem Designsystem „Apple iPhone 18 Pro“ (Refero) gelten. Alle Zahlen sind Beispielwerte.</p>
+</header>
+
+<section class="wrap" aria-label="Designregeln">
+  <div class="tokens">
+    <div>
+      <h2>Farben</h2>
+      <div class="sw">
+        <div><i style="background:#000"></i>Obsidian</div>
+        <div><i style="background:#1d1d1f"></i>Carbon</div>
+        <div><i style="background:#86868b"></i>Ash</div>
+        <div><i style="background:#f5f5f7"></i>Porcelain</div>
+        <div><i style="background:#0071e3"></i>Apple Blue</div>
+        <div><i style="background:#2997ff"></i>Link</div>
+        <div><i style="background:#b64400"></i>Neu-Label</div>
+        <div><i style="background:#a78bfa"></i>KREVO-Lila</div>
+      </div>
+    </div>
+    <div>
+      <h2>Schrift</h2>
+      <div class="ts">
+        <p><span style="font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.4px">Display</span><span>SF Pro Display 80/600</span></p>
+        <p><span style="font-family:var(--display);font-weight:600;font-size:21px">Produktname</span><span>32/600</span></p>
+        <p><span style="font-family:var(--display);font-weight:600;font-size:19px">+214</span><span>Kennzahl 28/600</span></p>
+        <p><span style="font-size:14px">Fließtext und Navigation</span><span>SF Pro Text 12–17</span></p>
+      </div>
+    </div>
+    <div>
+      <h2>Regeln</h2>
+      <ul class="rules">
+        <li><b>Keine Schatten.</b> Flächen trennen sich durch Schwarz-zu-Carbon und 1px-Linien.</li>
+        <li><b>28px-Ecken</b> für Kacheln, Medien und Panels, Knöpfe immer als Pille.</li>
+        <li><b>Blau nur für die Hauptaktion</b> „Tools öffnen“, nie als Fläche.</li>
+        <li><b>Lila bleibt im Produkt.</b> Wie die Gerätefarbe bei Apple: nur im App-Screen und in Medienbildern.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<main class="wrap flow">
+
+  <!-- 1 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 1: Navigation und Hero mit iPhone">
+      <div class="hero">
+        <div class="gnav"><svg class="logo"><use href="#k"/></svg><span>Storm</span><span>Net Damage</span><span>Rotation</span><span>Map</span><span>Team</span><span>Support</span><span>DE</span></div>
+        <div class="strip">Neu: Team Net Surge für Duo und Trio. <a>Mehr erfahren ›</a></div>
+        <div class="stage"><div class="phone"><div class="screen"><div class="island"></div><span class="chip">Storm · 10 Schaden/s</span><div class="ring"><div><b>550</b><small>Schaden</small></div></div><div class="rows"><div><span>Bis 600</span><b>0:05</b></div><div><span>Net Damage</span><b>+214</b></div></div></div></div></div>
+        <div class="hero-foot">
+          <p class="pname">KREVO</p>
+          <p class="disp">Der Storm. Im Griff.</p>
+          <div class="cta"><span class="capsule">Kostenlos · ohne Konto · iPhone, iPad, Mac</span><span class="pill lg">Tools öffnen</span></div>
+        </div>
+      </div>
+      <span class="cap">Desktop 1440 px</span>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 1 von 9 · Erster Bildschirm</span>
+      <h3>Hero: KREVO als Gerät auf schwarzer Bühne</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Oben die 44px-Navigation mit KREVO-Symbol, darunter der Ankündigungsstreifen. Mitte: ein iPhone mit dem echten Storm-Timer. Unten Produktname, Claim und die Kaufzeile von Apple, hier als „Kostenlos“-Kapsel plus blaue Pille.</dd></div>
+        <div><dt>Bewegung</dt><dd>Das iPhone blendet von unten ein, der Ring füllt sich einmal bis 550. Danach steht alles still.</dd></div>
+        <div><dt>Tokens</dt><dd><code>#000</code> Bühne, Display 80/600 mit −1,2px, Pille <code>#0071e3</code> mit 170px-Radius.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 2: Lokale Navigation und Storm-Medienrahmen">
+      <div class="lnav"><span class="name">KREVO</span><span>Überblick</span><span class="dim">Storm</span><span class="dim">Net Damage</span><span class="dim">Team</span><span class="dim">Fragen</span><span class="pill">Öffnen</span></div>
+      <div class="media" style="top:6.2cqw">
+        <div><p class="pname" style="color:var(--porcelain)">Storm-Timer</p><p class="sub" style="max-width:34cqw">Wähle 1, 2, 5, 8 oder 10 Schaden pro Sekunde. KREVO schätzt den Schaden und warnt dich, bevor die Storm Sickness kommt.</p></div>
+        <div class="big">550<em>.</em></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div class="thr"><span>500 Warnung</span><span class="on">600 Akut</span></div><div class="pager"><i class="on"></i><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 2 von 9 · Beim Scrollen</span>
+      <h3>Highlights: ein großes Bild pro Werkzeug</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die Produktnavigation wird zur schwebenden Leiste (20px-Radius, 1px-Linie) und bleibt oben kleben. Darunter ein kinoartiger Medienrahmen mit einer riesigen Zahl statt eines Fotos.</dd></div>
+        <div><dt>Interaktion</dt><dd>Vier Folien per Wischen oder Punkte-Pille: Storm, Storm Sickness, Net Damage, Rotation. Die Pille mit dem langen Strich zeigt die aktive Folie.</dd></div>
+        <div><dt>Tokens</dt><dd>Medienrahmen mit 28px-Radius, ohne Schatten. Die Schwellen 500 und 600 stammen 1:1 aus der heutigen App.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 3 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 3: Panel mit sechs Kennzahl-Kacheln">
+      <div class="panel">
+        <div><p class="disp m">Alles, was ein Match braucht.</p><p class="sub" style="margin-top:.8cqw">Sechs Werkzeuge, ein Bildschirm. Ohne Konto, direkt auf deinem Gerät.</p></div>
+        <div class="grid3">
+          <div class="tile"><svg class="ic"><use href="#i-storm"/></svg><span class="stat">5 Raten</span><span class="small">Storm-Schaden von 1 bis 10 pro Sekunde.</span></div>
+          <div class="tile"><svg class="ic"><use href="#i-net"/></svg><span class="stat pos">+214</span><span class="small">Net Damage: 1.240 dealt, 1.026 taken.</span></div>
+          <div class="tile"><svg class="ic"><use href="#i-rot"/></svg><span class="stat">0:48</span><span class="small">Rotation-Countdown mit eigenen Presets.</span></div>
+          <div class="tile"><svg class="ic"><use href="#i-team"/></svg><span class="stat">3 Spieler</span><span class="small">Duo oder Trio per Link.</span></div>
+          <div class="tile"><svg class="ic"><use href="#i-map"/></svg><span class="stat">Vollbild</span><span class="small">Eigene Map hochladen und zoomen.</span></div>
+          <div class="tile"><svg class="ic"><use href="#i-lang"/></svg><span class="stat">DE · EN</span><span class="small">Komplett zweisprachig.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 3 von 9 · Überblick</span>
+      <h3>Feature-Kacheln statt Karten</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Ein Carbon-Panel mit Verlauf nach Schwarz, darin sechs schwarze Kacheln. Jede hat eine dünne Strichgrafik, eine Kennzahl in Display 28/600 und eine Zeile in Ash.</dd></div>
+        <div><dt>Interaktion</dt><dd>Ein Klick auf eine Kachel springt zum Werkzeug in der App. Kein Hover-Schatten, nur ein leichter Helligkeitswechsel.</dd></div>
+        <div><dt>Hinweis</dt><dd>Grün für +214 ist die einzige Semantikfarbe, wie die grüne Akku-Grafik bei Apple.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 4: Team-Modus mit Team Net Surge">
+      <div class="band">
+        <div class="txt"><span class="new">Neu</span><p class="disp m">Zu dritt.<br>Eine Zahl.</p><p class="sub">Erstelle ein Duo oder Trio, schick den Link, und jeder trägt seine Werte ein. KREVO zeigt die Summe als Team Net Surge, abgeglichen etwa alle 3 Sekunden.</p><span class="lnk">So funktioniert der Team-Modus ›</span></div>
+        <div class="players">
+          <div class="pl"><span>Du</span><b>+214</b></div>
+          <div class="pl"><span>Mitspieler 2</span><b>+96</b></div>
+          <div class="pl"><span>Mitspieler 3</span><b>−38</b></div>
+          <div class="pl sum"><span>Team Net Surge</span><b>+272</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 4 von 9 · Story</span>
+      <h3>Team: zweispaltige Erzählung</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Links Text mit „Neu“-Label in Kupfer (nur Text, kein Badge), rechts drei Spielerzeilen und die Summe als umrandete Zeile.</dd></div>
+        <div><dt>Bewegung</dt><dd>Die Zeilen kommen nacheinander, die Summe zählt beim Erscheinen von 0 auf +272 hoch.</dd></div>
+        <div><dt>Tokens</dt><dd>Link in Electric Link <code>#2997ff</code> mit „›“, so wie Apple „Mehr erfahren“ schreibt.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 5 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 5: Weiße Vergleichskarten ohne Konto und mit Konto">
+      <div class="pale">
+        <div><p class="disp m">Deine Daten bleiben bei dir.</p><p class="sub" style="margin-top:.8cqw">Ein Konto brauchst du nur für den Team-Modus.</p></div>
+        <div class="cmp">
+          <div class="card-w"><h4>Ohne Konto</h4><p>Sofort loslegen, alles bleibt im Browser.</p><ul><li>Storm, Net Damage, Rotation, Map<em>✓</em></li><li>Presets und Map gespeichert<em>auf dem Gerät</em></li><li>Team-Modus<em>–</em></li></ul></div>
+          <div class="card-w"><h4>Mit Discord</h4><p>Ein Klick, kein neues Passwort.</p><ul><li>Alle Werkzeuge<em>✓</em></li><li>Team Net Surge für Duo und Trio<em>✓</em></li><li>Gespeichert<em>Name, Discord-ID</em></li></ul><a>Datenschutz lesen ›</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 5 von 9 · Bewusster Bruch</span>
+      <h3>Vergleich auf weißen Karten</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die einzige helle Fläche der Seite, wie Apples Vergleichskarten. Zwei Spalten: ohne Konto und mit Discord.</dd></div>
+        <div><dt>Warum hier</dt><dd>Weiß signalisiert „jetzt wird es sachlich“. So fällt der Datenschutz auf, ohne laut zu werden.</dd></div>
+        <div><dt>Tokens</dt><dd>Karte <code>#fff</code>, Text <code>#1d1d1f</code>, Link Cobalt <code>#0066cc</code>, 28px-Radius.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 6 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 6: Fragen und Antworten">
+      <div class="faq">
+        <p class="disp m">Fragen und Antworten.</p>
+        <div class="qa">
+          <div><span>Liest KREVO Daten aus Fortnite?</span><span>−</span></div>
+          <p>Nein. KREVO greift nicht auf das Spiel zu. Den Storm-Schaden schätzt der Timer aus der gewählten Schadensrate.</p>
+          <div><span>Brauche ich ein Konto?</span><span>+</span></div>
+          <div><span>Wie funktioniert der Team-Modus?</span><span>+</span></div>
+          <div><span>Kostet KREVO etwas?</span><span>+</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 6 von 9 · Hilfe</span>
+      <h3>FAQ als ruhige Liste</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die fünf Fragen der heutigen Startseite, getrennt durch 1px-Linien in Steel. Keine Kästen.</dd></div>
+        <div><dt>Interaktion</dt><dd>Plus öffnet, Minus schließt. Immer nur eine Antwort offen.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 7: Discord-Abschluss und Fußzeile">
+      <div class="end">
+        <div class="dc"><svg><use href="#i-dc"/></svg><p class="disp m">Komm in den Discord.</p><p class="sub">Feedback, Ideen und Team-Partner finden.</p><span class="pill out" style="font-size:1.1cqw;padding:.7cqw 1.4cqw">Noch nicht verfügbar</span></div>
+        <div class="foot">
+          <div class="cols">
+            <div><b>Werkzeuge</b><span>Storm</span><span>Net Damage</span><span>Rotation</span><span>Map</span></div>
+            <div><b>Team</b><span>Session erstellen</span><span>Beitreten</span></div>
+            <div><b>Konto</b><span>Mit Discord anmelden</span><span>Profil</span></div>
+            <div><b>Info</b><span>Fragen</span><span>Datenschutz</span><span>Sprache: Deutsch</span></div>
+          </div>
+          <div class="legal"><span>Unabhängiges Fanprojekt. Nicht von Epic Games unterstützt oder betrieben.</span><span>Deutschland · DE</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 7 von 9 · Ende der Seite</span>
+      <h3>Discord und Fußzeile</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Ein letzter schwarzer Moment mit Discord-Symbol. Der Knopf ist eine umrandete Pille und zeigt „Noch nicht verfügbar“, bis es einen Einladungslink gibt.</dd></div>
+        <div><dt>Fußzeile</dt><dd>Apple-typisch: Carbon, 12px-Text in Ash, vier Spalten, Fan-Hinweis in der rechtlichen Zeile.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 8: iPhone-Ansicht der Startseite und des Menüs">
+      <div class="mob">
+        <div class="mphone">
+          <div class="mbar"><svg style="width:1.6cqw;height:1.6cqw;color:#ccc"><use href="#k"/></svg><span>☰</span></div>
+          <div class="mbody"><span style="font-size:1.3cqw;font-weight:600">KREVO</span><span class="mt">Der Storm.<br>Im Griff.</span><span class="pill" style="font-size:1.2cqw;padding:.7cqw 1.4cqw">Tools öffnen</span><div class="mini">550</div></div>
+        </div>
+        <div class="mphone">
+          <div class="mbar"><svg style="width:1.6cqw;height:1.6cqw;color:#ccc"><use href="#k"/></svg><span>✕</span></div>
+          <div class="menu"><span>Storm</span><span>Net Damage</span><span>Rotation</span><span>Map</span><span>Team</span><span class="s">Konto · Sprache · Fragen · Datenschutz</span></div>
+        </div>
+      </div>
+      <span class="cap">iPhone 390 px</span>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 8 von 9 · Mobil</span>
+      <h3>iPhone: gleiche Bühne, eine Spalte</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Links die Startseite: Claim, blaue Pille, darunter das Storm-Bild. Rechts das geöffnete Menü als Vollbild, wie bei apple.com: große Display-Einträge, darunter kleine Links.</dd></div>
+        <div><dt>Hinweis</dt><dd>Kacheln stapeln sich, die Highlights werden horizontal wischbar.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <!-- 9 -->
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 9: Übergang in die App mit Storm-Timer">
+      <div class="lnav"><span class="name">KREVO</span><span>Storm</span><span class="dim">Net Damage</span><span class="dim">Rotation</span><span class="dim">Map</span><span class="pill out">Team</span></div>
+      <div class="panel" style="top:6.2cqw">
+        <div style="display:flex;justify-content:space-between;align-items:end"><div><p class="pname">Storm</p><p class="sub">10 Schaden pro Sekunde · läuft</p></div><span class="capsule">Rückgängig</span></div>
+        <div class="grid3" style="grid-template-columns:1.4fr 1fr">
+          <div class="tile" style="align-content:center;justify-items:center"><div class="ring" style="width:16cqw"><div style="width:14cqw"><b style="font-size:4cqw">550</b><small style="font-size:1cqw">Schaden</small></div></div></div>
+          <div style="display:grid;gap:1.1cqw">
+            <div class="tile"><span class="stat">0:05</span><span class="small">bis 600</span></div>
+            <div class="tile"><span class="small">Schadensrate</span><div style="display:flex;gap:.5cqw"><span class="pill out">1</span><span class="pill out">2</span><span class="pill out">5</span><span class="pill out">8</span><span class="pill">10</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 9 von 9 · Nach „Tools öffnen“</span>
+      <h3>Die App selbst im neuen Stil</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die Produktnavigation wird zur Werkzeugleiste. Der Storm-Timer liegt in einem Carbon-Panel, rechts Restzeit und Schadensraten als Pillen, die aktive Rate in Blau.</dd></div>
+        <div><dt>Umfang</dt><dd>Für die Vorschau-Webseite reicht diese eine Werkzeugansicht. Die übrigen Werkzeuge folgen demselben Muster.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+</main>
+
+<section class="wrap next">
+  <div class="next-box">
+    <h2>Als Nächstes: die Vorschau-Webseite.</h2>
+    <p>Sobald du das Storyboard freigibst, baue ich daraus eine einfache, klickbare Seite. Sie zeigt das Aussehen, nicht alle Funktionen.</p>
+    <ol>
+      <li><b>Startseite</b> mit den Szenen 1 bis 7, voll responsiv wie in Szene 8.</li>
+      <li><b>Werkzeugansicht</b> wie Szene 9, mit einem laufenden Beispiel-Timer.</li>
+      <li><b>Eine Datei</b>, getrennt von der heutigen App, damit nichts kaputtgeht.</li>
+    </ol>
+  </div>
+</section>
