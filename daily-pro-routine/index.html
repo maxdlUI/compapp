@@ -1,9 +1,9 @@
 <title>Repline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Repline · Daily Pro Routine: Ziel wählen, Länge wählen, Block für Block trainieren.">
+<meta name="description" content="Repline · Daily Pro Routine: pick your goal, pick your length, train block by block.">
 <style>
-/* Layout: schwarze Apple-Produktseite (iPhone 18 Pro, Refero). Ein Homescreen, dann ein geführter Ablauf
-   Ziel → Länge → Plan → Training → Geschafft. Blau nur für Hauptaktionen; die Blockfarben Cyan → Violett sind die "Gerätefarbe". */
+/* Layout: black Apple product page (iPhone 18 Pro, Refero). A home screen, then a guided flow
+   goal → length → plan → training → done. Blue only for primary actions; block colours cyan → violet are the "device finish". */
 :root {
   color-scheme: dark;
   --obsidian: #000000;
@@ -53,7 +53,7 @@ button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit
 .soon { color: var(--copper); font-weight: 600; font-size: 12px; letter-spacing: -0.12px; }
 .more::after { content: " ›"; }
 
-/* Knöpfe */
+/* Buttons */
 .pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 980px; background: var(--blue); color: var(--white); font-size: 17px; padding: 12px 24px; cursor: pointer; white-space: nowrap; transition: background .2s, transform .2s var(--ease), opacity .2s; text-decoration: none; min-height: 44px; }
 .pill:hover { background: var(--blue-hover); text-decoration: none; }
 .pill:active { transform: scale(.97); }
@@ -77,7 +77,7 @@ button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit
 
 /* Navigation */
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; padding-top: 10px; padding-left: var(--gut-l); padding-right: var(--gut-r); pointer-events: none; }
-.top-in { pointer-events: auto; max-width: 1024px; margin: 0 auto; height: 52px; border-radius: 20px; background: rgba(14, 14, 14, .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; gap: 22px; padding: 0 10px 0 20px; }
+.top-in { pointer-events: auto; max-width: 1024px; margin: 0 auto; height: 52px; border-radius: 20px; gap: 12px; background: rgba(14, 14, 14, .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; gap: 22px; padding: 0 10px 0 20px; }
 .brand { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.012em; margin-right: auto; color: var(--porcelain); white-space: nowrap; }
 .brand:hover { text-decoration: none; }
 .top nav { display: flex; gap: 22px; }
@@ -85,7 +85,7 @@ button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit
 .top nav a:hover { color: var(--porcelain); text-decoration: none; }
 @media (max-width: 720px) { .top nav { display: none; } }
 
-/* Ansichten */
+/* Views */
 .view { min-height: calc(100svh - 62px); }
 html.anim .view.enter-f { animation: inF .7s var(--ease) both; }
 html.anim .view.enter-b { animation: inB .7s var(--ease) both; }
@@ -95,7 +95,7 @@ html.anim .rv { opacity: 0; transform: translateY(40px); transition: opacity 1s 
 html.anim .rv.in { opacity: 1; transform: none; }
 html.anim .d1 { transition-delay: .08s; } html.anim .d2 { transition-delay: .16s; } html.anim .d3 { transition-delay: .24s; } html.anim .d4 { transition-delay: .32s; }
 
-/* Zifferblatt */
+/* Dial */
 .dial { position: relative; aspect-ratio: 1; display: grid; place-items: center; }
 .dial svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
 .dial circle { fill: none; stroke-linecap: butt; }
@@ -107,7 +107,7 @@ html.anim .d1 { transition-delay: .08s; } html.anim .d2 { transition-delay: .16s
 .dial-mid .t { font-family: var(--display); font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .dial-glow { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(closest-side, rgba(56, 224, 255, .14), transparent 75%); pointer-events: none; }
 
-/* Home: Hero */
+/* Home: hero */
 .hero { display: grid; justify-items: center; text-align: center; gap: 22px; padding-block: 48px 64px; padding-left: var(--gut-l); padding-right: var(--gut-r); position: relative; overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 20% -20% auto; height: 70%; background: radial-gradient(45% 55% at 50% 40%, rgba(63, 141, 255, .22), transparent 70%); pointer-events: none; }
 .hero .dial { width: min(360px, 74vw); transform: scale(var(--hs, 1)); transition: transform .1s linear; }
@@ -120,7 +120,7 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .sec { padding-block: clamp(64px, 10vw, 128px); }
 .sec-head { display: grid; gap: 12px; margin-bottom: 36px; }
 
-/* Ziel-Kacheln */
+/* Goal tiles */
 .goals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .goals.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 980px) { .goals.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -141,13 +141,13 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .g-ki { --bg: linear-gradient(var(--carbon), var(--obsidian)); box-shadow: inset 0 0 0 1px var(--steel); }
 .goal.tall { min-height: 360px; }
 
-/* So geht's */
+/* How it works */
 .how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 760px) { .how { grid-template-columns: minmax(0, 1fr); } }
 .how div { background: var(--carbon); border-radius: 28px; padding: 28px; display: grid; gap: 10px; align-content: start; }
 .how b { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; color: var(--ash); font-variant-numeric: tabular-nums; }
 
-/* Fortschritt */
+/* Progress */
 .progress { border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 300px); padding: clamp(28px, 4vw, 48px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
 @media (max-width: 760px) { .progress { grid-template-columns: minmax(0, 1fr); } }
 .streak-n { font-family: var(--display); font-weight: 600; font-size: clamp(72px, 10vw, 120px); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -172,7 +172,7 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 footer { background: var(--carbon); color: var(--ash); font-size: 12px; letter-spacing: -0.12px; line-height: 1.33; padding-block: 24px 36px; margin-top: 40px; }
 footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
 
-/* Ablauf */
+/* Flow */
 .flowv { padding-block: 40px 96px; }
 .stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
 .stepper i { width: 32px; height: 4px; border-radius: 99px; background: var(--steel); display: block; transition: background .4s; }
@@ -251,14 +251,14 @@ kbd { font-family: var(--text); font-size: 12px; color: var(--ash); box-shadow: 
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: rgba(51, 51, 54, .92); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); color: var(--porcelain); font-size: 14px; letter-spacing: -0.224px; padding: 12px 20px; border-radius: 99px; opacity: 0; pointer-events: none; transition: opacity .35s var(--ease), transform .35s var(--ease); z-index: 70; max-width: calc(100vw - 32px); text-align: center; }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
 
-/* Geschafft */
+/* Done */
 .done { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 72px); align-items: center; padding-block: clamp(40px, 8vw, 96px); }
 @media (max-width: 760px) { .done { grid-template-columns: minmax(0, 1fr); } }
 .done .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
 html.anim .burst { animation: burst 1.4s var(--ease) both; }
 @keyframes burst { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
 
-/* KI */
+/* AI */
 .ki { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 72px); align-items: center; padding-block: clamp(32px, 6vw, 80px); }
 @media (max-width: 820px) { .ki { grid-template-columns: minmax(0, 1fr); } }
 .ki-txt { display: grid; gap: 18px; justify-items: start; }
@@ -270,6 +270,54 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 @keyframes type { 0%, 12% { opacity: 0; transform: translateY(10px); } 30%, 80% { opacity: .6; transform: none; } 100% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) { .dial .seg-a, .dial .fil, .goal, .len { transition: none; } }
+
+/* Account drawer */
+.acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
+.acct-btn:focus-visible { outline-offset: 3px; }
+.scrim { position: fixed; inset: 0; z-index: 80; background: rgba(0, 0, 0, .5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; transition: opacity .35s var(--ease); }
+.scrim.open { opacity: 1; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 81; width: min(420px, 100vw); background: var(--nav-open, #161617); box-shadow: -1px 0 0 var(--keyline); display: flex; flex-direction: column; transform: translateX(104%); transition: transform .45s var(--ease); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.drawer.open { transform: none; }
+.dr-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 16px 10px 24px; }
+.dr-head h2 { font-family: var(--display); font-weight: 600; font-size: 24px; margin: 0; }
+.dr-body { flex: 1; overflow-y: auto; padding: 8px 24px 32px; display: grid; align-content: start; gap: 28px; overscroll-behavior: contain; }
+.dr-sec { display: grid; gap: 10px; }
+.dr-sec > h3 { font-size: 12px; font-weight: 600; letter-spacing: -0.12px; color: var(--ash); margin: 0; }
+.group { background: var(--carbon); border-radius: 18px; overflow: hidden; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border-top: 1px solid var(--steel); font-size: 15px; letter-spacing: -0.24px; min-height: 52px; }
+.row:first-child { border-top: 0; }
+.row > span:first-child { min-width: 0; }
+.row .val { color: var(--ash); font-size: 14px; text-align: right; overflow-wrap: anywhere; }
+a.row, button.row { width: 100%; background: none; border: 0; border-top: 1px solid var(--steel); color: var(--porcelain); text-align: left; cursor: pointer; text-decoration: none; font: inherit; }
+a.row:first-child, button.row:first-child { border-top: 0; }
+a.row:hover, button.row:hover { background: #242426; text-decoration: none; }
+a.row::after, button.row.go::after { content: "›"; color: var(--slate); font-size: 20px; line-height: 1; }
+button.row.danger { color: #ff6961; }
+.switch { position: relative; width: 51px; height: 31px; flex: none; }
+.switch input { appearance: none; -webkit-appearance: none; margin: 0; width: 100%; height: 100%; border-radius: 99px; background: var(--steel); cursor: pointer; transition: background .25s var(--ease); }
+.switch input:checked { background: var(--pos); }
+.switch i { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: var(--white); pointer-events: none; transition: transform .25s var(--ease); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.switch input:checked + i { transform: translateX(20px); }
+.profile { display: flex; align-items: center; gap: 14px; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 24px; display: grid; place-items: center; flex: none; }
+.profile b { display: block; font-family: var(--display); font-size: 21px; font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--ash); box-shadow: inset 0 0 0 1px var(--steel); border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+.discord { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; border: 0; border-radius: 980px; background: #5865f2; color: #fff; font-size: 17px; cursor: pointer; transition: background .2s, transform .2s var(--ease); }
+.discord:hover { background: #4752c4; }
+.discord:active { transform: scale(.98); }
+.discord svg { width: 22px; height: 22px; }
+.discord[disabled] { opacity: .7; cursor: progress; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--steel); }
+.stats div { background: var(--carbon); padding: 14px 16px; display: grid; gap: 2px; }
+.stats b { font-family: var(--display); font-weight: 600; font-size: 24px; font-variant-numeric: tabular-nums; }
+.reflink { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; }
+.reflink code { flex: 1; min-width: 0; font-family: var(--mono); font-size: 14px; color: var(--porcelain); overflow-wrap: anywhere; }
+.confirm { padding: 14px 16px; display: grid; gap: 12px; border-top: 1px solid var(--steel); }
+.confirm div { display: flex; gap: 10px; flex-wrap: wrap; }
+.pill.red { background: #ff453a; }
+.pill.red:hover { background: #ff3b30; }
+.dr-foot { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; line-height: 1.4; margin: 0; }
+html.no-scroll { overflow: hidden; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -286,96 +334,107 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
   <symbol id="i-mech" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M4 20V10l4-4h8l4 4v10zM4 14h16M10 6v8M14 6v8"/></symbol>
   <symbol id="i-ki" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
 </svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M19.3 5.3A16.7 16.7 0 0 0 15.2 4l-.5 1a15.5 15.5 0 0 0-5.4 0l-.5-1a16.6 16.6 0 0 0-4.1 1.3C2.1 9.2 1.4 13 1.7 16.7a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.8 10.8 0 0 1-1.7-.8l.4-.3a11.9 11.9 0 0 0 10.8 0l.4.3a10.8 10.8 0 0 1-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.3-.7-8-3-11.4zM8.7 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
 
 <script>
-  try { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim"); } catch (e) {}
+  try {
+    var pm = localStorage.getItem("rl.motion");
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (pm === "off" || (pm !== "on" && reduce)) {} else document.documentElement.classList.add("anim");
+  } catch (e) { document.documentElement.classList.add("anim"); }
 </script>
 
 <header class="top">
   <div class="top-in">
-    <a class="brand" href="#" aria-label="Repline, zum Homescreen">Repline</a>
-    <nav aria-label="Hauptnavigation"><a href="#ziel">Routinen</a><a href="#ki">KI-Training</a><a href="#" data-scroll="fortschritt">Fortschritt</a><a href="#" data-scroll="fragen">Fragen</a></nav>
-    <a class="pill sm" href="#ziel">Routine starten</a>
+    <a class="brand" href="#" aria-label="Repline, home">Repline</a>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#ai">AI Training</a><a href="#" data-scroll="progress">Progress</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <a class="pill sm" href="#goal">Start routine</a>
+    <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
+    <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
 </header>
 
-<!-- Homescreen -->
+<!-- Home -->
 <main class="view" data-view="home" id="v-home">
   <section class="hero" id="hero" aria-label="Daily Pro Routine">
-    <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Heute</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Bereit.</span><span class="tiny" id="hero-sub">Block für Block</span></div></div>
+    <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Today</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Ready.</span><span class="tiny" id="hero-sub">Block by block</span></div></div>
     <div class="hero-copy">
       <h1 class="d-xl">Daily Pro Routine.</h1>
-      <p class="lead">Wähle dein Ziel und deine Länge. Dann trainierst du Block für Block, mit Timer, Codes und Kill-Zielen.</p>
-      <div class="hero-cta"><a class="pill big" href="#ziel">Routine starten</a><a class="pill big out" href="#training" id="resume" hidden>Weitermachen</a></div>
+      <p class="lead">Pick your goal and your length. Then train block by block, with a timer, codes and kill targets.</p>
+      <div class="hero-cta"><a class="pill big" href="#goal">Start routine</a><a class="pill big out" href="#training" id="resume" hidden>Continue</a></div>
     </div>
   </section>
 
   <section class="sec wrap" aria-labelledby="h-was" style="padding-top:24px">
-    <div class="sec-head"><h2 id="h-was" class="d-l rv">Was willst du heute?</h2></div>
+    <div class="sec-head"><h2 id="h-was" class="d-l rv">What are you training for?</h2></div>
     <div class="goals four" id="home-goals"></div>
   </section>
 
   <section class="sec wrap" aria-labelledby="h-how" style="padding-top:0">
-    <div class="sec-head"><h2 id="h-how" class="d-m rv">In drei Schritten zum Training.</h2></div>
+    <div class="sec-head"><h2 id="h-how" class="d-m rv">Three steps to training.</h2></div>
     <div class="how">
-      <div class="rv"><b>1</b><span class="h3">Ziel</span><p class="small">Cup-Warm-up, Besser werden oder eine schnelle Aim- oder Mechanics-Routine.</p></div>
-      <div class="rv d1"><b>2</b><span class="h3">Länge</span><p class="small">Kurz, Normal oder Lang, passend zu deinem Ziel.</p></div>
-      <div class="rv d2"><b>3</b><span class="h3">Plan</span><p class="small">Alle Blöcke mit Codes auf einen Blick. Dann startest du den Timer.</p></div>
+      <div class="rv"><b>1</b><span class="h3">Goal</span><p class="small">Cup warm-up, Get better, or a quick Aim or Mechanics routine.</p></div>
+      <div class="rv d1"><b>2</b><span class="h3">Length</span><p class="small">Short, Normal or Long, matched to your goal.</p></div>
+      <div class="rv d2"><b>3</b><span class="h3">Plan</span><p class="small">Every block with its codes at a glance. Then start the timer.</p></div>
     </div>
   </section>
 
-  <section class="sec wrap" id="fortschritt" aria-labelledby="h-prog" style="padding-top:0">
+  <section class="sec wrap" id="progress" aria-labelledby="h-prog" style="padding-top:0">
     <div class="progress rv">
       <div style="display:grid;gap:12px">
-        <h2 id="h-prog" class="d-m">Dein Fortschritt.</h2>
-        <p class="small">Jede fertige Routine zählt als Tag. Gespeichert wird nur in diesem Browser.</p>
+        <h2 id="h-prog" class="d-m">Your progress.</h2>
+        <p class="small">Every finished routine counts as a day. Stored in this browser only.</p>
       </div>
       <div style="display:grid;gap:20px">
-        <div><span class="streak-n" id="home-streak">0</span> <span class="lead" style="display:inline" id="home-streak-w">Tage am Stück</span></div>
+        <div><span class="streak-n" id="home-streak">0</span> <span class="lead" style="display:inline" id="home-streak-w">days in a row</span></div>
         <div class="days" id="home-days"></div>
       </div>
     </div>
   </section>
 
-  <section class="sec wrap" id="fragen" aria-labelledby="h-faq" style="padding-top:0">
-    <h2 id="h-faq" class="d-m rv" style="margin-bottom:28px">Fragen und Antworten.</h2>
+  <section class="sec wrap" id="faq" aria-labelledby="h-faq" style="padding-top:0">
+    <h2 id="h-faq" class="d-m rv" style="margin-bottom:28px">Questions and answers.</h2>
     <div class="qa rv d1">
-      <details open><summary>Was ist die Daily Pro Routine?<i></i></summary><p>Ein Training in fester Reihenfolge. Jeder Block hat eine Dauer oder ein Kill-Ziel und die Codes, die du dafür brauchst.</p></details>
-      <details><summary>Ist die Routine für alle gleich?<i></i></summary><p>Ja. Die Routinen sind fest vorgegeben und für jeden Spieler gleich. Eine Routine nur für dich stellt später das KI-Training zusammen.</p></details>
-      <details><summary>Was passiert, wenn ich zwischendurch aufhöre?<i></i></summary><p>Dein Stand wird für heute in diesem Browser gemerkt. Auf dem Homescreen geht es mit „Weitermachen“ an derselben Stelle weiter.</p></details>
-      <details><summary>Welche Tasten kann ich benutzen?<i></i></summary><p>Leertaste startet und pausiert, R startet den Block neu, N geht zum nächsten Block, F schaltet Vollbild an und aus.</p></details>
+      <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order. Every block has a duration or a kill target, plus the codes you need for it.</p></details>
+      <details><summary>Is the routine the same for everyone?<i></i></summary><p>Yes. The routines are set in advance and identical for every player. A routine made just for you will come with AI Training.</p></details>
+      <details><summary>Do I need an account?<i></i></summary><p>No. Every routine works without an account. With a Discord account you get your own referral link and your settings in one place.</p></details>
+      <details><summary>What happens if I stop halfway?<i></i></summary><p>Your progress for today is saved in this browser. On the home screen, “Continue” picks up where you left off.</p></details>
+      <details><summary>Which keys can I use?<i></i></summary><p>Space starts and pauses, R restarts the block, N goes to the next block, F toggles full screen.</p></details>
     </div>
   </section>
 </main>
 
-<!-- Schritt 1: Ziel -->
-<main class="view wrap flowv" data-view="ziel" id="v-ziel" hidden>
-  <button class="back" type="button" data-go="">Homescreen</button>
-  <div class="stepper" aria-hidden="true"><i class="on"></i><i></i><i></i><span class="tiny">Schritt 1 von 3</span></div>
-  <h1 class="d-l">Wofür trainierst du heute?</h1>
+<!-- Step 1: goal -->
+<main class="view wrap flowv" data-view="goal" id="v-goal" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="stepper" aria-hidden="true"><i class="on"></i><i></i><i></i><span class="tiny">Step 1 of 3</span></div>
+  <h1 class="d-l">What are you training for today?</h1>
   <div class="goals" id="pick-goals" style="margin-top:36px"></div>
 </main>
 
-<!-- Schritt 2: Länge -->
-<main class="view wrap flowv" data-view="laenge" id="v-laenge" hidden>
-  <button class="back" type="button" data-go="ziel">Ziel</button>
-  <div class="stepper" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><span class="tiny">Schritt 2 von 3 · <span id="len-goal"></span></span></div>
-  <h1 class="d-l">Wie viel Zeit hast du?</h1>
+<!-- Step 2: length -->
+<main class="view wrap flowv" data-view="length" id="v-length" hidden>
+  <button class="back" type="button" data-go="goal">Goal</button>
+  <div class="stepper" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><span class="tiny">Step 2 of 3 · <span id="len-goal"></span></span></div>
+  <h1 class="d-l">How much time do you have?</h1>
   <div class="lens" id="pick-len"></div>
 </main>
 
-<!-- Schritt 3: Plan -->
+<!-- Step 3: plan -->
 <main class="view wrap flowv" data-view="plan" id="v-plan" hidden>
-  <button class="back" type="button" data-go="laenge">Länge</button>
+  <button class="back" type="button" data-go="length">Length</button>
   <div class="plan">
     <div class="plan-side">
-      <div class="stepper" aria-hidden="true" style="margin:0"><i class="on"></i><i class="on"></i><i class="on"></i><span class="tiny">Schritt 3 von 3</span></div>
-      <h1 class="d-l">Dein Plan.</h1>
+      <div class="stepper" aria-hidden="true" style="margin:0"><i class="on"></i><i class="on"></i><i class="on"></i><span class="tiny">Step 3 of 3</span></div>
+      <h1 class="d-l">Your plan.</h1>
       <p class="lead" id="plan-sum"></p>
-      <div class="seg" role="group" aria-label="Eingabegerät" id="dev"><button type="button" data-dev="mk" aria-pressed="true">Maus &amp; Tastatur</button><button type="button" data-dev="controller" aria-pressed="false">Controller</button></div>
-      <div class="field" id="cup-field" hidden><label for="cup-time">Dein Cup beginnt um</label><input id="cup-time" type="time" value="19:00"></div>
+      <div class="seg" role="group" aria-label="Input device" id="dev"><button type="button" data-dev="mk" aria-pressed="true">Keyboard &amp; mouse</button><button type="button" data-dev="controller" aria-pressed="false">Controller</button></div>
+      <div class="field" id="cup-field" hidden><label for="cup-time">Your cup starts at</label><input id="cup-time" type="time" value="19:00"></div>
       <p class="note" id="cup-note" hidden></p>
-      <button class="pill big" type="button" id="plan-start">Training starten</button>
+      <button class="pill big" type="button" id="plan-start">Start training</button>
     </div>
     <div class="blocks" id="plan-blocks"></div>
   </div>
@@ -387,19 +446,19 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
   <div class="train">
     <section class="stage" id="stage" data-status="bereit" aria-label="Timer">
       <div class="stage-top">
-        <span class="state" aria-live="polite"><i></i><span id="st-word">Bereit</span></span>
+        <span class="state" aria-live="polite"><i></i><span id="st-word">Ready</span></span>
         <span>
-          <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Ton am Blockende"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
-          <button class="icon-btn" type="button" id="full" aria-label="Vollbild"><svg><use href="#i-full"/></svg></button>
+          <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Sound at the end of a block"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
+          <button class="icon-btn" type="button" id="full" aria-label="Full screen"><svg><use href="#i-full"/></svg></button>
         </span>
       </div>
       <div class="dial" id="tr-dial"><svg viewBox="0 0 200 200" aria-hidden="true"></svg><div class="dial-mid"><span class="tiny" id="tr-kick"></span><span class="t" id="tr-clock" role="timer" aria-live="off">0:00</span><span class="tiny" id="tr-under"></span></div></div>
       <div class="controls">
-        <button class="round" type="button" id="b-restart" aria-label="Block neu starten (R)"><svg><use href="#i-restart"/></svg></button>
+        <button class="round" type="button" id="b-restart" aria-label="Restart block (R)"><svg><use href="#i-restart"/></svg></button>
         <button class="pill big" type="button" id="b-main">Start</button>
-        <button class="round" type="button" id="b-next" aria-label="Nächster Block (N)"><svg><use href="#i-next"/></svg></button>
+        <button class="round" type="button" id="b-next" aria-label="Next block (N)"><svg><use href="#i-next"/></svg></button>
       </div>
-      <div class="keys tiny"><span><kbd>Leertaste</kbd> Start/Pause</span><span><kbd>R</kbd> Neu</span><span><kbd>N</kbd> Weiter</span><span><kbd>F</kbd> Vollbild</span></div>
+      <div class="keys tiny"><span><kbd>Space</kbd> Start/Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>N</kbd> Next</span><span><kbd>F</kbd> Full screen</span></div>
     </section>
     <div class="info">
       <section class="card" aria-labelledby="tr-name">
@@ -410,40 +469,40 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
         <ul class="kills" id="tr-kills" hidden></ul>
       </section>
       <section class="card" aria-labelledby="h-next">
-        <h2 class="tiny" id="h-next" style="margin:0">Als Nächstes</h2>
+        <h2 class="tiny" id="h-next" style="margin:0">Up next</h2>
         <ul class="next-list" id="tr-next"></ul>
       </section>
     </div>
   </div>
 </main>
 
-<!-- Geschafft -->
-<main class="view wrap" data-view="geschafft" id="v-geschafft" hidden>
+<!-- Done -->
+<main class="view wrap" data-view="done" id="v-done" hidden>
   <div class="done">
     <div style="display:grid;gap:16px;justify-items:start">
-      <h1 class="d-xl burst">Geschafft.</h1>
+      <h1 class="d-xl burst">Done.</h1>
       <p class="lead" id="done-sum"></p>
-      <div class="acts"><a class="pill big" href="#">Zum Homescreen</a><a class="pill big out" href="#ziel">Noch eine Routine</a></div>
+      <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
     <div style="display:grid;gap:20px">
-      <div><span class="streak-n" id="done-streak">0</span> <span class="lead" style="display:inline" id="done-streak-w">Tage am Stück</span></div>
+      <div><span class="streak-n" id="done-streak">0</span> <span class="lead" style="display:inline" id="done-streak-w">days in a row</span></div>
       <div class="days" id="done-days"></div>
     </div>
   </div>
 </main>
 
-<!-- KI-Training -->
-<main class="view wrap" data-view="ki" id="v-ki" hidden>
+<!-- AI Training -->
+<main class="view wrap" data-view="ai" id="v-ai" hidden>
   <div class="ki">
     <div class="ki-txt">
-      <button class="back" type="button" data-go="" style="margin:0">Homescreen</button>
+      <button class="back" type="button" data-go="" style="margin:0">Home</button>
       <span class="soon" style="font-size:14px">Coming Soon</span>
-      <h1 class="d-l">KI-Training. Nur für dich.</h1>
-      <p class="lead">Du sagst, was du heute erreichen willst und wie viel Zeit du hast. Die KI stellt daraus deine eigene Routine zusammen, als Warm-up oder zum Besserwerden.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#ziel">Feste Routinen ansehen</a></div>
+      <h1 class="d-l">AI Training. Made for you.</h1>
+      <p class="lead">Tell it what you want to work on today and how much time you have. The AI builds your own routine from that, as a warm-up or to get better.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#goal">See fixed routines</a></div>
     </div>
     <div class="ki-demo" aria-hidden="true">
-      <textarea disabled tabindex="-1">Ich habe heute *** Zeit und will an *** arbeiten.</textarea>
+      <textarea disabled tabindex="-1">I have *** today and want to work on ***.</textarea>
       <div class="blk"><summary><i class="dot" style="background:var(--c1)"></i><span class="when"></span><span class="nm">Block 1 · ***</span><span class="du">*** min</span></summary></div>
       <div class="blk"><summary><i class="dot" style="background:var(--c3)"></i><span class="when"></span><span class="nm">Block 2 · ***</span><span class="du">*** min</span></summary></div>
       <div class="blk"><summary><i class="dot" style="background:var(--c4)"></i><span class="when"></span><span class="nm">Block 3 · ***</span><span class="du">*** min</span></summary></div>
@@ -452,41 +511,64 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 </main>
 
 <footer>
-  <div class="wrap"><span>Repline · Unabhängiges Angebot, nicht mit Epic Games verbunden.</span><span>Impressum <span class="ph">***</span> · Datenschutz <span class="ph">***</span></span></div>
+  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><span id="ft-legal"></span></span></div>
 </footer>
+
+<!-- Account drawer -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
+  <div class="dr-head"><h2 id="dr-title">Account</h2><button class="icon-btn" type="button" id="dr-close" aria-label="Close"><svg><use href="#i-close"/></svg></button></div>
+  <div class="dr-body" id="dr-body"></div>
+</aside>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* =====================================================================
-   ROUTINEN — hier trägst du später die echten Inhalte ein.
-   Jede Routine ist für jeden Spieler gleich.
-   Aufbau eines Blocks:
-     { name: "Name", min: 30,               // Block mit Dauer (Countdown)
-       hinweis: "Was zu tun ist",
-       codes: [{ name: "Map-Code", wert: "1234-5678-9012" }] }
-     { name: "Name", kills: [{ name: "Modus", kills: 50 }, ...] }  // Block mit Kill-Zielen
-   Steht ein Wert auf null, zeigt die Seite einen Platzhalter (***).
-   Ein Block ohne Dauer (min: null) läuft als Stoppuhr, bis du ihn abschließt.
-   Für Controller kann eine Länge eine eigene Liste "controller" haben, sonst gilt "bloecke".
+   SITE — values that are still open (null shows ***).
    ===================================================================== */
-const ZIELE = [
-  { id: "cup", name: "Cup-Warm-up", text: "Aufwärmen vor dem Cup. Mit Cup-Startzeit, damit du pünktlich fertig bist.", icon: "i-cup", cupzeit: true },
-  { id: "besser", name: "Besser werden", text: "Die Routine für normale Trainingstage.", icon: "i-up" },
-  { id: "aim", name: "Schnell: Aim", text: "Kurz und nur Aim, wenn wenig Zeit ist.", icon: "i-aim" },
-  { id: "mechanics", name: "Schnell: Mechanics", text: "Kurz und nur Mechanics, wenn wenig Zeit ist.", icon: "i-mech" }
+const SITE = {
+  url: null,                 // e.g. "https://repline.gg"
+  contactEmail: null,        // support e-mail
+  imprintUrl: null,          // imprint / legal notice page
+  privacyUrl: null,          // privacy policy page
+  termsUrl: null,            // terms of service page
+  affiliate: {
+    commissionPercent: null, // e.g. 20
+    commissionMonths: null,  // how long a referral earns, e.g. 12 (months) or "lifetime"
+    currency: null,          // e.g. "EUR"
+    minPayout: null,         // e.g. 50
+    payoutMethod: null,      // e.g. "PayPal"
+    cookieDays: null         // how long a click is attributed, e.g. 30
+  }
+};
+
+/* =====================================================================
+   ROUTINES — fill in the real content here later. Every routine is the same for every player.
+   Block with a duration (countdown):
+     { name: "Name", min: 30, hint: "What to do", codes: [{ name: "Map code", value: "1234-5678-9012" }] }
+   Block with kill targets:
+     { name: "Name", kills: [{ name: "Mode", kills: 50 }, ...] }
+   null shows a placeholder (***). A block without a duration (min: null) runs as a stopwatch until you finish it.
+   A length can have its own list "controller", otherwise "blocks" is used.
+   ===================================================================== */
+const GOALS = [
+  { id: "cup", name: "Cup warm-up", text: "Warm up before your cup, with a start time so you finish right on time.", icon: "i-cup", cupTime: true },
+  { id: "better", name: "Get better", text: "The routine for regular training days.", icon: "i-up" },
+  { id: "aim", name: "Quick: Aim", text: "Short and aim only, for when time is tight.", icon: "i-aim" },
+  { id: "mechanics", name: "Quick: Mechanics", text: "Short and mechanics only, for when time is tight.", icon: "i-mech" }
 ];
-const LAENGEN = [
-  { id: "kurz", name: "Kurz", platzhalterBloecke: 3 },
-  { id: "normal", name: "Normal", platzhalterBloecke: 4 },
-  { id: "lang", name: "Lang", platzhalterBloecke: 5 }
+const LENGTHS = [
+  { id: "short", name: "Short", placeholderBlocks: 3 },
+  { id: "normal", name: "Normal", placeholderBlocks: 4 },
+  { id: "long", name: "Long", placeholderBlocks: 5 }
 ];
-const ROUTINEN = {
-  /* Beispiel, sobald es Inhalte gibt:
-  cup: { kurz: { bloecke: [ { name: "***", min: 10, hinweis: "***", codes: [{ name: "Map-Code", wert: "****-****-****" }] } ] } },
+const ROUTINES = {
+  /* Example once content exists:
+  cup: { short: { blocks: [ { name: "***", min: 10, hint: "***", codes: [{ name: "Map code", value: "****-****-****" }] } ] } },
   */
 };
-const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
+const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
 
 (function () {
   "use strict";
@@ -498,6 +580,7 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const two = (n) => String(n).padStart(2, "0");
+  const orP = (v) => v == null || v === "" ? P : esc(v);
   function clock(ms) { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${two(m)}:${two(x)}` : `${m}:${two(x)}`; }
   function today(d) { d = d || new Date(); return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`; }
   const store = {
@@ -506,46 +589,51 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     del(k) { try { localStorage.removeItem(k); } catch (e) {} }
   };
 
-  /* ---------- Daten ---------- */
-  const ziel = (id) => ZIELE.find((z) => z.id === id);
-  const laenge = (id) => LAENGEN.find((l) => l.id === id);
-  function bloecke(z, l, dev) {
-    const r = ROUTINEN[z] && ROUTINEN[z][l];
-    const list = r && ((dev === "controller" && r.controller) || r.bloecke);
+  /* ---------- Settings ---------- */
+  const SET = "rl.settings";
+  const settings = Object.assign({ device: "mk", sound: true, awake: true }, store.get(SET, {}));
+  const saveSettings = () => store.set(SET, settings);
+
+  /* ---------- Data ---------- */
+  const goal = (id) => GOALS.find((z) => z.id === id);
+  const length = (id) => LENGTHS.find((l) => l.id === id);
+  function blocksFor(z, l, dev) {
+    const r = ROUTINES[z] && ROUTINES[z][l];
+    const list = r && ((dev === "controller" && r.controller) || r.blocks);
     if (list && list.length) return list;
-    const n = laenge(l).platzhalterBloecke;
+    const n = length(l).placeholderBlocks;
     return Array.from({ length: n }, (_, i) => i === 1
       ? { name: null, kills: [{ name: null, kills: null }, { name: null, kills: null }, { name: null, kills: null }] }
-      : { name: null, min: null, hinweis: null, codes: [{ name: dev === "controller" ? "Map-Code" : "Code", wert: null }] });
+      : { name: null, min: null, hint: null, codes: [{ name: dev === "controller" ? "Map code" : "Code", value: null }] });
   }
   const isKill = (b) => Array.isArray(b.kills);
   const nameOf = (b, i) => `Block ${i + 1} · ${b.name ? esc(b.name) : P}`;
-  const durOf = (b) => isKill(b) ? (b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " Kills" : "*** Kills") : (b.min != null ? b.min + " min" : "*** min");
+  const durOf = (b) => isKill(b) ? (b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " kills" : "*** kills") : (b.min != null ? b.min + " min" : "*** min");
   const totalMin = (list) => list.every((b) => !isKill(b) && b.min != null) ? list.reduce((s, b) => s + b.min, 0) : null;
 
-  /* ---------- Zustand ---------- */
-  const KEY = "dpr.sitzung", DAYS = "dpr.tage", SND = "dpr.ton";
+  /* ---------- Session state ---------- */
+  const KEY = "rl.session", DAYS = "rl.days", DONE = "rl.done";
   let S = store.get(KEY, null);
-  if (S && S.tag !== today()) { S = null; store.del(KEY); }
+  if (S && S.day !== today()) { S = null; store.del(KEY); }
   if (!S) S = fresh();
-  function fresh() { return { tag: today(), ziel: null, laenge: null, dev: "mk", cup: "19:00", b: 0, status: "bereit", vorher: 0, fertig: {}, kills: {}, aktiv: false }; }
-  function save() { const c = Object.assign({}, S, { vorher: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
-  let seit = 0;
-  const list = () => bloecke(S.ziel, S.laenge, S.dev);
+  function fresh() { return { day: today(), goal: null, len: null, dev: settings.device, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, active: false }; }
+  function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
+  let since = 0;
+  const list = () => blocksFor(S.goal, S.len, S.dev);
   const cur = () => list()[S.b];
-  function elapsed() { return S.vorher + (S.status === "laeuft" ? performance.now() - seit : 0); }
+  function elapsed() { return S.before + (S.status === "laeuft" ? performance.now() - since : 0); }
 
-  /* ---------- Zifferblatt (SVG) ---------- */
+  /* ---------- Dial (SVG) ---------- */
   const R = 88, C = 2 * Math.PI * R, GAP = 1.6;
   function drawDial(svg, items, opts) {
     opts = opts || {};
     const total = items.reduce((s, x) => s + x.w, 0) || 1, gap = items.length > 1 ? GAP : 0;
     let off = 0, html = "";
-    items.forEach((x, i) => {
+    items.forEach((x) => {
       const len = Math.max(0.5, x.w / total * C - gap), col = x.color;
       const dash = opts.draw ? `0 ${C}` : `${len} ${C}`;
       html += `<circle class="trk" cx="100" cy="100" r="${R}" stroke="${col}" stroke-width="9" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}"></circle>`;
-      html += `<circle class="seg-a${x.cur ? " cur-glow" : ""}" data-len="${len}" cx="100" cy="100" r="${R}" stroke="${col}" style="color:${col}" stroke-width="9" stroke-dasharray="${opts.fill ? (len * clamp(x.fill || 0, 0, 1)) + " " + C : dash}" stroke-dashoffset="${-off}" ${opts.fill ? 'data-fill="1"' : ""}></circle>`;
+      html += `<circle class="seg-a${x.cur ? " cur-glow" : ""}" data-len="${len}" cx="100" cy="100" r="${R}" stroke="${col}" style="color:${col}" stroke-width="9" stroke-dasharray="${opts.fill ? (len * clamp(x.fill || 0, 0, 1)) + " " + C : dash}" stroke-dashoffset="${-off}"></circle>`;
       off += len + gap;
     });
     svg.innerHTML = html;
@@ -562,157 +650,154 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Home ---------- */
   function goalCard(z, mode) {
     const a = document.createElement(mode === "pick" ? "button" : "a");
-    a.className = `goal g-${z.id}${mode === "pick" && (z.id === "cup" || z.id === "besser") ? " tall" : ""}`;
-    if (mode === "pick") { a.type = "button"; a.setAttribute("aria-pressed", S.ziel === z.id ? "true" : "false"); }
-    else a.href = "#ziel";
+    a.className = `goal g-${z.id === "better" ? "besser" : z.id}${mode === "pick" && (z.id === "cup" || z.id === "better") ? " tall" : ""}`;
+    if (mode === "pick") { a.type = "button"; a.setAttribute("aria-pressed", S.goal === z.id ? "true" : "false"); }
+    else a.href = "#goal";
     a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px"><span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span></span>`;
-    a.addEventListener("click", (e) => { e.preventDefault(); if (S.ziel !== z.id) { S.ziel = z.id; S.laenge = null; resetRun(); } save(); go("laenge"); });
+    a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
-  function kiCard() {
+  function aiCard() {
     const a = document.createElement("a");
-    a.className = "goal g-ki"; a.href = "#ki";
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">KI-Training</span><span class="gd">Die KI stellt eine Routine nur für dich zusammen.</span></span>`;
+    a.className = "goal g-ki"; a.href = "#ai";
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">AI Training</span><span class="gd">The AI builds a routine just for you.</span></span>`;
     return a;
   }
   function buildHome() {
     const hg = $("home-goals"); hg.innerHTML = "";
-    ZIELE.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
-    const quick = { id: "aim", name: "Schnell: Aim & Mechanics", text: "Kurze Routinen, wenn wenig Zeit ist.", icon: "i-aim" };
-    const q = goalCard(quick); q.addEventListener("click", (e) => { e.preventDefault(); go("ziel"); }, true); hg.appendChild(q);
-    hg.appendChild(kiCard());
+    GOALS.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
+    hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "Short routines for when time is tight.", icon: "i-aim" }));
+    hg.appendChild(aiCard());
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
-    $("resume").hidden = !(S.aktiv && S.ziel && S.laenge);
-    $("hero-sub").textContent = S.aktiv ? "Deine Routine wartet" : "Block für Block";
+    $("resume").hidden = !(S.active && S.goal && S.len);
+    $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Block by block";
     streakUI("home");
   }
   let heroDrawn = false;
   function heroDial() {
-    const items = [0, 1, 2, 3, 4].map((i) => ({ w: 1, color: FARBEN[i] }));
-    drawDial($("hero-dial").querySelector("svg"), items, { draw: anim() && !heroDrawn });
+    drawDial($("hero-dial").querySelector("svg"), [0, 1, 2, 3, 4].map((i) => ({ w: 1, color: COLORS[i] })), { draw: anim() && !heroDrawn });
     heroDrawn = true;
   }
 
-  /* ---------- Schritte ---------- */
+  /* ---------- Steps ---------- */
   function buildPick() {
     const g = $("pick-goals"); g.innerHTML = "";
-    ZIELE.forEach((z) => g.appendChild(goalCard(z, "pick")));
-    const k = kiCard(); k.style.gridColumn = "1 / -1"; k.style.minHeight = "160px"; g.appendChild(k);
+    GOALS.forEach((z) => g.appendChild(goalCard(z, "pick")));
+    const k = aiCard(); k.style.gridColumn = "1 / -1"; k.style.minHeight = "160px"; g.appendChild(k);
   }
   function buildLen() {
-    const z = ziel(S.ziel); $("len-goal").textContent = z.name;
+    $("len-goal").textContent = goal(S.goal).name;
     const box = $("pick-len"); box.innerHTML = "";
-    LAENGEN.forEach((l) => {
-      const bl = bloecke(S.ziel, l.id, S.dev), t = totalMin(bl);
+    LENGTHS.forEach((l) => {
+      const bl = blocksFor(S.goal, l.id, S.dev), t = totalMin(bl);
       const b = document.createElement("button");
-      b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.laenge === l.id ? "true" : "false");
-      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${t != null ? t + " min" : "*** min"}</span><br><span class="small">${bl.length} Blöcke</span></span>`;
-      b.addEventListener("click", () => { if (S.laenge !== l.id) { S.laenge = l.id; resetRun(); } save(); go("plan"); });
+      b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.len === l.id ? "true" : "false");
+      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${t != null ? t + " min" : "*** min"}</span><br><span class="small">${bl.length} blocks</span></span>`;
+      b.addEventListener("click", () => { if (S.len !== l.id) { S.len = l.id; resetRun(); } save(); go("plan"); });
       box.appendChild(b);
     });
   }
   function startTimes() {
     const bl = list(), t = totalMin(bl), m = /^(\d{1,2}):(\d{2})$/.exec(S.cup || "");
-    if (!ziel(S.ziel).cupzeit || t == null || !m) return null;
-    let start = (+m[1]) * 60 + (+m[2]) - t, out = [];
+    if (!goal(S.goal).cupTime || t == null || !m) return null;
+    let start = (+m[1]) * 60 + (+m[2]) - t; const out = [];
     bl.forEach((b) => { const v = ((start % 1440) + 1440) % 1440; out.push(`${two(Math.floor(v / 60))}:${two(v % 60)}`); start += b.min; });
     return out;
   }
   function codesHTML(b) {
     if (!b.codes || !b.codes.length) return "";
-    return b.codes.map((c, i) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}</span><b>${c.wert ? esc(c.wert) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.wert ? esc(c.wert) : ""}">Kopieren</button></div>`).join("");
+    return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
   }
   function buildPlan() {
-    const z = ziel(S.ziel), l = laenge(S.laenge), bl = list(), t = totalMin(bl);
-    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${t != null ? t + " min" : "*** min"} · ${bl.length} Blöcke`;
+    const z = goal(S.goal), l = length(S.len), bl = list(), t = totalMin(bl);
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${t != null ? t + " min" : "*** min"} · ${bl.length} blocks`;
     $("dev").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.dev === S.dev ? "true" : "false"));
-    $("cup-field").hidden = !z.cupzeit; $("cup-note").hidden = !z.cupzeit;
+    $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
     $("cup-time").value = S.cup || "";
     const times = startTimes();
-    $("cup-note").textContent = times ? "Die Startzeiten sind vom Cup-Beginn zurückgerechnet." : "Die Startzeiten erscheinen, sobald alle Blocklängen eingetragen sind.";
+    $("cup-note").textContent = times ? "Start times are counted back from your cup." : "Start times appear once every block length is filled in.";
     const box = $("plan-blocks"); box.innerHTML = "";
     bl.forEach((b, i) => {
       const d = document.createElement("details"); d.className = "blk rv" + (i < 4 ? " d" + i : ""); if (i === 0) d.open = true;
-      const when = z.cupzeit ? (times ? times[i] : "***") : "";
+      const when = z.cupTime ? (times ? times[i] : "***") : "";
       let body = "";
-      if (b.hinweis !== undefined) body += `<p class="note">${b.hinweis ? esc(b.hinweis) : P}</p>`;
+      if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
       body += codesHTML(b);
-      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `Modus ${j + 1} · ${k.name ? esc(k.name) : "***"} · ${k.kills != null ? k.kills : "***"} Kills`).join("<br>")}</p>`;
-      d.innerHTML = `<summary><i class="dot" style="background:${FARBEN[i % FARBEN.length]}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
+      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `Mode ${j + 1} · ${k.name ? esc(k.name) : "***"} · ${k.kills != null ? k.kills : "***"} kills`).join("<br>")}</p>`;
+      d.innerHTML = `<summary><i class="dot" style="background:${COLORS[i % COLORS.length]}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
       box.appendChild(d); observe(d);
     });
-    if (z.cupzeit) {
+    if (z.cupTime) {
       const c = document.createElement("div"); c.className = "blk cupline";
-      c.innerHTML = `<summary style="cursor:default"><i class="dot" style="background:var(--white)"></i><span class="when">${esc(S.cup || "***")}</span><span class="nm">Cup</span><span class="du">danach</span></summary>`;
+      c.innerHTML = `<summary style="cursor:default"><i class="dot" style="background:var(--white)"></i><span class="when">${esc(S.cup || "***")}</span><span class="nm">Cup</span><span class="du">after</span></summary>`;
       box.appendChild(c);
     }
   }
   $("dev").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.dataset.dev === S.dev) return; S.dev = b.dataset.dev; resetRun(); save(); buildPlan(); });
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
-  $("plan-start").addEventListener("click", () => { S.aktiv = true; save(); go("training"); });
+  $("plan-start").addEventListener("click", () => { S.active = true; save(); go("training"); });
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
-  let sound = store.get(SND, true);
-  function resetRun() { S.b = 0; S.status = "bereit"; S.vorher = 0; S.fertig = {}; S.kills = {}; S.aktiv = false; }
-  function setSound(v) { sound = v; store.set(SND, v); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
-  setSound(sound);
-  $("snd").addEventListener("click", () => setSound(!sound));
+  function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.active = false; }
+  function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
+  setSound(settings.sound);
+  $("snd").addEventListener("click", () => setSound(!settings.sound));
   function beep() {
-    if (!sound) return;
-    try {
-      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-      [0, 0.22].forEach((t) => { const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = t ? 1175 : 880; g.gain.setValueAtTime(0.0001, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(0.25, audio.currentTime + t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + t + 0.35); o.connect(g).connect(audio.destination); o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.4); });
-    } catch (e) {}
+    if (settings.sound) {
+      try {
+        audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+        [0, 0.22].forEach((t) => { const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = t ? 1175 : 880; g.gain.setValueAtTime(0.0001, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(0.25, audio.currentTime + t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + t + 0.35); o.connect(g).connect(audio.destination); o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.4); });
+      } catch (e) {}
+    }
     try { navigator.vibrate && navigator.vibrate([120, 80, 120]); } catch (e) {}
   }
   async function keepAwake(on) {
-    try { if (on && !wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } else if (!on && wake) { await wake.release(); wake = null; } } catch (e) { wake = null; }
+    try { if (on && settings.awake && !wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } else if (!on && wake) { await wake.release(); wake = null; } } catch (e) { wake = null; }
   }
   $("full").addEventListener("click", toggleFull);
   function toggleFull() {
-    try { if (document.fullscreenElement) document.exitFullscreen(); else $("v-training").requestFullscreen().catch(() => toast("Vollbild ist hier nicht verfügbar.")); } catch (e) { toast("Vollbild ist hier nicht verfügbar."); }
+    try { if (document.fullscreenElement) document.exitFullscreen(); else $("v-training").requestFullscreen().catch(() => toast("Full screen isn't available here.")); } catch (e) { toast("Full screen isn't available here."); }
   }
   function killsDone(i) { const b = list()[i], k = S.kills[i] || {}; return isKill(b) ? b.kills.filter((_, j) => k[j]).length : 0; }
   function fillFor(i) {
     const b = list()[i];
-    if (S.fertig[i]) return 1;
+    if (S.done[i]) return 1;
     if (i !== S.b) return 0;
     if (isKill(b)) return killsDone(i) / b.kills.length;
     if (b.min != null) return elapsed() / (b.min * 60000);
     return S.status === "bereit" ? 0 : Math.min(0.92, 0.08 + elapsed() / 600000 * 0.84);
   }
   function buildTraining() {
-    const bl = list(), b = cur(), z = ziel(S.ziel), l = laenge(S.laenge);
-    drawDial($("tr-dial").querySelector("svg"), bl.map((x, i) => ({ w: x.min || 1, color: FARBEN[i % FARBEN.length], cur: i === S.b })), { fill: true });
-    $("tr-pos").textContent = `${z.name} · ${l.name} · Block ${S.b + 1} von ${bl.length}`;
+    const bl = list(), b = cur(), z = goal(S.goal), l = length(S.len);
+    drawDial($("tr-dial").querySelector("svg"), bl.map((x, i) => ({ w: x.min || 1, color: COLORS[i % COLORS.length], cur: i === S.b })), { fill: true });
+    $("tr-pos").textContent = `${z.name} · ${l.name} · Block ${S.b + 1} of ${bl.length}`;
     $("tr-name").innerHTML = nameOf(b, S.b);
-    $("tr-hint").innerHTML = isKill(b) ? "Hak jeden Modus ab, sobald seine Kills voll sind." : (b.hinweis ? esc(b.hinweis) : (b.codes && b.codes.length ? "Code laden, dann den Timer starten." : P));
+    $("tr-hint").innerHTML = isKill(b) ? "Tick each mode once its kills are done." : (b.hint ? esc(b.hint) : (b.codes && b.codes.length ? "Load the code, then start the timer." : P));
     $("tr-codes").innerHTML = codesHTML(b);
     const kl = $("tr-kills"); kl.hidden = !isKill(b); kl.innerHTML = "";
     if (isKill(b)) b.kills.forEach((k, j) => {
       const li = document.createElement("li"), id = `k-${S.b}-${j}`, on = !!(S.kills[S.b] || {})[j];
-      li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>Modus ${j + 1} · ${k.name ? esc(k.name) : P}</span><span>${k.kills != null ? k.kills : "***"} Kills</span></label>`;
-      li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.fertig[S.b] = true; beep(); flash(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.fertig[S.b]; } save(); render(); });
+      li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>Mode ${j + 1} · ${k.name ? esc(k.name) : P}</span><span>${k.kills != null ? k.kills : "***"} kills</span></label>`;
+      li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.done[S.b] = true; beep(); flash(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.done[S.b]; } save(); render(); });
       kl.appendChild(li);
     });
     const nx = $("tr-next"); nx.innerHTML = "";
-    bl.forEach((x, i) => { if (i === S.b) return; const li = document.createElement("li"); if (S.fertig[i]) li.className = "done"; li.innerHTML = `<i class="dot" style="background:${FARBEN[i % FARBEN.length]}"></i><span>${nameOf(x, i)}</span><span>${durOf(x)}</span>`; nx.appendChild(li); });
-    if (nx.children.length === 0) nx.innerHTML = `<li><span></span><span>Das ist der letzte Block.</span><span></span></li>`;
+    bl.forEach((x, i) => { if (i === S.b) return; const li = document.createElement("li"); if (S.done[i]) li.className = "done"; li.innerHTML = `<i class="dot" style="background:${COLORS[i % COLORS.length]}"></i><span>${nameOf(x, i)}</span><span>${durOf(x)}</span>`; nx.appendChild(li); });
+    if (nx.children.length === 0) nx.innerHTML = `<li><span></span><span>This is the last block.</span><span></span></li>`;
     render();
   }
   function render() {
     const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
     st.dataset.status = S.status;
-    const words = { bereit: "Bereit", laeuft: "Läuft", pause: "Pausiert", fertig: "Fertig" };
-    $("st-word").textContent = words[S.status];
-    if (kill) { $("tr-kick").textContent = "Kill-Ziele"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "geschafft"; }
-    else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Block fertig" : "noch"; $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} von ${clock(tot)}`; }
-    else { $("tr-kick").textContent = "Zeit im Block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Dauer: *** min"; }
+    $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done" }[S.status];
+    if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
+    else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Block done" : "left"; $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
+    else { $("tr-kick").textContent = "Time in block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Length: *** min"; }
     const last = S.b === bl.length - 1, main = $("b-main");
-    if (S.status === "fertig") main.textContent = last ? "Routine abschließen" : "Nächster Block";
-    else if (kill) main.textContent = "Alle Ziele abhaken";
-    else main.textContent = S.status === "laeuft" ? "Pause" : (S.status === "pause" ? "Weiter" : "Start");
+    if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next block";
+    else if (kill) main.textContent = "Tick all targets";
+    else main.textContent = S.status === "laeuft" ? "Pause" : (S.status === "pause" ? "Resume" : "Start");
     main.disabled = kill && S.status !== "fertig";
     $("b-restart").disabled = kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
@@ -721,20 +806,18 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function loop() {
     if (S.status !== "laeuft") return;
     const b = cur();
-    if (b.min != null && elapsed() >= b.min * 60000) { S.vorher = b.min * 60000; S.status = "fertig"; S.fertig[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); return; }
+    if (b.min != null && elapsed() >= b.min * 60000) { S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); return; }
     render(); raf = requestAnimationFrame(loop);
   }
-  function play() { if (isKill(cur()) || S.status === "fertig") return; seit = performance.now(); S.status = "laeuft"; keepAwake(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); save(); render(); }
-  function pause() { S.vorher = elapsed(); S.status = "pause"; cancelAnimationFrame(raf); keepAwake(false); save(); render(); }
-  function restart() { cancelAnimationFrame(raf); S.vorher = 0; S.status = "bereit"; delete S.fertig[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  function play() { if (isKill(cur()) || S.status === "fertig") return; since = performance.now(); S.status = "laeuft"; keepAwake(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); save(); render(); }
+  function pause() { S.before = elapsed(); S.status = "pause"; cancelAnimationFrame(raf); keepAwake(false); save(); render(); }
+  function restart() { cancelAnimationFrame(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   function nextBlock() {
     cancelAnimationFrame(raf); keepAwake(false);
-    if (!isKill(cur()) || S.status === "fertig") S.fertig[S.b] = true;
-    else S.fertig[S.b] = true;
-    const bl = list();
-    if (S.b >= bl.length - 1) { finish(); return; }
-    S.b += 1; S.vorher = 0; S.status = "bereit"; save(); buildTraining();
-    $("v-training").classList.remove("enter-f"); void $("v-training").offsetWidth; $("v-training").classList.add("enter-f");
+    S.done[S.b] = true;
+    if (S.b >= list().length - 1) { finish(); return; }
+    S.b += 1; S.before = 0; S.status = "bereit"; save(); buildTraining();
+    const v = $("v-training"); v.classList.remove("enter-f"); void v.offsetWidth; v.classList.add("enter-f");
   }
   function mainAction() { if (S.status === "fertig") nextBlock(); else if (S.status === "laeuft") pause(); else play(); }
   function flash() { const st = $("stage"); st.classList.remove("flash"); void st.offsetWidth; st.classList.add("flash"); }
@@ -742,7 +825,8 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   $("b-restart").addEventListener("click", restart);
   $("b-next").addEventListener("click", nextBlock);
   addEventListener("keydown", (e) => {
-    if (view !== "training" || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === "Escape" && drawerOpen) { closeDrawer(); return; }
+    if (view !== "training" || drawerOpen || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.code === "Space") { e.preventDefault(); if (!$("b-main").disabled) mainAction(); }
     else if (e.key === "r" || e.key === "R") restart();
     else if (e.key === "n" || e.key === "N") nextBlock();
@@ -750,15 +834,16 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   });
   addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.status === "laeuft") keepAwake(true); save(); });
 
-  /* ---------- Geschafft & Streak ---------- */
+  /* ---------- Done & streak ---------- */
   function finish() {
     const days = store.get(DAYS, []); const t = today();
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
-    const z = ziel(S.ziel), l = laenge(S.laenge);
-    $("done-sum").textContent = `${z.name} · ${l.name} · alle ${list().length} Blöcke fertig.${z.cupzeit ? " Viel Erfolg im Cup." : ""}`;
-    const keep = { ziel: S.ziel, laenge: S.laenge, dev: S.dev, cup: S.cup };
+    store.set(DONE, store.get(DONE, 0) + 1);
+    const z = goal(S.goal), l = length(S.len);
+    $("done-sum").textContent = `${z.name} · ${l.name} · all ${list().length} blocks done.${z.cupTime ? " Good luck in your cup." : ""}`;
+    const keep = { goal: S.goal, len: S.len, dev: S.dev, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
-    go("geschafft");
+    go("done");
   }
   function streak() {
     const set = new Set(store.get(DAYS, [])); let n = 0; const d = new Date();
@@ -768,7 +853,7 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function streakUI(prefix) {
     const set = new Set(store.get(DAYS, [])), box = $(prefix + "-days"), n = streak();
-    const names = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     box.innerHTML = "";
     for (let k = 6; k >= 0; k--) {
       const d = new Date(); d.setDate(d.getDate() - k);
@@ -778,7 +863,7 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       box.appendChild(div);
     }
     countTo($(prefix + "-streak"), n);
-    $(prefix + "-streak-w").textContent = n === 1 ? "Tag am Stück" : "Tage am Stück";
+    $(prefix + "-streak-w").textContent = n === 1 ? "day in a row" : "days in a row";
   }
   function countTo(el, n) {
     if (!anim() || n === 0) { el.textContent = n; return; }
@@ -786,24 +871,133 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     (function step(t) { const p = clamp((t - t0) / dur, 0, 1); el.textContent = Math.round(n * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); })(t0);
   }
 
-  /* ---------- Kopieren & Hinweis ---------- */
+  /* ---------- Copy & toast ---------- */
   let tt;
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }
+  function copyText(v, btn, okMsg) {
+    const ok = () => { if (btn) { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => { btn.textContent = o; }, 1600); } toast(okMsg); };
+    const fail = () => toast("Couldn't copy. Select the text and copy it yourself.");
+    try { navigator.clipboard.writeText(v).then(ok, fail); } catch (err) { fail(); }
+  }
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-copy]"); if (!b) return;
     e.preventDefault();
-    const v = b.dataset.copy;
-    if (!v) { toast("Für diesen Block ist noch kein Code eingetragen."); return; }
-    const ok = () => { b.textContent = "Kopiert"; toast("Code kopiert"); setTimeout(() => { b.textContent = "Kopieren"; }, 1600); };
-    try { navigator.clipboard.writeText(v).then(ok, () => toast("Kopieren ging nicht. Markiere den Code und kopiere ihn selbst.")); } catch (err) { toast("Kopieren ging nicht. Markiere den Code und kopiere ihn selbst."); }
+    if (!b.dataset.copy) { toast(b.dataset.empty || "No code has been added for this block yet."); return; }
+    copyText(b.dataset.copy, b, b.dataset.ok || "Code copied");
   });
+
+  /* ---------- Account (demo sign-in; swap for Supabase + Discord OAuth later) ---------- */
+  const ACC = "rl.account";
+  let account = store.get(ACC, null);
+  let drawerOpen = false, lastFocus = null, confirmDelete = false, signingIn = false;
+  function refCode() { const a = "abcdefghjkmnpqrstuvwxyz23456789"; let s = ""; for (let i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
+  function refLink() { return account ? `${SITE.url ? SITE.url.replace(/\/$/, "") : "***"}/r/${account.ref}` : ""; }
+  function topAccount() {
+    $("acct-open-out").hidden = !!account;
+    $("acct-open-in").hidden = !account;
+    if (account) $("acct-open-in").textContent = account.name.slice(0, 1).toUpperCase();
+  }
+  function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : `<div class="row"><span>${label}</span><span class="val">***</span></div>`; }
+  function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
+  function renderDrawer() {
+    const A = SITE.affiliate, body = $("dr-body");
+    let h = "";
+    if (!account) {
+      h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">With an account you get your referral link and all your settings in one place. Every routine also works without an account.</p>
+        <button class="discord" type="button" id="dc-in" ${signingIn ? "disabled" : ""}><svg aria-hidden="true"><use href="#i-discord"/></svg>${signingIn ? "Connecting to Discord…" : "Continue with Discord"}</button>
+        <p class="dr-foot">Demo: this signs you in with an example account on this device. Real Discord sign-in comes later. Repline would only use your Discord ID, name and avatar.</p></section>`;
+    } else {
+      h += `<section class="dr-sec"><div class="profile"><div class="avatar" aria-hidden="true">${esc(account.name.slice(0, 1).toUpperCase())}</div><div><b>${esc(account.name)}<span class="badge">Demo</span></b><span class="small">Signed in with Discord</span></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">Free</span></div><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
+          <div class="reflink"><code>${esc(refLink())}</code><button class="pill sm" type="button" data-copy="${SITE.url ? esc(refLink()) : ""}" data-ok="Referral link copied" data-empty="The site address isn't set yet, so the link can't be copied.">Copy</button></div>
+          <div class="stats"><div><span class="tiny">Clicks</span><b>0</b></div><div><span class="tiny">Sign-ups</span><b>0</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>0.00 ${A.currency ? esc(A.currency) : "<span class='ph'>***</span>"}</b></div></div>
+          <div class="row"><span>Commission</span><span class="val">${A.commissionPercent != null ? esc(A.commissionPercent) + " %" : "*** %"}${A.commissionMonths != null ? " · " + esc(A.commissionMonths) + (typeof A.commissionMonths === "number" ? " months" : "") : " · ***"}</span></div>
+          <div class="row"><span>Payout</span><span class="val">${A.payoutMethod ? esc(A.payoutMethod) : "***"} · from ${A.minPayout != null ? esc(A.minPayout) : "***"} ${A.currency ? esc(A.currency) : "***"}</span></div>
+          <div class="row"><span>Referral window</span><span class="val">${A.cookieDays != null ? esc(A.cookieDays) + " days" : "*** days"}</span></div>
+        </div><p class="dr-foot">Share your link. You earn a commission on subscriptions from people who sign up through it. Subscriptions are coming soon, until then your link counts sign-ups. Demo numbers.</p></section>`;
+    }
+    h += `<section class="dr-sec"><h3>Settings</h3><div class="group">
+        <div class="row"><span>Default input device</span><span class="seg" role="group" aria-label="Default input device" id="set-dev"><button type="button" data-dev="mk" aria-pressed="${settings.device === "mk"}">KBM</button><button type="button" data-dev="controller" aria-pressed="${settings.device === "controller"}">Controller</button></span></div>
+        ${sw("set-sound", "Sound at the end of a block", settings.sound)}
+        ${sw("set-awake", "Keep screen on while training", settings.awake)}
+        ${sw("set-motion", "Animations", anim())}
+      </div></section>`;
+    h += `<section class="dr-sec"><h3>Data</h3><div class="group">
+        <button class="row go" type="button" id="reset-today">Reset today's progress</button>
+        <button class="row go" type="button" id="reset-streak">Reset streak</button>
+      </div></section>`;
+    h += `<section class="dr-sec"><h3>Help &amp; legal</h3><div class="group">
+        <button class="row go" type="button" id="to-faq">FAQ</button>
+        ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : `<div class="row"><span>Contact</span><span class="val">***</span></div>`}
+        ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
+      </div></section>`;
+    if (account) {
+      h += `<section class="dr-sec"><div class="group">
+          <button class="row" type="button" id="sign-out">Sign out</button>
+          <button class="row danger" type="button" id="del-acc" aria-expanded="${confirmDelete}">Delete account</button>
+          ${confirmDelete ? `<div class="confirm"><span class="small">This deletes your account, your referral link and all progress on this device.</span><div><button class="pill sm out" type="button" id="del-no">Cancel</button><button class="pill sm red" type="button" id="del-yes">Delete account</button></div></div>` : ""}
+        </div></section>`;
+    }
+    body.innerHTML = h;
+    bindDrawer();
+  }
+  function bindDrawer() {
+    const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+    on("dc-in", "click", () => {
+      signingIn = true; renderDrawer();
+      setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
+    });
+    on("set-dev", "click", (e) => { const b = e.target.closest("button"); if (!b) return; settings.device = b.dataset.dev; saveSettings(); if (!S.active) S.dev = settings.device; renderDrawer(); toast("Default input device saved"); });
+    on("set-sound", "change", (e) => { setSound(e.target.checked); });
+    on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
+    on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
+    on("reset-today", "click", () => { cancelAnimationFrame(raf); S = fresh(); store.del(KEY); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
+    on("reset-streak", "click", () => { store.del(DAYS); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
+    on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
+    on("sign-out", "click", () => { account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out"); });
+    on("del-acc", "click", () => { confirmDelete = !confirmDelete; renderDrawer(); });
+    on("del-no", "click", () => { confirmDelete = false; renderDrawer(); });
+    on("del-yes", "click", () => { account = null; [ACC, DAYS, DONE, KEY].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome(); });
+  }
+  function openDrawer() {
+    if (drawerOpen) return;
+    drawerOpen = true; lastFocus = document.activeElement; confirmDelete = false;
+    renderDrawer();
+    const d = $("drawer"), s = $("scrim");
+    d.hidden = false; s.hidden = false; root.classList.add("no-scroll");
+    requestAnimationFrame(() => requestAnimationFrame(() => { d.classList.add("open"); s.classList.add("open"); }));
+    setTimeout(() => $("dr-close").focus(), 50);
+  }
+  function closeDrawer() {
+    if (!drawerOpen) return;
+    drawerOpen = false;
+    const d = $("drawer"), s = $("scrim");
+    d.classList.remove("open"); s.classList.remove("open"); root.classList.remove("no-scroll");
+    setTimeout(() => { if (!drawerOpen) { d.hidden = true; s.hidden = true; } }, anim() ? 460 : 0);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  $("acct-open-out").addEventListener("click", openDrawer);
+  $("acct-open-in").addEventListener("click", openDrawer);
+  $("dr-close").addEventListener("click", closeDrawer);
+  $("scrim").addEventListener("click", closeDrawer);
+  $("drawer").addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const f = $("drawer").querySelectorAll('button:not([disabled]), a[href], input'); if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  topAccount();
+  $("ft-legal").innerHTML = ["Imprint", "Privacy", "Terms"].map((n, i) => { const u = [SITE.imprintUrl, SITE.privacyUrl, SITE.termsUrl][i]; return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>` : `${n} <span class="ph">***</span>`; }).join(" · ");
 
   /* ---------- Reveal ---------- */
   const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;
   function observe(el) { if (!el.classList.contains("rv")) return; io ? io.observe(el) : el.classList.add("in"); }
   document.querySelectorAll(".rv").forEach(observe);
 
-  /* ---------- Hero beim Scrollen ---------- */
+  /* ---------- Hero on scroll ---------- */
   addEventListener("scroll", () => {
     if (!anim() || view !== "home") return;
     const p = clamp(scrollY / 520, 0, 1), h = $("hero");
@@ -812,7 +1006,7 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "ziel", "laenge", "plan", "training", "geschafft", "ki"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -825,10 +1019,10 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     let name = location.hash.replace("#", "");
     const asked = name;
     if (ORDER.indexOf(name) < 0) name = "";
-    if ((name === "laenge") && !S.ziel) name = "ziel";
-    if ((name === "plan" || name === "training") && (!S.ziel || !S.laenge)) name = S.ziel ? "laenge" : "ziel";
+    if (name === "length" && !S.goal) name = "goal";
+    if ((name === "plan" || name === "training") && (!S.goal || !S.len)) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
-    if (name === "training" && !S.aktiv) S.aktiv = true;
+    if (name === "training") S.active = true;
     if (view === "training" && name !== "training" && S.status === "laeuft") pause();
     const from = ORDER.indexOf(view == null ? "" : (view === "home" ? "" : view)), to = ORDER.indexOf(name);
     const id = name || "home";
@@ -836,12 +1030,13 @@ const FARBEN = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const v = $("v-" + id);
     if (view !== null) { void v.offsetWidth; v.classList.add(to >= from ? "enter-f" : "enter-b"); }
     const first = view === null; view = id;
+    if (drawerOpen) closeDrawer();
     if (id === "home") { buildHome(); heroDial(); }
-    if (id === "ziel") buildPick();
-    if (id === "laenge") buildLen();
+    if (id === "goal") buildPick();
+    if (id === "length") buildLen();
     if (id === "plan") buildPlan();
     if (id === "training") { if (S.status === "laeuft") S.status = "pause"; buildTraining(); }
-    if (id === "geschafft") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine fertig."; }
+    if (id === "done") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine done."; }
     if (!first || id !== "home") scrollTo(0, 0);
   }
   addEventListener("hashchange", route);
