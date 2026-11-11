@@ -23,6 +23,7 @@ let overlay = null;
 let lastState = { active: false };
 let moving = false;
 let previewUntil = 0;
+let customSound = "";
 
 /* ---------- Main window ---------- */
 function createMain() {
@@ -96,7 +97,7 @@ function createOverlay() {
   overlay.setVisibleOnAllWorkspaces(true);
   overlay.setIgnoreMouseEvents(true);
   overlay.loadFile(path.join(__dirname, "overlay.html"));
-  overlay.webContents.on("did-finish-load", () => { applyOverlayLook(); sendOverlay(); updateOverlayVisibility(); });
+  overlay.webContents.on("did-finish-load", () => { applyOverlayLook(); sendOverlay(); updateOverlayVisibility(); if (customSound) overlay.webContents.send("overlay:custom", customSound); });
   overlay.on("moved", () => {
     if (!moving) return;
     const [x, y] = overlay.getPosition();
@@ -169,6 +170,41 @@ ipcMain.handle("overlay:preview", (_e, p) => {
   setTimeout(updateOverlayVisibility, 2800);
   return true;
 });
+ipcMain.on("overlay:custom", (_e, dataUrl) => {
+  customSound = typeof dataUrl === "string" && /^data:audio\//.test(dataUrl) && dataUrl.length < 1500000 ? dataUrl : "";
+  if (overlay) overlay.webContents.send("overlay:custom", customSound);
+});
+
+/* ---------- Discord sign-in for the Windows app ----------
+   The page asks Supabase for the Discord sign-in URL; we show it in a small window and catch the
+   redirect back to repline.pages.dev/auth/desktop, then hand the one-time code to the page. */
+const SUPABASE_AUTH = "https://wjwjvwjwlipjxsgufffj.supabase.co/auth/v1/authorize";
+const DESKTOP_RETURN = "https://repline.pages.dev/auth/desktop";
+let authWin = null;
+ipcMain.handle("auth:discord", (_e, url) => new Promise((resolve) => {
+  if (typeof url !== "string" || !url.startsWith(SUPABASE_AUTH)) return resolve(null);
+  if (authWin) { authWin.focus(); return resolve(null); }
+  let done = false;
+  const finish = (code) => { if (done) return; done = true; resolve(code || null); if (authWin) { const w = authWin; authWin = null; w.close(); } };
+  authWin = new BrowserWindow({
+    width: 520, height: 780, parent: win || undefined, modal: false, title: "Sign in with Discord",
+    backgroundColor: "#000000", autoHideMenuBar: true,
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, partition: "persist:repline-auth" }
+  });
+  const check = (ev, target) => {
+    if (typeof target === "string" && target.startsWith(DESKTOP_RETURN)) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      let code = null; try { code = new URL(target).searchParams.get("code"); } catch (e) {}
+      finish(code);
+    }
+  };
+  authWin.webContents.on("will-redirect", check);
+  authWin.webContents.on("will-navigate", check);
+  authWin.webContents.setWindowOpenHandler(({ url: u }) => { if (/^https?:/.test(u)) shell.openExternal(u); return { action: "deny" }; });
+  authWin.on("closed", () => { authWin = null; finish(null); });
+  authWin.loadURL(url);
+}));
+
 ipcMain.on("overlay:state", (_e, state) => {
   lastState = state && typeof state === "object" ? state : { active: false };
   sendOverlay();

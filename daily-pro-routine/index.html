@@ -140,6 +140,7 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .g-aim { --bg: radial-gradient(90% 90% at 100% 0%, #0f5a6b, #041a20 62%, #000); }
 .g-mechanics { --bg: radial-gradient(90% 90% at 100% 0%, #3b3b8f, #0d0d26 62%, #000); }
 .g-ki { --bg: linear-gradient(var(--carbon), var(--obsidian)); box-shadow: inset 0 0 0 1px var(--steel); }
+.devtag { justify-self: start; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: #ffd60a; box-shadow: inset 0 0 0 1px rgba(255, 214, 10, .45); border-radius: 6px; padding: 2px 7px; }
 .g-test { --bg: repeating-linear-gradient(135deg, #141416 0 14px, #1b1b1e 14px 28px); box-shadow: inset 0 0 0 1px var(--steel); }
 .goal.tall { min-height: 360px; }
 
@@ -410,6 +411,46 @@ html.anim .stage.ending .dial { animation: beat 1s var(--ease) infinite; }
 .stage .sdot { position: absolute; width: 8px; height: 8px; border-radius: 50%; left: 50%; top: 42%; animation: ovburst 1.2s cubic-bezier(.1,.7,.3,1) forwards; pointer-events: none; z-index: 2; }
 .stage.fin-minimal.flash::after { display: none; }
 
+/* Resume bar: back to the running routine from anywhere */
+.resume { position: fixed; z-index: 45; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 14px; max-width: calc(100vw - 32px); padding: 9px 12px 9px 9px; border-radius: 99px; background: rgba(22, 22, 24, .86); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); color: var(--porcelain); text-decoration: none; box-shadow: inset 0 0 0 1.5px var(--rc, #3f8dff), 0 10px 40px -10px rgba(0, 0, 0, .8); }
+.resume:hover { text-decoration: none; }
+body.has-resume { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+html.anim .resume { animation: rsIn .6s var(--ease) both, rsGlow 2.4s ease-in-out .6s infinite; }
+@keyframes rsIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes rsGlow { 0%, 100% { box-shadow: inset 0 0 0 1.5px var(--rc, #3f8dff), 0 10px 40px -10px rgba(0, 0, 0, .8); } 50% { box-shadow: inset 0 0 0 2px var(--rc, #3f8dff), 0 0 26px -4px var(--rc, #3f8dff); } }
+.rs-ring { width: 38px; height: 38px; border-radius: 50%; flex: none; background: conic-gradient(var(--rc, #3f8dff) calc(var(--p, 0) * 1%), rgba(255, 255, 255, .12) 0); -webkit-mask: radial-gradient(closest-side, transparent 72%, #000 74%); mask: radial-gradient(closest-side, transparent 72%, #000 74%); }
+.rs-txt { display: grid; min-width: 0; }
+.rs-txt b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-txt span { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; white-space: nowrap; }
+.rs-time { font-family: var(--display); font-weight: 600; font-size: 21px; font-variant-numeric: tabular-nums; margin-left: 6px; }
+.rs-go { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-size: 18px; flex: none; }
+.resume.paused .rs-time { color: var(--ash); }
+@media (max-width: 420px) { .rs-time { font-size: 18px; } .rs-txt b { max-width: 130px; } }
+
+/* Drawer sections + Pro */
+.dr-tabs { padding: 2px 24px 10px; }
+.dr-tabs .seg { display: flex; width: 100%; }
+.dr-tabs .seg button { flex: 1; }
+.pro { display: inline-flex; align-items: center; margin-left: 8px; font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 2px 7px; border-radius: 6px; color: #fff; background: linear-gradient(90deg, #38e0ff, #3f8dff, #a855f7); white-space: nowrap; }
+.pro-row { border: 1.5px solid transparent; border-radius: 18px; background: linear-gradient(var(--carbon), var(--carbon)) padding-box, linear-gradient(90deg, #38e0ff, #3f8dff, #a855f7, #38e0ff) border-box; background-size: auto, 300% 100%; }
+html.anim .pro-row { animation: proShine 5s linear infinite; }
+@keyframes proShine { from { background-position: 0 0, 0% 0; } to { background-position: 0 0, 300% 0; } }
+.row label.snd input:disabled { opacity: .5; }
+.teaser-card { display: grid; gap: 10px; justify-items: start; padding: 18px; border-radius: 18px; background: linear-gradient(135deg, rgba(56,224,255,.12), rgba(168,85,247,.12)), var(--carbon); box-shadow: inset 0 0 0 1px var(--keyline); }
+.teaser-card b { font-family: var(--display); font-size: 21px; font-weight: 600; }
+
+/* Overlay teaser on the home screen (website only) */
+.ovt { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 860px) { .ovt { grid-template-columns: minmax(0, 1fr); } }
+.ovt-txt { display: grid; gap: 16px; justify-items: start; }
+.ovt-list { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ovt-list li { font-size: 14px; letter-spacing: -0.224px; padding: 7px 13px; border-radius: 99px; background: var(--carbon); color: var(--ash); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); display: inline-flex; align-items: center; }
+.ovt-list li b { color: var(--porcelain); margin-right: 4px; font-weight: 600; }
+.ovt-stage { position: relative; margin: 0; aspect-ratio: 16 / 10; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.45)), url(img/edit-drill.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); }
+.ovt-stage .slot { position: absolute; left: 5%; top: 7%; width: min(380px, 72%); aspect-ratio: 380 / 112; }
+.ovt-stage .slot .ov { height: 100%; }
+.ovt-stage figcaption { position: absolute; left: 16px; bottom: 14px; background: rgba(22,22,24,.8); color: var(--porcelain); padding: 5px 11px; border-radius: 99px; }
+
 /* Account drawer */
 .acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
 .acct-btn:focus-visible { outline-offset: 3px; }
@@ -523,6 +564,19 @@ html.no-scroll { overflow: hidden; }
       <figure class="rv d1"><div class="frame"><img src="img/speed-90.webp" alt="Speed set to 90 percent" loading="lazy" width="580" height="362"></div><figcaption><b>90%</b>Build exact.</figcaption></figure>
       <figure class="rv d2"><div class="frame"><img src="img/edit-drill.webp" alt="Edit drill wall" loading="lazy" width="960" height="600"></div><figcaption><b>Edit drills</b>Clean, then fast.</figcaption></figure>
       <figure class="rv d3"><div class="frame"><img src="img/aim-menu.webp" alt="Aim scenario menu" loading="lazy" width="1120" height="700"></div><figcaption><b>Aim scenarios</b>Shoot to pick.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="overlay-teaser" aria-labelledby="h-ov" style="padding-top:0">
+    <div class="ovt">
+      <div class="ovt-txt">
+        <span class="new rv">Windows app</span>
+        <h2 id="h-ov" class="d-l rv d1">Your routine.<br>Over your game.</h2>
+        <p class="lead rv d2">An in-game overlay shows your set, time left and a finish alert. Hotkeys start, pause and skip without leaving the game.</p>
+        <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li></ul>
+        <button class="pill out rv d4" type="button" disabled>Windows app · coming soon</button>
+      </div>
+      <figure class="ovt-stage rv d1"><div class="slot"><div class="ov" id="tz"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="tz-ring" aria-hidden="true"></svg><b id="tz-pos">2<small>/4</small></b></div><div class="meta"><span class="chip" id="tz-chip"><i></i>Mechanics</span><span class="name" id="tz-name">Freebuild · 110–120%</span><span class="next" id="tz-next">Next · Freebuild · 90%</span></div><div class="time"><b id="tz-clock">0:03</b><span id="tz-sub">left</span></div><div class="bar" id="tz-bar"></div></div><div class="fx" id="tz-fx"></div></div></div><figcaption class="tiny" id="tz-cap">Finish animation: Wave</figcaption></figure>
     </div>
   </section>
 
@@ -656,6 +710,13 @@ html.no-scroll { overflow: hidden; }
   </div>
 </main>
 
+<a class="resume" id="resume-bar" href="#training" hidden aria-label="Back to your routine">
+  <span class="rs-ring" id="rs-ring" aria-hidden="true"></span>
+  <span class="rs-txt"><b id="rs-name"></b><span id="rs-sub"></span></span>
+  <span class="rs-time" id="rs-time"></span>
+  <span class="rs-go" aria-hidden="true">›</span>
+</a>
+
 <footer>
   <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><span id="ft-legal"></span></span></div>
 </footer>
@@ -664,6 +725,7 @@ html.no-scroll { overflow: hidden; }
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
   <div class="dr-head"><h2 id="dr-title">Account</h2><button class="icon-btn" type="button" id="dr-close" aria-label="Close"><svg><use href="#i-close"/></svg></button></div>
+  <div class="dr-tabs" id="dr-tabs"></div>
   <div class="dr-body" id="dr-body"></div>
 </aside>
 
@@ -754,7 +816,7 @@ const GOALS = [
 /* Set alerts: the sound and animation when a set is done (Account → Set alerts) */
 const ALERT_SOUNDS = [["chime", "Chime"], ["bell", "Bell"], ["marimba", "Marimba"], ["arcade", "Arcade"], ["ping", "Ping"], ["fanfare", "Fanfare"], ["off", "No sound"]];
 const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], ["glow", "Glow"], ["confetti", "Confetti"], ["slide", "Slide"], ["minimal", "Minimal"]];
-const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", lengths: [
+const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
   L("quick", "3 s sets", [["kovaaks", 0.05], ["mech", 0.05], ["fast", 0.05], ["slow", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
 ] };
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
@@ -781,8 +843,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Settings ---------- */
   const SET = "rl.settings";
   const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave" }, store.get(SET, {}));
+  const CUSTOM = "rl.customSound";
   const saveSettings = () => { store.set(SET, settings); cloudPush(); };
-  let testOn = !!store.get("rl.test", false);
+  let testOn = false; // set from the account: only dev accounts see the test routine
+  try { localStorage.removeItem("rl.test"); } catch (e) {}
   const syncTest = () => { const i = GOALS.indexOf(TEST_GOAL); if (testOn && i < 0) GOALS.push(TEST_GOAL); if (!testOn && i >= 0) GOALS.splice(i, 1); };
   syncTest();
 
@@ -806,11 +870,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (!S) S = fresh();
   S.live = S.live || {}; S.checks = S.checks || {};
   function fresh() { return { day: today(), goal: null, len: null, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, live: {}, checks: {}, active: false }; }
-  function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); cloudPush(); }
-  let since = 0;
+  function save() { store.set(KEY, S); cloudPush(); }
   const list = () => blocksFor(S.goal, S.len);
   const cur = () => list()[S.b];
-  function elapsed() { return S.before + (S.status === "laeuft" ? performance.now() - since : 0); }
+  function elapsed() { return S.before + (S.status === "laeuft" && S.runAt ? Math.max(0, Date.now() - S.runAt) : 0); }
 
   /* ---------- Today's focus ---------- */
   const FOCUS = "rl.focus";
@@ -852,7 +915,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     else a.href = "#goal";
     const ts = (z.lengths || []).map((l) => totalMin(l.sets)).filter((x) => x != null);
     const range = ts.length ? (ts.length > 1 ? `${fmtMin(Math.min(...ts))} – ${fmtMin(Math.max(...ts))}` : fmtMin(ts[0])) : (z.range || "");
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px"><span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px">${z.dev ? '<span class="devtag">For devs only</span>' : ""}<span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
     a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
@@ -979,6 +1042,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     arcade: () => [523.25, 659.25, 784, 1046.5, 1318.5].forEach((f, i) => tn(f, i * 0.06, 0.09, 0.07, "square", 0.003)),
     ping: () => [0, 0.17, 0.34].forEach((t, i) => tn(1567.98, t, 0.4, 0.22 / (i * 1.8 + 1), "sine", 0.003)),
     fanfare: () => { brassT(392, 0, 0.14, 0.11); brassT(523.25, 0.14, 0.14, 0.11); brassT(659.25, 0.28, 0.5, 0.12); },
+    custom: () => { const c = store.get(CUSTOM, null); if (c && c.data) { try { const a = new Audio(c.data); a.volume = 0.9; a.play().catch(() => {}); } catch (e) {} } else SOUND_FX.chime(); },
     off: () => {}
   };
   const playAlert = (id) => { try { (SOUND_FX[id] || SOUND_FX.chime)(); } catch (e) {} };
@@ -1080,8 +1144,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
-  function play() { if (isKill(cur()) || S.status === "fertig") return; since = performance.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
-  function pause() { S.before = elapsed(); S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
+  function play() { if (isKill(cur()) || S.status === "fertig") return; S.runAt = Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
+  function pause() { S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
   function restart() { clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   function nextBlock() {
     clearInterval(raf); keepAwake(false);
@@ -1139,6 +1203,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     try { DESK.overlay.push(overlayState()); } catch (e) {}
   }
   if (DESK) {
+    const cs0 = store.get(CUSTOM, null); if (cs0 && cs0.data && DESK.overlay.custom) DESK.overlay.custom(cs0.data);
     DESK.onHotkey((name) => {
       if (!(S.active && length(S.goal, S.len))) return;
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
@@ -1214,7 +1279,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function refCode() { const a = "abcdefghjkmnpqrstuvwxyz23456789"; let s = ""; for (let i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
   function refLink() { return account ? `${SITE.url ? SITE.url.replace(/\/$/, "") : "***"}/r/${account.ref}` : ""; }
+  function applyDev() {
+    const was = testOn;
+    testOn = !!(account && account.real && account.isDev);
+    syncTest();
+    if (!testOn && S.goal === "test") { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
+    if (was !== testOn) { try { if (view === "goal") buildPick(); } catch (e) { /* not routed yet */ } }
+  }
   function topAccount() {
+    applyDev();
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
     const btn = $("acct-open-in");
@@ -1226,9 +1299,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
+  let drawerTab = "account", csInfo = false;
+  const hasCustom = () => !!(account && account.real && (account.isDev || (account.items || []).indexOf("custom_sound") >= 0));
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
+    const TABS = [["account", "Account"], ["settings", "Settings"], ["appearance", "Appearance"]];
+    $("dr-tabs").innerHTML = `<div class="seg" role="tablist" aria-label="Sections">${TABS.map(([id, nm]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${drawerTab === id}" aria-pressed="${drawerTab === id}">${nm}</button>`).join("")}</div>`;
+    $("dr-title").textContent = TABS.find((t) => t[0] === drawerTab)[1];
     let h = "";
+    if (drawerTab === "account") {
     if (!account) {
       h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">With an account you get your referral link and all your settings in one place. Every routine also works without an account.</p>
         <button class="discord" type="button" id="dc-in" ${signingIn ? "disabled" : ""}><svg aria-hidden="true"><use href="#i-discord"/></svg>${signingIn ? "Connecting to Discord…" : "Continue with Discord"}</button>
@@ -1245,45 +1324,63 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
           ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
         </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts clicks and sign-ups.${account.real ? "" : " Demo numbers."}</p></section>`;
     }
-    h += `<section class="dr-sec"><h3>Settings</h3><div class="group">
-        ${sw("set-sound", "Sound at the end of a set", settings.sound)}
-        ${sw("set-awake", "Keep screen on while training", settings.awake)}
-        ${sw("set-motion", "Animations", anim())}
-      </div></section>`;
-    h += `<section class="dr-sec"><h3>Set alerts</h3>
-      <div class="ap-wrap"><div class="ov done" id="ap"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="ap-ring" aria-hidden="true"></svg><b>2<small>/4</small></b></div><div class="meta"><span class="chip"><i></i>Set done</span><span class="name">→ Freebuild · 90%</span><span class="next">Ctrl+Shift+N to start</span></div><div class="time"><b>Done</b><span>next set</span></div><div class="bar" id="ap-bar"></div></div><div class="fx" id="ap-fx"></div></div></div>
-      <div class="group">${ALERT_SOUNDS.map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}</div>
-      <div class="anim-grid" role="group" aria-label="Finish animation">${ALERT_ANIMS.map(([id, nm]) => `<button type="button" data-al-anim="${id}" aria-pressed="${settings.alertAnim === id}">${nm}</button>`).join("")}</div>
-      <button class="pill sm" type="button" id="al-prev" style="justify-self:start">▶ Preview${DESK ? " here and in overlay" : ""}</button>
-      <p class="dr-foot">Sound plays when “Sound at the end of a set” is on.</p></section>`;
-    if (DESK && ov) {
-      const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
-      h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
-        ${sw("ov-on", "Show overlay", ov.enabled)}
-        <div class="row" style="align-items:flex-start"><span>Position<br><span class="tiny">${ov.position === "custom" ? "Custom, placed by you" : "Pick a corner or edge"}</span></span>
-          <span class="pos-grid" role="group" aria-label="Overlay position">${P.map(([id, label]) => id ? `<button type="button" data-pos="${id}" aria-label="${label}" aria-pressed="${ov.position === id}"></button>` : `<span aria-hidden="true"></span>`).join("")}</span></div>
-        <div class="row"><span>Move freely</span><button class="pill sm ${ovMoving ? "" : "out"}" type="button" id="ov-move">${ovMoving ? "Done" : "Move"}</button></div>
-        <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
-        <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
-        ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
-      </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
-    }
-    h += `<section class="dr-sec"><h3>Data</h3><div class="group">
-        <button class="row go" type="button" id="reset-today">Reset today's progress</button>
-        <button class="row go" type="button" id="reset-streak">Reset streak</button>
-        ${sw("test-on", "Test routine · 3 s sets", testOn)}
-      </div></section>`;
-    h += `<section class="dr-sec"><h3>Help</h3><div class="group">
-        <button class="row go" type="button" id="to-faq">FAQ</button>
-        ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : ""}
-        ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
-      </div></section>`;
     if (account) {
       h += `<section class="dr-sec"><div class="group">
           <button class="row" type="button" id="sign-out">Sign out</button>
           <button class="row danger" type="button" id="del-acc" aria-expanded="${confirmDelete}">Delete account</button>
           ${confirmDelete ? `<div class="confirm"><span class="small">This deletes your account, your referral link and all progress on this device.</span><div><button class="pill sm out" type="button" id="del-no">Cancel</button><button class="pill sm red" type="button" id="del-yes">Delete account</button></div></div>` : ""}
         </div></section>`;
+    }
+    } else if (drawerTab === "settings") {
+      h += `<section class="dr-sec"><h3>Training</h3><div class="group">
+        ${sw("set-sound", "Sound at the end of a set", settings.sound)}
+        ${sw("set-awake", "Keep screen on while training", settings.awake)}
+      </div></section>`;
+      h += `<section class="dr-sec"><h3>Data</h3><div class="group">
+        <button class="row go" type="button" id="reset-today">Reset today's progress</button>
+        <button class="row go" type="button" id="reset-streak">Reset streak</button>
+      </div></section>`;
+      h += `<section class="dr-sec"><h3>Help</h3><div class="group">
+        <button class="row go" type="button" id="to-faq">FAQ</button>
+        ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : ""}
+        ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
+      </div></section>`;
+    } else {
+      h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}</div></section>`;
+      if (DESK) {
+        const cs = store.get(CUSTOM, null), unlocked = hasCustom();
+        h += `<section class="dr-sec"><h3>Set alerts</h3>
+          <div class="ap-wrap"><div class="ov done" id="ap"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="ap-ring" aria-hidden="true"></svg><b>2<small>/4</small></b></div><div class="meta"><span class="chip"><i></i>Set done</span><span class="name">→ Freebuild · 90%</span><span class="next">Ctrl+Shift+N to start</span></div><div class="time"><b>Done</b><span>next set</span></div><div class="bar" id="ap-bar"></div></div><div class="fx" id="ap-fx"></div></div></div>
+          <div class="group">
+            <div class="row pro-row"><label class="snd" for="al-custom"><input type="radio" name="al-s" id="al-custom" value="custom" ${settings.alertSound === "custom" ? "checked" : ""} ${unlocked && cs ? "" : "disabled"}>Custom sound<span class="pro">✦ Pro</span></label>
+              ${unlocked ? `${cs ? `<button class="play-s" type="button" data-al-play="custom" aria-label="Play custom sound"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>` : ""}<button class="pill sm out" type="button" id="cs-up">${cs ? "Replace" : "Upload"}</button>` : `<button class="pill sm out" type="button" id="cs-info">Unlock</button>`}</div>
+            ${unlocked ? `<div class="row"><span class="tiny">${cs ? esc(cs.name) : "MP3, WAV or OGG · up to 5 seconds · max 1 MB"}</span>${account && account.isDev && (account.items || []).indexOf("custom_sound") < 0 ? '<span class="tiny">Unlocked for devs</span>' : ""}</div>` : ""}
+            ${!unlocked && csInfo ? `<div class="confirm"><span class="small"><b style="color:var(--porcelain)">Custom sound · one-time purchase.</b> Play your own sound when a set is done. Price coming soon.</span><div><button class="pill sm" type="button" disabled>Coming soon</button></div></div>` : ""}
+            ${ALERT_SOUNDS.map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}
+          </div>
+          <input type="file" id="cs-file" accept="audio/*" hidden>
+          <div class="anim-grid" role="group" aria-label="Finish animation">${ALERT_ANIMS.map(([id, nm]) => `<button type="button" data-al-anim="${id}" aria-pressed="${settings.alertAnim === id}">${nm}</button>`).join("")}</div>
+          <button class="pill sm" type="button" id="al-prev" style="justify-self:start">▶ Preview here and in overlay</button>
+          <p class="dr-foot">Sound plays when “Sound at the end of a set” is on (Settings).</p></section>`;
+        if (ov) {
+          const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
+          h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
+            ${sw("ov-on", "Show overlay", ov.enabled)}
+            <div class="row" style="align-items:flex-start"><span>Position<br><span class="tiny">${ov.position === "custom" ? "Custom, placed by you" : "Pick a corner or edge"}</span></span>
+              <span class="pos-grid" role="group" aria-label="Overlay position">${P.map(([id, label]) => id ? `<button type="button" data-pos="${id}" aria-label="${label}" aria-pressed="${ov.position === id}"></button>` : `<span aria-hidden="true"></span>`).join("")}</span></div>
+            <div class="row"><span>Move freely</span><button class="pill sm ${ovMoving ? "" : "out"}" type="button" id="ov-move">${ovMoving ? "Done" : "Move"}</button></div>
+            <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
+            <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
+            ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
+          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+    }
+      } else {
+        h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
+          <b>Your routine. Over your game.</b>
+          <span class="small">The Windows app shows an in-game overlay with your set, time left and a finish alert. Pick from 7 sounds and 7 animations, or upload your own sound <span class="pro">✦ Pro</span>.</span>
+          <button class="pill sm out" type="button" id="see-app">See what's inside</button>
+        </div></section>`;
+      }
     }
     body.innerHTML = h;
     bindDrawer();
@@ -1292,13 +1389,44 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
     on("dc-in", "click", () => {
       signingIn = true; renderDrawer();
+      if (sb && DESK && DESK.auth) {
+        // Windows app: Discord opens in a small sign-in window; the code comes back here.
+        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: "https://repline.pages.dev/auth/desktop", skipBrowserRedirect: true } })
+          .then(({ data, error }) => { if (error || !data || !data.url) throw error || new Error("no url"); return DESK.auth(data.url); })
+          .then((code) => code ? sb.auth.exchangeCodeForSession(code) : null)
+          .then((r) => { if (!r || r.error) { signingIn = false; renderDrawer(); if (r && r.error) toast("Sign-in didn't finish. Please try again."); } })
+          .catch(() => { signingIn = false; renderDrawer(); toast("Sign-in didn't finish. Please try again."); });
+        return;
+      }
       if (sb) {
         sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/" } }).then(({ error }) => { if (error) { signingIn = false; renderDrawer(); toast("Sign-in didn't start. Please try again."); } });
         return;
       }
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
     });
+    document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; renderDrawer(); $("dr-body").scrollTop = 0; }));
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
+    on("cs-info", "click", () => { csInfo = !csInfo; renderDrawer(); });
+    on("see-app", "click", () => { closeDrawer(); const t = $("overlay-teaser"); if (t) { if (view !== "home") { go(""); setTimeout(() => $("overlay-teaser").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }), 80); } else t.scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); } });
+    on("cs-up", "click", () => $("cs-file").click());
+    on("cs-file", "change", (e) => {
+      const f = e.target.files && e.target.files[0]; if (!f) return;
+      if (!/^audio\//.test(f.type)) { toast("Pick an audio file (MP3, WAV or OGG)."); return; }
+      if (f.size > 1024 * 1024) { toast("That file is over 1 MB. Pick a shorter sound."); return; }
+      const rd = new FileReader();
+      rd.onload = () => {
+        const a = new Audio(rd.result);
+        a.addEventListener("loadedmetadata", () => {
+          if (a.duration > 5.2) { toast("Keep it to 5 seconds or less."); return; }
+          store.set(CUSTOM, { name: f.name.slice(0, 60), data: rd.result });
+          settings.alertSound = "custom"; saveSettings(); pushOverlay(true);
+          if (DESK && DESK.overlay.custom) DESK.overlay.custom(rd.result);
+          renderDrawer(); playAlert("custom"); toast("Custom sound saved");
+        });
+        a.addEventListener("error", () => toast("This sound can't be played. Try another file."));
+      };
+      rd.readAsDataURL(f);
+    });
     drawMini();
     document.querySelectorAll('input[name="al-s"]').forEach((r) => r.addEventListener("change", () => { settings.alertSound = r.value; saveSettings(); pushOverlay(true); playAlert(r.value); }));
     document.querySelectorAll("[data-al-play]").forEach((b) => b.addEventListener("click", () => playAlert(b.dataset.alPlay)));
@@ -1320,12 +1448,6 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
     on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); cloudPush(); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
-    on("test-on", "change", (e) => {
-      testOn = e.target.checked; store.set("rl.test", testOn); syncTest();
-      if (!testOn && S.goal === "test") { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
-      toast(testOn ? "Test routine added to step 1" : "Test routine removed");
-      if (view === "goal") buildPick(); else if (view === "home") buildHome();
-    });
     on("reset-streak", "click", () => { store.del(DAYS); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", async () => {
@@ -1344,12 +1466,13 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       account = null; [ACC, DAYS, DONE, KEY].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
     });
   }
-  function drawMini() {
-    const svg = $("ap-ring"); if (!svg) return;
+  function drawMini(pre) {
+    pre = pre || "ap";
+    const svg = $(pre + "-ring"); if (!svg) return;
     const R2 = 27, C2 = 2 * Math.PI * R2, segs = [12, 6, 5, 7], tot = 30; let off = 0, h = "";
     segs.forEach((w, i) => { const len = w / tot * C2 - 2.2; h += `<circle class="trk" cx="32" cy="32" r="${R2}" stroke="#3f8dff" stroke-width="5" stroke-dasharray="${len} ${C2}" stroke-dashoffset="${-off}"></circle><circle class="fil" cx="32" cy="32" r="${R2}" stroke="#3f8dff" stroke-width="5" stroke-dasharray="${i < 2 ? len : 0} ${C2}" stroke-dashoffset="${-off}"></circle>`; off += len + 2.2; });
     svg.innerHTML = h;
-    $("ap-bar").innerHTML = segs.map((w, i) => `<i style="flex:${w};--c:#3f8dff;--f:${i < 2 ? 1 : 0}"></i>`).join("");
+    $(pre + "-bar").innerHTML = segs.map((w, i) => `<i style="flex:${w};--c:#3f8dff;--f:${i < 2 ? 1 : 0}"></i>`).join("");
   }
   function playMini(withSound) {
     const el = $("ap"); if (!el) return;
@@ -1364,6 +1487,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function openDrawer() {
     if (drawerOpen) return;
+    setTimeout(updateResume, 0);
     drawerOpen = true; lastFocus = document.activeElement; confirmDelete = false;
     renderDrawer();
     const d = $("drawer"), s = $("scrim");
@@ -1373,6 +1497,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function closeDrawer() {
     if (!drawerOpen) return;
+    setTimeout(updateResume, 0);
     if (ovMoving && window.replineDesktop) { ovMoving = false; window.replineDesktop.overlay.move(false).then(() => window.replineDesktop.overlay.get()).then((n) => { ov = n; toast("Position saved"); }); }
     drawerOpen = false;
     const d = $("drawer"), s = $("scrim");
@@ -1398,7 +1523,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   // Real sign-in runs on repline.pages.dev / repline.gg (and localhost). Elsewhere (preview, desktop) the demo account stays.
   var SB_URL = "https://wjwjvwjwlipjxsgufffj.supabase.co";
   var SB_KEY = "sb_publishable_xA1CO4em6oz2mocDqBC5jg_4WhlX13q";
-  var sb = (window.supabase && /(^|\.)repline\.pages\.dev$|(^|\.)repline\.gg$|^localhost$|^127\.0\.0\.1$/.test(location.hostname))
+  var sb = (window.supabase && (window.replineDesktop || /(^|\.)repline\.pages\.dev$|(^|\.)repline\.gg$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)))
     ? window.supabase.createClient(SB_URL, SB_KEY, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true, autoRefreshToken: true } })
     : null;
   var cloudUser = null, cloudT = 0, cloudBusy = false;
@@ -1426,10 +1551,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         sb.from("training_days").select("day, routines").eq("user_id", id)
       ]);
       const { count } = await sb.from("referral_signups").select("referred_id", { count: "exact", head: true }).eq("referrer_id", id);
+      const buys = await sb.from("purchases").select("item").eq("user_id", id);
       const meta = user.user_metadata || {};
       const p = prof.data || {};
       account = { real: true, id, name: p.username || meta.full_name || meta.name || "Player", avatar: p.avatar_url || meta.avatar_url || null,
-        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, since: today() };
+        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, items: (buys.data || []).map((x) => x.item), since: today() };
       store.set(ACC, account);
       // training days: merge both ways
       const remote = days.data || [];
@@ -1445,7 +1571,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const lf = store.get(FOCUS, null);
       if (st.focus && st.focus.text && (!lf || (st.focus.day || "") >= (lf.day || ""))) store.set(FOCUS, st.focus);
       const ls = store.get(KEY, null);
-      if (st.session && st.session.day === today() && st.session.active && !(ls && ls.active)) { S = Object.assign(fresh(), st.session); store.set(KEY, S); }
+      if (st.session && st.session.day === today() && st.session.active && !(ls && ls.active)) { S = Object.assign(fresh(), st.session); store.set(KEY, S); if (S.status === "laeuft" && S.runAt) { clearInterval(raf); raf = setInterval(loop, 200); } }
       // referral from a link opened before signing in
       const ref = store.get("rl.ref", null);
       if (ref && ref !== account.ref) { await sb.rpc("claim_referral", { ref_code: ref }); }
@@ -1482,6 +1608,49 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     });
   }
 
+  /* ---------- Overlay teaser (website only) ---------- */
+  (function () {
+    const sec = $("overlay-teaser"); if (!sec) return;
+    if (DESK) { sec.hidden = true; return; }
+    drawMini("tz");
+    const el = $("tz"); let k = 0;
+    function cycle() {
+      if (!anim() || !el.isConnected) return;
+      const a = ALERT_ANIMS[k % ALERT_ANIMS.length]; k++;
+      ALERT_ANIMS.forEach(([id]) => el.classList.remove("a-" + id)); el.classList.remove("done"); $("tz-fx").innerHTML = "";
+      el.classList.add("warn");
+      $("tz-chip").innerHTML = "<i></i>Mechanics"; $("tz-name").textContent = "Freebuild · 110–120%"; $("tz-next").textContent = "Next · Freebuild · 90%"; $("tz-sub").textContent = "left";
+      [3, 2, 1].forEach((n, i) => setTimeout(() => { $("tz-clock").textContent = "0:0" + n; }, i * 900));
+      setTimeout(() => {
+        el.classList.remove("warn"); void el.offsetWidth; el.classList.add("done", "a-" + a[0]);
+        if (a[0] === "confetti") { const cols = ["#30d158", "#38e0ff", "#3f8dff", "#a855f7", "#ffd60a", "#f5f5f7"]; for (let i = 0; i < 22; i++) { const d = document.createElement("i"), g = Math.random() * Math.PI * 2, r = 14 + Math.random() * 30; d.className = "dot"; d.style.background = cols[i % cols.length]; d.style.setProperty("--dx", `${Math.cos(g) * r}cqw`); d.style.setProperty("--dy", `${Math.sin(g) * r * .5}cqw`); $("tz-fx").appendChild(d); } }
+        $("tz-chip").innerHTML = "<i></i>Set done"; $("tz-name").textContent = "→ Freebuild · 90%"; $("tz-next").textContent = "Ctrl+Shift+N to start"; $("tz-clock").textContent = "Done"; $("tz-sub").textContent = "next set";
+        $("tz-cap").textContent = "Finish animation: " + a[1];
+      }, 2700);
+    }
+    cycle(); setInterval(cycle, 5200);
+  })();
+
+  /* ---------- Resume bar ---------- */
+  function updateResume() {
+    const bar = $("resume-bar"), l = S.goal && length(S.goal, S.len);
+    const show = !!(l && S.active && view && view !== "training" && !drawerOpen);
+    bar.hidden = !show;
+    document.body.classList.toggle("has-resume", show);
+    if (!show) return;
+    const bl = list(), b = cur(), e = elapsed(), kill = isKill(b);
+    const done = bl.reduce((a, x, i) => a + (S.done[i] ? (x.min || 1) : 0), 0), tot = bl.reduce((a, x) => a + (x.min || 1), 0);
+    const curPart = !kill && b.min ? Math.min(1, e / (b.min * 60000)) * b.min : 0;
+    bar.style.setProperty("--rc", tcol(b));
+    $("rs-ring").style.setProperty("--p", Math.round((done + curPart) / tot * 100));
+    $("rs-name").textContent = b.name || "Your routine";
+    const st = { laeuft: "Running", pause: "Paused", bereit: "Ready", fertig: "Set done" }[S.status];
+    $("rs-sub").textContent = `${st} · Set ${S.b + 1} of ${bl.length}`;
+    $("rs-time").textContent = S.status === "fertig" ? "Done" : kill ? `${killsDone(S.b)}/${b.kills.length}` : b.min != null ? clock(b.min * 60000 - e + 999) : clock(e);
+    bar.classList.toggle("paused", S.status !== "laeuft");
+  }
+  setInterval(updateResume, 1000);
+
   /* ---------- Reveal ---------- */
   const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;
   function observe(el) { if (!el.classList.contains("rv")) return; io ? io.observe(el) : el.classList.add("in"); }
@@ -1513,7 +1682,6 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if ((name === "plan" || name === "training") && (!S.goal || !length(S.goal, S.len))) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
     if (name === "training") S.active = true;
-    if (view === "training" && name !== "training" && S.status === "laeuft") pause();
     const from = ORDER.indexOf(view == null ? "" : (view === "home" ? "" : view)), to = ORDER.indexOf(name);
     const id = name || "home";
     document.querySelectorAll(".view").forEach((v) => { v.hidden = v.dataset.view !== id; v.classList.remove("enter-f", "enter-b"); });
@@ -1525,12 +1693,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "goal") buildPick();
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
-    if (id === "training") { if (S.status === "laeuft") S.status = "pause"; buildTraining(); }
+    if (id === "training") buildTraining();
     pushOverlay(true);
     if (id === "done") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine done."; }
     if (!first || id !== "home") scrollTo(0, 0);
+    updateResume();
   }
   addEventListener("hashchange", route);
+  if (S.status === "laeuft" && S.active && S.runAt) { raf = setInterval(loop, 200); keepAwake(true); }
   route();
+  updateResume();
 })();
 </script>

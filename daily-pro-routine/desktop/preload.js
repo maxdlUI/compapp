@@ -7,8 +7,10 @@ contextBridge.exposeInMainWorld("replineDesktop", {
     set: (patch) => ipcRenderer.invoke("overlay:set", patch),
     move: (on) => ipcRenderer.invoke("overlay:move", !!on),
     preview: (p) => ipcRenderer.invoke("overlay:preview", p),
+    custom: (dataUrl) => ipcRenderer.send("overlay:custom", typeof dataUrl === "string" ? dataUrl : ""),
     push: (state) => ipcRenderer.send("overlay:state", state),
     onSettings: (cb) => ipcRenderer.on("overlay:settings", (_e, s) => cb(s))
   },
-  onHotkey: (cb) => ipcRenderer.on("hotkey", (_e, name) => cb(name))
+  onHotkey: (cb) => ipcRenderer.on("hotkey", (_e, name) => cb(name)),
+  auth: (url) => ipcRenderer.invoke("auth:discord", url)
 });

@@ -143,8 +143,10 @@ body.moving .hint { display: grid; }
     arcade: () => [523.25, 659.25, 784, 1046.5, 1318.5].forEach((f, i) => toneT(f, i * 0.06, 0.09, 0.07, "square", 0.003)),
     ping: () => [0, 0.17, 0.34].forEach((t, i) => toneT(1567.98, t, 0.4, 0.22 / (i * 1.8 + 1), "sine", 0.003)),
     fanfare: () => { brass(392, 0, 0.14, 0.11); brass(523.25, 0.14, 0.14, 0.11); brass(659.25, 0.28, 0.5, 0.12); },
+    custom: () => { if (customUrl) { try { const a = new Audio(customUrl); a.volume = 0.9; a.play().catch(() => {}); } catch (e) {} } else SOUND_FX.chime(); },
     off: () => {}
   };
+  let customUrl = "";
   const soundFinish = () => { toneT(784, 0, 0.3, 0.24); toneT(1046.5, 0.14, 0.3, 0.24); toneT(1568, 0.28, 0.7, 0.22); };
   const ANIMS = ["wave", "flash", "shake", "glow", "confetti", "slide", "minimal"];
   function confetti() {
@@ -246,6 +248,7 @@ body.moving .hint { display: grid; }
   }
   if (window.overlayBridge) {
     if (overlayBridge.onPreview) overlayBridge.onPreview(preview);
+    if (overlayBridge.onCustom) overlayBridge.onCustom((d) => { customUrl = typeof d === "string" ? d : ""; });
     overlayBridge.onState((s) => { st = s || { active: false }; tick(); });
     overlayBridge.onLook((l) => { document.documentElement.style.setProperty("--op", l.opacity); hotkeys = !!l.hotkeys; tick(); });
   }

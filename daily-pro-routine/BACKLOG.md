@@ -1,6 +1,6 @@
-# Repline – vorgemerkt (noch nicht einbauen)
+# Repline – vorgemerkt
 
-Erst umsetzen, wenn der Auftrag dafür kommt.
+**Stand 11.11.2026:** Alle Punkte unten sind umgesetzt (Custom Sound gesperrt bis zum Kauf, Devs können ihn testen). Offen bleibt nur der Preis für den Custom Sound und ein Download-Link für die Windows-App.
 
 ## Custom Sound (kostenpflichtig)
 
