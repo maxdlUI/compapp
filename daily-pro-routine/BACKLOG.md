@@ -77,3 +77,13 @@
   2. **Auto-Update für das Programm selbst** (Overlay, Hotkeys, Fenster): `electron-updater` prüft beim Start auf eine neue Version, lädt sie im Hintergrund und installiert sie beim nächsten Neustart. Hinweis „Update ready · Restart“ im Programm.
 - **Wo die Dateien liegen:** Cloudflare R2. 10 GB sind gratis, Downloads kosten nichts. Dort liegen Installer und `latest.yml` (die Versions-Info für den Updater). Cloudflare Pages erlaubt nur 25 MB pro Datei, deshalb R2. Der Cloudflare-Token braucht dafür zusätzlich die Berechtigung „R2 · Edit“.
 - **Installer bauen:** Für die Updates ist ein richtiger Installer nötig, nicht die ZIP. Bauen über den bestehenden GitHub-Workflow (Windows-Rechner) oder hier mit Wine. Ohne Code-Signatur zeigt Windows beim ersten Installieren eine SmartScreen-Warnung, die Updates laufen danach trotzdem.
+
+### Entscheidung: komplette App automatisch aktualisieren (Profi-Variante)
+
+Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert die **ganze App**:
+- **electron-builder + NSIS-Installer + electron-updater:** Die App prüft beim Start und alle paar Stunden auf Updates. Sie lädt nur die geänderten Teile (Differential-Update über `.blockmap`), installiert im Hintergrund und fragt „Update ready · Restart“. Bei längerer Nichtnutzung installiert sie beim nächsten Beenden.
+- **Update-Kanäle:** `latest` für alle, `beta` für Devs. Dev-Accounts testen neue Versionen zuerst.
+- **Release-Notizen** im Programm anzeigen („What's new in 1.3“).
+- **Code-Signatur:** über Azure Trusted Signing (etwa 10 $ im Monat) oder ein OV-Zertifikat. Dann keine SmartScreen-Warnung, und Windows vertraut den Updates.
+- **Dateien:** Cloudflare R2 (Installer, `latest.yml`, Blockmaps). Download-Button und Updater nutzen denselben Ort.
+- **Build:** Ein Befehl erzeugt die neue Version (Versionsnummer +1, Installer bauen, signieren, hochladen). Kein Hand-Upload mehr.
