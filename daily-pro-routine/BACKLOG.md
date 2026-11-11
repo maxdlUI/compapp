@@ -34,3 +34,13 @@ Erst umsetzen, wenn der Auftrag dafür kommt.
   - Beim Betreten des Trainings `laeuft` nicht mehr auf `pause` setzen.
   - Der Timer muss auch auf anderen Seiten weiterlaufen, inklusive Set-Ende, Ton, Overlay und Auto-Weiter.
 - **Neu laden der Seite:** Statt immer zu pausieren, den Startzeitpunkt speichern und die Zeit weiterrechnen.
+
+## Konto-Panel aufteilen
+
+- **Heute:** Ein Klick auf Account öffnet rechts ein Panel, in dem alles untereinander steht. Konto, Abo, Affiliate, Einstellungen, Set alerts, Overlay, Daten und Hilfe sind zu viel auf einmal.
+- **Gewünscht:** Das Panel fährt weiter rechts heraus, aber übersichtlich getrennt, z. B. in drei Bereiche:
+  1. **Account:** Profil, Fortschritt, Abo, Affiliate, Abmelden, Konto löschen.
+  2. **Settings:** Ton an/aus, Bildschirm anlassen, Daten (zurücksetzen), Test-Routine für Devs, Hilfe.
+  3. **Appearance:** Set alerts (Ton und Animation mit Vorschau), Animationen an/aus, In-game overlay (Position, Größe, Deckkraft, Hotkeys).
+- **Umsetzung im Apple-Stil:** Oben im Panel eine Segment-Leiste „Account · Settings · Appearance“. Alternativ eine Startliste mit drei Zeilen, die wie in den iPhone-Einstellungen in eine Unterseite hineinschieben, mit „‹ Back“.
+- Der Knopf oben rechts bleibt: „Sign in“ oder Avatar. Ein eigener Zahnrad-Knopf für Settings ist eine Option.
