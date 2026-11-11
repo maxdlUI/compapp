@@ -1,0 +1,27 @@
+{
+  "name": "repline",
+  "productName": "Repline",
+  "version": "1.0.0",
+  "description": "Daily Pro Routine",
+  "main": "main.js",
+  "author": "Repline",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis portable --x64"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "gg.repline.app",
+    "productName": "Repline",
+    "files": ["main.js", "app/**/*"],
+    "directories": { "output": "dist" },
+    "win": { "icon": "app/icons/repline.ico", "target": ["nsis", "portable"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "shortcutName": "Repline", "artifactName": "Repline-Setup-${version}.exe" },
+    "portable": { "artifactName": "Repline-Portable-${version}.exe" }
+  }
+}

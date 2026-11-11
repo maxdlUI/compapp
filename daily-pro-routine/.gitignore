@@ -1,0 +1,4 @@
+desktop/node_modules/
+desktop/dist/
+desktop/app/
+desktop/package-lock.json
