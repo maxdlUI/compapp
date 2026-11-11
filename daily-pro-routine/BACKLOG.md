@@ -24,3 +24,13 @@ Erst umsetzen, wenn der Auftrag dafür kommt.
 - **Problem:** Eine Routine ist pausiert oder läuft noch, und man ist zurück auf dem Homescreen oder in der Auswahl. Dann findet man kaum zurück. Heute gibt es nur einen schlichten „Continue“-Knopf im Hero des Homescreens, der leicht übersehen wird.
 - **Lösung:** Eine gut sichtbare **„Resume routine“**-Leiste auf allen Seiten außer dem Training, z. B. als schwebende Pille unten oder in der Kopfzeile. Sie zeigt einen Mini-Ring mit Fortschritt, Set-Name, Restzeit und Status (Paused/Running). Ein Klick führt direkt zurück ins Training, an dieselbe Stelle.
 - **Hervorheben:** zum Beispiel ein sanftes Leuchten oder Pulsieren in der Set-Farbe. Gilt für Webseite und Windows-Programm, passend zum Overlay.
+
+## Routine nie automatisch pausieren
+
+- **Heute:** Die Routine pausiert von selbst, sobald man das Training verlässt, also zum Homescreen, zur Auswahl oder zum KI-Training wechselt. Das war Absicht, ist aber falsch.
+- **Gewünscht:** Eine laufende Routine läuft immer weiter, bis man selbst auf Pause drückt. Seitenwechsel, Konto-Panel und Fenster im Hintergrund dürfen sie nicht unterbrechen.
+- **Technisch:**
+  - In `route()` das automatische `pause()` beim Verlassen des Trainings entfernen.
+  - Beim Betreten des Trainings `laeuft` nicht mehr auf `pause` setzen.
+  - Der Timer muss auch auf anderen Seiten weiterlaufen, inklusive Set-Ende, Ton, Overlay und Auto-Weiter.
+- **Neu laden der Seite:** Statt immer zu pausieren, den Startzeitpunkt speichern und die Zeit weiterrechnen.
