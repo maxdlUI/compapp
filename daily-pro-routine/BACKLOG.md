@@ -87,3 +87,12 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - **Code-Signatur: vorerst keine** (Entscheidung 11.11.2026). Beim ersten Installieren zeigt Windows SmartScreen („Weitere Informationen“ → „Trotzdem ausführen“), die Auto-Updates laufen danach trotzdem. Kann später mit Azure Trusted Signing nachgerüstet werden, ohne dass Nutzer neu installieren müssen.
 - **Dateien:** Cloudflare R2 (Installer, `latest.yml`, Blockmaps). Download-Button und Updater nutzen denselben Ort.
 - **Build:** Ein Befehl erzeugt die neue Version (Versionsnummer +1, Installer bauen, signieren, hochladen). Kein Hand-Upload mehr.
+
+## Plans, Bezahlung und Pro-Inhalte (Stand v1.3)
+
+- **Erledigt:** Plans-Seite (Free / Standard €2.99 / Pro €5.99), Routine-Baukasten mit Limits (Free 1, Standard 2, Pro unbegrenzt; die Datenbank setzt das Limit selbst durch), gesperrte Längen für Free, Partners-Seite, „Join Discord · soon“, Rückfrage bei beiden Resets.
+- **Stripe-Bezahlung (offen):** Wartet auf ein Stripe-Konto. Danach: Stripe-Keys als Supabase-Secrets im Dashboard (nie im Chat), eine Edge Function für Checkout und eine für den Webhook, die `profiles.plan` und `purchases` schreibt. „Manage subscription“ führt dann ins Stripe-Kundenportal.
+- **Erinnerung: Pro-Routinen / Pro-Playlists:** Die Inhalte fehlen noch. Die Karte „Pro routines · Coming Soon“ steht schon in Schritt 1.
+- **AI Training:** nur für Pro, bisher Coming Soon.
+- **Discord:** Sobald der Einladungslink steht, `SITE.discordUrl` setzen. Dann werden alle Discord-Knöpfe automatisch aktiv.
+- **Custom Sound:** Der Preis für den Einmalkauf ist noch offen.
