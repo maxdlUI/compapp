@@ -58,3 +58,13 @@ Erst umsetzen, wenn der Auftrag dafür kommt.
 - **Ohne Konto** funktioniert alles weiter lokal. Nach der Anmeldung werden die lokalen Daten einmal ins Konto übernommen.
 - **Windows-Programm:** Die Anmeldung öffnet den normalen Browser und kommt per `repline://`-Link zurück ins Programm.
 - **Später eigene Domain (repline.gg):** In Supabase Site URL und Redirect URLs anpassen. Der Discord-Callback bleibt die Supabase-Adresse.
+
+## Set alerts nur in der App, auf der Webseite als Teaser
+
+- **Webseite:** Den Bereich „Set alerts“ mit Ton, Animation und Vorschau aus dem Konto-Panel entfernen. Im Browser gibt es kein Overlay, deshalb bringt die Auswahl dort nichts. Im Browser gilt der Standard (Chime und Wave), und „Sound at the end of a set“ an/aus bleibt.
+- **Windows-App:** Set alerts bleiben vollständig, zusammen mit den Overlay-Einstellungen, später unter „Appearance“.
+- **Teaser auf dem Homescreen der Webseite:** neuer Abschnitt im Apple-Stil, z. B. „Your routine. Over your game.“
+  - zeigt das Overlay über einer Spielszene, gern animiert mit Countdown und Abschluss-Animation
+  - zählt kurz auf, was man in der App wählen kann: 7 Töne, 7 Animationen, Position, Größe, Deckkraft, Hotkeys im Spiel
+  - Knopf „Get the Windows app“ (Download, sobald es einen Download-Link gibt)
+- Die Testseite `preview-alerts.html` kann als Vorlage für die Teaser-Animation dienen.
