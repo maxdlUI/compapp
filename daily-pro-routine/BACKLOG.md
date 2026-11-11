@@ -11,3 +11,10 @@ Erst umsetzen, wenn der Auftrag dafür kommt.
 - **Preis steht noch nicht fest:** Keinen Betrag zeigen, nur klar machen, dass es etwas kostet, z. B. Abzeichen „✦ Pro“ plus Hinweis „Einmalkauf · Preis folgt“.
 - **Zeitpunkt:** Zusammen mit der nächsten neuen Funktion einbauen, nicht vorher.
 - Noch offen: erlaubte Formate, Länge und Dateigröße. Vorschlag: MP3 oder WAV, höchstens 5 Sekunden, höchstens 1 MB.
+
+## Test-Routine als Auswahl „For devs only“
+
+- **Heute:** Die Test-Routine mit 3-Sekunden-Sets lässt sich über einen Schalter unter Konto → Data einblenden.
+- **Beim nächsten Mal:** Sie steht direkt bei den Routinen in Schritt 1 als normale Auswahl, deutlich gekennzeichnet mit **„For devs only“**. Der Schalter unter Data entfällt dann.
+- **Später, wenn es Dev-Accounts gibt:** Nur Dev-Accounts sehen und starten die Test-Routine. Alle anderen sehen sie nicht.
+- **Allgemeine Regel:** Funktionen, die als „for devs“ markiert sind, werden automatisch auf Dev-Accounts beschränkt, sobald es Dev-Accounts gibt. Die Test-Routine ist die erste davon.
