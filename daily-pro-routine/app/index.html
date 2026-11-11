@@ -476,6 +476,86 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 .ovt-stage .slot .ov { height: 100%; }
 .ovt-stage figcaption { position: absolute; left: 16px; bottom: 14px; background: rgba(22,22,24,.8); color: var(--porcelain); padding: 5px 11px; border-radius: 99px; }
 
+/* Plans */
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; align-items: stretch; }
+@media (max-width: 900px) { .plans { grid-template-columns: minmax(0, 1fr); } }
+.plan-card { background: var(--carbon); border-radius: 28px; padding: 28px; display: grid; gap: 16px; align-content: start; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); position: relative; }
+.plan-card.pro-card { border: 1.5px solid transparent; background: linear-gradient(var(--carbon), var(--carbon)) padding-box, linear-gradient(135deg, #38e0ff, #3f8dff, #a855f7) border-box; }
+.plan-card .pn { font-family: var(--display); font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.plan-card .pp { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; }
+.plan-card .pp small { font-size: 15px; color: var(--ash); font-weight: 500; }
+.plan-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.plan-card li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; font-size: 15px; letter-spacing: -0.24px; color: var(--porcelain); }
+.plan-card li::before { content: "✓"; color: var(--green); font-weight: 700; }
+.plan-card li.soonli { color: var(--ash); }
+.plan-card li.soonli::before { color: var(--ash); }
+.plan-card .pill { justify-self: start; }
+.cur-tag { position: absolute; top: 20px; right: 20px; font-size: 11px; font-weight: 600; color: var(--green); box-shadow: inset 0 0 0 1px rgba(48,209,88,.5); border-radius: 6px; padding: 2px 7px; }
+/* Locked lengths */
+.len.locked { opacity: .75; }
+.len .lock { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ash); }
+.len .lock b { font-size: 11px; font-weight: 600; color: #fff; background: var(--blue); border-radius: 6px; padding: 1px 7px; }
+/* My routines */
+.my-sec { margin-top: 56px; display: grid; gap: 20px; }
+.my-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+.my-grid .goal { min-height: 200px; cursor: default; }
+.my-grid .goal:hover { transform: none; }
+.g-my { --bg: radial-gradient(90% 90% at 100% 0%, color-mix(in srgb, var(--mc, #3f8dff) 55%, #000), #0a0a0c 62%, #000); }
+.my-card-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.new-card { border: 1.5px dashed var(--slate); background: transparent; color: var(--porcelain); border-radius: 28px; min-height: 200px; display: grid; place-items: center; gap: 8px; text-align: center; cursor: pointer; padding: 24px; font: inherit; }
+.new-card:hover { border-color: var(--porcelain); }
+.new-card[aria-disabled="true"] { cursor: default; opacity: .8; }
+.new-card .plus { font-size: 40px; line-height: 1; font-weight: 300; }
+.pro-card-pick { cursor: default; }
+/* Builder */
+.bld { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+@media (max-width: 860px) { .bld { grid-template-columns: minmax(0, 1fr); } }
+.bld-main { display: grid; gap: 16px; }
+.bld-name { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--steel); color: var(--porcelain); font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4.4vw, 52px); letter-spacing: -0.01em; padding: 4px 0 10px; }
+.bld-name:focus { outline: none; border-bottom-color: var(--blue); }
+.bld-name::placeholder { color: var(--dim); }
+.bld-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+.bld-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; background: var(--carbon); border-radius: 18px; padding: 12px 12px 12px 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+html.anim .bld-item.new { animation: rise .45s var(--ease); }
+.bld-item .nm { min-width: 0; display: grid; gap: 2px; }
+.bld-item .nm b { font-weight: 600; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .bld-item { grid-template-columns: auto minmax(0, 1fr); } .bld-item .bld-ctl { grid-column: 1 / -1; justify-content: space-between; } }
+.bld-item .ord { display: grid; gap: 2px; }
+.bld-item .ord button, .bld-item .x { width: 28px; height: 22px; border: 0; border-radius: 6px; background: var(--steel); color: var(--porcelain); cursor: pointer; font-size: 12px; line-height: 1; }
+.bld-item .ord button:disabled { opacity: .3; cursor: default; }
+.bld-item .x { height: 28px; width: 28px; border-radius: 50%; font-size: 15px; }
+.bld-ctl { display: flex; align-items: center; gap: 8px; }
+.dur { display: inline-flex; align-items: center; gap: 2px; background: var(--obsidian); border-radius: 99px; padding: 3px; box-shadow: 0 0 0 1px var(--steel); }
+.dur button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: var(--steel); color: var(--porcelain); cursor: pointer; font-size: 16px; }
+.dur input { width: 46px; text-align: center; background: transparent; border: 0; color: var(--porcelain); font-family: var(--display); font-weight: 600; font-size: 16px; -moz-appearance: textfield; }
+.dur input::-webkit-outer-spin-button, .dur input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.dur span { font-size: 12px; color: var(--ash); padding-right: 8px; }
+.bld-empty { border: 1.5px dashed var(--steel); border-radius: 18px; padding: 28px; text-align: center; color: var(--ash); font-size: 15px; }
+.bld-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.bld-lib { position: sticky; top: 90px; background: var(--carbon); border-radius: 28px; padding: 22px; display: grid; gap: 12px; max-height: calc(100svh - 120px); overflow-y: auto; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+@media (max-width: 860px) { .bld-lib { position: static; max-height: none; } }
+.lib-group { display: grid; gap: 8px; margin-top: 6px; }
+.lib-group h3 { margin: 0; font-size: 12px; font-weight: 600; color: var(--ash); display: flex; align-items: center; gap: 8px; }
+.lib-group h3 i { width: 8px; height: 8px; border-radius: 50%; }
+.lib-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.lib-chips button { border: 0; border-radius: 99px; background: var(--obsidian); color: var(--porcelain); padding: 8px 13px; font-size: 14px; letter-spacing: -0.224px; cursor: pointer; box-shadow: inset 0 0 0 1px var(--steel); transition: box-shadow .2s, transform .2s var(--ease); }
+.lib-chips button:hover { box-shadow: inset 0 0 0 1px var(--porcelain); }
+.lib-chips button:active { transform: scale(.96); }
+/* Partners + community */
+.partners { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+@media (max-width: 820px) { .partners { grid-template-columns: minmax(0, 1fr); } }
+.partner { background: var(--carbon); border-radius: 28px; padding: 28px; display: grid; gap: 10px; align-content: start; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.partner .gi { width: 34px; height: 34px; }
+.partner b { font-family: var(--display); font-size: 24px; font-weight: 600; }
+.partner-cta { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: linear-gradient(135deg, rgba(88,101,242,.18), rgba(168,85,247,.12)), var(--carbon); border-radius: 28px; padding: 28px; }
+.community { border-radius: 28px; padding: clamp(32px, 5vw, 56px); display: grid; justify-items: center; text-align: center; gap: 12px; background: radial-gradient(70% 90% at 50% 0%, rgba(88,101,242,.28), transparent 70%), var(--carbon); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.dc-logo { width: 48px; height: 48px; color: #fff; }
+.dc-btn { background: #5865f2; }
+.dc-btn:hover { background: #4752c4; }
+.dc-btn svg { width: 20px; height: 20px; }
+footer a { color: var(--ash); }
+.confirm.inline { border-top: 1px solid var(--steel); }
+
 /* Account drawer */
 .acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
 .acct-btn:focus-visible { outline-offset: 3px; }
@@ -558,7 +638,7 @@ html.no-scroll { overflow: hidden; }
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#ai">AI Training</a><a href="#" data-scroll="progress">Progress</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <a class="pill sm" href="#goal">Start routine</a>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
@@ -621,6 +701,15 @@ html.no-scroll { overflow: hidden; }
     </div>
   </section>
 
+  <section class="sec wrap" aria-labelledby="h-community" style="padding-top:0">
+    <div class="community rv">
+      <svg class="dc-logo" aria-hidden="true"><use href="#i-discord"/></svg>
+      <h2 id="h-community" class="d-m">Train together.</h2>
+      <p class="small">Feedback, team partners and new routines first.</p>
+      <span data-discord="lg"></span>
+    </div>
+  </section>
+
   <section class="sec wrap" id="faq" aria-labelledby="h-faq" style="padding-top:0">
     <h2 id="h-faq" class="d-m rv" style="margin-bottom:28px">Questions and answers.</h2>
     <div class="qa rv d1">
@@ -639,6 +728,10 @@ html.no-scroll { overflow: hidden; }
   <div class="stepper" aria-hidden="true"><i class="on"></i><i></i><i></i><span class="tiny">Step 1 of 3</span></div>
   <h1 class="d-l">What are you training for today?</h1>
   <div class="goals" id="pick-goals" style="margin-top:36px"></div>
+  <section class="my-sec" aria-labelledby="h-my">
+    <div class="my-head"><h2 id="h-my" class="d-m">My routines.</h2><span class="tiny" id="my-limit"></span></div>
+    <div class="goals my-grid" id="my-routines"></div>
+  </section>
 </main>
 
 <!-- Step 2: length -->
@@ -718,12 +811,55 @@ html.no-scroll { overflow: hidden; }
   </div>
 </main>
 
+<!-- Plans -->
+<main class="view wrap flowv" data-view="plans" id="v-plans" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <h1 class="d-l">Plans.</h1>
+  <p class="lead" style="margin-top:12px">Train free. Go further with Standard or Pro.</p>
+  <div class="plans" id="plans-grid"></div>
+  <p class="small" id="plans-note" style="margin-top:20px">Payments open soon. Monthly, cancel anytime.</p>
+</main>
+
+<!-- Routine builder -->
+<main class="view wrap flowv" data-view="builder" id="v-builder" hidden>
+  <button class="back" type="button" data-go="goal">Routines</button>
+  <div class="bld">
+    <div class="bld-main">
+      <input class="bld-name" id="bld-name" type="text" maxlength="40" placeholder="Name your routine" aria-label="Routine name">
+      <p class="lead" id="bld-sum"></p>
+      <div class="sbar" id="bld-bar" aria-hidden="true"></div>
+      <ol class="bld-list" id="bld-list"></ol>
+      <div class="bld-actions"><button class="pill big" type="button" id="bld-save">Save routine</button><button class="pill big out" type="button" id="bld-del" hidden>Delete</button></div>
+      <div id="bld-confirm"></div>
+    </div>
+    <aside class="bld-lib" aria-labelledby="h-lib">
+      <h2 class="h3" id="h-lib">Add sets</h2>
+      <p class="tiny">Tap a set to add it. Change times in your list.</p>
+      <div id="bld-lib"></div>
+    </aside>
+  </div>
+</main>
+
+<!-- Partners -->
+<main class="view wrap flowv" data-view="partners" id="v-partners" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <span class="soon" style="font-size:14px;display:block;margin-top:24px">Coming Soon</span>
+  <h1 class="d-l" style="margin-top:8px">Partners.</h1>
+  <p class="lead" style="margin-top:12px">Map creators, teams and coaches who build Repline with us.</p>
+  <div class="partners">
+    <div class="partner rv"><svg class="gi" aria-hidden="true"><use href="#i-mech"/></svg><b>Map partners</b><span class="small">The maps inside every routine, with their creators.</span><span class="soon">Coming soon</span></div>
+    <div class="partner rv d1"><svg class="gi" aria-hidden="true"><use href="#i-cup"/></svg><b>Teams</b><span class="small">Teams that train with Repline.</span><span class="soon">Coming soon</span></div>
+    <div class="partner rv d2"><svg class="gi" aria-hidden="true"><use href="#i-up"/></svg><b>Creators</b><span class="small">Routines and codes from creators you know.</span><span class="soon">Coming soon</span></div>
+  </div>
+  <div class="partner-cta rv"><div><b class="h3">Want to partner with Repline?</b><p class="small" style="margin-top:6px">Talk to us on Discord.</p></div><span data-discord="lg"></span></div>
+</main>
+
 <!-- AI Training -->
 <main class="view wrap" data-view="ai" id="v-ai" hidden>
   <div class="ki">
     <div class="ki-txt">
       <button class="back" type="button" data-go="" style="margin:0">Home</button>
-      <span class="soon" style="font-size:14px">Coming Soon</span>
+      <span><span class="pro" style="margin-left:0">✦ Pro</span> <span class="soon" style="font-size:14px;margin-left:6px">Coming Soon</span></span>
       <h1 class="d-l">AI Training. Made for you.</h1>
       <p class="lead">Tell it your goal and your time. It builds your routine.</p>
       <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#goal">See fixed routines</a></div>
@@ -745,7 +881,7 @@ html.no-scroll { overflow: hidden; }
 </a>
 
 <footer>
-  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><span id="ft-legal"></span></span></div>
+  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span id="ft-legal"></span></span></div>
 </footer>
 
 <!-- Account drawer -->
@@ -766,6 +902,7 @@ html.no-scroll { overflow: hidden; }
 const SITE = {
   url: "https://repline.gg",
   contactEmail: null,        // optional: shown in the account panel once set
+  discordUrl: null,          // Discord invite link; null shows "Join Discord · soon"
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -843,6 +980,13 @@ const GOALS = [
 /* Set alerts: the sound and animation when a set is done (Account → Set alerts) */
 const ALERT_SOUNDS = [["chime", "Chime"], ["bell", "Bell"], ["marimba", "Marimba"], ["arcade", "Arcade"], ["ping", "Ping"], ["fanfare", "Fanfare"], ["off", "No sound"]];
 const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], ["glow", "Glow"], ["confetti", "Confetti"], ["slide", "Slide"], ["minimal", "Minimal"]];
+/* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
+const PLANS = [
+  { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
+  { id: "standard", name: "Standard", price: 2.99, perks: ["Every routine in every length", "2 own routines", "Everything in Free"] },
+  { id: "pro", name: "Pro", price: 5.99, perks: ["Unlimited own routines", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
+];
+const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
   L("quick", "3 s sets", [["kovaaks", 0.05], ["mech", 0.05], ["fast", 0.05], ["slow", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
 ] };
@@ -878,7 +1022,24 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   syncTest();
 
   /* ---------- Data ---------- */
-  const goal = (id) => GOALS.find((z) => z.id === id);
+  /* ---------- Plans & own routines ---------- */
+  const MYR = "rl.myRoutines";
+  const myRoutines = () => store.get(MYR, []);
+  const planId = () => (account && account.real ? (account.isDev ? "pro" : (account.plan || "free")) : "free");
+  const planName = () => (PLANS.find((p) => p.id === planId()) || PLANS[0]).name;
+  const routineLimit = () => ({ free: 1, standard: 2, pro: Infinity })[planId()];
+  const customCache = {};
+  function customGoal(rid) {
+    const r = myRoutines().find((x) => x.id === rid); if (!r) return null;
+    const key = r.id + "|" + (r.updated_at || "") + "|" + JSON.stringify(r.sets);
+    if (customCache[rid] && customCache[rid].key === key) return customCache[rid].goal;
+    const sets = (r.sets || []).filter((x) => SETS[x.key]).map((x) => [x.key, Math.max(1, Math.min(240, +x.min || 10))]);
+    const g = { id: "my-" + r.id, name: r.name || "My routine", text: "Your own routine.", icon: "i-up", custom: true, lengths: [L("custom", "Custom", sets)] };
+    customCache[rid] = { key, goal: g };
+    return g;
+  }
+  const goal = (id) => (typeof id === "string" && id.indexOf("my-") === 0 ? customGoal(id.slice(3)) : GOALS.find((z) => z.id === id));
+  const lengthLocked = (g, l) => planId() === "free" && !g.custom && !g.dev && l.id !== "short";
   const length = (gid, lid) => { const g = goal(gid); return g && g.lengths.find((l) => l.id === lid); };
   function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.sets : []; }
   const tcol = (b) => TYPES[b.type].color;
@@ -949,7 +1110,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function aiCard() {
     const a = document.createElement("a");
     a.className = "goal g-ki"; a.href = "#ai";
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">AI Training</span><span class="gd">A routine built just for you.</span></span>`;
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span><span class="pro" style="margin-left:0">✦ Pro</span> <span class="soon" style="margin-left:6px">Coming Soon</span></span><span class="gt">AI Training</span><span class="gd">A routine built just for you.</span></span>`;
     return a;
   }
   function buildHome() {
@@ -978,7 +1139,37 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function buildPick() {
     const g = $("pick-goals"); g.innerHTML = "";
     GOALS.forEach((z) => g.appendChild(goalCard(z, "pick")));
-    const k = aiCard(); k.style.gridColumn = "1 / -1"; k.style.minHeight = "160px"; g.appendChild(k);
+    const pr = document.createElement("div");
+    pr.className = "goal g-ki pro-card-pick";
+    pr.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-cup"/></svg><span style="display:grid;gap:8px"><span><span class="pro" style="margin-left:0">✦ Pro</span> <span class="soon" style="margin-left:6px">Coming Soon</span></span><span class="gt">Pro routines</span><span class="gd">Routines from pros and partners.</span></span>`;
+    g.appendChild(pr);
+    g.appendChild(aiCard());
+    buildMy();
+  }
+  function buildMy() {
+    const box = $("my-routines"); if (!box) return;
+    const rs = myRoutines(), lim = routineLimit();
+    $("my-limit").textContent = `${rs.length} of ${lim === Infinity ? "unlimited" : lim} · ${planName()}${account && account.isDev ? " (dev)" : ""}`;
+    box.innerHTML = "";
+    rs.forEach((r) => {
+      const g = customGoal(r.id), bl = g ? g.lengths[0].sets : [], t = totalMin(bl);
+      const c = document.createElement("div");
+      c.className = "goal g-my";
+      c.style.setProperty("--mc", bl[0] ? tcol(bl[0]) : "#3f8dff");
+      c.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-up"/></svg><span style="display:grid;gap:10px"><span class="gt">${esc(r.name || "My routine")}</span><span class="gd">${bl.length} sets · ${fmtMin(t || 0)}</span><span class="my-card-acts"><button class="pill sm" type="button" data-my-start="${esc(r.id)}" ${bl.length ? "" : "disabled"}>Start</button><button class="pill sm out" type="button" data-my-edit="${esc(r.id)}">Edit</button></span></span>`;
+      box.appendChild(c);
+    });
+    const full = rs.length >= lim;
+    const n = document.createElement("button");
+    n.type = "button"; n.className = "new-card";
+    if (full) n.setAttribute("aria-disabled", "true");
+    n.innerHTML = full
+      ? `<span class="plus">+</span><b>New routine</b><span class="small">${planId() === "free" ? "Standard gives you 2, Pro unlimited." : "Pro gives you unlimited routines."}</span><span class="pill sm out">See plans</span>`
+      : `<span class="plus">+</span><b>New routine</b><span class="small">Build it from sets and set every time.</span>`;
+    n.addEventListener("click", () => { if (full) { go("plans"); return; } draft = { id: null, name: "", sets: [] }; go("builder"); });
+    box.appendChild(n);
+    box.querySelectorAll("[data-my-start]").forEach((b) => b.addEventListener("click", () => { const gid = "my-" + b.dataset.myStart; if (S.goal !== gid) { S.goal = gid; S.len = "custom"; resetRun(); } S.len = "custom"; save(); go("plan"); }));
+    box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) }; go("builder"); }));
   }
   function buildLen() {
     $("len-goal").textContent = goal(S.goal).name;
@@ -987,8 +1178,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const bl = l.sets, t = totalMin(bl);
       const b = document.createElement("button");
       b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.len === l.id ? "true" : "false");
-      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${fmtMin(t)}</span><br><span class="small">${bl.length} sets</span></span>`;
-      b.addEventListener("click", () => { if (S.len !== l.id) { S.len = l.id; resetRun(); } save(); go("plan"); });
+      const locked = lengthLocked(goal(S.goal), l);
+      if (locked) b.classList.add("locked");
+      b.innerHTML = `<span class="small">${esc(l.name)}${locked ? ' <span class="lock">🔒 <b>Standard</b></span>' : ""}</span><span><span class="stat">${fmtMin(t)}</span><br><span class="small">${bl.length} sets</span></span>`;
+      b.addEventListener("click", () => { if (locked) { toast("Standard unlocks every length."); go("plans"); return; } if (S.len !== l.id) { S.len = l.id; resetRun(); } save(); go("plan"); });
       box.appendChild(b);
     });
   }
@@ -1005,6 +1198,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
+    const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.custom ? "goal" : "length"; bk.textContent = z.custom ? "Routines" : "Length";
     $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets`;
     $("plan-bar").innerHTML = bl.map((b) => `<i style="flex:${b.min || 1};background:${tcol(b)}" title="${esc(b.name)}"></i>`).join("");
     $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
@@ -1326,7 +1520,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
-  let drawerTab = "account", csInfo = false;
+  let drawerTab = "account", csInfo = false, confirmReset = null;
   const hasCustom = () => !!(account && account.real && (account.isDev || (account.items || []).indexOf("custom_sound") >= 0));
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
@@ -1342,7 +1536,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     } else {
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">Free</span></div><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${account.isDev ? " · all unlocked (dev)" : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
           <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
           <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
@@ -1364,11 +1558,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
       </div></section>`;
       h += `<section class="dr-sec"><h3>Data</h3><div class="group">
-        <button class="row go" type="button" id="reset-today">Reset today's progress</button>
-        <button class="row go" type="button" id="reset-streak">Reset streak</button>
+        <button class="row go" type="button" id="reset-today" aria-expanded="${confirmReset === "today"}">Reset today's progress</button>
+        ${confirmReset === "today" ? `<div class="confirm inline"><span class="small">This clears the routine you're doing today. Your streak stays.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-today-yes">Reset today</button></div></div>` : ""}
+        <button class="row go" type="button" id="reset-streak" aria-expanded="${confirmReset === "streak"}">Reset streak</button>
+        ${confirmReset === "streak" ? `<div class="confirm inline"><span class="small">This deletes all your training days${account && account.real ? " on every device" : ""}. Your streak starts at 0. This can't be undone.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-streak-yes">Reset streak</button></div></div>` : ""}
       </div></section>`;
       h += `<section class="dr-sec"><h3>Help</h3><div class="group">
         <button class="row go" type="button" id="to-faq">FAQ</button>
+        <div class="row"><span>Discord</span><span class="val">${SITE.discordUrl ? `<a href="${esc(SITE.discordUrl)}" target="_blank" rel="noopener">Join</a>` : "soon"}</span></div>
         ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : ""}
         ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
       </div></section>`;
@@ -1431,7 +1628,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       }
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
     });
-    document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; renderDrawer(); $("dr-body").scrollTop = 0; }));
+    document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; confirmReset = null; renderDrawer(); $("dr-body").scrollTop = 0; }));
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
     on("cs-info", "click", () => { csInfo = !csInfo; renderDrawer(); });
     on("see-app", "click", () => { closeDrawer(); const t = $("overlay-teaser"); if (t) { if (view !== "home") { go(""); setTimeout(() => $("overlay-teaser").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }), 80); } else t.scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); } });
@@ -1474,11 +1671,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
-    on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); cloudPush(); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
-    on("reset-streak", "click", () => { store.del(DAYS); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
+    on("reset-today", "click", () => { confirmReset = confirmReset === "today" ? null : "today"; renderDrawer(); });
+    on("rs-no", "click", () => { confirmReset = null; renderDrawer(); });
+    on("to-plans", "click", () => { closeDrawer(); go("plans"); });
+    on("rs-today-yes", "click", () => { confirmReset = null; clearInterval(raf); S = fresh(); store.del(KEY); cloudPush(); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
+    on("reset-streak", "click", () => { confirmReset = confirmReset === "streak" ? null : "streak"; renderDrawer(); });
+    on("rs-streak-yes", "click", () => { confirmReset = null; store.del(DAYS); store.del(DONE); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", async () => {
-      if (account && account.real && sb) { try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; }
+      if (account && account.real && sb) { try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; store.set(MYR, myRoutines().filter((x) => String(x.id).indexOf("l-") === 0)); }
       account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out");
     });
     on("del-acc", "click", () => { confirmDelete = !confirmDelete; renderDrawer(); });
@@ -1490,7 +1691,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         try { await sb.auth.signOut(); } catch (e) {}
         cloudUser = null;
       }
-      account = null; [ACC, DAYS, DONE, KEY].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
+      account = null; [ACC, DAYS, DONE, KEY, MYR].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
     });
   }
   function drawMini(pre) {
@@ -1572,7 +1773,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     try {
       const id = user.id;
       const [prof, code, state, days] = await Promise.all([
-        sb.from("profiles").select("username, avatar_url, is_dev").eq("id", id).maybeSingle(),
+        sb.from("profiles").select("username, avatar_url, is_dev, plan").eq("id", id).maybeSingle(),
         sb.from("referral_codes").select("code, clicks").eq("user_id", id).maybeSingle(),
         sb.from("user_state").select("settings, focus, session, updated_at").eq("user_id", id).maybeSingle(),
         sb.from("training_days").select("day, routines").eq("user_id", id)
@@ -1582,7 +1783,17 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const meta = user.user_metadata || {};
       const p = prof.data || {};
       account = { real: true, id, name: p.username || meta.full_name || meta.name || "Player", avatar: p.avatar_url || meta.avatar_url || null,
-        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, items: (buys.data || []).map((x) => x.item), since: today() };
+        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, plan: p.plan || "free", items: (buys.data || []).map((x) => x.item), since: today() };
+      // own routines: the account is the source of truth; routines made before signing in are uploaded once
+      const rr = await sb.from("custom_routines").select("id, name, sets, updated_at").eq("user_id", id).order("created_at");
+      const cloudList = (rr.data || []).map((x) => ({ id: x.id, name: x.name, sets: x.sets || [], updated_at: x.updated_at }));
+      const localOnly = myRoutines().filter((x) => String(x.id).indexOf("l-") === 0);
+      for (const r of localOnly) {
+        if (cloudList.length >= routineLimit()) break;
+        const ins = await sb.from("custom_routines").insert({ name: r.name, sets: r.sets }).select("id, updated_at").single();
+        if (!ins.error) { cloudList.push({ id: ins.data.id, name: r.name, sets: r.sets, updated_at: ins.data.updated_at }); if (S.goal === "my-" + r.id) S.goal = "my-" + ins.data.id; }
+      }
+      store.set(MYR, cloudList);
       store.set(ACC, account);
       // training days: merge both ways
       const remote = days.data || [];
@@ -1610,7 +1821,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     cloudPush();
     topAccount();
     if (drawerOpen) renderDrawer();
-    if (view === "home") buildHome(); else if (view === "training") buildTraining();
+    if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick(); else if (view === "plans") buildPlans();
   }
   // Referral links: repline.pages.dev/r/abc123 (or ?ref=abc123)
   (function () {
@@ -1658,6 +1869,105 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     cycle(); setInterval(cycle, 5200);
   })();
 
+  /* ---------- Routine builder ---------- */
+  var draft = null, bldConfirm = false, lastAdded = -1;
+  function buildBuilder() {
+    if (!draft) draft = { id: null, name: "", sets: [] };
+    $("bld-name").value = draft.name || "";
+    $("bld-del").hidden = !draft.id;
+    renderBld();
+    const lib = $("bld-lib"); let h = "";
+    Object.keys(TYPES).forEach((t) => {
+      const keys = Object.keys(SETS).filter((k) => SETS[k].type === t);
+      if (!keys.length) return;
+      h += `<div class="lib-group"><h3><i style="background:${TYPES[t].color}"></i>${TYPES[t].label}</h3><div class="lib-chips">${keys.map((k) => `<button type="button" data-add="${k}">+ ${esc(SETS[k].name)}</button>`).join("")}</div></div>`;
+    });
+    lib.innerHTML = h;
+    lib.querySelectorAll("[data-add]").forEach((b) => b.addEventListener("click", () => {
+      if (draft.sets.length >= 40) { toast("A routine can have up to 40 sets."); return; }
+      const k = b.dataset.add; draft.sets.push({ key: k, min: DEFAULT_MIN[SETS[k].type] || 10 }); lastAdded = draft.sets.length - 1; renderBld();
+    }));
+  }
+  function renderBld() {
+    const list = $("bld-list"), sets = draft.sets.filter((x) => SETS[x.key]);
+    const tot = sets.reduce((a, x) => a + x.min, 0);
+    $("bld-sum").textContent = sets.length ? `${sets.length} sets · ${fmtMin(tot)}` : "Add sets from the right to start.";
+    $("bld-bar").innerHTML = sets.map((x) => `<i style="flex:${x.min};background:${TYPES[SETS[x.key].type].color}"></i>`).join("");
+    if (!sets.length) { list.innerHTML = `<li class="bld-empty">Your routine is empty. Tap a set to add it.</li>`; return; }
+    list.innerHTML = draft.sets.map((x, i) => { const st = SETS[x.key]; if (!st) return ""; return `<li class="bld-item${i === lastAdded ? " new" : ""}">
+      <span class="ord"><button type="button" data-up="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>▲</button><button type="button" data-down="${i}" aria-label="Move down" ${i === draft.sets.length - 1 ? "disabled" : ""}>▼</button></span>
+      <span class="nm"><b><i class="dot" style="background:${TYPES[st.type].color};display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px"></i>${i + 1} · ${esc(st.name)}</b><span class="tiny">${TYPES[st.type].label}${st.kills ? " · kill targets" : ""}</span></span>
+      <span class="bld-ctl"><span class="dur"><button type="button" data-minus="${i}" aria-label="Less time">−</button><input type="number" inputmode="numeric" min="1" max="240" value="${x.min}" data-min="${i}" aria-label="Minutes for ${esc(st.name)}"><span>min</span><button type="button" data-plus="${i}" aria-label="More time">+</button></span><button class="x" type="button" data-rm="${i}" aria-label="Remove">×</button></span>
+    </li>`; }).join("");
+    lastAdded = -1;
+    const step = (m) => (m < 10 ? 1 : 5);
+    list.querySelectorAll("[data-up]").forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.up; [draft.sets[i - 1], draft.sets[i]] = [draft.sets[i], draft.sets[i - 1]]; renderBld(); }));
+    list.querySelectorAll("[data-down]").forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.down; [draft.sets[i + 1], draft.sets[i]] = [draft.sets[i], draft.sets[i + 1]]; renderBld(); }));
+    list.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => { draft.sets.splice(+b.dataset.rm, 1); renderBld(); }));
+    list.querySelectorAll("[data-minus]").forEach((b) => b.addEventListener("click", () => { const x = draft.sets[+b.dataset.minus]; x.min = Math.max(1, x.min - step(x.min - 1)); renderBld(); }));
+    list.querySelectorAll("[data-plus]").forEach((b) => b.addEventListener("click", () => { const x = draft.sets[+b.dataset.plus]; x.min = Math.min(240, x.min + step(x.min)); renderBld(); }));
+    list.querySelectorAll("[data-min]").forEach((inp) => inp.addEventListener("change", () => { const v = Math.round(+inp.value); draft.sets[+inp.dataset.min].min = Math.max(1, Math.min(240, isFinite(v) && v > 0 ? v : 10)); renderBld(); }));
+  }
+  $("bld-name").addEventListener("input", (e) => { if (draft) draft.name = e.target.value.slice(0, 40); });
+  async function saveDraft() {
+    const name = (draft.name || "").trim(), sets = draft.sets.filter((x) => SETS[x.key]).map((x) => ({ key: x.key, min: x.min }));
+    if (!name) { toast("Give your routine a name."); $("bld-name").focus(); return; }
+    if (!sets.length) { toast("Add at least one set."); return; }
+    const all = myRoutines();
+    if (!draft.id && all.length >= routineLimit()) { toast(planId() === "free" ? "Free includes 1 own routine. Standard gives you 2." : "Pro gives you unlimited routines."); go("plans"); return; }
+    const now = new Date().toISOString();
+    let id = draft.id;
+    if (sb && cloudUser) {
+      if (id && id.indexOf("l-") !== 0) {
+        const { error } = await sb.from("custom_routines").update({ name, sets, updated_at: now }).eq("id", id);
+        if (error) { toast("Couldn't save. Please try again."); return; }
+      } else {
+        const { data, error } = await sb.from("custom_routines").insert({ name, sets }).select("id").single();
+        if (error) { toast(/row-level|policy/i.test(error.message || "") ? "You've reached your plan's routine limit." : "Couldn't save. Please try again."); return; }
+        const old = id; id = data.id;
+        if (old) { store.set(MYR, all.filter((x) => x.id !== old)); if (S.goal === "my-" + old) S.goal = "my-" + id; }
+      }
+    } else if (!id) id = "l-" + Math.random().toString(36).slice(2, 10);
+    const next = myRoutines().filter((x) => x.id !== id).concat([{ id, name, sets, updated_at: now }]);
+    store.set(MYR, next);
+    toast("Routine saved"); draft = null; go("goal");
+  }
+  async function deleteDraft() {
+    const id = draft && draft.id; if (!id) return;
+    if (sb && cloudUser && id.indexOf("l-") !== 0) { const { error } = await sb.from("custom_routines").delete().eq("id", id); if (error) { toast("Couldn't delete. Please try again."); return; } }
+    store.set(MYR, myRoutines().filter((x) => x.id !== id));
+    if (S.goal === "my-" + id) { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
+    toast("Routine deleted"); draft = null; bldConfirm = false; go("goal");
+  }
+  $("bld-save").addEventListener("click", saveDraft);
+  $("bld-del").addEventListener("click", () => {
+    bldConfirm = !bldConfirm;
+    $("bld-confirm").innerHTML = bldConfirm ? `<div class="confirm" style="border:0;padding:0"><span class="small">Delete “${esc(draft.name || "this routine")}”? This can't be undone.</span><div><button class="pill sm out" type="button" id="bld-no">Cancel</button><button class="pill sm red" type="button" id="bld-yes">Delete routine</button></div></div>` : "";
+    if (bldConfirm) { $("bld-no").addEventListener("click", () => { bldConfirm = false; $("bld-confirm").innerHTML = ""; }); $("bld-yes").addEventListener("click", deleteDraft); }
+  });
+
+  /* ---------- Plans page ---------- */
+  function buildPlans() {
+    const cur = planId(), euro = (n) => "€" + n.toFixed(2);
+    $("plans-grid").innerHTML = PLANS.map((pl) => `<div class="plan-card${pl.id === "pro" ? " pro-card" : ""}">
+      ${pl.id === cur ? '<span class="cur-tag">Current plan</span>' : ""}
+      <span class="pn">${pl.name}${pl.id === "pro" ? '<span class="pro" style="margin-left:0">✦ Pro</span>' : ""}</span>
+      <span class="pp">${pl.price ? euro(pl.price) : "€0"}<small>${pl.price ? " / month" : ""}</small></span>
+      <ul>${pl.perks.map((x) => `<li class="${(pl.soon || []).indexOf(x) >= 0 ? "soonli" : ""}"><span>${esc(x)}${(pl.soon || []).indexOf(x) >= 0 ? ' <span class="soon">soon</span>' : ""}</span></li>`).join("")}</ul>
+      ${pl.id === cur ? '<button class="pill out" type="button" disabled>Your plan</button>' : pl.price ? `<button class="pill${pl.id === "pro" ? "" : " out"}" type="button" disabled>Coming soon</button>` : ""}
+    </div>`).join("");
+    $("plans-note").textContent = account && account.isDev ? "Dev account: every feature is unlocked for testing. Payments open soon." : "Payments open soon. Monthly, cancel anytime.";
+  }
+
+  /* ---------- Discord buttons ---------- */
+  function discordHTML(kind) {
+    const url = SITE.discordUrl;
+    if (kind === "text") return url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Discord</a>` : "Discord (soon)";
+    return url ? `<a class="pill big dc-btn" href="${esc(url)}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-discord"/></svg>Join Discord</a>`
+      : `<button class="pill big out" type="button" disabled><svg aria-hidden="true" style="width:20px;height:20px"><use href="#i-discord"/></svg>Join Discord · soon</button>`;
+  }
+  document.querySelectorAll("[data-discord]").forEach((el) => { el.innerHTML = discordHTML(el.dataset.discord); });
+
   /* ---------- Resume bar ---------- */
   function updateResume() {
     const bar = $("resume-bar"), l = S.goal && length(S.goal, S.len);
@@ -1692,7 +2002,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -1706,6 +2016,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const asked = name;
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
+    if (name === "length" && goal(S.goal) && goal(S.goal).custom) name = S.len ? "plan" : "goal";
+    if (name === "builder" && !draft) name = "goal";
     if ((name === "plan" || name === "training") && (!S.goal || !length(S.goal, S.len))) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
     if (name === "training") S.active = true;
@@ -1718,6 +2030,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (drawerOpen) closeDrawer();
     if (id === "home") { buildHome(); heroDial(); }
     if (id === "goal") buildPick();
+    if (id === "plans") buildPlans();
+    if (id === "builder") buildBuilder();
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
     if (id === "training") buildTraining();
