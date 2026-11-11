@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+<title>Repline overlay</title>
+<style>
+/* In-game overlay: one dark capsule. Ring = whole routine, text = current set, number = time left. */
+:root {
+  --op: 0.92;
+  --bg: rgba(16, 16, 18, 0.88);
+  --edge: rgba(255, 255, 255, 0.09);
+  --text: #f5f5f7;
+  --ash: #8e8e93;
+  --track: rgba(255, 255, 255, 0.10);
+  --blue: #0a84ff;
+  --display: -apple-system, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --ease: cubic-bezier(.28, .11, .32, 1);
+  color-scheme: dark;
+}
+html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+body { font-family: var(--display); color: var(--text); -webkit-font-smoothing: antialiased; user-select: none; cursor: default; }
+.card {
+  position: absolute; inset: 8px; box-sizing: border-box;
+  display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; grid-template-rows: 1fr auto; align-items: center; column-gap: 14px;
+  padding: 10px 18px 10px 12px; border-radius: 26px; background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--edge), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  opacity: var(--op); transition: opacity .45s var(--ease), transform .55s var(--ease);
+}
+body.hidden .card { opacity: 0; transform: translateY(-8px) scale(.97); }
+.ring { position: relative; width: 64px; height: 64px; grid-row: 1 / 3; }
+.ring svg { width: 64px; height: 64px; transform: rotate(-90deg); overflow: visible; }
+.ring circle { fill: none; }
+.ring .trk { opacity: .22; }
+.ring .fil { transition: stroke-dasharray .4s linear; }
+.ring .cur { filter: drop-shadow(0 0 3px currentColor); }
+.ring b { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; padding-top: 22px; box-sizing: border-box; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.ring b small { font-size: 10px; color: var(--ash); font-weight: 500; }
+.meta { min-width: 0; display: grid; gap: 2px; }
+.chip { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ash); letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.name { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.next { font-size: 11px; color: var(--ash); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.time { text-align: right; display: grid; justify-items: end; gap: 2px; }
+.time b { font-size: 28px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; transition: color .3s; }
+.time span { font-size: 11px; color: var(--ash); }
+body.paused .time b { color: var(--ash); }
+body.done .time b { color: #30d158; }
+.bar { grid-column: 2 / 4; display: flex; gap: 2px; height: 3px; margin-top: 8px; border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--track); position: relative; overflow: hidden; }
+.bar i::after { content: ""; position: absolute; inset: 0; background: var(--c); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform .4s linear; }
+.swap { animation: swap .5s var(--ease); }
+@keyframes swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* Move mode */
+body.moving .card { -webkit-app-region: drag; cursor: move; box-shadow: inset 0 0 0 2px var(--blue); opacity: 1; }
+.hint { position: absolute; inset: 8px; border-radius: 26px; display: none; place-items: center; background: rgba(8, 28, 56, .94); box-shadow: inset 0 0 0 2px var(--blue); font-size: 14px; font-weight: 600; pointer-events: none; }
+body.moving .hint { display: grid; }
+@media (prefers-reduced-motion: reduce) { .card, .swap, .bar i::after, .ring .fil { transition: none; animation: none; } }
+</style>
+</head>
+<body class="hidden">
+  <div class="card" id="card">
+    <div class="ring"><svg viewBox="0 0 64 64" id="ring" aria-hidden="true"></svg><b id="pos">–</b></div>
+    <div class="meta" id="meta">
+      <span class="chip" id="chip"><i></i>Repline</span>
+      <span class="name" id="name">Ready</span>
+      <span class="next" id="next"></span>
+    </div>
+    <div class="time"><b id="clock">0:00</b><span id="sub"></span></div>
+    <div class="bar" id="bar"></div>
+  </div>
+  <div class="hint">Drag to place · then click Done in Repline</div>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const R = 27, C = 2 * Math.PI * R, GAP = 2.2;
+  let st = { active: false }, lastKey = "", hotkeys = true;
+  const clock = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}` : `${m}:${String(x).padStart(2, "0")}`; };
+  const DEMO = { active: true, demo: true, routine: "Get better · Normal", idx: 1, count: 4, name: "Freebuild · 110–120%", type: "Mechanics", color: "#3f8dff", next: "Freebuild · 90%", kind: "timer", status: "laeuft", total: 360000, elapsed: 132000, at: Date.now(), segs: [{ w: 12, color: "#3f8dff" }, { w: 6, color: "#3f8dff" }, { w: 5, color: "#3f8dff" }, { w: 7, color: "#3f8dff" }], done: [true, false, false, false] };
+
+  function elapsedNow(s) { return s.elapsed + (s.status === "laeuft" ? Date.now() - s.at : 0); }
+  function fillOf(s, i) {
+    if (s.done[i]) return 1;
+    if (i !== s.idx) return 0;
+    if (s.kind === "kills") return s.kills ? s.kills[0] / s.kills[1] : 0;
+    if (s.kind === "timer") return Math.min(1, elapsedNow(s) / s.total);
+    return s.status === "bereit" ? 0 : Math.min(.92, .08 + elapsedNow(s) / 600000 * .84);
+  }
+  function drawRing(s) {
+    const total = s.segs.reduce((a, x) => a + x.w, 0) || 1, gap = s.segs.length > 1 ? GAP : 0;
+    let off = 0, h = "";
+    s.segs.forEach((x, i) => {
+      const len = Math.max(.6, x.w / total * C - gap);
+      h += `<circle class="trk" cx="32" cy="32" r="${R}" stroke="${x.color}" stroke-width="5" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}"></circle>`;
+      h += `<circle class="fil${i === s.idx ? " cur" : ""}" data-len="${len}" cx="32" cy="32" r="${R}" stroke="${x.color}" style="color:${x.color}" stroke-width="5" stroke-dasharray="0 ${C}" stroke-dashoffset="${-off}"></circle>`;
+      off += len + gap;
+    });
+    $("ring").innerHTML = h;
+    $("bar").innerHTML = s.segs.map((x) => `<i style="flex:${x.w};--c:${x.color}"></i>`).join("");
+  }
+  function tick() {
+    const s = st.active ? st : (st.moving ? DEMO : null);
+    document.body.classList.toggle("hidden", !s);
+    document.body.classList.toggle("moving", !!st.moving);
+    if (!s) return;
+    const key = `${s.routine}|${s.idx}|${s.count}|${s.segs.map((x) => x.w + x.color).join()}`;
+    if (key !== lastKey) {
+      drawRing(s);
+      if (lastKey) { const m = $("meta"); m.classList.remove("swap"); void m.offsetWidth; m.classList.add("swap"); }
+      lastKey = key;
+    }
+    const fills = s.segs.map((_, i) => fillOf(s, i));
+    $("ring").querySelectorAll(".fil").forEach((c, i) => c.setAttribute("stroke-dasharray", `${c.dataset.len * fills[i]} ${C}`));
+    $("bar").querySelectorAll("i").forEach((el, i) => el.style.setProperty("--f", fills[i]));
+    $("pos").innerHTML = `${s.idx + 1}<small>/${s.count}</small>`;
+    $("chip").innerHTML = `<i style="background:${s.color}"></i>${s.type}`;
+    $("name").textContent = s.name;
+    $("next").textContent = s.next ? `Next · ${s.next}` : "Last set";
+    const e = elapsedNow(s);
+    let big, sub;
+    if (s.status === "fertig") { big = "Done"; sub = hotkeys ? "Ctrl+Shift+N · next" : "Next set in Repline"; }
+    else if (s.kind === "kills") { big = `${s.kills[0]}/${s.kills[1]}`; sub = "targets"; }
+    else if (s.kind === "timer") { big = clock(s.total - e + 999); sub = s.status === "laeuft" ? "left" : s.status === "pause" ? "Paused" : "Ready"; }
+    else { big = clock(e); sub = s.status === "laeuft" ? "in set" : s.status === "pause" ? "Paused" : "Ready"; }
+    $("clock").textContent = big;
+    $("sub").textContent = sub;
+    document.body.classList.toggle("paused", s.status === "pause" || s.status === "bereit");
+    document.body.classList.toggle("done", s.status === "fertig");
+  }
+  if (window.overlayBridge) {
+    overlayBridge.onState((s) => { st = s || { active: false }; tick(); });
+    overlayBridge.onLook((l) => { document.documentElement.style.setProperty("--op", l.opacity); hotkeys = !!l.hotkeys; tick(); });
+  }
+  setInterval(tick, 250);
+  tick();
+})();
+</script>
+</body>
+</html>

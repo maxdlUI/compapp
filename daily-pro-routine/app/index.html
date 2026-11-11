@@ -339,6 +339,13 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 @media (min-width: 900px) { .gallery { grid-auto-columns: calc((100% - 48px) / 4); } }
 @media (max-width: 760px) { .gallery { grid-auto-columns: 78%; } }
 
+/* Overlay settings */
+.pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 132px; aspect-ratio: 16 / 9; padding: 6px; border-radius: 12px; background: var(--obsidian); box-shadow: 0 0 0 1px var(--steel); flex: none; }
+.pos-grid button { border: 0; border-radius: 5px; background: var(--steel); cursor: pointer; padding: 0; transition: background .2s; }
+.pos-grid button:hover { background: var(--slate); }
+.pos-grid button[aria-pressed="true"] { background: var(--blue); }
+.range { width: 150px; accent-color: var(--blue); }
+
 /* Account drawer */
 .acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
 .acct-btn:focus-visible { outline-offset: 3px; }
@@ -952,18 +959,19 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("b-restart").disabled = kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
     document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
+    pushOverlay();
   }
   function loop() {
     if (S.status !== "laeuft") return;
     const b = cur();
-    if (b.min != null && elapsed() >= b.min * 60000) { S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); return; }
-    render(); raf = requestAnimationFrame(loop);
+    if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); return; }
+    render();
   }
-  function play() { if (isKill(cur()) || S.status === "fertig") return; since = performance.now(); S.status = "laeuft"; keepAwake(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); save(); render(); }
-  function pause() { S.before = elapsed(); S.status = "pause"; cancelAnimationFrame(raf); keepAwake(false); save(); render(); }
-  function restart() { cancelAnimationFrame(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  function play() { if (isKill(cur()) || S.status === "fertig") return; since = performance.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
+  function pause() { S.before = elapsed(); S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
+  function restart() { clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   function nextBlock() {
-    cancelAnimationFrame(raf); keepAwake(false);
+    clearInterval(raf); keepAwake(false);
     S.done[S.b] = true;
     if (S.b >= list().length - 1) { finish(); return; }
     S.b += 1; S.before = 0; S.status = "bereit"; save(); buildTraining();
@@ -984,6 +992,40 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   });
   addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.status === "laeuft") keepAwake(true); save(); });
 
+  /* ---------- Windows app: in-game overlay + hotkeys ---------- */
+  const DESK = window.replineDesktop || null;
+  let ovSent = 0;
+  function overlayState() {
+    const l = S.goal && length(S.goal, S.len);
+    if (!S.active || !l) return { active: false };
+    const bl = list(), b = cur(), kill = isKill(b);
+    return {
+      active: true, routine: `${goal(S.goal).name} · ${l.name}`, idx: S.b, count: bl.length,
+      name: b.name || "***", type: TYPES[b.type].label, color: tcol(b), next: bl[S.b + 1] ? bl[S.b + 1].name : null,
+      segs: bl.map((x) => ({ w: x.min || 1, color: tcol(x) })), done: bl.map((_, i) => !!S.done[i]),
+      status: S.status, kind: kill ? "kills" : (b.min != null ? "timer" : "watch"),
+      kills: kill ? [killsDone(S.b), b.kills.length] : null, total: b.min != null ? b.min * 60000 : null,
+      elapsed: elapsed(), at: Date.now()
+    };
+  }
+  function pushOverlay(force) {
+    if (!DESK) return;
+    const now = Date.now();
+    if (!force && now - ovSent < 1000) return;
+    ovSent = now;
+    try { DESK.overlay.push(overlayState()); } catch (e) {}
+  }
+  if (DESK) {
+    DESK.onHotkey((name) => {
+      if (!(S.active && length(S.goal, S.len))) return;
+      if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
+      else if (name === "next") nextBlock();
+      else if (name === "restart") restart();
+      pushOverlay(true);
+    });
+    setInterval(() => pushOverlay(true), 5000);
+  }
+
   /* ---------- Done & streak ---------- */
   function finish() {
     const days = store.get(DAYS, []); const t = today();
@@ -993,6 +1035,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
+    pushOverlay(true);
     go("done");
   }
   function streak() {
@@ -1040,6 +1083,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const ACC = "rl.account";
   let account = store.get(ACC, null);
   let drawerOpen = false, lastFocus = null, confirmDelete = false, signingIn = false;
+  let ov = null, ovMoving = false;
+  if (window.replineDesktop) {
+    window.replineDesktop.overlay.get().then((s) => { ov = s; if (drawerOpen) renderDrawer(); }).catch(() => {});
+    window.replineDesktop.overlay.onSettings((s) => { ov = s; if (drawerOpen) renderDrawer(); });
+  }
   function refCode() { const a = "abcdefghjkmnpqrstuvwxyz23456789"; let s = ""; for (let i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
   function refLink() { return account ? `${SITE.url ? SITE.url.replace(/\/$/, "") : "***"}/r/${account.ref}` : ""; }
   function topAccount() {
@@ -1073,6 +1121,18 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
         ${sw("set-motion", "Animations", anim())}
       </div></section>`;
+    if (DESK && ov) {
+      const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
+      h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
+        ${sw("ov-on", "Show overlay", ov.enabled)}
+        <div class="row" style="align-items:flex-start"><span>Position<br><span class="tiny">${ov.position === "custom" ? "Custom, placed by you" : "Pick a corner or edge"}</span></span>
+          <span class="pos-grid" role="group" aria-label="Overlay position">${P.map(([id, label]) => id ? `<button type="button" data-pos="${id}" aria-label="${label}" aria-pressed="${ov.position === id}"></button>` : `<span aria-hidden="true"></span>`).join("")}</span></div>
+        <div class="row"><span>Move freely</span><button class="pill sm ${ovMoving ? "" : "out"}" type="button" id="ov-move">${ovMoving ? "Done" : "Move"}</button></div>
+        <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
+        <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
+        ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
+      </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+    }
     h += `<section class="dr-sec"><h3>Data</h3><div class="group">
         <button class="row go" type="button" id="reset-today">Reset today's progress</button>
         <button class="row go" type="button" id="reset-streak">Reset streak</button>
@@ -1099,9 +1159,18 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
     });
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
+    if (DESK && ov) {
+      const setOv = (patch, msg) => DESK.overlay.set(patch).then((n) => { ov = n; renderDrawer(); if (msg) toast(msg); });
+      on("ov-on", "change", (e) => setOv({ enabled: e.target.checked }, e.target.checked ? "Overlay on" : "Overlay off"));
+      on("ov-keys", "change", (e) => setOv({ hotkeys: e.target.checked }));
+      on("ov-op", "change", (e) => setOv({ opacity: +e.target.value / 100 }));
+      document.querySelectorAll("[data-pos]").forEach((b) => b.addEventListener("click", () => setOv({ position: b.dataset.pos, enabled: true }, "Overlay moved")));
+      document.querySelectorAll("[data-size]").forEach((b) => b.addEventListener("click", () => setOv({ size: b.dataset.size })));
+      on("ov-move", "click", () => { ovMoving = !ovMoving; DESK.overlay.move(ovMoving).then(() => { if (!ovMoving) DESK.overlay.get().then((n) => { ov = n; renderDrawer(); toast("Position saved"); }); else { renderDrawer(); toast("Drag the overlay where you want it"); } }); });
+    }
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
-    on("reset-today", "click", () => { cancelAnimationFrame(raf); S = fresh(); store.del(KEY); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
+    on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
     on("reset-streak", "click", () => { store.del(DAYS); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", () => { account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out"); });
@@ -1120,6 +1189,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function closeDrawer() {
     if (!drawerOpen) return;
+    if (ovMoving && window.replineDesktop) { ovMoving = false; window.replineDesktop.overlay.move(false).then(() => window.replineDesktop.overlay.get()).then((n) => { ov = n; toast("Position saved"); }); }
     drawerOpen = false;
     const d = $("drawer"), s = $("scrim");
     d.classList.remove("open"); s.classList.remove("open"); root.classList.remove("no-scroll");
@@ -1184,6 +1254,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
     if (id === "training") { if (S.status === "laeuft") S.status = "pause"; buildTraining(); }
+    pushOverlay(true);
     if (id === "done") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine done."; }
     if (!first || id !== "home") scrollTo(0, 0);
   }
