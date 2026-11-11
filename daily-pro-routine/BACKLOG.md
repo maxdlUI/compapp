@@ -84,6 +84,6 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - **electron-builder + NSIS-Installer + electron-updater:** Die App prüft beim Start und alle paar Stunden auf Updates. Sie lädt nur die geänderten Teile (Differential-Update über `.blockmap`), installiert im Hintergrund und fragt „Update ready · Restart“. Bei längerer Nichtnutzung installiert sie beim nächsten Beenden.
 - **Update-Kanäle:** `latest` für alle, `beta` für Devs. Dev-Accounts testen neue Versionen zuerst.
 - **Release-Notizen** im Programm anzeigen („What's new in 1.3“).
-- **Code-Signatur:** über Azure Trusted Signing (etwa 10 $ im Monat) oder ein OV-Zertifikat. Dann keine SmartScreen-Warnung, und Windows vertraut den Updates.
+- **Code-Signatur: vorerst keine** (Entscheidung 11.11.2026). Beim ersten Installieren zeigt Windows SmartScreen („Weitere Informationen“ → „Trotzdem ausführen“), die Auto-Updates laufen danach trotzdem. Kann später mit Azure Trusted Signing nachgerüstet werden, ohne dass Nutzer neu installieren müssen.
 - **Dateien:** Cloudflare R2 (Installer, `latest.yml`, Blockmaps). Download-Button und Updater nutzen denselben Ort.
 - **Build:** Ein Befehl erzeugt die neue Version (Versionsnummer +1, Installer bauen, signieren, hochladen). Kein Hand-Upload mehr.
