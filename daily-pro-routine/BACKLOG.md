@@ -68,3 +68,12 @@
   - zählt kurz auf, was man in der App wählen kann: 7 Töne, 7 Animationen, Position, Größe, Deckkraft, Hotkeys im Spiel
   - Knopf „Get the Windows app“ (Download, sobald es einen Download-Link gibt)
 - Die Testseite `preview-alerts.html` kann als Vorlage für die Teaser-Animation dienen.
+
+## Nächstes Update: Download-Button und automatische App-Updates
+
+- **Download-Button auf der Webseite:** „Download for Windows“ im Overlay-Teaser, in Appearance und im Footer. Er führt immer auf die **neueste Version**, über einen festen Link wie `…/Repline-Setup-latest.exe`, der bei jedem Release automatisch neu zeigt. Daneben stehen Versionsnummer und Größe.
+- **Updates ohne Neu-Herunterladen:**
+  1. **Inhalte live laden:** Das Windows-Programm lädt Repline von `repline.pages.dev`, mit der eingebauten Kopie als Offline-Ersatz. Jedes Webseiten-Update ist damit sofort auch in der App, ohne Neuinstallation.
+  2. **Auto-Update für das Programm selbst** (Overlay, Hotkeys, Fenster): `electron-updater` prüft beim Start auf eine neue Version, lädt sie im Hintergrund und installiert sie beim nächsten Neustart. Hinweis „Update ready · Restart“ im Programm.
+- **Wo die Dateien liegen:** Cloudflare R2. 10 GB sind gratis, Downloads kosten nichts. Dort liegen Installer und `latest.yml` (die Versions-Info für den Updater). Cloudflare Pages erlaubt nur 25 MB pro Datei, deshalb R2. Der Cloudflare-Token braucht dafür zusätzlich die Berechtigung „R2 · Edit“.
+- **Installer bauen:** Für die Updates ist ein richtiger Installer nötig, nicht die ZIP. Bauen über den bestehenden GitHub-Workflow (Windows-Rechner) oder hier mit Wine. Ohne Code-Signatur zeigt Windows beim ersten Installieren eine SmartScreen-Warnung, die Updates laufen danach trotzdem.
