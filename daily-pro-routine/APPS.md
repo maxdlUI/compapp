@@ -46,3 +46,12 @@ Während einer Routine zeigt ein kleines Overlay über dem Spiel: Ring mit Routi
 ### Ton und Animation wählen
 
 Konto-Panel → „Set alerts“: 7 Töne (Chime, Bell, Marimba, Arcade, Ping, Fanfare, kein Ton), jeder mit ▶ zum Anhören, und 7 Abschluss-Animationen (Wave, Flash, Shake, Glow, Confetti, Slide, Minimal). Die Mini-Vorschau zeigt die gewählte Animation sofort. „Preview“ spielt beides ab, im Windows-Programm zusätzlich im echten Overlay. Die Auswahl gilt für Overlay und App. Alles zum Durchprobieren gibt es auch auf `preview-alerts.html`.
+
+## Webseite online (Cloudflare Pages)
+
+- **Live:** https://repline.pages.dev (Projekt `repline` im Cloudflare-Konto)
+- **Vorschau:** https://preview.repline.pages.dev
+- **Veröffentlichen:** `tools/deploy.sh preview` zum Prüfen, danach `tools/deploy.sh production`.
+- Das Skript baut `app/` und packt die Seite in eine einzige `_worker.js` (`tools/build_worker.py`). So reicht ein Token mit nur „Cloudflare Pages · Edit“. Den getrennten Datei-Upload von Cloudflare braucht es nicht.
+- Jede Version bleibt bei Cloudflare gespeichert und lässt sich im Dashboard unter Workers & Pages → repline → Deployments mit einem Klick zurückholen.
+- Hinweis: Weil alle Anfragen über die Worker-Datei laufen, zählen sie zum Gratis-Kontingent von 100.000 Aufrufen pro Tag.
