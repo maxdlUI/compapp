@@ -1,9 +1,9 @@
 <title>Repline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Repline · Daily Pro Routine: pick your goal, pick your length, train block by block.">
+<meta name="description" content="Repline · Daily Pro Routine. Pick a goal, pick a length, train set by set.">
 <style>
 /* Layout: black Apple product page (iPhone 18 Pro, Refero). A home screen, then a guided flow
-   goal → length → plan → training → done. Blue only for primary actions; block colours cyan → violet are the "device finish". */
+   goal → length → plan → training → done. Blue only for primary actions; set-type colours are the "device finish". */
 :root {
   color-scheme: dark;
   --obsidian: #000000;
@@ -110,7 +110,7 @@ html.anim .d1 { transition-delay: .08s; } html.anim .d2 { transition-delay: .16s
 /* Home: hero */
 .hero { display: grid; justify-items: center; text-align: center; gap: 22px; padding-block: 48px 64px; padding-left: var(--gut-l); padding-right: var(--gut-r); position: relative; overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 20% -20% auto; height: 70%; background: radial-gradient(45% 55% at 50% 40%, rgba(63, 141, 255, .22), transparent 70%); pointer-events: none; }
-.hero .dial { width: min(360px, 74vw); transform: scale(var(--hs, 1)); transition: transform .1s linear; }
+.hero .dial { width: min(380px, 76vw); transform: scale(var(--hs, 1)); transition: transform .1s linear; }
 .hero-copy { position: relative; display: grid; justify-items: center; gap: 14px; opacity: var(--ho, 1); }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 6px; }
 html.anim .hero-copy > * { animation: rise 1.2s var(--ease) both; }
@@ -198,7 +198,10 @@ footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-conten
 .field input:focus { outline: none; }
 .blocks { display: grid; gap: 10px; }
 .blk { background: var(--carbon); border-radius: 20px; overflow: hidden; }
-.blk summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 18px 20px; }
+.blk summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+.blk summary .nm { flex: 1; }
+.blk .when:empty { display: none; }
+.blk .nm .tag { margin-left: 8px; vertical-align: 1px; }
 .blk summary::-webkit-details-marker { display: none; }
 .blk .dot { width: 10px; height: 10px; border-radius: 50%; }
 .blk .when { font-variant-numeric: tabular-nums; color: var(--ash); font-size: 14px; min-width: 44px; }
@@ -270,6 +273,31 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 @keyframes type { 0%, 12% { opacity: 0; transform: translateY(10px); } 30%, 80% { opacity: .6; transform: none; } 100% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) { .dial .seg-a, .dial .fil, .goal, .len { transition: none; } }
+
+/* Polish */
+.how div, .len, .blk, .card, .group, .progress { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06); }
+.goal .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; letter-spacing: -0.12px; color: rgba(245, 245, 247, .6); }
+.goal .arr { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .12); display: grid; place-items: center; font-size: 17px; color: var(--porcelain); transition: background .3s, transform .4s var(--ease); flex: none; }
+.goal:hover .arr { background: rgba(255, 255, 255, .22); transform: translateX(2px); }
+.dial .tick { stroke: rgba(245, 245, 247, .16); stroke-width: .6; }
+.dial .tick.major { stroke: rgba(245, 245, 247, .38); stroke-width: .9; }
+.sbar { display: flex; height: 6px; border-radius: 99px; overflow: hidden; gap: 2px; margin-bottom: 14px; }
+.sbar i { display: block; height: 100%; min-width: 3px; }
+.tag { font-size: 11px; font-weight: 600; letter-spacing: 0; padding: 1px 7px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--steel); color: var(--ash); white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: -0.12px; color: var(--ash); }
+.chip i { width: 8px; height: 8px; border-radius: 50%; }
+.where { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--obsidian); box-shadow: 0 0 0 1px var(--steel); border-radius: 16px; padding: 14px 18px; }
+.where b { font-weight: 600; font-size: 15px; }
+.counter { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.stepper-n { display: inline-flex; align-items: center; gap: 4px; background: var(--obsidian); border-radius: 99px; padding: 4px; box-shadow: 0 0 0 1px var(--steel); }
+.stepper-n button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--steel); color: var(--porcelain); font-size: 18px; cursor: pointer; }
+.stepper-n b { min-width: 36px; text-align: center; font-family: var(--display); font-size: 19px; font-variant-numeric: tabular-nums; }
+.fix-in { width: 100%; border: 0; border-radius: 14px; background: var(--obsidian); box-shadow: inset 0 0 0 1px var(--steel); padding: 14px 16px; color: var(--porcelain); font-size: 15px; }
+.fix-in:focus { outline: none; box-shadow: inset 0 0 0 1px var(--blue); }
+.focus-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--obsidian); border-radius: 18px; padding: 14px 16px 14px 18px; box-shadow: 0 0 0 1px var(--steel); }
+.focus-card b { font-weight: 600; overflow-wrap: anywhere; }
+.stage[data-type="rest"] .dial-mid .t { color: var(--ash); }
+.stage[data-type="rest"] { background: linear-gradient(#141416, var(--obsidian) 420px); }
 
 /* Account drawer */
 .acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
@@ -360,10 +388,10 @@ html.no-scroll { overflow: hidden; }
 <!-- Home -->
 <main class="view" data-view="home" id="v-home">
   <section class="hero" id="hero" aria-label="Daily Pro Routine">
-    <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Today</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Ready.</span><span class="tiny" id="hero-sub">Block by block</span></div></div>
+    <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Today</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Ready.</span><span class="tiny" id="hero-sub">Set by set</span></div></div>
     <div class="hero-copy">
       <h1 class="d-xl">Daily Pro Routine.</h1>
-      <p class="lead">Pick your goal and your length. Then train block by block, with a timer, codes and kill targets.</p>
+      <p class="lead">Pick a goal. Pick a length. Train set by set.</p>
       <div class="hero-cta"><a class="pill big" href="#goal">Start routine</a><a class="pill big out" href="#training" id="resume" hidden>Continue</a></div>
     </div>
   </section>
@@ -373,20 +401,12 @@ html.no-scroll { overflow: hidden; }
     <div class="goals four" id="home-goals"></div>
   </section>
 
-  <section class="sec wrap" aria-labelledby="h-how" style="padding-top:0">
-    <div class="sec-head"><h2 id="h-how" class="d-m rv">Three steps to training.</h2></div>
-    <div class="how">
-      <div class="rv"><b>1</b><span class="h3">Goal</span><p class="small">Cup warm-up, Get better, or a quick Aim or Mechanics routine.</p></div>
-      <div class="rv d1"><b>2</b><span class="h3">Length</span><p class="small">Short, Normal or Long, matched to your goal.</p></div>
-      <div class="rv d2"><b>3</b><span class="h3">Plan</span><p class="small">Every block with its codes at a glance. Then start the timer.</p></div>
-    </div>
-  </section>
-
   <section class="sec wrap" id="progress" aria-labelledby="h-prog" style="padding-top:0">
     <div class="progress rv">
       <div style="display:grid;gap:12px">
         <h2 id="h-prog" class="d-m">Your progress.</h2>
-        <p class="small">Every finished routine counts as a day. Stored in this browser only.</p>
+        <p class="small">One finished routine, one day.</p>
+        <div id="home-focus"></div>
       </div>
       <div style="display:grid;gap:20px">
         <div><span class="streak-n" id="home-streak">0</span> <span class="lead" style="display:inline" id="home-streak-w">days in a row</span></div>
@@ -398,11 +418,11 @@ html.no-scroll { overflow: hidden; }
   <section class="sec wrap" id="faq" aria-labelledby="h-faq" style="padding-top:0">
     <h2 id="h-faq" class="d-m rv" style="margin-bottom:28px">Questions and answers.</h2>
     <div class="qa rv d1">
-      <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order. Every block has a duration or a kill target, plus the codes you need for it.</p></details>
-      <details><summary>Is the routine the same for everyone?<i></i></summary><p>Yes. The routines are set in advance and identical for every player. A routine made just for you will come with AI Training.</p></details>
-      <details><summary>Do I need an account?<i></i></summary><p>No. Every routine works without an account. With a Discord account you get your own referral link and your settings in one place.</p></details>
-      <details><summary>What happens if I stop halfway?<i></i></summary><p>Your progress for today is saved in this browser. On the home screen, “Continue” picks up where you left off.</p></details>
-      <details><summary>Which keys can I use?<i></i></summary><p>Space starts and pauses, R restarts the block, N goes to the next block, F toggles full screen.</p></details>
+      <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order, built from how pros practise. Every set has one focus.</p></details>
+      <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
+      <details><summary>Do I need an account?<i></i></summary><p>No. An account adds your referral link and keeps your settings in one place.</p></details>
+      <details><summary>Where does today's focus come from?<i></i></summary><p>From your last replay review. Focus drills and ranked games use it.</p></details>
+      <details><summary>Which keys can I use?<i></i></summary><p>Space start/pause · R restart · N next · F full screen.</p></details>
     </div>
   </section>
 </main>
@@ -435,7 +455,7 @@ html.no-scroll { overflow: hidden; }
       <p class="note" id="cup-note" hidden></p>
       <button class="pill big" type="button" id="plan-start">Start training</button>
     </div>
-    <div class="blocks" id="plan-blocks"></div>
+    <div><div class="sbar" id="plan-bar" aria-hidden="true"></div><div class="blocks" id="plan-blocks"></div></div>
   </div>
 </main>
 
@@ -447,24 +467,25 @@ html.no-scroll { overflow: hidden; }
       <div class="stage-top">
         <span class="state" aria-live="polite"><i></i><span id="st-word">Ready</span></span>
         <span>
-          <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Sound at the end of a block"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
+          <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Sound at the end of a set"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
           <button class="icon-btn" type="button" id="full" aria-label="Full screen"><svg><use href="#i-full"/></svg></button>
         </span>
       </div>
       <div class="dial" id="tr-dial"><svg viewBox="0 0 200 200" aria-hidden="true"></svg><div class="dial-mid"><span class="tiny" id="tr-kick"></span><span class="t" id="tr-clock" role="timer" aria-live="off">0:00</span><span class="tiny" id="tr-under"></span></div></div>
       <div class="controls">
-        <button class="round" type="button" id="b-restart" aria-label="Restart block (R)"><svg><use href="#i-restart"/></svg></button>
+        <button class="round" type="button" id="b-restart" aria-label="Restart set (R)"><svg><use href="#i-restart"/></svg></button>
         <button class="pill big" type="button" id="b-main">Start</button>
-        <button class="round" type="button" id="b-next" aria-label="Next block (N)"><svg><use href="#i-next"/></svg></button>
+        <button class="round" type="button" id="b-next" aria-label="Next set (N)"><svg><use href="#i-next"/></svg></button>
       </div>
       <div class="keys tiny"><span><kbd>Space</kbd> Start/Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>N</kbd> Next</span><span><kbd>F</kbd> Full screen</span></div>
     </section>
     <div class="info">
       <section class="card" aria-labelledby="tr-name">
-        <span class="tiny" id="tr-pos"></span>
+        <span class="chip" id="tr-pos"></span>
         <h2 class="h3" id="tr-name"></h2>
         <p class="small" id="tr-hint"></p>
         <div id="tr-codes" style="display:grid;gap:10px"></div>
+        <div id="tr-extra" style="display:grid;gap:12px"></div>
         <ul class="kills" id="tr-kills" hidden></ul>
       </section>
       <section class="card" aria-labelledby="h-next">
@@ -497,14 +518,14 @@ html.no-scroll { overflow: hidden; }
       <button class="back" type="button" data-go="" style="margin:0">Home</button>
       <span class="soon" style="font-size:14px">Coming Soon</span>
       <h1 class="d-l">AI Training. Made for you.</h1>
-      <p class="lead">Tell it what you want to work on today and how much time you have. The AI builds your own routine from that, as a warm-up or to get better.</p>
+      <p class="lead">Tell it your goal and your time. It builds your routine.</p>
       <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#goal">See fixed routines</a></div>
     </div>
     <div class="ki-demo" aria-hidden="true">
       <textarea disabled tabindex="-1">I have *** today and want to work on ***.</textarea>
-      <div class="blk"><summary><i class="dot" style="background:var(--c1)"></i><span class="when"></span><span class="nm">Block 1 · ***</span><span class="du">*** min</span></summary></div>
-      <div class="blk"><summary><i class="dot" style="background:var(--c3)"></i><span class="when"></span><span class="nm">Block 2 · ***</span><span class="du">*** min</span></summary></div>
-      <div class="blk"><summary><i class="dot" style="background:var(--c4)"></i><span class="when"></span><span class="nm">Block 3 · ***</span><span class="du">*** min</span></summary></div>
+      <div class="blk"><summary><i class="dot" style="background:var(--c1)"></i><span class="when"></span><span class="nm">Set 1 · ***</span><span class="du">*** min</span></summary></div>
+      <div class="blk"><summary><i class="dot" style="background:var(--c3)"></i><span class="when"></span><span class="nm">Set 2 · ***</span><span class="du">*** min</span></summary></div>
+      <div class="blk"><summary><i class="dot" style="background:var(--c4)"></i><span class="when"></span><span class="nm">Set 3 · ***</span><span class="du">*** min</span></summary></div>
     </div>
   </div>
 </main>
@@ -543,45 +564,63 @@ const SITE = {
 };
 
 /* =====================================================================
-   ROUTINES — the same for every player. Map codes are placeholders until the real ones are added.
-   Block with a duration:  { name, min, hint, codes: [{ name, value }] }
-   Block with kill targets: add kills: [{ name, kills }] (min is still used for planning).
-   value: null shows ****-****-****.
+   SETS — the building pieces of every routine. Same for every player.
+   type: aim · mech · fight · live · review · prep · rest
+   Map codes come from current map lists; test each one in game once.
    ===================================================================== */
-const B = {
-  kovaaks: (min) => ({ name: "KovaaK's", min, hint: "Load the playlist in KovaaK's, then start the timer.", codes: [{ name: "Playlist share code", value: null }] }),
-  mech: (min) => ({ name: "Mechanics V5", min, hint: "Play the scenarios on the Mechanics V5 map in order. Restart a scenario when it gets sloppy.", codes: [{ name: "Map code", value: null }] }),
-  fast: (min) => ({ name: "Freebuild · 120% speed", min, hint: "Set the game speed to 120% (110% if it's too fast). Build fast and keep every piece clean.", codes: [{ name: "Map code", value: null }] }),
-  slow: (min) => ({ name: "Freebuild · 90% speed", min, hint: "Set the game speed to 90%. Slow down and place every piece exactly where it belongs.", codes: [{ name: "Map code", value: null }] }),
-  edit: (min) => ({ name: "Edit course", min, hint: "Example map. Run the course and keep your edits clean before going faster.", codes: [{ name: "Example map code", value: null }] }),
-  aim: (min) => ({ name: "Aim map", min, hint: "Example map. Flicks first, then tracking.", codes: [{ name: "Example map code", value: null }] }),
-  track: (min) => ({ name: "Tracking map", min, hint: "Example map. Stay on target through every movement.", codes: [{ name: "Example map code", value: null }] }),
-  duels: (min) => ({ name: "1v1 aim duels", min, hint: "Example map. First to five, then swap spawns.", codes: [{ name: "Example map code", value: null }] }),
-  piece: (min) => ({ name: "Piece control", min, hint: "Example map. Take walls and floors under pressure, then reset.", codes: [{ name: "Example map code", value: null }] }),
-  box: (min) => ({ name: "Box fights", min, hint: "Example map. Tick each mode once its kills are done.", codes: [{ name: "Example map code", value: null }], kills: [{ name: "Example mode 1", kills: 15 }, { name: "Example mode 2", kills: 15 }, { name: "Example mode 3", kills: 15 }] }),
-  real: (min) => ({ name: "Realistics", min, hint: "Example map. Play it like a real fight: high ground, then pressure.", codes: [{ name: "Example map code", value: null }] }),
-  zone: (min) => ({ name: "Zone wars", min, hint: "Example map. Rotate early and keep your mats up.", codes: [{ name: "Example map code", value: null }] })
+const TYPES = {
+  aim: { label: "Aim", color: "#38e0ff" },
+  mech: { label: "Mechanics", color: "#3f8dff" },
+  fight: { label: "Fights", color: "#a855f7" },
+  live: { label: "Live", color: "#8f7bff" },
+  review: { label: "Review", color: "#e5e5ea" },
+  prep: { label: "Cup prep", color: "#7debff" },
+  rest: { label: "Break", color: "#636366" }
 };
+const SETS = {
+  kovaaks: { name: "KovaaK's", type: "aim", hint: "Tracking, then flicks. Don't chase scores.", codes: [{ name: "Playlist share code", value: null }] },
+  skaavok: { name: "Skaavok Aim Trainer", type: "aim", hint: "Same scenarios every day.", codes: [{ name: "Map code", by: "Donwozi", value: "8022-6842-4965" }] },
+  raiderAim: { name: "Raider's Aim Training", type: "aim", hint: "Shotgun flicks, then AR tracking.", codes: [{ name: "Map code", by: "Raider464", value: "6531-5731-1207" }] },
+  clixAim: { name: "Clix Aim Trainer", type: "aim", hint: "Mixed scenarios. Clean hits only.", codes: [{ name: "Map code", value: "1090-1665-3359" }] },
+  mech: { name: "Mechanics Training V5", type: "mech", hint: "Edits, piece control, peeks. Clean, then fast.", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
+  fast: { name: "Freebuild · 120%", type: "mech", hint: "90s, ramp rushes, resets. Drop to 110% if it falls apart.", codes: [{ name: "Map code", by: "Speed changers", value: "5761-8240-5848" }] },
+  slow: { name: "Freebuild · 90%", type: "mech", hint: "Place every piece exactly.", codes: [{ name: "Map code", by: "Speed changers", value: "5761-8240-5848" }] },
+  edit: { name: "Edit Course", type: "mech", hint: "Timed runs. Beat yesterday, cleanly.", codes: [{ name: "Map code", value: "6363-5615-8837" }] },
+  warmCourse: { name: "Raider's Warm-Up Course", type: "mech", hint: "All five levels, no stopping.", codes: [{ name: "Map code", by: "Raider464", value: "2559-0136-9834" }] },
+  piece: { name: "Piece Control V2", type: "fight", hint: "Take walls and cones first. Reset.", codes: [{ name: "Map code", by: "Raider464", value: "3705-0960-8290" }] },
+  real: { name: "Realistics 1v1", type: "fight", hint: "Real terrain. High ground, then pressure.", codes: [{ name: "Map code", value: "0550-1651-3094" }] },
+  box: { name: "1v1 Build Fights", type: "fight", hint: "Real players. Use today's focus.", codes: [{ name: "Map code", by: "VESIMAITO", value: "9289-6984-7768" }], kills: [{ name: "Round 1", kills: 10 }, { name: "Round 2", kills: 10 }, { name: "Round 3", kills: 10 }] },
+  zone: { name: "Zone Wars", type: "fight", hint: "Rotate early. Keep your mats.", codes: [{ name: "Map code", value: "3537-4087-0888" }] },
+  focusDrill: { name: "Focus drill", type: "fight", where: "Any map that fits", hint: "Your weakest skill. One map, one goal.", usesFocus: true },
+  fixDrill: { name: "Fix drill", type: "fight", where: "Any map that fits", hint: "Drill the fix you just picked.", usesFocus: true },
+  realGame: { name: "One real match", type: "live", where: "Ranked or public match", hint: "Your first cup game isn't a warm-up." },
+  ranked: { name: "Ranked", type: "live", where: "Fortnite · Ranked", hint: "Every game with today's focus." },
+  scrims: { name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
+  prep: { name: "Cup check", type: "prep", hint: "Nothing new before a cup.", checks: ["Settings unchanged", "Rules and start time checked", "Drop and first rotation planned", "Water ready"] },
+  vod: { name: "Replay review", type: "review", where: "Career → Replays", hint: "Pick one fight you lost.", checks: ["Crosshair pass", "Movement pass", "Enemy pass"], fix: true },
+  brk: { name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
+};
+const L = (id, name, list) => ({ id, name, sets: list.map(([k, min]) => Object.assign({ key: k, min }, SETS[k])) });
 const GOALS = [
-  { id: "cup", name: "Cup warm-up", text: "Warm up before your cup, with a start time so you finish right on time.", icon: "i-cup", cupTime: true, lengths: [
-    { id: "short", name: "Short", blocks: [B.kovaaks(10), B.mech(8), B.fast(6), B.slow(6)] },
-    { id: "normal", name: "Normal", blocks: [B.kovaaks(15), B.mech(15), B.fast(10), B.slow(10), B.edit(10)] }
+  { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head.", icon: "i-cup", cupTime: true, lengths: [
+    L("short", "Short", [["kovaaks", 8], ["mech", 10], ["fast", 5], ["slow", 4], ["prep", 3]]),
+    L("normal", "Normal", [["kovaaks", 10], ["mech", 12], ["fast", 6], ["slow", 5], ["piece", 7], ["realGame", 15], ["prep", 5]])
   ] },
-  { id: "better", name: "Get better", text: "The routine for regular training days.", icon: "i-up", lengths: [
-    { id: "short", name: "Short", blocks: [B.kovaaks(15), B.mech(15), B.fast(10), B.slow(10), B.edit(10)] },
-    { id: "normal", name: "Normal", blocks: [B.kovaaks(30), B.mech(30), B.fast(20), B.slow(20), B.edit(20), B.piece(20), B.box(40)] },
-    { id: "long", name: "Long", blocks: [B.kovaaks(30), B.mech(40), B.fast(30), B.slow(30), B.edit(30), B.piece(40), B.box(60), B.real(40)] },
-    { id: "full", name: "Full day", blocks: [B.kovaaks(45), B.mech(60), B.fast(45), B.slow(45), B.edit(45), B.piece(60), B.box(90), B.real(90), B.zone(120)] }
+  { id: "better", name: "Get better", text: "Mechanics, fights, real lobbies, review.", icon: "i-up", lengths: [
+    L("short", "Short", [["kovaaks", 8], ["mech", 8], ["fast", 5], ["slow", 4], ["focusDrill", 10], ["ranked", 20], ["vod", 5]]),
+    L("normal", "Normal", [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 15], ["real", 20], ["brk", 10], ["ranked", 60], ["vod", 15]]),
+    L("long", "Long", [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 20], ["real", 25], ["box", 25], ["brk", 15], ["ranked", 100], ["zone", 30], ["vod", 25]]),
+    L("full", "Full day", [["kovaaks", 20], ["mech", 20], ["fast", 15], ["slow", 15], ["edit", 15], ["piece", 30], ["brk", 15], ["real", 40], ["box", 40], ["zone", 40], ["brk", 30], ["scrims", 150], ["brk", 15], ["ranked", 90], ["vod", 45], ["fixDrill", 20]])
   ] },
-  { id: "aim", name: "Quick: Aim", text: "Aim only, for when time is tight.", icon: "i-aim", lengths: [
-    { id: "short", name: "Short", blocks: [B.kovaaks(20), B.aim(10)] },
-    { id: "normal", name: "Normal", blocks: [B.kovaaks(30), B.aim(20), B.track(10)] },
-    { id: "long", name: "Long", blocks: [B.kovaaks(60), B.aim(45), B.track(30), B.duels(45)] }
+  { id: "aim", name: "Quick: Aim", text: "Trainer, aim maps, real fights.", icon: "i-aim", lengths: [
+    L("short", "Short", [["kovaaks", 15], ["skaavok", 10], ["raiderAim", 5]]),
+    L("normal", "Normal", [["kovaaks", 20], ["skaavok", 15], ["raiderAim", 10], ["real", 15]]),
+    L("long", "Long", [["kovaaks", 40], ["skaavok", 25], ["raiderAim", 20], ["clixAim", 15], ["brk", 10], ["real", 30], ["box", 25], ["vod", 15]])
   ] },
-  { id: "mechanics", name: "Quick: Mechanics", text: "Mechanics only, for when time is tight.", icon: "i-mech", lengths: [
-    { id: "short", name: "Short", blocks: [B.mech(15), B.fast(8), B.slow(7)] },
-    { id: "normal", name: "Normal", blocks: [B.mech(25), B.fast(15), B.slow(10), B.edit(10)] },
-    { id: "long", name: "Long", blocks: [B.mech(50), B.fast(30), B.slow(30), B.edit(30), B.piece(40)] }
+  { id: "mechanics", name: "Quick: Mechanics", text: "Speed at 120%, precision at 90%.", icon: "i-mech", lengths: [
+    L("short", "Short", [["mech", 12], ["fast", 6], ["slow", 5], ["edit", 7]]),
+    L("normal", "Normal", [["mech", 15], ["fast", 10], ["slow", 8], ["edit", 10], ["piece", 12], ["warmCourse", 5]]),
+    L("long", "Long", [["mech", 30], ["fast", 20], ["slow", 20], ["edit", 20], ["piece", 30], ["brk", 10], ["real", 25], ["box", 25]])
   ] }
 ];
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
@@ -613,7 +652,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Data ---------- */
   const goal = (id) => GOALS.find((z) => z.id === id);
   const length = (gid, lid) => { const g = goal(gid); return g && g.lengths.find((l) => l.id === lid); };
-  function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.blocks : []; }
+  function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.sets : []; }
+  const tcol = (b) => TYPES[b.type].color;
+  const tag = (b) => `<span class="tag">${TYPES[b.type].label}</span>`;
   const isKill = (b) => Array.isArray(b.kills);
   const nameOf = (b, i) => `${i + 1} · ${b.name ? esc(b.name) : P}`;
   const fmtMin = (m) => m == null ? "*** min" : m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
@@ -626,12 +667,21 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   let S = store.get(KEY, null);
   if (S && S.day !== today()) { S = null; store.del(KEY); }
   if (!S) S = fresh();
-  function fresh() { return { day: today(), goal: null, len: null, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, active: false }; }
+  S.live = S.live || {}; S.checks = S.checks || {};
+  function fresh() { return { day: today(), goal: null, len: null, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, live: {}, checks: {}, active: false }; }
   function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
   let since = 0;
   const list = () => blocksFor(S.goal, S.len);
   const cur = () => list()[S.b];
   function elapsed() { return S.before + (S.status === "laeuft" ? performance.now() - since : 0); }
+
+  /* ---------- Today's focus ---------- */
+  const FOCUS = "rl.focus";
+  const getFocus = () => { const f = store.get(FOCUS, null); return f && f.text ? f : null; };
+  function focusHTML() {
+    const f = getFocus();
+    return f ? `<div class="focus-card"><div><span class="tiny">Today's focus</span><br><b>${esc(f.text)}</b></div><button class="pill sm out" type="button" id="focus-clear">Clear</button></div>` : `<p class="tiny">Your next replay review sets today's focus.</p>`;
+  }
 
   /* ---------- Dial (SVG) ---------- */
   const R = 88, C = 2 * Math.PI * R, GAP = 1.6;
@@ -663,29 +713,37 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     a.className = `goal g-${z.id === "better" ? "besser" : z.id}${mode === "pick" && (z.id === "cup" || z.id === "better") ? " tall" : ""}`;
     if (mode === "pick") { a.type = "button"; a.setAttribute("aria-pressed", S.goal === z.id ? "true" : "false"); }
     else a.href = "#goal";
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px"><span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span></span>`;
+    const ts = (z.lengths || []).map((l) => totalMin(l.sets)).filter((x) => x != null);
+    const range = ts.length ? (ts.length > 1 ? `${fmtMin(Math.min(...ts))} – ${fmtMin(Math.max(...ts))}` : fmtMin(ts[0])) : (z.range || "");
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px"><span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
     a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
   function aiCard() {
     const a = document.createElement("a");
     a.className = "goal g-ki"; a.href = "#ai";
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">AI Training</span><span class="gd">The AI builds a routine just for you.</span></span>`;
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span class="soon">Coming Soon</span><span class="gt">AI Training</span><span class="gd">A routine built just for you.</span></span>`;
     return a;
   }
   function buildHome() {
     const hg = $("home-goals"); hg.innerHTML = "";
     GOALS.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
-    hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "Short routines for when time is tight.", icon: "i-aim" }));
+    hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "When time is tight.", icon: "i-aim", range: "30 min – 3 h" }));
     hg.appendChild(aiCard());
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
     $("resume").hidden = !(S.active && length(S.goal, S.len));
-    $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Block by block";
+    $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Set by set";
     streakUI("home");
+    $("home-focus").innerHTML = focusHTML();
+    const fc = $("focus-clear"); if (fc) fc.addEventListener("click", () => { store.del(FOCUS); $("home-focus").innerHTML = focusHTML(); toast("Focus cleared"); });
   }
   let heroDrawn = false;
   function heroDial() {
-    drawDial($("hero-dial").querySelector("svg"), [0, 1, 2, 3, 4].map((i) => ({ w: 1, color: COLORS[i] })), { draw: anim() && !heroDrawn });
+    const svg = $("hero-dial").querySelector("svg");
+    drawDial(svg, [0, 1, 2, 3, 4].map((i) => ({ w: 1, color: COLORS[i] })), { draw: anim() && !heroDrawn });
+    let t = "";
+    for (let k = 0; k < 60; k++) { const a = k / 60 * Math.PI * 2, r1 = k % 5 ? 77 : 74, r2 = 79; t += `<line class="tick${k % 5 ? "" : " major"}" x1="${100 + r1 * Math.cos(a)}" y1="${100 + r1 * Math.sin(a)}" x2="${100 + r2 * Math.cos(a)}" y2="${100 + r2 * Math.sin(a)}"></line>`; }
+    svg.insertAdjacentHTML("beforeend", t);
     heroDrawn = true;
   }
 
@@ -699,10 +757,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("len-goal").textContent = goal(S.goal).name;
     const box = $("pick-len"); box.innerHTML = "";
     goal(S.goal).lengths.forEach((l) => {
-      const bl = l.blocks, t = totalMin(bl);
+      const bl = l.sets, t = totalMin(bl);
       const b = document.createElement("button");
       b.type = "button"; b.className = "len"; b.setAttribute("aria-pressed", S.len === l.id ? "true" : "false");
-      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${fmtMin(t)}</span><br><span class="small">${bl.length} blocks</span></span>`;
+      b.innerHTML = `<span class="small">${esc(l.name)}</span><span><span class="stat">${fmtMin(t)}</span><br><span class="small">${bl.length} sets</span></span>`;
       b.addEventListener("click", () => { if (S.len !== l.id) { S.len = l.id; resetRun(); } save(); go("plan"); });
       box.appendChild(b);
     });
@@ -715,16 +773,17 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     return out;
   }
   function codesHTML(b) {
-    if (!b.codes || !b.codes.length) return "";
-    return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
+    if (!b.codes || !b.codes.length) return b.where ? `<div class="where"><span class="tiny">Where</span><b>${esc(b.where)}</b></div>` : "";
+    return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}${c.by ? " · " + esc(c.by) : ""}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
   }
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
-    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} blocks`;
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets`;
+    $("plan-bar").innerHTML = bl.map((b) => `<i style="flex:${b.min || 1};background:${tcol(b)}" title="${esc(b.name)}"></i>`).join("");
     $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
     $("cup-time").value = S.cup || "";
     const times = startTimes();
-    $("cup-note").textContent = times ? "Start times are counted back from your cup." : "Start times appear once every block length is filled in.";
+    $("cup-note").textContent = times ? "Start times are counted back from your cup." : "Start times appear once every set has a length.";
     const box = $("plan-blocks"); box.innerHTML = "";
     bl.forEach((b, i) => {
       const d = document.createElement("details"); d.className = "blk rv" + (i < 4 ? " d" + i : ""); if (i === 0) d.open = true;
@@ -732,8 +791,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       let body = "";
       if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
       body += codesHTML(b);
-      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join("<br>")}</p>`;
-      d.innerHTML = `<summary><i class="dot" style="background:${COLORS[i % COLORS.length]}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
+      if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join(" · ")}</p>`;
+      if (b.checks) body += `<p class="note">${b.checks.map(esc).join(" · ")}</p>`;
+      d.innerHTML = `<summary><i class="dot" style="background:${tcol(b)}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}${tag(b)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
       box.appendChild(d); observe(d);
     });
     if (z.cupTime) {
@@ -747,7 +807,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
-  function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.active = false; }
+  function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.live = {}; S.checks = {}; S.active = false; }
   function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
   setSound(settings.sound);
   $("snd").addEventListener("click", () => setSound(!settings.sound));
@@ -778,11 +838,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function buildTraining() {
     const bl = list(), b = cur(), z = goal(S.goal), l = length(S.goal, S.len);
-    drawDial($("tr-dial").querySelector("svg"), bl.map((x, i) => ({ w: x.min || 1, color: COLORS[i % COLORS.length], cur: i === S.b })), { fill: true });
-    $("tr-pos").textContent = `${z.name} · ${l.name} · Block ${S.b + 1} of ${bl.length}`;
-    $("tr-name").innerHTML = nameOf(b, S.b);
-    $("tr-hint").innerHTML = b.hint ? esc(b.hint) : (isKill(b) ? "Tick each mode once its kills are done." : "Load the code, then start the timer.");
+    drawDial($("tr-dial").querySelector("svg"), bl.map((x) => ({ w: x.min || 1, color: tcol(x), cur: x === b })), { fill: true });
+    $("stage").dataset.type = b.type;
+    $("tr-pos").innerHTML = `<i style="background:${tcol(b)}"></i>${TYPES[b.type].label} · Set ${S.b + 1} of ${bl.length}`;
+    $("tr-name").textContent = b.name || "***";
+    const f = getFocus();
+    $("tr-hint").innerHTML = esc(b.hint || "") + (b.usesFocus || b.key === "ranked" ? (f ? `<br><span style="color:var(--porcelain)">Today's focus: ${esc(f.text)}</span>` : "") : "");
     $("tr-codes").innerHTML = codesHTML(b);
+    buildExtra(b);
     const kl = $("tr-kills"); kl.hidden = !isKill(b); kl.innerHTML = "";
     if (isKill(b)) b.kills.forEach((k, j) => {
       const li = document.createElement("li"), id = `k-${S.b}-${j}`, on = !!(S.kills[S.b] || {})[j];
@@ -791,19 +854,40 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       kl.appendChild(li);
     });
     const nx = $("tr-next"); nx.innerHTML = "";
-    bl.forEach((x, i) => { if (i === S.b) return; const li = document.createElement("li"); if (S.done[i]) li.className = "done"; li.innerHTML = `<i class="dot" style="background:${COLORS[i % COLORS.length]}"></i><span>${nameOf(x, i)}</span><span>${durOf(x)}</span>`; nx.appendChild(li); });
-    if (nx.children.length === 0) nx.innerHTML = `<li><span></span><span>This is the last block.</span><span></span></li>`;
+    bl.forEach((x, i) => { if (i <= S.b) return; const li = document.createElement("li"); li.innerHTML = `<i class="dot" style="background:${tcol(x)}"></i><span>${nameOf(x, i)}</span><span>${durOf(x)}</span>`; nx.appendChild(li); });
+    if (nx.children.length === 0) nx.innerHTML = `<li><span></span><span>Last set. Finish strong.</span><span></span></li>`;
     render();
+  }
+  function buildExtra(b) {
+    const x = $("tr-extra"); let h = "";
+    if (b.type === "live") {
+      const L = S.live[S.b] || { g: 0, m: 0 };
+      h += `<div class="counter"><span>Games played</span><span class="stepper-n"><button type="button" data-g="-1" aria-label="One game less">−</button><b id="lv-g">${L.g}</b><button type="button" data-g="1" aria-label="One game more">+</button></span></div>`;
+      h += `<div class="counter"><span>Moments to review · <b id="lv-m">${L.m}</b></span><button class="pill sm out" type="button" id="lv-mark">Mark moment</button></div>`;
+    }
+    if (b.checks) {
+      const C = S.checks[S.b] || {};
+      h += `<ul class="kills">${b.checks.map((c, j) => `<li><label for="c-${S.b}-${j}"><input type="checkbox" id="c-${S.b}-${j}" data-c="${j}" ${C[j] ? "checked" : ""}><span>${esc(c)}</span><span></span></label></li>`).join("")}</ul>`;
+    }
+    if (b.fix) {
+      const f = getFocus();
+      h += `<label class="tiny" for="fix-in">Your fix for tomorrow</label><input class="fix-in" id="fix-in" type="text" maxlength="80" placeholder="e.g. Take the wall before you edit" value="${f && f.day === today() ? esc(f.text) : ""}">`;
+    }
+    x.innerHTML = h;
+    x.querySelectorAll("[data-g]").forEach((btn) => btn.addEventListener("click", () => { const L = S.live[S.b] = S.live[S.b] || { g: 0, m: 0 }; L.g = Math.max(0, L.g + +btn.dataset.g); $("lv-g").textContent = L.g; save(); }));
+    const mk = $("lv-mark"); if (mk) mk.addEventListener("click", () => { const L = S.live[S.b] = S.live[S.b] || { g: 0, m: 0 }; L.m++; $("lv-m").textContent = L.m; save(); toast("Moment marked"); });
+    x.querySelectorAll("[data-c]").forEach((cb) => cb.addEventListener("change", () => { (S.checks[S.b] = S.checks[S.b] || {})[cb.dataset.c] = cb.checked; save(); }));
+    const fi = $("fix-in"); if (fi) fi.addEventListener("change", () => { const v = fi.value.trim(); if (v) { store.set(FOCUS, { text: v, day: today() }); toast("Saved as today's focus"); } });
   }
   function render() {
     const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
     st.dataset.status = S.status;
     $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done" }[S.status];
     if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
-    else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Block done" : "left"; $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
-    else { $("tr-kick").textContent = "Time in block"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Finish when you're done"; }
+    else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Set done" : (b.type === "rest" ? "Break" : "left"); $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
+    else { $("tr-kick").textContent = "Time in set"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Finish when you're done"; }
     const last = S.b === bl.length - 1, main = $("b-main");
-    if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next block";
+    if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next set";
     else if (kill) main.textContent = "Tick all targets";
     else main.textContent = S.status === "laeuft" ? "Pause" : (S.status === "pause" ? "Resume" : "Start");
     main.disabled = kill && S.status !== "fertig";
@@ -848,7 +932,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
     store.set(DONE, store.get(DONE, 0) + 1);
     const z = goal(S.goal), l = length(S.goal, S.len);
-    $("done-sum").textContent = `${z.name} · ${l.name} · all ${list().length} blocks done.${z.cupTime ? " Good luck in your cup." : ""}`;
+    $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
     go("done");
@@ -890,7 +974,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-copy]"); if (!b) return;
     e.preventDefault();
-    if (!b.dataset.copy) { toast(b.dataset.empty || "No code has been added for this block yet."); return; }
+    if (!b.dataset.copy) { toast(b.dataset.empty || "No code has been added for this set yet."); return; }
     copyText(b.dataset.copy, b, b.dataset.ok || "Code copied");
   });
 
@@ -927,7 +1011,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts sign-ups. Demo numbers.</p></section>`;
     }
     h += `<section class="dr-sec"><h3>Settings</h3><div class="group">
-        ${sw("set-sound", "Sound at the end of a block", settings.sound)}
+        ${sw("set-sound", "Sound at the end of a set", settings.sound)}
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
         ${sw("set-motion", "Animations", anim())}
       </div></section>`;
