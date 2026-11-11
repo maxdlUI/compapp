@@ -463,6 +463,7 @@ button.row.danger { color: #ff6961; }
 .switch i { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: var(--white); pointer-events: none; transition: transform .25s var(--ease); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
 .switch input:checked + i { transform: translateX(20px); }
 .profile { display: flex; align-items: center; gap: 14px; }
+img.avatar { object-fit: cover; display: block; }
 .avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 24px; display: grid; place-items: center; flex: none; }
 .profile b { display: block; font-family: var(--display); font-size: 21px; font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
 .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--ash); box-shadow: inset 0 0 0 1px var(--steel); border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
@@ -695,6 +696,7 @@ html.no-scroll { overflow: hidden; }
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="vendor/supabase.js"></script>
 <script>
 /* =====================================================================
    SITE — site-wide values. Optional values that are null are simply hidden.
@@ -806,7 +808,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Settings ---------- */
   const SET = "rl.settings";
   const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave" }, store.get(SET, {}));
-  const saveSettings = () => store.set(SET, settings);
+  const saveSettings = () => { store.set(SET, settings); cloudPush(); };
   let testOn = !!store.get("rl.test", false);
   const syncTest = () => { const i = GOALS.indexOf(TEST_GOAL); if (testOn && i < 0) GOALS.push(TEST_GOAL); if (!testOn && i >= 0) GOALS.splice(i, 1); };
   syncTest();
@@ -831,7 +833,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (!S) S = fresh();
   S.live = S.live || {}; S.checks = S.checks || {};
   function fresh() { return { day: today(), goal: null, len: null, cup: "19:00", b: 0, status: "bereit", before: 0, done: {}, kills: {}, live: {}, checks: {}, active: false }; }
-  function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); }
+  function save() { const c = Object.assign({}, S, { before: elapsed(), status: S.status === "laeuft" ? "pause" : S.status }); store.set(KEY, c); cloudPush(); }
   let since = 0;
   const list = () => blocksFor(S.goal, S.len);
   const cur = () => list()[S.b];
@@ -897,7 +899,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Set by set";
     streakUI("home");
     $("home-focus").innerHTML = focusHTML();
-    const fc = $("focus-clear"); if (fc) fc.addEventListener("click", () => { store.del(FOCUS); $("home-focus").innerHTML = focusHTML(); toast("Focus cleared"); });
+    const fc = $("focus-clear"); if (fc) fc.addEventListener("click", () => { store.del(FOCUS); cloudPush(); $("home-focus").innerHTML = focusHTML(); toast("Focus cleared"); });
   }
   let heroDrawn = false;
   function heroDial() {
@@ -1070,7 +1072,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     x.querySelectorAll("[data-g]").forEach((btn) => btn.addEventListener("click", () => { const L = S.live[S.b] = S.live[S.b] || { g: 0, m: 0 }; L.g = Math.max(0, L.g + +btn.dataset.g); $("lv-g").textContent = L.g; save(); }));
     const mk = $("lv-mark"); if (mk) mk.addEventListener("click", () => { const L = S.live[S.b] = S.live[S.b] || { g: 0, m: 0 }; L.m++; $("lv-m").textContent = L.m; save(); toast("Moment marked"); });
     x.querySelectorAll("[data-c]").forEach((cb) => cb.addEventListener("change", () => { (S.checks[S.b] = S.checks[S.b] || {})[cb.dataset.c] = cb.checked; save(); }));
-    const fi = $("fix-in"); if (fi) fi.addEventListener("change", () => { const v = fi.value.trim(); if (v) { store.set(FOCUS, { text: v, day: today() }); toast("Saved as today's focus"); } });
+    const fi = $("fix-in"); if (fi) fi.addEventListener("change", () => { const v = fi.value.trim(); if (v) { store.set(FOCUS, { text: v, day: today() }); cloudPush(); toast("Saved as today's focus"); } });
   }
   function render() {
     const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
@@ -1184,6 +1186,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
     pushOverlay(true);
+    cloudDay(); cloudPush();
     go("done");
   }
   function streak() {
@@ -1241,7 +1244,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function topAccount() {
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
-    if (account) $("acct-open-in").textContent = account.name.slice(0, 1).toUpperCase();
+    const btn = $("acct-open-in");
+    if (account) {
+      btn.textContent = account.avatar ? "" : (account.name || "?").slice(0, 1).toUpperCase();
+      btn.style.backgroundImage = account.avatar ? `url("${account.avatar.replace(/["\\]/g, "")}")` : "";
+      btn.style.backgroundSize = "cover";
+    }
   }
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
@@ -1251,18 +1259,18 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (!account) {
       h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">With an account you get your referral link and all your settings in one place. Every routine also works without an account.</p>
         <button class="discord" type="button" id="dc-in" ${signingIn ? "disabled" : ""}><svg aria-hidden="true"><use href="#i-discord"/></svg>${signingIn ? "Connecting to Discord…" : "Continue with Discord"}</button>
-        <p class="dr-foot">Demo: this signs you in with an example account on this device. Real Discord sign-in comes later. Repline would only use your Discord ID, name and avatar.</p></section>`;
+        <p class="dr-foot">${sb ? "Repline only uses your Discord ID, name and avatar. Your progress and settings are saved to your account." : "Demo: this signs you in with an example account on this device. Real sign-in works on repline.pages.dev."}</p></section>`;
     } else {
-      h += `<section class="dr-sec"><div class="profile"><div class="avatar" aria-hidden="true">${esc(account.name.slice(0, 1).toUpperCase())}</div><div><b>${esc(account.name)}<span class="badge">Demo</span></b><span class="small">Signed in with Discord</span></div></div></section>`;
+      h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">Free</span></div><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
           <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
-          <div class="stats"><div><span class="tiny">Clicks</span><b>0</b></div><div><span class="tiny">Sign-ups</span><b>0</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
+          <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
           <div class="row"><span>Commission</span><span class="val">${esc(A.commissionPercent)} % per subscription · ${A.duration === "lifetime" ? "lifetime" : esc(A.duration)}</span></div>
           <div class="row"><span>Payout</span><span class="val">${A.minPayout ? "from " + esc(A.minPayout) + " " + esc(A.currency) : "No minimum"}${A.payoutMethod ? " · " + esc(A.payoutMethod) : ""}</span></div>
           ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
-        </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts sign-ups. Demo numbers.</p></section>`;
+        </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts clicks and sign-ups.${account.real ? "" : " Demo numbers."}</p></section>`;
     }
     h += `<section class="dr-sec"><h3>Settings</h3><div class="group">
         ${sw("set-sound", "Sound at the end of a set", settings.sound)}
@@ -1311,6 +1319,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
     on("dc-in", "click", () => {
       signingIn = true; renderDrawer();
+      if (sb) {
+        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/" } }).then(({ error }) => { if (error) { signingIn = false; renderDrawer(); toast("Sign-in didn't start. Please try again."); } });
+        return;
+      }
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
     });
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
@@ -1334,19 +1346,30 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
-    on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
+    on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); cloudPush(); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
     on("test-on", "change", (e) => {
       testOn = e.target.checked; store.set("rl.test", testOn); syncTest();
       if (!testOn && S.goal === "test") { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
       toast(testOn ? "Test routine added to step 1" : "Test routine removed");
       if (view === "goal") buildPick(); else if (view === "home") buildHome();
     });
-    on("reset-streak", "click", () => { store.del(DAYS); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
+    on("reset-streak", "click", () => { store.del(DAYS); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
-    on("sign-out", "click", () => { account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out"); });
+    on("sign-out", "click", async () => {
+      if (account && account.real && sb) { try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; }
+      account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out");
+    });
     on("del-acc", "click", () => { confirmDelete = !confirmDelete; renderDrawer(); });
     on("del-no", "click", () => { confirmDelete = false; renderDrawer(); });
-    on("del-yes", "click", () => { account = null; [ACC, DAYS, DONE, KEY].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome(); });
+    on("del-yes", "click", async () => {
+      if (account && account.real && sb) {
+        const { error } = await sb.rpc("delete_my_account");
+        if (error) { toast("Couldn't delete the account. Please try again."); return; }
+        try { await sb.auth.signOut(); } catch (e) {}
+        cloudUser = null;
+      }
+      account = null; [ACC, DAYS, DONE, KEY].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
+    });
   }
   function drawMini() {
     const svg = $("ap-ring"); if (!svg) return;
@@ -1397,6 +1420,94 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   });
   topAccount();
   $("ft-legal").innerHTML = ["Imprint", "Privacy", "Terms"].map((n, i) => { const u = [SITE.imprintUrl, SITE.privacyUrl, SITE.termsUrl][i]; return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>` : ""; }).filter(Boolean).join(" · ") || "repline.gg";
+
+  /* ---------- Cloud accounts (Supabase + Discord) ---------- */
+  // Real sign-in runs on repline.pages.dev / repline.gg (and localhost). Elsewhere (preview, desktop) the demo account stays.
+  var SB_URL = "https://wjwjvwjwlipjxsgufffj.supabase.co";
+  var SB_KEY = "sb_publishable_xA1CO4em6oz2mocDqBC5jg_4WhlX13q";
+  var sb = (window.supabase && /(^|\.)repline\.pages\.dev$|(^|\.)repline\.gg$|^localhost$|^127\.0\.0\.1$/.test(location.hostname))
+    ? window.supabase.createClient(SB_URL, SB_KEY, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true, autoRefreshToken: true } })
+    : null;
+  var cloudUser = null, cloudT = 0, cloudBusy = false;
+  function cloudPush() {
+    if (!sb || !cloudUser || cloudBusy) return;
+    clearTimeout(cloudT);
+    cloudT = setTimeout(() => {
+      sb.from("user_state").upsert({ user_id: cloudUser.id, settings, focus: store.get(FOCUS, null), session: store.get(KEY, null), updated_at: new Date().toISOString() }).then(() => {});
+    }, 1200);
+  }
+  async function cloudDay() {
+    if (!sb || !cloudUser) return;
+    const t = today();
+    const { data } = await sb.from("training_days").select("routines").eq("user_id", cloudUser.id).eq("day", t).maybeSingle();
+    await sb.from("training_days").upsert({ user_id: cloudUser.id, day: t, routines: (data ? data.routines : 0) + 1 });
+  }
+  async function cloudLoad(user) {
+    cloudUser = user; cloudBusy = true;
+    try {
+      const id = user.id;
+      const [prof, code, state, days] = await Promise.all([
+        sb.from("profiles").select("username, avatar_url, is_dev").eq("id", id).maybeSingle(),
+        sb.from("referral_codes").select("code, clicks").eq("user_id", id).maybeSingle(),
+        sb.from("user_state").select("settings, focus, session, updated_at").eq("user_id", id).maybeSingle(),
+        sb.from("training_days").select("day, routines").eq("user_id", id)
+      ]);
+      const { count } = await sb.from("referral_signups").select("referred_id", { count: "exact", head: true }).eq("referrer_id", id);
+      const meta = user.user_metadata || {};
+      const p = prof.data || {};
+      account = { real: true, id, name: p.username || meta.full_name || meta.name || "Player", avatar: p.avatar_url || meta.avatar_url || null,
+        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, since: today() };
+      store.set(ACC, account);
+      // training days: merge both ways
+      const remote = days.data || [];
+      const local = store.get(DAYS, []);
+      const remoteSet = new Set(remote.map((d) => d.day));
+      const missing = local.filter((d) => !remoteSet.has(d));
+      if (missing.length) await sb.from("training_days").upsert(missing.map((d) => ({ user_id: id, day: d, routines: 1 })), { onConflict: "user_id,day", ignoreDuplicates: true });
+      store.set(DAYS, Array.from(new Set(local.concat(remote.map((d) => d.day)))).sort().slice(-400));
+      store.set(DONE, Math.max(store.get(DONE, 0), remote.reduce((a, d) => a + (d.routines || 0), 0)));
+      // settings, focus, routine in progress
+      const st = state.data || {};
+      if (st.settings && Object.keys(st.settings).length) { Object.assign(settings, st.settings); store.set(SET, settings); setSound(settings.sound); }
+      const lf = store.get(FOCUS, null);
+      if (st.focus && st.focus.text && (!lf || (st.focus.day || "") >= (lf.day || ""))) store.set(FOCUS, st.focus);
+      const ls = store.get(KEY, null);
+      if (st.session && st.session.day === today() && st.session.active && !(ls && ls.active)) { S = Object.assign(fresh(), st.session); store.set(KEY, S); }
+      // referral from a link opened before signing in
+      const ref = store.get("rl.ref", null);
+      if (ref && ref !== account.ref) { await sb.rpc("claim_referral", { ref_code: ref }); }
+      store.del("rl.ref");
+    } catch (e) {
+      toast("Couldn't load your account. Your progress is still saved on this device.");
+    }
+    cloudBusy = false;
+    cloudPush();
+    topAccount();
+    if (drawerOpen) renderDrawer();
+    if (view === "home") buildHome(); else if (view === "training") buildTraining();
+  }
+  // Referral links: repline.pages.dev/r/abc123 (or ?ref=abc123)
+  (function () {
+    const m = location.pathname.match(/^\/r\/([a-z0-9]{6,12})\/?$/i) || location.search.match(/[?&]ref=([a-z0-9]{6,12})/i);
+    if (!m) return;
+    const code = m[1].toLowerCase();
+    if (!(account && account.ref === code)) { store.set("rl.ref", code); if (sb) sb.rpc("track_ref_click", { ref_code: code }).then(() => {}); }
+    try { history.replaceState(null, "", "/" + location.hash); } catch (e) {}
+  })();
+  if (sb) {
+    if (account && !account.real) { account = null; store.del(ACC); }
+    sb.auth.onAuthStateChange((event, session) => {
+      if (session && session.user) {
+        if (!cloudUser || cloudUser.id !== session.user.id) {
+          signingIn = false;
+          if (/[?&]code=/.test(location.search)) { try { history.replaceState(null, "", location.pathname.replace(/^\/r\/.*$/, "/") + location.hash); } catch (e) {} }
+          setTimeout(() => { cloudLoad(session.user).then(() => { if (event === "SIGNED_IN") toast(`Signed in as ${account ? account.name : "you"}`); }); }, 0);
+        }
+      } else if (event === "SIGNED_OUT" || (event === "INITIAL_SESSION" && account && account.real)) {
+        cloudUser = null; if (account && account.real) { account = null; store.del(ACC); } topAccount(); if (drawerOpen) renderDrawer();
+      }
+    });
+  }
 
   /* ---------- Reveal ---------- */
   const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;
