@@ -1,0 +1,226 @@
+<title>Repline Routines Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: dark Apple-style research board. Intro → principles → decisions → one card per routine with a proportional set bar → sources. */
+:root {
+  color-scheme: dark;
+  --obsidian: #000; --carbon: #1d1d1f; --steel: #333336; --slate: #6e6e73; --ash: #86868b; --porcelain: #f5f5f7; --white: #fff;
+  --blue: #0071e3; --link: #2997ff; --copper: #b64400; --keyline: #282828; --warn: #ff9f0a;
+  --t-aim: #38e0ff; --t-mech: #3f8dff; --t-fight: #a855f7; --t-live: #8f7bff; --t-review: #e5e5ea; --t-rest: #48484a; --t-prep: #7debff;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--obsidian); color: var(--porcelain); font-family: var(--text); font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; -webkit-font-smoothing: antialiased; }
+a { color: var(--link); text-decoration: none; } a:hover { text-decoration: underline; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.intro { padding-block: 72px 32px; display: grid; gap: 18px; }
+.eyebrow { font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--ash); margin: 0; }
+h1 { font-family: var(--display); font-weight: 600; margin: 0; font-size: clamp(42px, 7.5vw, 80px); line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 600; font-size: 21px; margin: 0; }
+.lead { color: var(--ash); max-width: 680px; margin: 0; font-size: 19px; line-height: 1.42; }
+.lead b { color: var(--porcelain); font-weight: 600; }
+.small { font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); margin: 0; }
+.tiny { font-size: 12px; letter-spacing: -0.12px; color: var(--ash); }
+section { padding-block: 40px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+.card { background: var(--carbon); border-radius: 28px; padding: 26px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; letter-spacing: -0.224px; color: var(--ash); }
+.card li b { color: var(--porcelain); font-weight: 600; }
+.card.warn { background: linear-gradient(var(--carbon), #1a1206); box-shadow: inset 0 0 0 1px rgba(255, 159, 10, .35); }
+.card.warn h3 { color: var(--warn); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ash); }
+.legend i, .sw { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.tabs button { border: 0; border-radius: 99px; background: var(--carbon); color: var(--ash); font: inherit; font-size: 14px; padding: 9px 18px; cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: var(--porcelain); color: #000; }
+.routine { background: var(--carbon); border-radius: 28px; padding: clamp(20px, 3vw, 32px); display: grid; gap: 18px; margin-top: 16px; }
+.r-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; }
+.r-head b { font-family: var(--display); font-size: 28px; font-weight: 600; }
+.bar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; gap: 2px; }
+.bar i { display: block; height: 100%; min-width: 3px; }
+.sets { list-style: none; margin: 0; padding: 0; display: grid; }
+.sets li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 14px; padding: 14px 0; border-top: 1px solid var(--steel); align-items: start; }
+.sets li:first-child { border-top: 0; }
+.sets .n { font-family: var(--display); font-weight: 600; color: var(--ash); font-variant-numeric: tabular-nums; padding-top: 1px; }
+.sets .nm { font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sets .du { color: var(--ash); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sets .fx { grid-column: 2 / 4; font-size: 14px; color: var(--ash); letter-spacing: -0.224px; }
+.sets .cd { grid-column: 2 / 4; font-size: 12px; color: var(--ash); }
+.sets .cd code { font-family: var(--mono); color: var(--porcelain); font-size: 12px; letter-spacing: .04em; }
+.tag { font-size: 11px; font-weight: 600; letter-spacing: 0; padding: 1px 7px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--steel); color: var(--ash); }
+.why { font-size: 14px; color: var(--ash); margin: 0; border-left: 2px solid var(--steel); padding-left: 12px; }
+.mock { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
+.mock .card { gap: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ash); }
+.mini { background: var(--obsidian); border-radius: 16px; padding: 14px 16px; display: grid; gap: 6px; box-shadow: 0 0 0 1px var(--steel); }
+.mini b { font-family: var(--display); font-size: 19px; font-weight: 600; }
+.check { display: flex; gap: 10px; align-items: center; font-size: 14px; }
+.check i { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--slate); flex: none; }
+.check i.on { background: var(--t-review); box-shadow: none; }
+.src { columns: 2 320px; font-size: 13px; color: var(--ash); padding-left: 18px; margin: 16px 0 0; }
+.src li { break-inside: avoid; margin-bottom: 6px; }
+.next { margin-block: 24px 96px; border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 288px); padding: 36px 28px; display: grid; gap: 14px; }
+.next ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ash); font-size: 15px; }
+.next li b { color: var(--porcelain); font-weight: 600; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+</style>
+
+<header class="wrap intro">
+  <p class="eyebrow">Storyboard · Repline routines</p>
+  <h1>Routines, wie Pros wirklich trainieren.</h1>
+  <p class="lead">Neu aufgebaut aus Pro- und Coach-Quellen: <b>11 Routinen</b> für alle vier Ziele und alle Längen. Aus „Blöcken“ werden <b>Sets</b>, passend zu Repline: Reps machen Sets, Sets machen die Line. Jedes Set hat einen Ort, einen Code, eine Dauer und genau einen Fokus. Danach baue ich es in die Webseite ein.</p>
+</header>
+
+<section class="wrap" aria-labelledby="h-learn">
+  <h2 id="h-learn">Was die Recherche zeigt.</h2>
+  <div class="grid">
+    <div class="card"><h3>Warm-up ist kurz</h3><ul><li><b>10–15 Minuten</b> Aim und Mechanics reichen vor dem Spielen.</li><li><b>Keine Rekorde jagen,</b> aufhören, bevor die Hände müde werden.</li><li>Pro Khanada wärmt sich vor Turnieren <b>in einem echten Match</b> auf. Das erste Cup-Game ist kein Warm-up.</li></ul></div>
+    <div class="card"><h3>Besser wird man im Ernstfall</h3><ul><li>Pros trainieren mit <b>Scrims und Ranked</b>, Creative ist nur die Grundlage.</li><li>Pollo-Struktur: 10 min Aim, 10 Edits, 15 Piece Control, 20 Realistics, <b>60+ Ranked/Scrims</b>, 15 Review.</li><li>Erst isolieren, dann Tempo, dann Druck, dann im echten Match anwenden.</li></ul></div>
+    <div class="card"><h3>Ein Fokus pro Tag</h3><ul><li><b>Gezieltes Üben</b> statt Stunden sammeln: eine Schwäche, ein Ziel, sofortiges Feedback.</li><li><b>Replay-Review:</b> in Durchgängen schauen (Fadenkreuz, dann Füße, dann Gegner) und höchstens zwei Fixes wählen.</li><li><b>Pausen</b> etwa alle 90 Minuten, Einstellungen vor einem Cup nicht ändern.</li></ul></div>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="h-dec">
+  <h2 id="h-dec">Entscheidungen für dich.</h2>
+  <div class="grid">
+    <div class="card warn"><h3>Tokens: nicht eingebaut</h3><p class="small">„Tokens“ ist das Szenewort für <b style="color:var(--porcelain)">Wett-Matches</b> (Wager). Laut Berichten verstoßen sie gegen Epics Nutzungsbedingungen (Abschnitt 8.3). Eine Sperre schließt dich <b style="color:var(--porcelain)">zwei FNCS-Saisons</b> lang aus. Eine Seite, die Spieler zum Pro machen soll, sollte das nicht empfehlen. Stattdessen gibt es <b style="color:var(--porcelain)">Ranked, Scrims und 1v1 Build Fights</b>. Wenn du Tokens trotzdem willst, sag es mir.</p></div>
+    <div class="card"><h3>Aus Blöcken werden Sets</h3><p class="small">„Set 3 von 7 · Freebuild 120 %“. Kurz, aus dem Training bekannt und passend zum Namen Repline. Alternativen wären „Drills“ oder „Stations“.</p></div>
+    <div class="card"><h3>Echte Map-Codes</h3><p class="small">Die Codes stammen aus mehreren aktuellen Map-Listen. Creative-Maps werden manchmal abgeschaltet, deshalb musst du jeden Code einmal im Spiel testen. Für KovaaK's gibt es keine allgemein anerkannte Pro-Playlist, der Share-Code bleibt deshalb <code>***</code>, bis du einen hast.</p></div>
+  </div>
+  <div class="legend" aria-label="Set-Arten">
+    <span><i style="background:var(--t-aim)"></i>Aim</span><span><i style="background:var(--t-mech)"></i>Mechanics</span><span><i style="background:var(--t-fight)"></i>Fights</span><span><i style="background:var(--t-live)"></i>Live: Ranked, Scrims, Match</span><span><i style="background:var(--t-review)"></i>Review</span><span><i style="background:var(--t-prep)"></i>Cup-Vorbereitung</span><span><i style="background:var(--t-rest)"></i>Pause</span>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="h-r">
+  <h2 id="h-r">Alle Routinen.</h2>
+  <p class="small" style="margin-top:8px">Wähle ein Ziel. Der Balken zeigt die Sets im richtigen Verhältnis zur Zeit.</p>
+  <div class="tabs" id="tabs" role="group" aria-label="Ziel"></div>
+  <div id="routines"></div>
+</section>
+
+<section class="wrap" aria-labelledby="h-ui">
+  <h2 id="h-ui">Was sich auf der Seite ändert.</h2>
+  <div class="mock">
+    <div class="card"><span class="chip"><i class="sw" style="background:var(--t-mech)"></i>Set 2 von 6 · Mechanics</span><div class="mini"><b>Mechanics Training V5</b><span class="tiny">Raider · 2424-4344-7824</span><span class="small">Edits, Piece Control, Peeks. Erst sauber, dann schnell.</span></div><p class="small">Jedes Set zeigt seine Art als farbigen Punkt, den Ersteller der Map, den Code und einen einzigen Fokus-Satz.</p></div>
+    <div class="card"><span class="chip"><i class="sw" style="background:var(--t-live)"></i>Live · Ranked</span><div class="mini"><b>Ranked · 60 min</b><span class="small">Spiel jede Runde mit dem heutigen Fokus.</span><span class="tiny">Games gespielt: 3 · Momente markiert: 2</span></div><p class="small">Live-Sets haben keinen Code. Ein Zähler für Games und ein Knopf „Moment merken“ sammeln Material für das Review.</p></div>
+    <div class="card"><span class="chip"><i class="sw" style="background:var(--t-review)"></i>Review</span><div class="mini"><b>Replay-Review</b><span class="tiny">Karriere → Wiederholungen</span><div class="check"><i class="on"></i>Fadenkreuz-Durchgang</div><div class="check"><i class="on"></i>Bewegung-Durchgang</div><div class="check"><i></i>Gegner-Durchgang</div><div class="check"><i></i>Ein Fix für morgen</div></div><p class="small">Review-Sets führen mit einer Checkliste durch. Der Fix wird gespeichert und steht morgen als „Heutiger Fokus“ auf dem Homescreen.</p></div>
+    <div class="card"><span class="chip"><i class="sw" style="background:var(--t-rest)"></i>Pause</span><div class="mini"><b>Pause · 10 min</b><span class="small">Aufstehen, Wasser, weg vom Bildschirm.</span></div><p class="small">Pausen sind eigene Sets mit ruhigem Countdown. Der Timer zählt sie wie jedes andere Set.</p></div>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="h-src">
+  <h2 id="h-src">Quellen.</h2>
+  <p class="small" style="margin-top:8px">Einige Seiten konnte ich nur über die Suche lesen, nicht direkt öffnen. Die Aussagen dort sind Zusammenfassungen.</p>
+  <ol class="src">
+    <li><a href="https://dignitas.gg/articles/how-fortnite-pros-actually-practice-in-2026-featuring-khanada">Dignitas: How Fortnite pros actually practice in 2026 (Khanada)</a></li>
+    <li><a href="https://www.exitlag.com/blog/pollo-fortnite/">ExitLag: Pollo settings and practice routine</a></li>
+    <li><a href="https://gamertagmythras.com/blog/fortnite/fortnite-warmup-practice-guide">Mythras: Fortnite warm-up and practice guide</a></li>
+    <li><a href="https://stickykeys.ca/blogs/fortnite-tips/fortnite-tournaments">StickyKeys: Fortnite tournaments</a></li>
+    <li><a href="https://fpstrain.us/fps-warmup-routines-by-game/">FPSTrain: Warm-up routines by game</a></li>
+    <li><a href="https://boostroom.com/blog/fortnite-aim-training-guide-practical-maps-and-warmup-methods">Boostroom: Warm-up guide</a></li>
+    <li><a href="https://prosettings.net/blog/fortnite-maps-to-improve/">ProSettings: Best Fortnite maps to improve</a></li>
+    <li><a href="https://1v9.gg/blog/best-fortnite-maps-to-practice-building-and-editing">1v9: Best maps for building and editing (2026)</a></li>
+    <li><a href="https://racoon.gg/fortnite/blog/best-fortnite-creative-maps-practice">Racoon: Best Creative maps for practice</a></li>
+    <li><a href="https://islandatlas.net/en/best/practice/">IslandAtlas: Best practice maps (August 2026)</a></li>
+    <li><a href="https://www.fortnite.com/creative/island-codes/8022-6842-4965">Fortnite.com: SKAAVOK Aim Trainer</a></li>
+    <li><a href="https://www.fortnite.com/creative/island-codes/5761-8240-5848">Fortnite.com: Freebuild Practice (Speed Changers)</a></li>
+    <li><a href="https://www.thespike.gg/fortnite/map-codes/1v1-map-code-fortnite">The Spike: 1v1 map codes</a></li>
+    <li><a href="https://www.gfinityesports.com/guides/best-1v1-map-codes">Gfinity: Best 1v1 map codes</a></li>
+    <li><a href="https://diamondlobby.com/fortnite/how-to-vod-review/">DiamondLobby: How to VOD review</a></li>
+    <li><a href="https://www.epicgames.com/help/en-US/c-202300000001636/c-202300000001721/how-to-review-your-game-history-in-fortnite-a202300000013258">Epic Games: Review your game history</a></li>
+    <li><a href="https://fortnitefundamentals.substack.com/p/deliberate-practice-versus-10000">Fortnite Fundamentals: Deliberate practice</a></li>
+    <li><a href="https://olympics.com/en/news/fabian-broich-practising-outside-the-pixels-in-esports">Olympics.com: Coach Fabian Broich on practice and breaks</a></li>
+    <li><a href="https://spacex.tapin.gg/blogs/fortnite-scrims-guide-2026">Tapin: Fortnite scrims guide 2026</a></li>
+    <li><a href="https://esports.gg/news/fortnite/fortnite-tokens-breaking-tos/">Esports.gg: Fortnite tokens and Epic's terms</a></li>
+    <li><a href="https://www.thespike.gg/fortnite/beginner-guides/ranked-2026-changes-explained">The Spike: Ranked 2026 explained</a></li>
+  </ol>
+</section>
+
+<section class="wrap">
+  <div class="next">
+    <h2>Als Nächstes: einbauen.</h2>
+    <p class="small">Nach deiner Freigabe übernehme ich alles in Repline:</p>
+    <ol>
+      <li><b>„Blöcke“ heißen überall „Sets“</b>, mit farbiger Set-Art.</li>
+      <li><b>Alle 11 Routinen</b> mit echten Map-Codes, Ersteller und Fokus-Satz.</li>
+      <li><b>Neue Set-Arten:</b> Live mit Game-Zähler und „Moment merken“, Review mit Checkliste und gespeichertem Fix, Pause mit ruhigem Countdown.</li>
+      <li><b>„Heutiger Fokus“</b> auf dem Homescreen, aus dem letzten Review.</li>
+    </ol>
+  </div>
+</section>
+
+<script>
+const T = { aim: ["Aim", "var(--t-aim)"], mech: ["Mechanics", "var(--t-mech)"], fight: ["Fights", "var(--t-fight)"], live: ["Live", "var(--t-live)"], review: ["Review", "var(--t-review)"], prep: ["Cup prep", "var(--t-prep)"], rest: ["Pause", "var(--t-rest)"] };
+const S = {
+  kovaaks: { name: "KovaaK's", type: "aim", where: "KovaaK's · Playlist-Share-Code ***", focus: "Erst Tracking, dann Flicks und Target-Switching. Keine Highscores jagen." },
+  skaavok: { name: "Skaavok Aim Trainer", type: "aim", code: "8022-6842-4965", by: "Donwozi", focus: "Pre-Fire, Tracking, Jump-Shots. Jeden Tag dieselben Szenarien, damit du vergleichen kannst." },
+  raiderAim: { name: "Raider's Aim Training", type: "aim", code: "6531-5731-1207", by: "Raider464", focus: "Shotgun-Flicks auf kurze Distanz, dann AR-Tracking." },
+  clixAim: { name: "Clix Aim Trainer", type: "aim", code: "1090-1665-3359", focus: "Gemischte Szenarien als Abschluss, nur sauber treffen." },
+  mech: { name: "Mechanics Training V5", type: "mech", code: "2424-4344-7824", by: "Raider464", focus: "Edits, Piece Control, Peeks, Phasing. Erst sauber, dann schnell." },
+  fast: { name: "Freebuild · 120 %", type: "mech", code: "5761-8240-5848", by: "Speed-Changer-Map", focus: "Spielgeschwindigkeit 120 % (110 %, wenn es zerfällt). 90s, Ramp-Rushes, Box-Resets." },
+  slow: { name: "Freebuild · 90 %", type: "mech", code: "5761-8240-5848", by: "Speed-Changer-Map", focus: "90 %. Jedes Teil exakt setzen. Langsam ist sauber, sauber wird schnell." },
+  edit: { name: "Edit Course", type: "mech", code: "6363-5615-8837", focus: "Zeitläufe. Gestern schlagen, aber nur mit sauberen Edits." },
+  warmCourse: { name: "Raider's Warm-Up Course", type: "mech", code: "2559-0136-9834", by: "Raider464", focus: "Fünf Level am Stück, ohne Pause." },
+  piece: { name: "Piece Control V2", type: "fight", code: "3705-0960-8290", by: "Raider464", focus: "Wände und Cones vor dem Gegner nehmen, dann resetten." },
+  real: { name: "Realistics 1v1", type: "fight", code: "0550-1651-3094", focus: "Kämpfe auf echtem Gelände. High Ground, dann Druck." },
+  box: { name: "1v1 Build Fights", type: "fight", code: "9289-6984-7768", by: "VESIMAITO", kills: "3 × 10 Kills", focus: "Gegen echte Spieler. Jede Runde eine Sache aus dem Fokus anwenden." },
+  zone: { name: "Zone Wars", type: "fight", code: "3537-4087-0888", focus: "Früh rotieren, Mats halten, Moving Zones spielen." },
+  focusDrill: { name: "Fokus-Drill", type: "fight", where: "Map passend zum Fokus", focus: "Deine Schwäche aus dem letzten Review. Eine Map, ein Ziel." },
+  fixDrill: { name: "Fix-Drill", type: "fight", where: "Map passend zum Fix", focus: "Direkt üben, was das Review gerade gezeigt hat." },
+  realGame: { name: "Ein echtes Match", type: "live", where: "Ranked oder öffentliches Match", focus: "Hände im echten Spiel aufwärmen. Das erste Cup-Game ist kein Warm-up." },
+  ranked: { name: "Ranked", type: "live", where: "Fortnite · Ranked", focus: "Jedes Game mit dem heutigen Fokus. Einen Moment pro Game fürs Review merken." },
+  scrims: { name: "Scrims", type: "live", where: "Scrim-Server auf Discord", focus: "Pro-Lobbys: umkämpfte Drops, Rotationen, Endgames." },
+  prep: { name: "Cup-Check", type: "prep", where: "ohne Spiel", focus: "Einstellungen nicht ändern. Regeln und Zeiten prüfen. Drop und erste Rotation planen. Wasser." },
+  vod: { name: "Replay-Review", type: "review", where: "Karriere → Wiederholungen", focus: "Ein verlorener Fight. Fadenkreuz, dann Füße, dann Gegner. Einen Fix wählen." },
+  brk: { name: "Pause", type: "rest", focus: "Aufstehen, Wasser, weg vom Bildschirm." }
+};
+const R = [
+  { goal: "Cup warm-up", why: "Kurz und gleichbleibend. Hände warm, Kopf ruhig, nichts Neues ausprobieren.", lens: [
+    ["Short", 30, [["kovaaks", 8], ["mech", 10], ["fast", 5], ["slow", 4], ["prep", 3]]],
+    ["Normal", 60, [["kovaaks", 10], ["mech", 12], ["fast", 6], ["slow", 5], ["piece", 7], ["realGame", 15], ["prep", 5]]]
+  ] },
+  { goal: "Get better", why: "Pro-Struktur: Mechanics als Grundlage, dann Fights, dann echte Lobbys. Am Ende immer Review, damit morgen ein klarer Fokus da ist.", lens: [
+    ["Short · 1 h", 60, [["kovaaks", 8], ["mech", 8], ["fast", 5], ["slow", 4], ["focusDrill", 10], ["ranked", 20], ["vod", 5]]],
+    ["Normal · 3 h", 180, [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 15], ["real", 20], ["brk", 10], ["ranked", 60], ["vod", 15]]],
+    ["Long · 5 h", 300, [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 20], ["real", 25], ["box", 25], ["brk", 15], ["ranked", 100], ["zone", 30], ["vod", 25]]],
+    ["Full day · 10 h", 600, [["kovaaks", 20], ["mech", 20], ["fast", 15], ["slow", 15], ["edit", 15], ["piece", 30], ["brk", 15], ["real", 40], ["box", 40], ["zone", 40], ["brk", 30], ["scrims", 150], ["brk", 15], ["ranked", 90], ["vod", 45], ["fixDrill", 20]]]
+  ] },
+  { goal: "Quick: Aim", why: "Vom Isolierten zum Druck: Aim-Trainer, dann Fortnite-Aim-Maps, dann Aim in echten Fights.", lens: [
+    ["Short", 30, [["kovaaks", 15], ["skaavok", 10], ["raiderAim", 5]]],
+    ["Normal", 60, [["kovaaks", 20], ["skaavok", 15], ["raiderAim", 10], ["real", 15]]],
+    ["Long", 180, [["kovaaks", 40], ["skaavok", 25], ["raiderAim", 20], ["clixAim", 15], ["brk", 10], ["real", 30], ["box", 25], ["vod", 15]]]
+  ] },
+  { goal: "Quick: Mechanics", why: "Mechanics V5 als Kern, dann Tempo bei 120 % und Präzision bei 90 %, dann unter Druck.", lens: [
+    ["Short", 30, [["mech", 12], ["fast", 6], ["slow", 5], ["edit", 7]]],
+    ["Normal", 60, [["mech", 15], ["fast", 10], ["slow", 8], ["edit", 10], ["piece", 12], ["warmCourse", 5]]],
+    ["Long", 180, [["mech", 30], ["fast", 20], ["slow", 20], ["edit", 20], ["piece", 30], ["brk", 10], ["real", 25], ["box", 25]]]
+  ] }
+];
+const fmt = (m) => m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function render(gi) {
+  document.querySelectorAll("#tabs button").forEach((b, i) => b.setAttribute("aria-pressed", i === gi ? "true" : "false"));
+  const g = R[gi]; let h = `<p class="why" style="margin-top:20px">${esc(g.why)}</p>`;
+  g.lens.forEach(([name, total, sets]) => {
+    const sum = sets.reduce((s, x) => s + x[1], 0);
+    if (sum !== total) console.warn("Sum mismatch", g.goal, name, sum, total);
+    h += `<article class="routine"><div class="r-head"><b>${esc(name)}</b><span class="small">${fmt(total)} · ${sets.length} Sets</span></div>`;
+    h += `<div class="bar" aria-hidden="true">${sets.map(([k, m]) => `<i style="flex:${m};background:${T[S[k].type][1]}" title="${esc(S[k].name)}"></i>`).join("")}</div><ol class="sets">`;
+    sets.forEach(([k, m], i) => {
+      const s = S[k];
+      const where = s.code ? `<code>${s.code}</code>${s.by ? " · " + esc(s.by) : ""}` : esc(s.where || "");
+      h += `<li><span class="n">${i + 1}</span><span class="nm"><i class="sw" style="background:${T[s.type][1]}"></i>${esc(s.name)}<span class="tag">${T[s.type][0]}</span>${s.kills ? `<span class="tag">${esc(s.kills)}</span>` : ""}</span><span class="du">${fmt(m)}</span><span class="fx">${esc(s.focus)}</span>${where ? `<span class="cd">${where}</span>` : ""}</li>`;
+    });
+    h += `</ol></article>`;
+  });
+  document.getElementById("routines").innerHTML = h;
+}
+const tabs = document.getElementById("tabs");
+R.forEach((g, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = g.goal; b.addEventListener("click", () => render(i)); tabs.appendChild(b); });
+render(1);
+</script>
