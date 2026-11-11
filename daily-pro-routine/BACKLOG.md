@@ -44,3 +44,17 @@ Erst umsetzen, wenn der Auftrag dafür kommt.
   3. **Appearance:** Set alerts (Ton und Animation mit Vorschau), Animationen an/aus, In-game overlay (Position, Größe, Deckkraft, Hotkeys).
 - **Umsetzung im Apple-Stil:** Oben im Panel eine Segment-Leiste „Account · Settings · Appearance“. Alternativ eine Startliste mit drei Zeilen, die wie in den iPhone-Einstellungen in eine Unterseite hineinschieben, mit „‹ Back“.
 - Der Knopf oben rechts bleibt: „Sign in“ oder Avatar. Ein eigener Zahnrad-Knopf für Settings ist eine Option.
+
+## Echte Konten: gleiche Daten in Webseite und App
+
+- **Grundsatz:** Webseite und Windows-Programm nutzen dasselbe Konto und dieselben Daten. Alles, was heute nur im Browser gespeichert wird, wandert ins Konto:
+  - Streak und Trainingstage
+  - laufende Routine des Tages
+  - Today's focus
+  - Einstellungen und Set alerts
+  - Affiliate-Code und Zahlen
+  - Käufe, z. B. Custom Sound
+- **Technik:** Supabase (Auth mit Discord + Postgres-Datenbank, Row Level Security, jeder sieht nur seine eigenen Daten). Die Webseite liegt bei einem kostenlosen Host, z. B. Cloudflare Pages. Die Daten liegen nur bei Supabase, deshalb gehen beim Wechsel von Host oder Domain keine Daten verloren.
+- **Ohne Konto** funktioniert alles weiter lokal. Nach der Anmeldung werden die lokalen Daten einmal ins Konto übernommen.
+- **Windows-Programm:** Die Anmeldung öffnet den normalen Browser und kommt per `repline://`-Link zurück ins Programm.
+- **Später eigene Domain (repline.gg):** In Supabase Site URL und Redirect URLs anpassen. Der Discord-Callback bleibt die Supabase-Adresse.
