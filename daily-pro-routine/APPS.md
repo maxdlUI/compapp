@@ -35,3 +35,10 @@ Während einer Routine zeigt ein kleines Overlay über dem Spiel: Ring mit Routi
 - **Tastenkürzel im Spiel:** Strg+Umschalt+Leertaste Start/Pause · Strg+Umschalt+N nächstes Set · Strg+Umschalt+R Set neu · Strg+Umschalt+O Overlay an/aus.
 - **Fortnite:** Anzeigemodus „Vollbild im Fenster“ (Windowed Fullscreen). Im exklusiven Vollbild kann Windows kein Fenster darüber zeigen.
 - Die Overlay-Einstellungen liegen in `%APPDATA%\Repline\overlay.json`.
+
+### Set-Ende und Test-Routine
+
+- **Kurz vor Ende eines Sets** (letzte 10 Sekunden, bei sehr kurzen Sets mindestens 3) pulsiert das Overlay in der Set-Farbe, die Zeit färbt sich, und bei 3, 2, 1 tickt es leise.
+- **Am Ende** springt das Overlay kurz auf, eine Lichtwelle läuft herum, ein Gong in zwei Tönen erklingt, und groß steht das nächste Set da. Nach dem letzten Set kommt ein Dreiklang mit „Routine done“.
+- Der Ton folgt der Einstellung „Sound at the end of a set“. Ist das Overlay an, spielt nur das Overlay den Ton.
+- **Test-Routine:** Konto-Panel → Data → „Test routine · 3 s sets“. In Schritt 1 erscheint dann „Test routine“: 8 Sets à 3 Sekunden, die automatisch nacheinander laufen. Das letzte Set ist ein Kill-Set, dort hakst du die drei Runden ab.

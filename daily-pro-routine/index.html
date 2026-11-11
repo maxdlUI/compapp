@@ -139,6 +139,7 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .g-aim { --bg: radial-gradient(90% 90% at 100% 0%, #0f5a6b, #041a20 62%, #000); }
 .g-mechanics { --bg: radial-gradient(90% 90% at 100% 0%, #3b3b8f, #0d0d26 62%, #000); }
 .g-ki { --bg: linear-gradient(var(--carbon), var(--obsidian)); box-shadow: inset 0 0 0 1px var(--steel); }
+.g-test { --bg: repeating-linear-gradient(135deg, #141416 0 14px, #1b1b1e 14px 28px); box-shadow: inset 0 0 0 1px var(--steel); }
 .goal.tall { min-height: 360px; }
 
 /* How it works */
@@ -297,6 +298,9 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 .focus-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--obsidian); border-radius: 18px; padding: 14px 16px 14px 18px; box-shadow: 0 0 0 1px var(--steel); }
 .focus-card b { font-weight: 600; overflow-wrap: anywhere; }
 .stage[data-type="rest"] .dial-mid .t { color: var(--ash); }
+.stage.ending .dial-mid .t { color: var(--sc, var(--porcelain)); transition: color .4s; }
+html.anim .stage.ending .dial { animation: beat 1s var(--ease) infinite; }
+@keyframes beat { 0% { transform: scale(1); } 12% { transform: scale(1.03); } 30% { transform: scale(1); } }
 .stage[data-type="rest"] { background: linear-gradient(#141416, var(--obsidian) 420px); }
 
 /* Screenshots */
@@ -636,7 +640,7 @@ const SETS = {
   vod: { name: "Replay review", type: "review", where: "Career → Replays", hint: "Pick one fight you lost.", checks: ["Crosshair pass", "Movement pass", "Enemy pass"], fix: true },
   brk: { name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
 };
-const L = (id, name, list) => ({ id, name, sets: list.map(([k, min]) => Object.assign({ key: k, min }, SETS[k])) });
+const L = (id, name, list, extra) => Object.assign({ id, name, sets: list.map(([k, min]) => Object.assign({ key: k, min }, SETS[k])) }, extra || {});
 const GOALS = [
   { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head.", icon: "i-cup", cupTime: true, lengths: [
     L("short", "Short", [["kovaaks", 8], ["mech", 10], ["fast", 5], ["slow", 4], ["prep", 3]]),
@@ -659,6 +663,10 @@ const GOALS = [
     L("long", "Long", [["mech", 30], ["fast", 20], ["slow", 20], ["edit", 20], ["piece", 30], ["brk", 10], ["real", 25], ["box", 25]])
   ] }
 ];
+/* Test routine: every set lasts 3 seconds and the routine runs on its own. Switch it on in Account → Data. */
+const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", lengths: [
+  L("quick", "3 s sets", [["kovaaks", 0.05], ["mech", 0.05], ["fast", 0.05], ["slow", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
+] };
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
 
 (function () {
@@ -684,6 +692,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const SET = "rl.settings";
   const settings = Object.assign({ sound: true, awake: true }, store.get(SET, {}));
   const saveSettings = () => store.set(SET, settings);
+  let testOn = !!store.get("rl.test", false);
+  const syncTest = () => { const i = GOALS.indexOf(TEST_GOAL); if (testOn && i < 0) GOALS.push(TEST_GOAL); if (!testOn && i >= 0) GOALS.splice(i, 1); };
+  syncTest();
 
   /* ---------- Data ---------- */
   const goal = (id) => GOALS.find((z) => z.id === id);
@@ -693,7 +704,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const tag = (b) => `<span class="tag">${TYPES[b.type].label}</span>`;
   const isKill = (b) => Array.isArray(b.kills);
   const nameOf = (b, i) => `${i + 1} · ${b.name ? esc(b.name) : P}`;
-  const fmtMin = (m) => m == null ? "*** min" : m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+  const fmtMin = (m) => m == null ? "*** min" : m < 1 ? Math.round(m * 60) + " s" : m < 60 ? Math.round(m) + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
   const killSum = (b) => b.kills.every((k) => k.kills != null) ? b.kills.reduce((s, k) => s + k.kills, 0) + " kills" : "*** kills";
   const durOf = (b) => isKill(b) ? (b.min != null ? fmtMin(b.min) + " · " : "") + killSum(b) : fmtMin(b.min);
   const totalMin = (list) => list.every((b) => b.min != null) ? list.reduce((s, b) => s + b.min, 0) : null;
@@ -848,8 +859,13 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
   setSound(settings.sound);
   $("snd").addEventListener("click", () => setSound(!settings.sound));
+  const overlayHandlesSound = () => !!(window.replineDesktop && typeof ov !== "undefined" && ov && ov.enabled);
+  function tickSound() {
+    if (!settings.sound || overlayHandlesSound()) return;
+    try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = 660; g.gain.setValueAtTime(0.0001, audio.currentTime); g.gain.exponentialRampToValueAtTime(0.12, audio.currentTime + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.12); o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + 0.15); } catch (e) {}
+  }
   function beep() {
-    if (settings.sound) {
+    if (settings.sound && !overlayHandlesSound()) {
       try {
         audio = audio || new (window.AudioContext || window.webkitAudioContext)();
         [0, 0.22].forEach((t) => { const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = t ? 1175 : 880; g.gain.setValueAtTime(0.0001, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(0.25, audio.currentTime + t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + t + 0.35); o.connect(g).connect(audio.destination); o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.4); });
@@ -877,6 +893,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const bl = list(), b = cur(), z = goal(S.goal), l = length(S.goal, S.len);
     drawDial($("tr-dial").querySelector("svg"), bl.map((x) => ({ w: x.min || 1, color: tcol(x), cur: x === b })), { fill: true });
     $("stage").dataset.type = b.type;
+    $("stage").style.setProperty("--sc", tcol(b));
     $("tr-pos").innerHTML = `<i style="background:${tcol(b)}"></i>${TYPES[b.type].label} · Set ${S.b + 1} of ${bl.length}`;
     $("tr-name").textContent = b.name || "***";
     const ti = $("tr-img"); ti.hidden = !b.img; if (b.img) { ti.src = b.img; ti.alt = b.alt || b.name; }
@@ -888,7 +905,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (isKill(b)) b.kills.forEach((k, j) => {
       const li = document.createElement("li"), id = `k-${S.b}-${j}`, on = !!(S.kills[S.b] || {})[j];
       li.innerHTML = `<label for="${id}"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span>${k.name ? esc(k.name) : "Mode " + (j + 1)}</span><span>${k.kills != null ? k.kills : "***"} kills</span></label>`;
-      li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.done[S.b] = true; beep(); flash(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.done[S.b]; } save(); render(); });
+      li.querySelector("input").addEventListener("change", (e) => { (S.kills[S.b] = S.kills[S.b] || {})[j] = e.target.checked; if (killsDone(S.b) === b.kills.length) { S.status = "fertig"; S.done[S.b] = true; beep(); flash(); setTimeout(() => pushOverlay(true), 0); autoNext(); } else if (S.status === "fertig") { S.status = "bereit"; delete S.done[S.b]; } save(); render(); });
       kl.appendChild(li);
     });
     const nx = $("tr-next"); nx.innerHTML = "";
@@ -921,6 +938,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
     st.dataset.status = S.status;
     $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done" }[S.status];
+    const rem = b.min != null ? b.min * 60000 - e : null;
+    st.classList.toggle("ending", !kill && rem != null && S.status === "laeuft" && rem <= Math.min(10000, Math.max(3000, b.min * 60000 * 0.34)));
     if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
     else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Set done" : (b.type === "rest" ? "Break" : "left"); $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
     else { $("tr-kick").textContent = "Time in set"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Finish when you're done"; }
@@ -934,10 +953,18 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
     pushOverlay();
   }
+  let lastTick = null;
+  function autoNext() {
+    const l = length(S.goal, S.len);
+    if (!l || !l.auto) return;
+    const at = S.b;
+    setTimeout(() => { if (S.status === "fertig" && S.b === at && S.active) { nextBlock(); if (S.active && !isKill(cur())) play(); } }, 1800);
+  }
   function loop() {
     if (S.status !== "laeuft") return;
     const b = cur();
-    if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); return; }
+    if (b.min != null) { const left = Math.ceil((b.min * 60000 - elapsed()) / 1000); if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; tickSound(); } if (left > 3) lastTick = null; }
+    if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
   function play() { if (isKill(cur()) || S.status === "fertig") return; since = performance.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
@@ -978,7 +1005,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       segs: bl.map((x) => ({ w: x.min || 1, color: tcol(x) })), done: bl.map((_, i) => !!S.done[i]),
       status: S.status, kind: kill ? "kills" : (b.min != null ? "timer" : "watch"),
       kills: kill ? [killsDone(S.b), b.kills.length] : null, total: b.min != null ? b.min * 60000 : null,
-      elapsed: elapsed(), at: Date.now()
+      elapsed: elapsed(), at: Date.now(), sound: !!settings.sound, auto: !!l.auto
     };
   }
   function pushOverlay(force) {
@@ -1109,6 +1136,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     h += `<section class="dr-sec"><h3>Data</h3><div class="group">
         <button class="row go" type="button" id="reset-today">Reset today's progress</button>
         <button class="row go" type="button" id="reset-streak">Reset streak</button>
+        ${sw("test-on", "Test routine · 3 s sets", testOn)}
       </div></section>`;
     h += `<section class="dr-sec"><h3>Help</h3><div class="group">
         <button class="row go" type="button" id="to-faq">FAQ</button>
@@ -1144,6 +1172,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
     on("reset-today", "click", () => { clearInterval(raf); S = fresh(); store.del(KEY); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
+    on("test-on", "change", (e) => {
+      testOn = e.target.checked; store.set("rl.test", testOn); syncTest();
+      if (!testOn && S.goal === "test") { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
+      toast(testOn ? "Test routine added to step 1" : "Test routine removed");
+      if (view === "goal") buildPick(); else if (view === "home") buildHome();
+    });
     on("reset-streak", "click", () => { store.del(DAYS); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", () => { account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out"); });

@@ -51,11 +51,28 @@ body.done .time b { color: #30d158; }
 .bar i::after { content: ""; position: absolute; inset: 0; background: var(--c); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform .4s linear; }
 .swap { animation: swap .5s var(--ease); }
 @keyframes swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* Set ending soon: pulse in the set colour */
+body.warn .card { animation: warn 1s ease-in-out infinite; }
+@keyframes warn { 0%, 100% { box-shadow: inset 0 0 0 1px var(--edge), 0 0 0 0 transparent; } 40% { box-shadow: inset 0 0 0 2px var(--sc), 0 0 16px -2px var(--sc); } }
+body.warn .time b { color: var(--sc); }
+body.warn .ring { animation: beat 1s var(--ease) infinite; }
+@keyframes beat { 0% { transform: scale(1); } 14% { transform: scale(1.08); } 32% { transform: scale(1); } }
+/* Set done: pop, light wave, then a calm green breathing until the next set starts */
+body.done .card { animation: breathe 2.4s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { box-shadow: inset 0 0 0 1.5px rgba(48, 209, 88, .55); } 50% { box-shadow: inset 0 0 0 2px #30d158, 0 0 18px -4px #30d158; } }
+body.done .chip i { background: #30d158 !important; }
+body.done .name { font-size: 17px; }
+.wave { position: absolute; inset: 8px; border-radius: 26px; pointer-events: none; opacity: 0; }
+body.celebrate .card { animation: pop .7s var(--ease); }
+@keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.045); } 100% { transform: scale(1); } }
+body.celebrate .wave { animation: wave 1s ease-out; }
+@keyframes wave { 0% { opacity: 1; background: rgba(255, 255, 255, .22); box-shadow: inset 0 0 0 3px #30d158; } 100% { opacity: 0; background: rgba(255, 255, 255, 0); box-shadow: inset 0 0 0 1px #30d158; } }
+
 /* Move mode */
 body.moving .card { -webkit-app-region: drag; cursor: move; box-shadow: inset 0 0 0 2px var(--blue); opacity: 1; }
 .hint { position: absolute; inset: 8px; border-radius: 26px; display: none; place-items: center; background: rgba(8, 28, 56, .94); box-shadow: inset 0 0 0 2px var(--blue); font-size: 14px; font-weight: 600; pointer-events: none; }
 body.moving .hint { display: grid; }
-@media (prefers-reduced-motion: reduce) { .card, .swap, .bar i::after, .ring .fil { transition: none; animation: none; } }
+@media (prefers-reduced-motion: reduce) { .card, .swap, .bar i::after, .ring .fil, .ring, .wave { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body class="hidden">
@@ -69,12 +86,32 @@ body.moving .hint { display: grid; }
     <div class="time"><b id="clock">0:00</b><span id="sub"></span></div>
     <div class="bar" id="bar"></div>
   </div>
+  <div class="wave" aria-hidden="true"></div>
   <div class="hint">Drag to place · then click Done in Repline</div>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
   const R = 27, C = 2 * Math.PI * R, GAP = 2.2;
-  let st = { active: false }, lastKey = "", hotkeys = true;
+  let st = { active: false }, lastKey = "", hotkeys = true, doneKey = "", lastTick = null, celebrateT = 0;
+  /* Sounds: soft ticks for the last three seconds, a rising chime when a set is done */
+  let ctx = null;
+  function tone(freq, at, dur, vol) {
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ctx.currentTime + at, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  const soundTick = (n) => tone(n === 1 ? 784 : 660, 0, 0.12, 0.14);
+  const soundDone = () => { tone(880, 0, 0.32, 0.26); tone(1318.5, 0.16, 0.5, 0.24); };
+  const soundFinish = () => { tone(784, 0, 0.3, 0.24); tone(1046.5, 0.14, 0.3, 0.24); tone(1568, 0.28, 0.7, 0.22); };
+  function celebrate(last, sound) {
+    document.body.classList.remove("celebrate"); void document.body.offsetWidth; document.body.classList.add("celebrate");
+    clearTimeout(celebrateT); celebrateT = setTimeout(() => document.body.classList.remove("celebrate"), 1100);
+    if (sound) (last ? soundFinish : soundDone)();
+  }
   const clock = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}` : `${m}:${String(x).padStart(2, "0")}`; };
   const DEMO = { active: true, demo: true, routine: "Get better · Normal", idx: 1, count: 4, name: "Freebuild · 110–120%", type: "Mechanics", color: "#3f8dff", next: "Freebuild · 90%", kind: "timer", status: "laeuft", total: 360000, elapsed: 132000, at: Date.now(), segs: [{ w: 12, color: "#3f8dff" }, { w: 6, color: "#3f8dff" }, { w: 5, color: "#3f8dff" }, { w: 7, color: "#3f8dff" }], done: [true, false, false, false] };
 
@@ -113,19 +150,38 @@ body.moving .hint { display: grid; }
     $("ring").querySelectorAll(".fil").forEach((c, i) => c.setAttribute("stroke-dasharray", `${c.dataset.len * fills[i]} ${C}`));
     $("bar").querySelectorAll("i").forEach((el, i) => el.style.setProperty("--f", fills[i]));
     $("pos").innerHTML = `${s.idx + 1}<small>/${s.count}</small>`;
-    $("chip").innerHTML = `<i style="background:${s.color}"></i>${s.type}`;
-    $("name").textContent = s.name;
-    $("next").textContent = s.next ? `Next · ${s.next}` : "Last set";
+    document.body.style.setProperty("--sc", s.color);
     const e = elapsedNow(s);
+    const rem = s.kind === "timer" ? s.total - e : null;
+    const finished = s.status === "fertig" || (s.status === "laeuft" && rem != null && rem <= 0);
+    const warn = !finished && s.status === "laeuft" && rem != null && rem <= Math.min(10000, Math.max(3000, s.total * 0.34));
+    const sound = s.sound !== false && !s.demo;
+    // ticks at 3, 2, 1
+    if (warn) { const left = Math.ceil(rem / 1000); if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; if (sound) soundTick(left); } }
+    else lastTick = null;
+    // celebrate once per finished set
+    const setKey = `${s.routine}|${s.idx}`;
+    if (finished && doneKey !== setKey) { doneKey = setKey; celebrate(!s.next, sound); }
+    if (!finished && doneKey === setKey && s.status !== "fertig") doneKey = "";
+    document.body.classList.toggle("warn", warn);
+    if (finished) {
+      $("chip").innerHTML = `<i></i>${s.next ? "Set done" : "All sets done"}`;
+      $("name").textContent = s.next ? `→ ${s.next}` : "Routine done";
+      $("next").textContent = s.auto ? (s.next ? "Starting next set…" : "Finishing…") : s.next ? (hotkeys ? "Ctrl+Shift+N to start" : "Start it in Repline") : (hotkeys ? "Ctrl+Shift+N to finish" : "Finish it in Repline");
+    } else {
+      $("chip").innerHTML = `<i style="background:${s.color}"></i>${s.type}`;
+      $("name").textContent = s.name;
+      $("next").textContent = s.next ? `Next · ${s.next}` : "Last set";
+    }
     let big, sub;
-    if (s.status === "fertig") { big = "Done"; sub = hotkeys ? "Ctrl+Shift+N · next" : "Next set in Repline"; }
+    if (finished) { big = "Done"; sub = s.next ? "next set" : "great work"; }
     else if (s.kind === "kills") { big = `${s.kills[0]}/${s.kills[1]}`; sub = "targets"; }
     else if (s.kind === "timer") { big = clock(s.total - e + 999); sub = s.status === "laeuft" ? "left" : s.status === "pause" ? "Paused" : "Ready"; }
     else { big = clock(e); sub = s.status === "laeuft" ? "in set" : s.status === "pause" ? "Paused" : "Ready"; }
     $("clock").textContent = big;
     $("sub").textContent = sub;
     document.body.classList.toggle("paused", s.status === "pause" || s.status === "bereit");
-    document.body.classList.toggle("done", s.status === "fertig");
+    document.body.classList.toggle("done", finished);
   }
   if (window.overlayBridge) {
     overlayBridge.onState((s) => { st = s || { active: false }; tick(); });

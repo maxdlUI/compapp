@@ -41,7 +41,8 @@ function createMain() {
       nodeIntegration: false,
       sandbox: true,
       spellcheck: false,
-      backgroundThrottling: false // keep the timer and the overlay running while the game is in front
+      backgroundThrottling: false, // keep the timer and the overlay running while the game is in front
+      autoplayPolicy: "no-user-gesture-required"
     }
   });
   win.once("ready-to-show", () => win.show());
@@ -88,7 +89,7 @@ function createOverlay() {
     alwaysOnTop: true,
     show: false,
     title: "Repline overlay",
-    webPreferences: { preload: path.join(__dirname, "overlay-preload.js"), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false }
+    webPreferences: { preload: path.join(__dirname, "overlay-preload.js"), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, autoplayPolicy: "no-user-gesture-required" }
   });
   overlay.setAlwaysOnTop(true, "screen-saver");
   overlay.setVisibleOnAllWorkspaces(true);
