@@ -80,7 +80,12 @@ manifest = {
 }
 open(os.path.join(APP, "manifest.webmanifest"), "w", encoding="utf-8").write(json.dumps(manifest, indent=2) + "\n")
 
-files = ["./", "index.html", "manifest.webmanifest"] + ["icons/" + f for f in sorted(os.listdir(os.path.join(APP, "icons"))) if f.endswith(".png")]
+IMG = os.path.join(ROOT, "img")
+if os.path.isdir(os.path.join(APP, "img")):
+    shutil.rmtree(os.path.join(APP, "img"))
+if os.path.isdir(IMG):
+    shutil.copytree(IMG, os.path.join(APP, "img"))
+files = ["./", "index.html", "manifest.webmanifest"] + (["img/" + f for f in sorted(os.listdir(IMG))] if os.path.isdir(IMG) else []) + ["icons/" + f for f in sorted(os.listdir(os.path.join(APP, "icons"))) if f.endswith(".png")]
 version = hashlib.sha1(page.encode("utf-8")).hexdigest()[:10]
 sw = f"""// Repline service worker: keeps the app working offline.
 const CACHE = "repline-{version}";

@@ -324,6 +324,21 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 .stage[data-type="rest"] .dial-mid .t { color: var(--ash); }
 .stage[data-type="rest"] { background: linear-gradient(#141416, var(--obsidian) 420px); }
 
+/* Screenshots */
+.shot { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 18px; background: #0b0b0c; box-shadow: 0 0 0 1px var(--keyline); }
+.gallery { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); align-items: start; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
+.gallery::-webkit-scrollbar { display: none; }
+.gallery figure { margin: 0; scroll-snap-align: start; display: grid; align-content: start; gap: 12px; }
+.gallery .frame { border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--keyline); background: #0b0b0c; }
+.gallery .frame img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 1.2s var(--ease); }
+.gallery figure:hover img { transform: scale(1.04); }
+.gallery figcaption { font-size: 14px; letter-spacing: -0.224px; color: var(--ash); }
+.gallery figcaption b { display: block; color: var(--porcelain); font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: 0.012em; margin-bottom: 2px; }
+.v5 { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 4px; }
+.v5 code { font-family: var(--mono); font-size: 15px; letter-spacing: .06em; color: var(--porcelain); }
+@media (min-width: 900px) { .gallery { grid-auto-columns: calc((100% - 48px) / 4); } }
+@media (max-width: 760px) { .gallery { grid-auto-columns: 78%; } }
+
 /* Account drawer */
 .acct-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--c1), var(--c3) 55%, var(--c4)); color: #000; font-family: var(--display); font-weight: 600; font-size: 15px; display: grid; place-items: center; }
 .acct-btn:focus-visible { outline-offset: 3px; }
@@ -428,6 +443,19 @@ html.no-scroll { overflow: hidden; }
     <div class="goals four" id="home-goals"></div>
   </section>
 
+  <section class="sec wrap" aria-labelledby="h-in" style="padding-top:0">
+    <div class="sec-head">
+      <h2 id="h-in" class="d-m rv">Inside the routine.</h2>
+      <div class="v5 rv d1"><span class="small">Most sets run on Raider's Mechanics Training V5.</span><code>2424-4344-7824</code><button class="pill sm" type="button" data-copy="2424-4344-7824" data-ok="Map code copied">Copy</button></div>
+    </div>
+    <div class="gallery">
+      <figure class="rv"><div class="frame"><img src="img/speed-110.webp" alt="Speed set to 110 percent" loading="lazy" width="580" height="362"></div><figcaption><b>110–120%</b>Build fast.</figcaption></figure>
+      <figure class="rv d1"><div class="frame"><img src="img/speed-90.webp" alt="Speed set to 90 percent" loading="lazy" width="580" height="362"></div><figcaption><b>90%</b>Build exact.</figcaption></figure>
+      <figure class="rv d2"><div class="frame"><img src="img/edit-drill.webp" alt="Edit drill wall" loading="lazy" width="960" height="600"></div><figcaption><b>Edit drills</b>Clean, then fast.</figcaption></figure>
+      <figure class="rv d3"><div class="frame"><img src="img/aim-menu.webp" alt="Aim scenario menu" loading="lazy" width="1120" height="700"></div><figcaption><b>Aim scenarios</b>Shoot to pick.</figcaption></figure>
+    </div>
+  </section>
+
   <section class="sec wrap" id="progress" aria-labelledby="h-prog" style="padding-top:0">
     <div class="progress rv">
       <div style="display:grid;gap:12px">
@@ -508,6 +536,7 @@ html.no-scroll { overflow: hidden; }
     </section>
     <div class="info">
       <section class="card" aria-labelledby="tr-name">
+        <img class="shot" id="tr-img" alt="" hidden>
         <span class="chip" id="tr-pos"></span>
         <h2 class="h3" id="tr-name"></h2>
         <p class="small" id="tr-hint"></p>
@@ -607,11 +636,11 @@ const TYPES = {
 const SETS = {
   kovaaks: { name: "KovaaK's", type: "aim", hint: "Tracking, then flicks. Don't chase scores.", codes: [{ name: "Playlist share code", value: null }] },
   skaavok: { name: "Skaavok Aim Trainer", type: "aim", hint: "Same scenarios every day.", codes: [{ name: "Map code", by: "Donwozi", value: "8022-6842-4965" }] },
-  raiderAim: { name: "Raider's Aim Training", type: "aim", hint: "Shotgun flicks, then AR tracking.", codes: [{ name: "Map code", by: "Raider464", value: "6531-5731-1207" }] },
   clixAim: { name: "Clix Aim Trainer", type: "aim", hint: "Mixed scenarios. Clean hits only.", codes: [{ name: "Map code", value: "1090-1665-3359" }] },
-  mech: { name: "Mechanics Training V5", type: "mech", hint: "Edits, piece control, peeks. Clean, then fast.", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
-  fast: { name: "Freebuild · 120%", type: "mech", hint: "90s, ramp rushes, resets. Drop to 110% if it falls apart.", codes: [{ name: "Map code", by: "Speed changers", value: "5761-8240-5848" }] },
-  slow: { name: "Freebuild · 90%", type: "mech", hint: "Place every piece exactly.", codes: [{ name: "Map code", by: "Speed changers", value: "5761-8240-5848" }] },
+  mech: { name: "Mechanics Training V5", type: "mech", hint: "Edits, piece control, peeks. Clean, then fast.", img: "img/edit-drill.webp", alt: "Edit drill wall on Mechanics Training V5", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
+  v5aim: { name: "Mechanics V5 · Aim", type: "aim", hint: "Shoot a scenario to start. Flicks, tracking, shotgun react.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
+  fast: { name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110%, then 120%. 90s, ramp rushes, resets.", img: "img/speed-110.webp", alt: "Speed set to 110 percent", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
+  slow: { name: "Freebuild · 90%", type: "mech", hint: "Speed to 90%. Place every piece exactly.", img: "img/speed-90.webp", alt: "Speed set to 90 percent", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
   edit: { name: "Edit Course", type: "mech", hint: "Timed runs. Beat yesterday, cleanly.", codes: [{ name: "Map code", value: "6363-5615-8837" }] },
   warmCourse: { name: "Raider's Warm-Up Course", type: "mech", hint: "All five levels, no stopping.", codes: [{ name: "Map code", by: "Raider464", value: "2559-0136-9834" }] },
   piece: { name: "Piece Control V2", type: "fight", hint: "Take walls and cones first. Reset.", codes: [{ name: "Map code", by: "Raider464", value: "3705-0960-8290" }] },
@@ -640,9 +669,9 @@ const GOALS = [
     L("full", "Full day", [["kovaaks", 20], ["mech", 20], ["fast", 15], ["slow", 15], ["edit", 15], ["piece", 30], ["brk", 15], ["real", 40], ["box", 40], ["zone", 40], ["brk", 30], ["scrims", 150], ["brk", 15], ["ranked", 90], ["vod", 45], ["fixDrill", 20]])
   ] },
   { id: "aim", name: "Quick: Aim", text: "Trainer, aim maps, real fights.", icon: "i-aim", lengths: [
-    L("short", "Short", [["kovaaks", 15], ["skaavok", 10], ["raiderAim", 5]]),
-    L("normal", "Normal", [["kovaaks", 20], ["skaavok", 15], ["raiderAim", 10], ["real", 15]]),
-    L("long", "Long", [["kovaaks", 40], ["skaavok", 25], ["raiderAim", 20], ["clixAim", 15], ["brk", 10], ["real", 30], ["box", 25], ["vod", 15]])
+    L("short", "Short", [["kovaaks", 15], ["skaavok", 10], ["v5aim", 5]]),
+    L("normal", "Normal", [["kovaaks", 20], ["skaavok", 15], ["v5aim", 10], ["real", 15]]),
+    L("long", "Long", [["kovaaks", 40], ["skaavok", 25], ["v5aim", 20], ["clixAim", 15], ["brk", 10], ["real", 30], ["box", 25], ["vod", 15]])
   ] },
   { id: "mechanics", name: "Quick: Mechanics", text: "Speed at 120%, precision at 90%.", icon: "i-mech", lengths: [
     L("short", "Short", [["mech", 12], ["fast", 6], ["slow", 5], ["edit", 7]]),
@@ -816,6 +845,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const d = document.createElement("details"); d.className = "blk rv" + (i < 4 ? " d" + i : ""); if (i === 0) d.open = true;
       const when = z.cupTime ? (times ? times[i] : "***") : "";
       let body = "";
+      if (b.img) body += `<img class="shot" src="${esc(b.img)}" alt="${esc(b.alt || b.name)}" loading="lazy" style="max-width:360px">`;
       if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
       body += codesHTML(b);
       if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join(" · ")}</p>`;
@@ -869,6 +899,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("stage").dataset.type = b.type;
     $("tr-pos").innerHTML = `<i style="background:${tcol(b)}"></i>${TYPES[b.type].label} · Set ${S.b + 1} of ${bl.length}`;
     $("tr-name").textContent = b.name || "***";
+    const ti = $("tr-img"); ti.hidden = !b.img; if (b.img) { ti.src = b.img; ti.alt = b.alt || b.name; }
     const f = getFocus();
     $("tr-hint").innerHTML = esc(b.hint || "") + (b.usesFocus || b.key === "ranked" ? (f ? `<br><span style="color:var(--porcelain)">Today's focus: ${esc(f.text)}</span>` : "") : "");
     $("tr-codes").innerHTML = codesHTML(b);
