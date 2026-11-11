@@ -1,0 +1,276 @@
+<title>Repline Set Alerts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one game-scene stage with the real overlay capsule on top, then sound rows and animation tiles to try. */
+:root {
+  color-scheme: dark;
+  --obsidian: #000; --carbon: #1d1d1f; --steel: #333336; --slate: #6e6e73; --ash: #86868b; --porcelain: #f5f5f7; --white: #fff;
+  --blue: #0071e3; --green: #30d158; --keyline: #282828;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --ease: cubic-bezier(.28, .11, .32, 1);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--obsidian); color: var(--porcelain); font-family: var(--text); font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1060px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { padding-block: 64px 28px; display: grid; gap: 12px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(40px, 7vw, 72px); line-height: 1.05; letter-spacing: -0.015em; margin: 0; }
+h2 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.1; margin: 0 0 16px; }
+.lead { color: var(--ash); margin: 0; font-size: 19px; max-width: 46ch; }
+.small { font-size: 14px; letter-spacing: -0.224px; color: var(--ash); margin: 0; }
+section { padding-block: 28px; }
+button { font: inherit; color: inherit; }
+.pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 980px; background: var(--blue); color: var(--white); font-size: 17px; padding: 12px 24px; cursor: pointer; min-height: 44px; transition: transform .2s var(--ease), background .2s; }
+.pill:hover { background: #0077ed; } .pill:active { transform: scale(.97); }
+.pill.out { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); }
+.pill.out:hover { box-shadow: inset 0 0 0 1px var(--porcelain); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* Stage: a game scene with the overlay on it */
+.stage { position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 16 / 9; max-height: 62vh; width: 100%; background: #0b0b0c center / cover no-repeat; box-shadow: 0 0 0 1px var(--keyline); }
+.stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35)); pointer-events: none; }
+.stage .slot { position: absolute; left: 3%; top: 5%; width: min(380px, 70%); aspect-ratio: 380 / 112; z-index: 1; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+.sel { margin-left: auto; font-size: 14px; color: var(--ash); }
+.sel b { color: var(--porcelain); font-weight: 600; }
+
+/* ===== Overlay capsule (same as the Windows overlay) ===== */
+.ov { --op: .92; --sc: #3f8dff; position: relative; width: 100%; height: 100%; container-type: inline-size; font-family: var(--display); color: var(--porcelain); user-select: none; }
+.ov .card { position: absolute; inset: 2.1cqw; display: grid; grid-template-columns: 16.8cqw minmax(0, 1fr) auto; grid-template-rows: 1fr auto; align-items: center; column-gap: 3.7cqw; padding: 2.6cqw 4.7cqw 2.6cqw 3.2cqw; border-radius: 6.8cqw; background: rgba(16, 16, 18, .88); box-shadow: inset 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 rgba(255,255,255,.07); opacity: var(--op); overflow: hidden; }
+.ov .ring { position: relative; width: 16.8cqw; aspect-ratio: 1; grid-row: 1 / 3; }
+.ov .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.ov .ring circle { fill: none; }
+.ov .ring .trk { opacity: .22; }
+.ov .ring .fil { transition: stroke-dasharray .3s linear; }
+.ov .ring b { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; padding-top: 5.8cqw; font-size: 3.9cqw; font-weight: 600; }
+.ov .ring b small { font-size: 2.6cqw; color: #8e8e93; }
+.ov .meta { min-width: 0; display: grid; gap: .5cqw; }
+.ov .chip { display: flex; align-items: center; gap: 1.6cqw; font-size: 2.9cqw; color: #8e8e93; white-space: nowrap; }
+.ov .chip i { width: 1.8cqw; height: 1.8cqw; border-radius: 50%; background: var(--sc); }
+.ov .name { font-size: 4.2cqw; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ov .next { font-size: 2.9cqw; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ov .time { text-align: right; display: grid; justify-items: end; gap: .5cqw; }
+.ov .time b { font-size: 7.4cqw; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
+.ov .time span { font-size: 2.9cqw; color: #8e8e93; }
+.ov .bar { grid-column: 2 / 4; display: flex; gap: .5cqw; height: .8cqw; margin-top: 2.1cqw; border-radius: 99px; overflow: hidden; }
+.ov .bar i { display: block; height: 100%; background: rgba(255,255,255,.1); position: relative; overflow: hidden; }
+.ov .bar i::after { content: ""; position: absolute; inset: 0; background: var(--c); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform .3s linear; }
+.ov .fx { position: absolute; inset: 2.1cqw; border-radius: 6.8cqw; pointer-events: none; overflow: hidden; }
+.ov .dot { position: absolute; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; left: 11cqw; top: 50%; }
+
+/* Countdown (same for every style) */
+.ov.warn .card { animation: warn 1s ease-in-out infinite; }
+@keyframes warn { 0%, 100% { box-shadow: inset 0 0 0 1px rgba(255,255,255,.09); } 40% { box-shadow: inset 0 0 0 2px var(--sc), 0 0 16px -2px var(--sc); } }
+.ov.warn .time b { color: var(--sc); }
+.ov.warn .ring { animation: beat 1s var(--ease) infinite; }
+@keyframes beat { 0% { transform: scale(1); } 14% { transform: scale(1.08); } 32% { transform: scale(1); } }
+/* Done state (after any style) */
+.ov.done .time b { color: var(--green); }
+.ov.done .chip i { background: var(--green); }
+.ov.done .card { box-shadow: inset 0 0 0 1.5px rgba(48, 209, 88, .6); }
+
+/* ===== The seven finish animations ===== */
+/* 1 Wave: pop + light wave */
+.ov.a-wave .card { animation: pop .7s var(--ease); }
+.ov.a-wave .fx { animation: wave 1s ease-out; }
+@keyframes pop { 35% { transform: scale(1.045); } }
+@keyframes wave { 0% { background: rgba(255,255,255,.22); box-shadow: inset 0 0 0 3px var(--green); } 100% { background: transparent; box-shadow: inset 0 0 0 1px transparent; } }
+/* 2 Flash: two bright flashes */
+.ov.a-flash .fx { animation: flash .9s ease-out; }
+@keyframes flash { 0%, 50% { background: rgba(255,255,255,.55); } 25%, 100% { background: rgba(255,255,255,0); } }
+/* 3 Shake: short shake to catch the eye */
+.ov.a-shake .card { animation: shake .55s cubic-bezier(.36,.07,.19,.97); }
+@keyframes shake { 15%, 55% { transform: translateX(-2.2cqw); } 35%, 75% { transform: translateX(2.2cqw); } 90% { transform: translateX(-.8cqw); } 100% { transform: none; } }
+/* 4 Glow: three strong green pulses */
+.ov.a-glow .card { animation: glow 1.5s ease-in-out; }
+@keyframes glow { 0%, 33%, 66%, 100% { box-shadow: inset 0 0 0 1.5px rgba(48,209,88,.5), 0 0 0 0 transparent; } 16%, 50%, 83% { box-shadow: inset 0 0 0 3px var(--green), 0 0 26px 2px var(--green); } }
+/* 5 Confetti: dots burst from the ring (spawned by script) */
+.ov .dot { animation: burst 1.1s cubic-bezier(.1,.7,.3,1) forwards; }
+@keyframes burst { from { transform: translate(-50%, -50%) scale(1); opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4); opacity: 0; } }
+/* 6 Slide: text slides out, next set slides in, green sweep below */
+.ov.a-slide .meta { animation: slide .8s var(--ease); }
+@keyframes slide { 0% { transform: none; opacity: 1; } 40% { transform: translateX(-12cqw); opacity: 0; } 41% { transform: translateX(12cqw); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.ov.a-slide .fx { animation: sweep .9s var(--ease); }
+@keyframes sweep { from { background: linear-gradient(90deg, transparent 0 40%, rgba(48,209,88,.35) 50%, transparent 60% 100%) -100% 0 / 200% 100% no-repeat; } to { background: linear-gradient(90deg, transparent 0 40%, rgba(48,209,88,.35) 50%, transparent 60% 100%) 100% 0 / 200% 100% no-repeat; } }
+/* 7 Minimal: colour only, no motion */
+
+/* Rows and tiles */
+.list { background: var(--carbon); border-radius: 22px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-top: 1px solid var(--steel); }
+.row:first-child { border-top: 0; }
+.row .nm { flex: 1; min-width: 0; }
+.row .nm b { display: block; font-weight: 600; }
+.row .nm span { font-size: 14px; color: var(--ash); letter-spacing: -0.224px; }
+.play { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--steel); cursor: pointer; display: grid; place-items: center; flex: none; transition: background .2s; }
+.play:hover { background: var(--slate); }
+.play svg { width: 16px; height: 16px; fill: var(--porcelain); }
+.radio { appearance: none; -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--slate); margin: 0; cursor: pointer; flex: none; transition: box-shadow .2s; }
+.radio:checked { box-shadow: inset 0 0 0 7px var(--blue); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.tile { border: 0; text-align: left; background: var(--carbon); border-radius: 20px; padding: 16px; cursor: pointer; display: grid; gap: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); transition: transform .3s var(--ease), box-shadow .2s; }
+.tile:hover { transform: translateY(-2px); }
+.tile b { font-family: var(--display); font-size: 19px; font-weight: 600; }
+.tile span { font-size: 13px; color: var(--ash); letter-spacing: -0.12px; }
+.tile[aria-pressed="true"] { box-shadow: inset 0 0 0 2.5px var(--blue); }
+.note { margin-top: 12px; }
+footer { padding-block: 24px 80px; }
+@media (prefers-reduced-motion: reduce) { .ov *, .ov { animation: none !important; } }
+</style>
+
+<header class="wrap">
+  <h1>Set alerts.</h1>
+  <p class="lead">Try every sound and finish animation. Pick the ones you like.</p>
+</header>
+
+<section class="wrap" aria-label="Preview">
+  <div class="stage" id="stage" style="background-image:url(img/edit-drill.webp)">
+    <div class="slot">
+      <div class="ov" id="ov">
+        <div class="card">
+          <div class="ring"><svg viewBox="0 0 64 64" id="ring" aria-hidden="true"></svg><b id="pos">2<small>/4</small></b></div>
+          <div class="meta"><span class="chip" id="chip"><i></i>Mechanics</span><span class="name" id="name">Freebuild · 110–120%</span><span class="next" id="next">Next · Freebuild · 90%</span></div>
+          <div class="time"><b id="clock">0:05</b><span id="sub">left</span></div>
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="fx" id="fx"></div>
+      </div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="pill" type="button" id="run">▶ Play countdown + finish</button>
+    <button class="pill out" type="button" id="finish">Finish only</button>
+    <button class="pill out" type="button" id="ticks">Ticks only</button>
+    <span class="sel">Selected: <b id="sel-s"></b> · <b id="sel-a"></b></span>
+  </div>
+  <p class="small note">The countdown pulse and 3-2-1 ticks are the same for every style. Sound plays on the first tap (browsers need a click before audio).</p>
+</section>
+
+<section class="wrap" aria-labelledby="h-s">
+  <h2 id="h-s">Sound</h2>
+  <div class="list" id="sounds" role="radiogroup" aria-labelledby="h-s"></div>
+</section>
+
+<section class="wrap" aria-labelledby="h-a">
+  <h2 id="h-a">Finish animation</h2>
+  <div class="tiles" id="anims" role="group" aria-labelledby="h-a"></div>
+</section>
+
+<footer class="wrap"><p class="small">Repline · preview of end-of-set alerts for the Windows overlay and the app.</p></footer>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const store = { get(k, f) { try { const v = localStorage.getItem(k); return v == null ? f : v; } catch (e) { return f; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+  /* ---------- Sounds (synthesised, no files) ---------- */
+  let ctx = null;
+  const ac = () => (ctx = ctx || new (window.AudioContext || window.webkitAudioContext)());
+  function tone(freq, at, dur, vol, type, attack) {
+    const c = ac(), t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + (attack || 0.012)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  function bell(freq, at, vol) { [[1, 1], [2.76, .45], [5.4, .22], [8.9, .1]].forEach(([m, v]) => tone(freq * m, at, 1.6 / Math.sqrt(m), vol * v, "sine", 0.004)); }
+  function brass(freq, at, dur, vol) {
+    const c = ac(), t = c.currentTime + at, o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+    o.type = "sawtooth"; o.frequency.value = freq; f.type = "lowpass"; f.frequency.setValueAtTime(900, t); f.frequency.linearRampToValueAtTime(2400, t + 0.08);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.03); g.gain.setValueAtTime(vol, t + dur - 0.08); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(f).connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  const SOUNDS = [
+    { id: "chime", name: "Chime", desc: "Two rising tones. Clean and clear.", play: () => { tone(880, 0, 0.32, 0.26); tone(1318.5, 0.16, 0.5, 0.24); } },
+    { id: "bell", name: "Bell", desc: "One warm bell that rings out.", play: () => bell(784, 0, 0.22) },
+    { id: "marimba", name: "Marimba", desc: "Three soft wooden notes.", play: () => { [1046.5, 1318.5, 1568].forEach((f, i) => { tone(f, i * 0.11, 0.28, 0.24, "triangle", 0.004); tone(f * 4, i * 0.11, 0.06, 0.05, "sine", 0.002); }); } },
+    { id: "arcade", name: "Arcade", desc: "Fast retro level-up.", play: () => { [523.25, 659.25, 784, 1046.5, 1318.5].forEach((f, i) => tone(f, i * 0.06, 0.09, 0.07, "square", 0.003)); } },
+    { id: "ping", name: "Ping", desc: "A high ping with an echo.", play: () => { [0, 0.17, 0.34].forEach((t, i) => tone(1567.98, t, 0.4, 0.22 / (i * 1.8 + 1), "sine", 0.003)); } },
+    { id: "fanfare", name: "Fanfare", desc: "Short brass hit. Loud and proud.", play: () => { brass(392, 0, 0.14, 0.11); brass(523.25, 0.14, 0.14, 0.11); brass(659.25, 0.28, 0.5, 0.12); } },
+    { id: "off", name: "No sound", desc: "Animation only.", play: () => {} }
+  ];
+  const tick = (n) => tone(n === 1 ? 784 : 660, 0, 0.12, 0.14);
+
+  /* ---------- Animations ---------- */
+  const ANIMS = [
+    { id: "wave", name: "Wave", desc: "Pop and a light wave." },
+    { id: "flash", name: "Flash", desc: "Two bright flashes." },
+    { id: "shake", name: "Shake", desc: "Quick shake. Hard to miss." },
+    { id: "glow", name: "Glow", desc: "Three green pulses." },
+    { id: "confetti", name: "Confetti", desc: "Dots burst from the ring." },
+    { id: "slide", name: "Slide", desc: "Next set slides in." },
+    { id: "minimal", name: "Minimal", desc: "Colour change only." }
+  ];
+
+  let soundId = store.get("rl.alert.sound", "chime");
+  let animId = store.get("rl.alert.anim", "wave");
+
+  /* ---------- Overlay mock ---------- */
+  const ov = $("ov"), R = 27, C = 2 * Math.PI * R, GAP = 2.2;
+  const SEGS = [{ w: 12, c: "#3f8dff" }, { w: 6, c: "#3f8dff" }, { w: 5, c: "#3f8dff" }, { w: 7, c: "#3f8dff" }];
+  (function draw() {
+    const total = SEGS.reduce((a, x) => a + x.w, 0); let off = 0, h = "";
+    SEGS.forEach((x, i) => { const len = x.w / total * C - GAP; h += `<circle class="trk" cx="32" cy="32" r="${R}" stroke="${x.c}" stroke-width="5" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}"></circle><circle class="fil" data-len="${len}" cx="32" cy="32" r="${R}" stroke="${x.c}" stroke-width="5" stroke-dasharray="0 ${C}" stroke-dashoffset="${-off}"></circle>`; off += len + GAP; });
+    $("ring").innerHTML = h;
+    $("bar").innerHTML = SEGS.map((x) => `<i style="flex:${x.w};--c:${x.c}"></i>`).join("");
+  })();
+  function setFill(f2) {
+    const fills = [1, f2, 0, 0];
+    $("ring").querySelectorAll(".fil").forEach((c, i) => c.setAttribute("stroke-dasharray", `${c.dataset.len * fills[i]} ${C}`));
+    $("bar").querySelectorAll("i").forEach((el, i) => el.style.setProperty("--f", fills[i]));
+  }
+  function reset() {
+    ov.className = "ov";
+    $("chip").innerHTML = "<i></i>Mechanics"; $("name").textContent = "Freebuild · 110–120%"; $("next").textContent = "Next · Freebuild · 90%";
+    $("clock").textContent = "0:05"; $("sub").textContent = "left"; $("fx").innerHTML = ""; setFill(0.5);
+  }
+  function confetti() {
+    const fx = $("fx"); fx.innerHTML = "";
+    const cols = ["#30d158", "#38e0ff", "#3f8dff", "#a855f7", "#ffd60a", "#f5f5f7"];
+    for (let i = 0; i < 22; i++) {
+      const d = document.createElement("i"), a = Math.random() * Math.PI * 2, r = 14 + Math.random() * 30;
+      d.className = "dot"; d.style.background = cols[i % cols.length];
+      d.style.setProperty("--dx", `${Math.cos(a) * r}cqw`); d.style.setProperty("--dy", `${Math.sin(a) * r * 0.5}cqw`);
+      d.style.animationDelay = `${Math.random() * 0.08}s`;
+      fx.appendChild(d);
+    }
+  }
+  function finish(withSound) {
+    ov.classList.remove("warn", "a-" + animId); void ov.offsetWidth;
+    ov.classList.add("done", "a-" + animId);
+    if (animId === "confetti") confetti();
+    setFill(1);
+    $("chip").innerHTML = "<i></i>Set done"; $("name").textContent = "→ Freebuild · 90%"; $("next").textContent = "Ctrl+Shift+N to start";
+    $("clock").textContent = "Done"; $("sub").textContent = "next set";
+    if (withSound !== false) SOUNDS.find((s) => s.id === soundId).play();
+  }
+  let timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  function stopAll() { timers.forEach(clearTimeout); timers = []; }
+  function runAll() {
+    stopAll(); reset(); ac().resume && ac().resume();
+    ov.classList.add("warn");
+    [5, 4, 3, 2, 1].forEach((n, i) => later(() => { $("clock").textContent = `0:0${n}`; setFill(0.5 + i * 0.1); if (n <= 3) tick(n); }, i * 1000));
+    later(() => finish(), 5000);
+  }
+  $("run").addEventListener("click", runAll);
+  $("finish").addEventListener("click", () => { stopAll(); reset(); ac(); finish(); });
+  $("ticks").addEventListener("click", () => { stopAll(); reset(); ov.classList.add("warn"); [3, 2, 1].forEach((n, i) => later(() => { $("clock").textContent = `0:0${n}`; tick(n); }, i * 1000)); later(reset, 3200); });
+
+  /* ---------- Pickers ---------- */
+  function renderSel() {
+    $("sel-s").textContent = SOUNDS.find((s) => s.id === soundId).name;
+    $("sel-a").textContent = ANIMS.find((a) => a.id === animId).name;
+  }
+  $("sounds").innerHTML = SOUNDS.map((s) => `<div class="row"><input class="radio" type="radio" name="snd" id="s-${s.id}" value="${s.id}" ${s.id === soundId ? "checked" : ""}><label class="nm" for="s-${s.id}"><b>${s.name}</b><span>${s.desc}</span></label>${s.id === "off" ? "" : `<button class="play" type="button" data-play="${s.id}" aria-label="Play ${s.name}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("");
+  $("sounds").addEventListener("change", (e) => { soundId = e.target.value; store.set("rl.alert.sound", soundId); renderSel(); SOUNDS.find((s) => s.id === soundId).play(); });
+  $("sounds").addEventListener("click", (e) => { const b = e.target.closest("[data-play]"); if (b) SOUNDS.find((s) => s.id === b.dataset.play).play(); });
+  $("anims").innerHTML = ANIMS.map((a) => `<button class="tile" type="button" data-anim="${a.id}" aria-pressed="${a.id === animId}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("");
+  $("anims").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-anim]"); if (!b) return;
+    animId = b.dataset.anim; store.set("rl.alert.anim", animId);
+    document.querySelectorAll("[data-anim]").forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    renderSel(); stopAll(); reset(); finish(false);
+  });
+  renderSel(); reset();
+})();
+</script>

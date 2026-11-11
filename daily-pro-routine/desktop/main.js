@@ -22,6 +22,7 @@ let win = null;
 let overlay = null;
 let lastState = { active: false };
 let moving = false;
+let previewUntil = 0;
 
 /* ---------- Main window ---------- */
 function createMain() {
@@ -115,7 +116,7 @@ function applyOverlayLook() {
 function sendOverlay() { if (overlay) overlay.webContents.send("overlay:state", { ...lastState, moving }); }
 function updateOverlayVisibility() {
   if (!overlay) return;
-  const show = overlaySettings.enabled && (lastState.active || moving);
+  const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil;
   if (show && !overlay.isVisible()) overlay.showInactive();
   if (!show && overlay.isVisible()) overlay.hide();
 }
@@ -159,6 +160,15 @@ ipcMain.handle("overlay:set", (_e, patch) => {
   return { ...overlaySettings };
 });
 ipcMain.handle("overlay:move", (_e, on) => { setMoving(on); return moving; });
+ipcMain.handle("overlay:preview", (_e, p) => {
+  if (!overlay) createOverlay();
+  previewUntil = Date.now() + 2700;
+  updateOverlayVisibility();
+  const send = () => overlay && overlay.webContents.send("overlay:preview", { sound: String(p && p.sound || "chime"), anim: String(p && p.anim || "wave") });
+  if (overlay.webContents.isLoading()) overlay.webContents.once("did-finish-load", send); else send();
+  setTimeout(updateOverlayVisibility, 2800);
+  return true;
+});
 ipcMain.on("overlay:state", (_e, state) => {
   lastState = state && typeof state === "object" ? state : { active: false };
   sendOverlay();

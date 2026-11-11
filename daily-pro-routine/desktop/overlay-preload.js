@@ -3,5 +3,6 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("overlayBridge", {
   onState: (cb) => ipcRenderer.on("overlay:state", (_e, s) => cb(s)),
-  onLook: (cb) => ipcRenderer.on("overlay:look", (_e, l) => cb(l))
+  onLook: (cb) => ipcRenderer.on("overlay:look", (_e, l) => cb(l)),
+  onPreview: (cb) => ipcRenderer.on("overlay:preview", (_e, p) => cb(p))
 });

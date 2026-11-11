@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("replineDesktop", {
     get: () => ipcRenderer.invoke("overlay:get"),
     set: (patch) => ipcRenderer.invoke("overlay:set", patch),
     move: (on) => ipcRenderer.invoke("overlay:move", !!on),
+    preview: (p) => ipcRenderer.invoke("overlay:preview", p),
     push: (state) => ipcRenderer.send("overlay:state", state),
     onSettings: (cb) => ipcRenderer.on("overlay:settings", (_e, s) => cb(s))
   },

@@ -42,3 +42,7 @@ Während einer Routine zeigt ein kleines Overlay über dem Spiel: Ring mit Routi
 - **Am Ende** springt das Overlay kurz auf, eine Lichtwelle läuft herum, ein Gong in zwei Tönen erklingt, und groß steht das nächste Set da. Nach dem letzten Set kommt ein Dreiklang mit „Routine done“.
 - Der Ton folgt der Einstellung „Sound at the end of a set“. Ist das Overlay an, spielt nur das Overlay den Ton.
 - **Test-Routine:** Konto-Panel → Data → „Test routine · 3 s sets“. In Schritt 1 erscheint dann „Test routine“: 8 Sets à 3 Sekunden, die automatisch nacheinander laufen. Das letzte Set ist ein Kill-Set, dort hakst du die drei Runden ab.
+
+### Ton und Animation wählen
+
+Konto-Panel → „Set alerts“: 7 Töne (Chime, Bell, Marimba, Arcade, Ping, Fanfare, kein Ton), jeder mit ▶ zum Anhören, und 7 Abschluss-Animationen (Wave, Flash, Shake, Glow, Confetti, Slide, Minimal). Die Mini-Vorschau zeigt die gewählte Animation sofort. „Preview“ spielt beides ab, im Windows-Programm zusätzlich im echten Overlay. Die Auswahl gilt für Overlay und App. Alles zum Durchprobieren gibt es auch auf `preview-alerts.html`.
