@@ -1,7 +1,7 @@
 {
   "name": "repline",
   "productName": "Repline",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Daily Pro Routine",
   "main": "main.js",
   "author": "Repline",
@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win nsis portable --x64"
+    "dist": "electron-builder --win nsis --x64 --publish never"
   },
   "devDependencies": {
     "electron": "33.2.1",
@@ -23,26 +23,63 @@
       "preload.js",
       "overlay-preload.js",
       "overlay.html",
-      "app/**/*"
+      "app/**/*",
+      "package.json"
     ],
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "win": {
-      "icon": "app/icons/repline.ico",
+      "icon": "build/icon.ico",
       "target": [
-        "nsis",
-        "portable"
-      ]
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Repline-Setup-${version}.${ext}",
+      "legalTrademarks": "Repline"
     },
     "nsis": {
       "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
       "shortcutName": "Repline",
-      "artifactName": "Repline-Setup-${version}.exe"
+      "uninstallDisplayName": "Repline",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "menuCategory": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/installerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "include": "build/installer.nsh",
+      "artifactName": "Repline-Setup-${version}.${ext}",
+      "language": "1033",
+      "installerLanguages": [
+        "en_US"
+      ],
+      "multiLanguageInstaller": false
     },
-    "portable": {
-      "artifactName": "Repline-Portable-${version}.exe"
-    }
+    "electronVersion": "33.2.1",
+    "copyright": "Repline",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://repline.pages.dev/download/win/",
+        "channel": "latest"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "6.3.9"
   }
 }

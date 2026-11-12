@@ -149,7 +149,14 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - Die Datei liegt im **privaten** R2-Bucket `repline-downloads` (WEUR). Der öffentliche r2.dev-Link ist aus.
 - Ausgeliefert wird sie über den Pages-Worker unter `https://repline.pages.dev/download/windows`, mit dem Binding `DOWNLOADS`.
 - Kostenschutz: Der Worker läuft im kostenlosen Workers-Plan mit hartem Limit von 100.000 Aufrufen pro Tag. Damit sind höchstens etwa 3 Mio. R2-Lesezugriffe pro Monat möglich, frei sind 10 Mio. Höchstens 2 Versionen im Bucket behalten. Kein Workers Paid buchen.
-- **Neue Version veröffentlichen:**
+- **Ab 1.5: Installer und Auto-Update.** NSIS-Installer (nur für den aktuellen Nutzer, ohne Admin), electron-updater mit generic provider auf `https://repline.pages.dev/download/win/`. Der Worker liefert `latest.yml` aus `release.json` und den Installer aus R2. Die App prüft beim Start und alle 6 Stunden, lädt im Hintergrund und installiert beim Beenden (oder sofort über „Restart“). Protokoll: `%APPDATA%/Repline/updates.log`.
+- **Neue Version veröffentlichen (ab 1.5):**
+  1. `version` in `desktop/package.json` erhöhen und `python3 tools/build_app.py` ausführen.
+  2. Bauen auf Linux (braucht wine64 und wine32): `npx electron-builder --win nsis --x64 --publish never -c.electronDist=<entpacktes electron-v33.2.1-win32-x64>`.
+  3. `python3 tools/publish_windows.py desktop/dist`: lädt nach R2, schreibt `release.json` und löscht Altes.
+  4. `SITE.download.version/size` anpassen, dann `tools/deploy.sh production`.
+  5. In #download posten.
+- **Neue Version veröffentlichen (alte Zip-Methode, nur bis 1.4):**
   1. Zip bauen.
   2. Per API hochladen: `PUT /accounts/{acc}/r2/buckets/repline-downloads/objects/windows/Repline-Windows-X.Y.zip`.
   3. `release.json` und `SITE.download.version` anpassen, dann `tools/deploy.sh production`.

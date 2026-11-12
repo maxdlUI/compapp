@@ -12,5 +12,11 @@ contextBridge.exposeInMainWorld("replineDesktop", {
     onSettings: (cb) => ipcRenderer.on("overlay:settings", (_e, s) => cb(s))
   },
   onHotkey: (cb) => ipcRenderer.on("hotkey", (_e, name) => cb(name)),
-  auth: (url) => ipcRenderer.invoke("auth:discord", url)
+  auth: (url) => ipcRenderer.invoke("auth:discord", url),
+  updates: {
+    get: () => ipcRenderer.invoke("update:get"),
+    check: () => ipcRenderer.invoke("update:check"),
+    install: () => ipcRenderer.invoke("update:install"),
+    onState: (cb) => ipcRenderer.on("update:state", (_e, s) => cb(s))
+  }
 });

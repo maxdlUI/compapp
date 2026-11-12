@@ -5,6 +5,43 @@ const fs = require("fs");
 
 if (!app.requestSingleInstanceLock()) app.quit();
 
+/* ---------- Automatic updates ----------
+   The installed app asks repline.pages.dev/download/win/latest.yml for the newest version (on start and every 6 hours),
+   downloads the installer in the background and installs it on the next restart (or right away from the banner). */
+let autoUpdater = null;
+try { ({ autoUpdater } = require("electron-updater")); } catch (e) { autoUpdater = null; }
+let updState = { state: "idle" };
+const updOn = () => !!(autoUpdater && app.isPackaged);
+function sendUpd() { if (win) win.webContents.send("update:state", { ...updState, current: app.getVersion(), enabled: updOn() }); }
+// Small log in %APPDATA%/Repline/updates.log (kept under ~200 KB) to help with support questions.
+function ulog(...a) {
+  try {
+    const f = path.join(app.getPath("userData"), "updates.log");
+    if (fs.existsSync(f) && fs.statSync(f).size > 200000) fs.renameSync(f, f + ".old");
+    fs.appendFileSync(f, `${new Date().toISOString()} ${a.map((x) => (x && x.stack) || String(x)).join(" ")}\n`);
+  } catch (e) {}
+}
+function setupUpdates() {
+  if (!updOn()) return;
+  autoUpdater.logger = { info: ulog, warn: ulog, error: ulog, debug: () => {} };
+  ulog("Repline", app.getVersion(), "update checks on");
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.disableDifferentialDownload = true;
+  autoUpdater.on("checking-for-update", () => { if (updState.state !== "ready") { updState = { state: "checking" }; sendUpd(); } });
+  autoUpdater.on("update-available", (i) => { updState = { state: "downloading", version: i.version, progress: 0 }; sendUpd(); });
+  autoUpdater.on("update-not-available", () => { updState = { state: "latest", at: Date.now() }; sendUpd(); });
+  autoUpdater.on("download-progress", (p) => { updState = { ...updState, state: "downloading", progress: Math.round(p.percent || 0) }; sendUpd(); });
+  autoUpdater.on("update-downloaded", (i) => { updState = { state: "ready", version: i.version }; sendUpd(); });
+  autoUpdater.on("error", () => { if (updState.state !== "ready") { updState = { state: "error" }; sendUpd(); } });
+  const check = () => { if (updState.state !== "ready" && updState.state !== "downloading") autoUpdater.checkForUpdates().catch((e) => ulog("check failed", e)); };
+  setTimeout(check, 5000);
+  setInterval(check, 6 * 60 * 60 * 1000);
+}
+ipcMain.handle("update:get", () => ({ ...updState, current: app.getVersion(), enabled: updOn() }));
+ipcMain.handle("update:check", () => { if (updOn() && updState.state !== "ready" && updState.state !== "downloading") autoUpdater.checkForUpdates().catch(() => {}); return true; });
+ipcMain.handle("update:install", () => { if (updOn() && updState.state === "ready") setImmediate(() => autoUpdater.quitAndInstall(true, true)); return true; });
+
 /* ---------- Overlay settings (saved in the user's app data folder) ---------- */
 const DEFAULTS = { enabled: true, position: "tl", x: null, y: null, size: "m", opacity: 0.92, hotkeys: true };
 const SIZES = { s: 0.85, m: 1, l: 1.2 };
@@ -216,9 +253,10 @@ app.on("second-instance", () => { if (win) { if (win.isMinimized()) win.restore(
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
   loadSettings();
+  try { setupUpdates(); } catch (e) { ulog("update setup failed", e); }
   createMain();
-  if (overlaySettings.enabled) createOverlay();
-  registerHotkeys();
+  try { if (overlaySettings.enabled) createOverlay(); } catch (e) { ulog("overlay failed", e); }
+  try { registerHotkeys(); } catch (e) {}
   screen.on("display-metrics-changed", applyOverlayLook);
 });
 app.on("will-quit", () => globalShortcut.unregisterAll());

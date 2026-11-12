@@ -1,8 +1,10 @@
 {
-  "version": "1.4",
+  "version": "1.5.0",
   "windows": {
-    "key": "windows/Repline-Windows-1.4.zip",
-    "filename": "Repline-Windows-1.4.zip",
-    "bytes": 115179592
-  }
+    "key": "win/Repline-Setup-1.5.0.exe",
+    "filename": "Repline-Setup-1.5.0.exe",
+    "bytes": 82784377
+  },
+  "previous": "windows/Repline-Windows-1.4.zip",
+  "latestYml": "version: 1.5.0\nfiles:\n  - url: Repline-Setup-1.5.0.exe\n    sha512: Fg1Hxr9m2eDjJZSh1xkrGZ5zzr5KJTbSJzNX6XMSkGnVPyXlQHzmxkpRVM75X+S2qk2Fs7WQADYyMBMSYcoLkA==\n    size: 82784377\npath: Repline-Setup-1.5.0.exe\nsha512: Fg1Hxr9m2eDjJZSh1xkrGZ5zzr5KJTbSJzNX6XMSkGnVPyXlQHzmxkpRVM75X+S2qk2Fs7WQADYyMBMSYcoLkA==\nreleaseDate: '2026-11-12T11:39:25.753Z'\n"
 }

@@ -37,16 +37,21 @@ export default {
     const url = new URL(request.url);
     if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
     let path = decodeURIComponent(url.pathname);
-    // Windows app download: streamed from the private R2 bucket (binding DOWNLOADS). No public bucket link exists.
-    if (path === "/download/windows" || path === "/download/windows/") {
+    // Windows app: installer + update feed, streamed from the private R2 bucket (binding DOWNLOADS). No public bucket link exists.
+    //   /download/windows            -> newest installer (website button, Discord)
+    //   /download/win/latest.yml     -> update feed the installed app checks (electron-updater, generic provider)
+    //   /download/win/<installer>    -> the installer named in that feed
+    const W = RELEASE.windows;
+    if (path === "/download/win/latest.yml") return new Response(request.method === "HEAD" ? null : RELEASE.latestYml, { headers: { "content-type": "text/yaml; charset=utf-8", "cache-control": "no-store" } });
+    if (path === "/download/windows" || path === "/download/windows/" || path === "/download/win/" + W.filename) {
       if (!env || !env.DOWNLOADS) return new Response("Download is not available right now.", { status: 503, headers: { "content-type": "text/plain" } });
-      const w = RELEASE.windows;
-      const head = { "content-type": "application/zip", "content-disposition": `attachment; filename="${w.filename}"`, "cache-control": "no-store", "x-content-type-options": "nosniff" };
-      if (request.method === "HEAD") return new Response(null, { headers: { ...head, "content-length": String(w.bytes) } });
-      const obj = await env.DOWNLOADS.get(w.key);
+      const head = { "content-type": "application/octet-stream", "content-disposition": `attachment; filename="${W.filename}"`, "cache-control": "no-store", "x-content-type-options": "nosniff" };
+      if (request.method === "HEAD") return new Response(null, { headers: { ...head, "content-length": String(W.bytes) } });
+      const obj = await env.DOWNLOADS.get(W.key);
       if (!obj) return new Response("Download is not available right now.", { status: 404, headers: { "content-type": "text/plain" } });
       return new Response(obj.body, { headers: { ...head, "content-length": String(obj.size), etag: obj.httpEtag } });
     }
+    if (path.indexOf("/download/") === 0 && path !== "/download/windows.json") return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } });
     if (path === "/download/windows.json") return new Response(JSON.stringify({ version: RELEASE.version, url: "/download/windows", bytes: RELEASE.windows.bytes }), { headers: { "content-type": "application/json", "cache-control": "no-cache" } });
     if (path === "/" || path === "") path = "/index.html";
     let f = FILES[path];
