@@ -261,6 +261,8 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
 .dl-meta { display: block; margin-top: 10px; }
 .row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.tip { color: var(--c2); }
+.note.tip::before, .tip::before { content: "Tip · "; font-weight: 600; }
 /* ---------- 1.6: personal home, boards, stats, badges, friends ---------- */
 .me { display: grid; gap: 14px; padding-top: clamp(40px, 7vw, 72px); padding-bottom: 24px; }
 .me-date { text-transform: uppercase; letter-spacing: 1.4px; margin: 0; }
@@ -1081,7 +1083,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1109,50 +1111,51 @@ const TYPES = {
   prep: { label: "Cup prep", color: "#7debff" },
   rest: { label: "Break", color: "#636366" }
 };
+const V5 = { name: "Map code", by: "Raider464", value: "2424-4344-7824" };
+const REAL_TIP = "More realistic: pick another EU subregion (higher ping) and cap your FPS lower.";
 const SETS = {
-  kovaaks: { name: "KovaaK's", type: "aim", hint: "Tracking, then flicks. Don't chase scores.", codes: [{ name: "Playlist share code", value: null }] },
-  skaavok: { name: "Skaavok Aim Trainer", type: "aim", hint: "Same scenarios every day.", codes: [{ name: "Map code", by: "Donwozi", value: "8022-6842-4965" }] },
-  clixAim: { name: "Clix Aim Trainer", type: "aim", hint: "Mixed scenarios. Clean hits only.", codes: [{ name: "Map code", value: "1090-1665-3359" }] },
-  mech: { name: "Mechanics Training V5", type: "mech", hint: "Edits, piece control, peeks. Clean, then fast.", img: "img/edit-drill.webp", alt: "Edit drill wall on Mechanics Training V5", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
-  v5aim: { name: "Mechanics V5 · Aim", type: "aim", hint: "Shoot a scenario to start. Flicks, tracking, shotgun react.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
-  fast: { name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110%, then 120%. 90s, ramp rushes, resets.", img: "img/speed-110.webp", alt: "Speed set to 110 percent", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
-  slow: { name: "Freebuild · 90%", type: "mech", hint: "Speed to 90%. Place every piece exactly.", img: "img/speed-90.webp", alt: "Speed set to 90 percent", codes: [{ name: "Map code", by: "Raider464", value: "2424-4344-7824" }] },
-  edit: { name: "Edit Course", type: "mech", hint: "Timed runs. Beat yesterday, cleanly.", codes: [{ name: "Map code", value: "6363-5615-8837" }] },
-  warmCourse: { name: "Raider's Warm-Up Course", type: "mech", hint: "All five levels, no stopping.", codes: [{ name: "Map code", by: "Raider464", value: "2559-0136-9834" }] },
-  piece: { name: "Piece Control V2", type: "fight", hint: "Take walls and cones first. Reset.", codes: [{ name: "Map code", by: "Raider464", value: "3705-0960-8290" }] },
-  real: { name: "Realistics 1v1", type: "fight", hint: "Real terrain. High ground, then pressure.", codes: [{ name: "Map code", value: "0550-1651-3094" }] },
-  box: { name: "1v1 Build Fights", type: "fight", hint: "Real players. Use today's focus.", codes: [{ name: "Map code", by: "Raider464", value: "1832-0431-4852" }], kills: [{ name: "Round 1", kills: 10 }, { name: "Round 2", kills: 10 }, { name: "Round 3", kills: 10 }] },
-  zone: { name: "Zone Wars", type: "fight", hint: "Rotate early. Keep your mats.", codes: [{ name: "Map code", value: "3537-4087-0888" }] },
-  focusDrill: { name: "Focus drill", type: "fight", where: "Any map that fits", hint: "Your weakest skill. One map, one goal.", usesFocus: true },
-  fixDrill: { name: "Fix drill", type: "fight", where: "Any map that fits", hint: "Drill the fix you just picked.", usesFocus: true },
-  realGame: { name: "One real match", type: "live", where: "Ranked or public match", hint: "Your first cup game isn't a warm-up." },
-  ranked: { name: "Ranked", type: "live", where: "Fortnite · Ranked", hint: "Every game with today's focus." },
+  kovaaks: { name: "KovaaK's · Tjino Tracking", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Smooth tracking, don't chase scores.", codes: [{ name: "Playlist share code", value: "KovaaKsNamedroppingRoyalpurpleCamper" }] },
+  tjUpd: { name: "KovaaK's · Tjino Updated", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Clean hits first, then speed.", codes: [{ name: "Playlist share code", value: "KovaaKsBackflippingCeruleanNuns" }] },
+  v5Flick: { name: "V5 Aim · Reaction flick", type: "aim", hint: "Shoot the reaction flick scenario. React, flick, stop on the target.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [V5] },
+  v5Bounce: { name: "V5 Aim · Bounce tracking", type: "aim", hint: "Bounce tracking scenario. Stay on the target through every bounce.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [V5] },
+  editWall: { name: "Edit wall", type: "mech", hint: "Edits on the wall. Clean first, then fast.", tip: REAL_TIP, img: "img/edit-drill.webp", alt: "Edit drill wall on Mechanics Training V5", codes: [V5] },
+  slow: { name: "Freebuild · 90%", type: "mech", hint: "Speed to 90%. Optimize your edits: exact, no misedits.", tip: REAL_TIP, img: "img/speed-90.webp", alt: "Speed set to 90 percent", codes: [V5] },
+  fast: { name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110% or 120%. Push your mechs: 90s, ramp rushes, retakes.", tip: REAL_TIP, img: "img/speed-110.webp", alt: "Speed set to 110 percent", codes: [V5] },
+  piece: { name: "Piece control", type: "fight", hint: "Take walls and cones first, then reset. Stay calm.", tip: REAL_TIP, codes: [V5] },
+  box: { name: "1v1 Build Fights", type: "fight", where: "With a friend or by matchmaking", hint: "Real opponents. Use what you just trained.", codes: [{ name: "Map code", by: "Raider464", value: "1832-0431-4852" }] },
+  real: { name: "Pro Realistics", type: "fight", hint: "Real terrain and loot. High ground, then pressure.", codes: [{ name: "Map code", by: "chap", value: "9520-0654-8075" }] },
+  ranked: { name: "Ranked · one focus", type: "live", where: "Fortnite · Ranked", hint: "Pick one focus for every game: only your new mechanic, only crosshair placement, only piece control in fights, or only high-ground retakes." },
   scrims: { name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
-  prep: { name: "Cup check", type: "prep", hint: "Nothing new before a cup.", checks: ["Settings unchanged", "Rules and start time checked", "Drop and first rotation planned", "Water ready"] },
-  vod: { name: "Replay review", type: "review", where: "Career → Replays", hint: "Pick one fight you lost.", checks: ["Crosshair pass", "Movement pass", "Enemy pass"], fix: true },
+  vod: { name: "VOD review", type: "review", where: "Career → Replays", hint: "Watch one fight you lost. What killed you: crosshair, movement or the enemy?" },
+  fixDrill: { name: "Fix drill", type: "mech", where: "Raider's Mechanics V5 or a map that fits", hint: "Drill the exact mechanic that killed you in the replay.", codes: [V5] },
+  prep: { name: "Cup check", type: "prep", hint: "Settings unchanged, rules and start time checked, drop and first rotation planned, water ready. Nothing new before a cup." },
   brk: { name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
 };
-const L = (id, name, list, extra) => Object.assign({ id, name, sets: list.map(([k, min]) => Object.assign({ key: k, min }, SETS[k])) }, extra || {});
+/* Older sets from saved or shared routines map to the closest new set */
+const SET_ALIAS = { mech: "editWall", v5aim: "v5Flick", skaavok: "v5Flick", clixAim: "v5Flick", edit: "editWall", warmCourse: "fast", zone: "real", focusDrill: "fixDrill", realGame: "ranked" };
+const setKey = (k) => (SETS[k] ? k : SET_ALIAS[k] || k);
+const L = (id, name, list, extra) => Object.assign({ id, name, sets: list.map(([k, min, over]) => Object.assign({ key: k, min }, SETS[k], over || {})) }, extra || {});
 const GOALS = [
-  { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head.", icon: "i-cup", cupTime: true, lengths: [
-    L("short", "Short", [["kovaaks", 8], ["mech", 10], ["fast", 5], ["slow", 4], ["prep", 3]]),
-    L("normal", "Normal", [["kovaaks", 10], ["mech", 12], ["fast", 6], ["slow", 5], ["piece", 7], ["realGame", 15], ["prep", 5]])
+  { id: "better", name: "Daily Pro Routine", text: "Aim, mechanics, fights, ranked, review.", icon: "i-up", lengths: [
+    L("short", "Short", [["kovaaks", 8], ["editWall", 5], ["slow", 5], ["fast", 5], ["piece", 7], ["ranked", 20], ["vod", 5], ["fixDrill", 5]]),
+    L("normal", "Normal", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5], ["editWall", 10], ["slow", 8], ["fast", 8], ["piece", 12], ["box", 15], ["brk", 5], ["ranked", 25], ["vod", 10], ["fixDrill", 7]]),
+    L("long", "Long", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 8], ["v5Bounce", 8], ["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["brk", 10], ["box", 25], ["real", 20], ["brk", 10], ["ranked", 45], ["vod", 15], ["fixDrill", 10]]),
+    L("full", "Full day", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["editWall", 15], ["slow", 15], ["fast", 15], ["piece", 20], ["brk", 15], ["box", 40], ["real", 40], ["brk", 30], ["ranked", 120], ["brk", 10], ["vod", 30], ["fixDrill", 20]])
   ] },
-  { id: "better", name: "Get better", text: "Mechanics, fights, real lobbies, review.", icon: "i-up", lengths: [
-    L("short", "Short", [["kovaaks", 8], ["mech", 8], ["fast", 5], ["slow", 4], ["focusDrill", 10], ["ranked", 20], ["vod", 5]]),
-    L("normal", "Normal", [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 15], ["real", 20], ["brk", 10], ["ranked", 60], ["vod", 15]]),
-    L("long", "Long", [["kovaaks", 15], ["mech", 15], ["fast", 10], ["slow", 10], ["edit", 10], ["piece", 20], ["real", 25], ["box", 25], ["brk", 15], ["ranked", 100], ["zone", 30], ["vod", 25]]),
-    L("full", "Full day", [["kovaaks", 20], ["mech", 20], ["fast", 15], ["slow", 15], ["edit", 15], ["piece", 30], ["brk", 15], ["real", 40], ["box", 40], ["zone", 40], ["brk", 30], ["scrims", 150], ["brk", 15], ["ranked", 90], ["vod", 45], ["fixDrill", 20]])
+  { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head. Nothing new.", icon: "i-cup", cupTime: true, lengths: [
+    L("short", "Short", [["kovaaks", 6], ["v5Flick", 4], ["editWall", 5], ["fast", 5], ["piece", 5], ["prep", 5]]),
+    L("normal", "Normal", [["kovaaks", 8], ["v5Flick", 4], ["v5Bounce", 3], ["editWall", 5], ["slow", 4], ["fast", 5], ["piece", 6], ["box", 5], ["prep", 5]]),
+    L("long", "Long", [["kovaaks", 8], ["v5Flick", 5], ["v5Bounce", 4], ["editWall", 6], ["slow", 5], ["fast", 6], ["piece", 8], ["box", 13], ["prep", 5]])
   ] },
-  { id: "aim", name: "Quick: Aim", text: "Trainer, aim maps, real fights.", icon: "i-aim", lengths: [
-    L("short", "Short", [["kovaaks", 15], ["skaavok", 10], ["v5aim", 5]]),
-    L("normal", "Normal", [["kovaaks", 20], ["skaavok", 15], ["v5aim", 10], ["real", 15]]),
-    L("long", "Long", [["kovaaks", 40], ["skaavok", 25], ["v5aim", 20], ["clixAim", 15], ["brk", 10], ["real", 30], ["box", 25], ["vod", 15]])
+  { id: "aim", name: "Quick: Aim", text: "Tjino playlists, V5 aim, real fights.", icon: "i-aim", lengths: [
+    L("short", "Short", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5]]),
+    L("normal", "Normal", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 5], ["v5Bounce", 5], ["box", 20]]),
+    L("long", "Long", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["box", 25], ["ranked", 25, { name: "Ranked · crosshair placement", hint: "Every game, only one focus: crosshair placement. Head height, on the next angle." }], ["vod", 10]])
   ] },
-  { id: "mechanics", name: "Quick: Mechanics", text: "Speed at 120%, precision at 90%.", icon: "i-mech", lengths: [
-    L("short", "Short", [["mech", 12], ["fast", 6], ["slow", 5], ["edit", 7]]),
-    L("normal", "Normal", [["mech", 15], ["fast", 10], ["slow", 8], ["edit", 10], ["piece", 12], ["warmCourse", 5]]),
-    L("long", "Long", [["mech", 30], ["fast", 20], ["slow", 20], ["edit", 20], ["piece", 30], ["brk", 10], ["real", 25], ["box", 25]])
+  { id: "mechanics", name: "Quick: Mechanics", text: "Edit wall, freebuild at 90% and 120%, piece control.", icon: "i-mech", lengths: [
+    L("short", "Short", [["editWall", 6], ["slow", 7], ["fast", 7], ["piece", 10]]),
+    L("normal", "Normal", [["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["real", 15]]),
+    L("long", "Long", [["editWall", 12], ["slow", 15], ["fast", 15], ["piece", 18], ["brk", 5], ["real", 20], ["ranked", 25, { name: "Ranked · new mechanic", hint: "Every game, only one focus: use the mechanic you trained today, even if it costs a fight." }], ["vod", 5], ["fixDrill", 5]])
   ] }
 ];
 /* Test routine: every set lasts 3 seconds and the routine runs on its own. Switch it on in Account → Data. */
@@ -1167,7 +1170,7 @@ const PLANS = [
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
-  L("quick", "3 s sets", [["kovaaks", 0.05], ["mech", 0.05], ["fast", 0.05], ["slow", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
+  L("quick", "3 s sets", [["kovaaks", 0.05], ["editWall", 0.05], ["slow", 0.05], ["fast", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
 ] };
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
 
@@ -1218,7 +1221,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const r = myRoutines().find((x) => x.id === rid); if (!r) return null;
     const key = r.id + "|" + (r.updated_at || "") + "|" + JSON.stringify(r.sets);
     if (customCache[rid] && customCache[rid].key === key) return customCache[rid].goal;
-    const sets = (r.sets || []).filter((x) => SETS[x.key]).map((x) => [x.key, Math.max(1, Math.min(240, +x.min || 10))]);
+    const sets = (r.sets || []).map((x) => setKey(x.key)).map((k, i) => [k, (r.sets[i] || {}).min]).filter(([k]) => SETS[k]).map(([k, m]) => [k, Math.max(1, Math.min(240, +m || 10))]);
     const g = { id: "my-" + r.id, name: r.name || "My routine", text: "Your own routine.", icon: "i-up", custom: true, lengths: [L("custom", "Custom", sets)] };
     customCache[rid] = { key, goal: g };
     return g;
@@ -1359,7 +1362,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     box.appendChild(n);
     box.querySelectorAll("[data-my-start]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const gid = "my-" + b.dataset.myStart; if (S.goal !== gid) { S.goal = gid; S.len = "custom"; resetRun(); } S.len = "custom"; save(); go("plan"); }));
     box.querySelectorAll("[data-my-share]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myShare); if (r) openShare(r); }));
-    box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) }; go("builder"); }));
+    box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: setKey(x.key), min: x.min })).filter((x) => SETS[x.key]) }; go("builder"); }));
   }
   function buildLen() {
     $("len-goal").textContent = goal(S.goal).name;
@@ -1405,6 +1408,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       let body = "";
       if (b.img) body += `<img class="shot" src="${esc(b.img)}" alt="${esc(b.alt || b.name)}" loading="lazy" style="max-width:360px">`;
       if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
+      if (b.where && b.codes && b.codes.length) body += `<p class="note">Where: ${esc(b.where)}</p>`;
+      if (b.tip) body += `<p class="note tip">${esc(b.tip)}</p>`;
       body += codesHTML(b);
       if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join(" · ")}</p>`;
       if (b.checks) body += `<p class="note">${b.checks.map(esc).join(" · ")}</p>`;
@@ -1495,7 +1500,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     $("tr-name").textContent = b.name || "***";
     const ti = $("tr-img"); ti.hidden = !b.img; if (b.img) { ti.src = b.img; ti.alt = b.alt || b.name; }
     const f = getFocus();
-    $("tr-hint").innerHTML = esc(b.hint || "") + (b.usesFocus || b.key === "ranked" ? (f ? `<br><span style="color:var(--porcelain)">Today's focus: ${esc(f.text)}</span>` : "") : "");
+    $("tr-hint").innerHTML = esc(b.hint || "") + (b.where && b.codes && b.codes.length ? `<br><span class="tiny">Where: ${esc(b.where)}</span>` : "") + (b.tip ? `<br><span class="tip">${esc(b.tip)}</span>` : "");
     $("tr-codes").innerHTML = codesHTML(b);
     buildExtra(b);
     const kl = $("tr-kills"); kl.hidden = !isKill(b); kl.innerHTML = "";
@@ -1511,6 +1516,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     render();
   }
   function buildExtra(b) {
+    // Training only counts time: nothing to tick off or type in.
+    $("tr-extra").innerHTML = ""; return;
     const x = $("tr-extra"); let h = "";
     if (b.type === "live") {
       const L = S.live[S.b] || { g: 0, m: 0 };
@@ -2483,7 +2490,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         if (sb && cloudUser) { const { data } = await sb.rpc("get_shared_routine", { r_code: v }); row = data && data[0]; }
         else if (/^RPL-/i.test(v)) row = { code: v.toUpperCase(), name: "Box Fight Grind", owner_name: "demo", sets: [{ key: "skaavok", min: 10 }, { key: "piece", min: 15 }, { key: "box", min: 30 }, { key: "vod", min: 10 }] };
         if (!row) { box.innerHTML = '<p class="small">No routine with this code. Check it and try again.</p>'; return; }
-        const sets = (row.sets || []).filter((x) => SETS[x.key]), tot = sets.reduce((a, x) => a + (+x.min || 0), 0);
+        const sets = (row.sets || []).map((x) => ({ key: setKey(x.key), min: x.min })).filter((x) => SETS[x.key]), tot = sets.reduce((a, x) => a + (+x.min || 0), 0);
         const full = myRoutines().length >= routineLimit();
         box.innerHTML = `<div class="code-box" style="justify-items:stretch"><div class="kv"><b style="font-size:20px">${esc(row.name)}</b><span class="tiny">by ${esc(row.owner_name || "a player")}</span></div><ol>${sets.map((x) => `<li><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:10px;background:${TYPES[SETS[x.key].type].color}"></i>${esc(SETS[x.key].name)}</span><span class="tiny">${+x.min} min</span></li>`).join("")}</ol><div class="sep"></div><div class="kv" style="align-items:center;flex-wrap:wrap"><span class="tiny">${sets.length} sets · ${fmtMin(tot)}${full ? " · your plan is full" : ""}</span><button class="pill" type="button" id="imp-add">${full ? "See plans" : "Add to My routines"}</button></div></div>`;
         box.querySelector("#imp-add").addEventListener("click", async () => {
@@ -2989,6 +2996,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     updateResume();
   }
   addEventListener("hashchange", route);
+  // A routine saved before the routines changed may point past its last set: start it fresh.
+  if (S.goal && (!length(S.goal, S.len) || S.b >= list().length)) { S = fresh(); store.del(KEY); }
   function pushRpc() { if (DESK && DESK.rpc) { try { DESK.rpc.set({ on: settings.rpc !== false, name: settings.rpcName !== false }); } catch (e) {} } }
   pushRpc();
   if (signedIn() && !sb) { applyFreezes(); checkBadges(true); }

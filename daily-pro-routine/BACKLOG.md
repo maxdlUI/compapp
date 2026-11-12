@@ -188,3 +188,24 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
   - **Danach:** zurück zur Routinen-Auswahl (Schritt 1) und Toast „Routine ended“.
   - **Optional:** In der Windows-App ein Hotkey, z. B. Ctrl+Shift+E, ebenfalls mit Rückfrage in der App.
   - **Zurück zur Routine springen:** Das gibt es schon über die „Resume routine“-Leiste. Prüfen, dass sie in Website und App gut sichtbar ist und direkt ins Training führt.
+
+## Neue Routinen (1.6.1, 12.11.2026)
+
+- Bausteine nach den Notizen des Nutzers:
+  - Tjino Tracking und Tjino Updated (KovaaK's-Share-Codes)
+  - V5 Reaction flick und V5 Bounce tracking
+  - Edit wall vor Freebuild 90 % und Freebuild 110–120 %
+  - Piece control
+  - Raider's 1v1 Build Fights
+  - Pro Realistics (chap, 9520-0654-8075)
+  - Ranked mit einem Fokus
+  - VOD review und Fix drill
+  - Scrims, Cup check, Break
+- Routinen:
+  - Daily Pro Routine (1 h / 2 h 10 / 3 h 46 / 7 h 10)
+  - Cup warm-up (30 / 45 / 60 min)
+  - Quick: Aim (30 min / 1 h / 2 h)
+  - Quick: Mechanics (30 min / 1 h / 2 h)
+- Nur Zeit zählt: keine Kill-Ziele, Reps, Checklisten, Zähler oder Eingabefelder mehr.
+- Alte Set-Schlüssel aus gespeicherten oder geteilten Routinen werden über `SET_ALIAS` auf neue Bausteine abgebildet.
+- Der Tipp „andere EU-Subregion + FPS runter“ steht bei Edit wall, Freebuild und Piece control.
