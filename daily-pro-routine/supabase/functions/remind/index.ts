@@ -12,7 +12,8 @@ const SITE = "https://repline.pages.dev";
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const VPUB = Deno.env.get("VAPID_PUBLIC") || "", VPRIV = Deno.env.get("VAPID_PRIVATE") || "";
-if (VPUB && VPRIV) webpush.setVapidDetails("https://repline.pages.dev", VPUB, VPRIV);
+let pushReady = false;
+try { if (VPUB && VPRIV) { webpush.setVapidDetails("https://repline.pages.dev", VPUB, VPRIV); pushReady = true; } } catch { pushReady = false; }
 
 type Rem = {
   user_id: string; enabled: boolean; at_time: string; days: number[]; tz: string; skip_if_trained: boolean; danger: boolean;
@@ -41,12 +42,22 @@ async function discordDM(discordId: string, content: string) {
   return r.ok;
 }
 async function push(sub: unknown, title: string, body: string) {
-  if (!sub || !VPUB || !VPRIV) return false;
+  if (!sub || !pushReady) return false;
   try { await webpush.sendNotification(sub as webpush.PushSubscription, JSON.stringify({ title, body, url: SITE })); return true; }
   catch (e) { if ((e as { statusCode?: number }).statusCode === 410) return "gone"; return false; }
 }
 
-Deno.serve(async () => {
+// The public VAPID key the website uses (index.html). A health check compares it, never prints a secret.
+const SITE_VAPID = "BL1_JnQ__0aDN0r83IBLweagLTxyyuCOhgzkmLzJ6Pwn0lGatksVYpFH6308HecpEa-syIeqTYS2pmT-Y6ryTVM";
+
+Deno.serve(async (req) => {
+  let body: { check?: boolean } = {};
+  try { body = await req.json(); } catch { /* cron sends {} */ }
+  if (body.check) {
+    let vapidValid = false;
+    try { webpush.getVapidHeaders("https://fcm.googleapis.com", "https://repline.pages.dev", VPUB, VPRIV, "aes128gcm"); vapidValid = true; } catch { vapidValid = false; }
+    return new Response(JSON.stringify({ discordToken: !!BOT, vapidPublic: !!VPUB, vapidPrivate: !!VPRIV, vapidValid, vapidMatchesSite: VPUB === SITE_VAPID }), { headers: { "Content-Type": "application/json" } });
+  }
   const { data: rems, error } = await db.from("reminders").select("*").eq("enabled", true).or("via_discord.eq.true,via_push.eq.true");
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   let sent = 0;
