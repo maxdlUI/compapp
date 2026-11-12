@@ -1,5 +1,7 @@
 # Repline Discord-Server: Bauplan
 
+> **Stand 12.11.2026: eingerichtet** über den Repline-Bot. Server-ID `1570385914096783381`, Einladung https://discord.gg/3WeFB27Nk9 (läuft nie ab). Rollen, Kanäle, Community, Onboarding, Willkommensbildschirm, AutoMod und alle Texte sind fertig. Noch offen: die App-Zip in #download hochladen (braucht Nitro), 2FA für Moderation (kann nur der Owner einschalten) und die Rolle „Founder“ über den Bot ziehen.
+
 Diesen Server legst du in deinem Discord-Konto an. Alle Texte unten sind auf Englisch, passend zur Website, und können direkt kopiert werden.
 
 ## Wichtig vorab: Dateigröße beim Download
