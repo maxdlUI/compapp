@@ -162,3 +162,7 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
   3. `release.json` und `SITE.download.version` anpassen, dann `tools/deploy.sh production`.
   4. Die vorletzte Version aus dem Bucket löschen.
   5. In #download posten und @App updates pingen.
+
+## Beim nächsten gemeinsamen Update
+
+- `.github/workflows/repline-windows.yml` löschen. Der Nutzer will kein GitHub, gebaut wird jetzt lokal mit electron-builder und Wine.
