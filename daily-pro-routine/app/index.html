@@ -261,6 +261,121 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
 .dl-meta { display: block; margin-top: 10px; }
 .row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+/* ---------- 1.6: personal home, boards, stats, badges, friends ---------- */
+.me { display: grid; gap: 14px; padding-top: clamp(40px, 7vw, 72px); padding-bottom: 24px; }
+.me-date { text-transform: uppercase; letter-spacing: 1.4px; margin: 0; }
+.me-hi { margin: 0; overflow-wrap: anywhere; }
+.me-sub { margin: 0; }
+.me-today { margin-top: 18px; }
+.c-card { background: var(--carbon); border-radius: 28px; padding: 26px; display: grid; gap: 12px; align-content: start; color: var(--porcelain); text-decoration: none; min-width: 0; }
+a.c-card:hover { text-decoration: none; box-shadow: inset 0 0 0 1px var(--steel); }
+.today-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center; padding: 30px; background: linear-gradient(135deg, #0b2a5c 0%, var(--carbon) 62%); }
+.today-card b { font-size: clamp(24px, 3vw, 32px); letter-spacing: -.5px; }
+@media (max-width: 720px) { .today-card { grid-template-columns: minmax(0, 1fr); } }
+.me-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 20px; }
+.me-grid .wide { grid-column: span 2; }
+@media (max-width: 900px) { .me-grid { grid-template-columns: minmax(0, 1fr); } .me-grid .wide { grid-column: auto; } }
+.big-n { font-size: 44px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.big-n small { font-size: 17px; font-weight: 400; color: var(--ash); letter-spacing: 0; }
+.wk { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.wk i { height: 6px; border-radius: 3px; background: var(--steel); }
+.wk i.on { background: var(--c1); }
+.meter { height: 6px; border-radius: 3px; background: var(--steel); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 3px; background: var(--c4); }
+.frz { display: inline-flex; align-items: center; gap: 8px; color: var(--c2); font-size: 14px; }
+.frz svg { width: 18px; height: 18px; }
+.up { color: var(--pos); font-size: 14px; }
+.vhead { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.vhead .lead { margin: 6px 0 0; }
+.vtools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.fo { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; padding: 9px 16px; border-radius: 980px; background: var(--carbon); }
+.fo:has(input:checked) { background: #0b2a5c; box-shadow: inset 0 0 0 1px var(--blue); }
+.fo input { width: 18px; height: 18px; margin: 0; accent-color: var(--blue); }
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: end; margin-bottom: 24px; }
+.pod { background: var(--carbon); border-radius: 28px; padding: 26px 16px; display: grid; justify-items: center; gap: 8px; text-align: center; min-width: 0; }
+.pod b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pod .pl { font-size: 30px; font-weight: 700; }
+.pod.p1 { padding-block: 40px 34px; background: linear-gradient(180deg, #2a2108 0%, var(--carbon) 72%); box-shadow: inset 0 0 0 1px #6b5414; }
+.pod.p1 .pl { color: #ffd60a; } .pod.p2 .pl { color: #c7c7cc; } .pod.p3 .pl { color: #d08c4a; }
+.av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--c1), var(--c4)) center / cover; display: grid; place-items: center; font-weight: 700; color: #000; flex: none; font-size: 15px; }
+.av.lg { width: 64px; height: 64px; font-size: 22px; }
+.bgrid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .bgrid { grid-template-columns: minmax(0, 1fr); } .podium { gap: 8px; } .pod { padding: 18px 8px; } }
+.lb-list { background: var(--carbon); border-radius: 28px; padding: 14px; display: grid; gap: 2px; }
+.lb { display: grid; grid-template-columns: 40px 40px minmax(0, 1fr) 80px 56px; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 16px; font-size: 15px; }
+.lb > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb.head { font-size: 12px; color: var(--ash); padding-block: 4px; }
+.lb.me { background: #0b2a5c; box-shadow: inset 0 0 0 1px var(--blue); }
+.lb .live { display: block; font-size: 12px; color: var(--pos); }
+.kv { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; }
+.kv b { text-align: right; }
+.sep { height: 1px; background: var(--steel); }
+.st-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 860px) { .st-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.st-tiles b { font-size: 32px; letter-spacing: -.6px; }
+.bars { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; align-items: end; }
+.bars .col { display: grid; gap: 8px; justify-items: center; }
+.bars .stk { width: 100%; height: 170px; display: flex; flex-direction: column-reverse; gap: 2px; }
+.bars .stk i { display: block; border-radius: 4px; min-height: 2px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ash); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.hm { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; }
+.hm-days { display: grid; grid-template-rows: repeat(7, 16px); gap: 5px; font-size: 10px; color: var(--ash); }
+.hm-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 16px); grid-auto-columns: minmax(0, 1fr); gap: 5px; }
+.hm-grid span { border-radius: 4px; background: #2a2a2d; }
+.hm-grid span.f { background: #1f3a46; box-shadow: inset 0 0 0 1px #7debff55; }
+.hm-grid span.t { box-shadow: inset 0 0 0 2px var(--porcelain); }
+.hm-grid span.x { background: transparent; }
+.bd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.bd { background: var(--carbon); border-radius: 24px; padding: 22px 16px; display: grid; justify-items: center; gap: 8px; text-align: center; }
+.bd .ic { width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; }
+.bd .ic svg { width: 30px; height: 30px; fill: none; stroke: #000; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bd.off { background: #121214; }
+.bd.off .ic { background: var(--carbon) !important; box-shadow: inset 0 0 0 1px var(--steel); }
+.bd.off .ic svg { stroke: var(--ash); }
+.bd.off b { color: #d2d2d7; }
+.freeze-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 22px; align-items: center; background: linear-gradient(135deg, #0b3a4f 0%, var(--carbon) 65%); margin-bottom: 28px; }
+.freeze-card .ico { width: 76px; height: 76px; border-radius: 24px; background: rgba(125, 235, 255, .12); display: grid; place-items: center; }
+.freeze-card .ico svg { width: 38px; height: 38px; }
+.fz-slots { display: flex; gap: 8px; }
+.fz-slots i { width: 30px; height: 40px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--slate); }
+.fz-slots i.on { background: var(--c2); box-shadow: none; }
+@media (max-width: 640px) { .freeze-card { grid-template-columns: minmax(0, 1fr); } }
+.fr-row { display: flex; align-items: center; gap: 12px; padding: 10px 4px; }
+.fr-row > span:not(.av) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.c-card > * { min-width: 0; }
+.kv { flex-wrap: wrap; }
+@media (max-width: 560px) { .inline-in { flex-wrap: wrap; } .inline-in > code, .inline-in > input { flex-basis: 100%; } .inv-slots { gap: 6px; } }
+.inv-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.inv-slots div { display: grid; gap: 6px; justify-items: center; padding: 14px 6px; border-radius: 18px; background: #000; font-size: 12px; color: var(--ash); text-align: center; min-width: 0; }
+.inv-slots div.ok { background: rgba(48, 209, 88, .14); color: var(--pos); }
+.inline-in { display: flex; gap: 10px; }
+.inline-in input, .sheet input[type="text"], .sheet select, .dr-body .in { flex: 1; min-width: 0; height: 44px; border-radius: 12px; border: 0; background: #000; color: var(--porcelain); padding: 0 14px; font: inherit; font-size: 16px; box-shadow: inset 0 0 0 1px var(--steel); }
+.code { font-family: var(--mono); letter-spacing: 3px; }
+.lock-card { text-align: center; justify-items: center; padding: 48px 28px; }
+.my-tools { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.my-card-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.end-btn { border: 0; background: transparent; color: #ff6961; font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 980px; cursor: pointer; }
+.end-btn:hover { background: rgba(255, 69, 58, .14); }
+.resume .rs-link { display: flex; align-items: center; gap: 14px; color: inherit; text-decoration: none; min-width: 0; }
+.resume .rs-link:hover { text-decoration: none; }
+.rs-end { border: 0; background: rgba(255, 255, 255, .08); color: var(--ash); width: 30px; height: 30px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; flex: none; }
+.rs-end:hover { color: #ff6961; background: rgba(255, 69, 58, .16); }
+.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.modal[hidden] { display: none; }
+.sheet { width: min(480px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--carbon); border-radius: 28px; padding: 28px; display: grid; gap: 16px; box-shadow: inset 0 0 0 1px var(--steel); }
+html.anim .sheet { animation: updrise .4s var(--ease); }
+.sheet h2 { margin: 0; font-size: 26px; letter-spacing: -.4px; }
+.sheet .acts { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.sheet ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+.sheet ol li { display: flex; justify-content: space-between; gap: 12px; }
+.code-box { background: #000; border-radius: 20px; padding: 22px; display: grid; gap: 12px; justify-items: center; box-shadow: inset 0 0 0 1px var(--steel); }
+.code-box b { font-size: clamp(22px, 6vw, 32px); }
+.gift-ico { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--c1), var(--c4)); justify-self: center; }
+.gift-ico svg { width: 34px; height: 34px; fill: none; stroke: #000; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.days-pick { display: flex; gap: 6px; flex-wrap: wrap; }
+.days-pick button { width: 38px; height: 38px; border-radius: 50%; border: 0; font: 600 13px var(--text); background: var(--steel); color: var(--ash); cursor: pointer; }
+.days-pick button[aria-pressed="true"] { background: var(--blue); color: #fff; }
 .upd-bar { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 18px; border-radius: 999px; background: rgba(29, 29, 31, .92); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); max-width: calc(100vw - 32px); }
 .upd-bar[hidden] { display: none; }
 html.anim .upd-bar { animation: updrise .5s var(--ease); }
@@ -658,7 +773,7 @@ html.no-scroll { overflow: hidden; }
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <a class="pill sm" href="#goal">Start routine</a>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
@@ -667,6 +782,13 @@ html.no-scroll { overflow: hidden; }
 
 <!-- Home -->
 <main class="view" data-view="home" id="v-home">
+  <section class="me wrap" id="home-me" hidden aria-labelledby="me-hi">
+    <p class="tiny me-date" id="me-date"></p>
+    <h1 class="d-xl me-hi" id="me-hi"></h1>
+    <p class="lead me-sub" id="me-sub"></p>
+    <div class="me-today" id="me-today"></div>
+    <div class="me-grid" id="me-cards"></div>
+  </section>
   <section class="hero" id="hero" aria-label="Daily Pro Routine">
     <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Today</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Ready.</span><span class="tiny" id="hero-sub">Set by set</span></div></div>
     <div class="hero-copy">
@@ -752,7 +874,7 @@ html.no-scroll { overflow: hidden; }
   <h1 class="d-l">What are you training for today?</h1>
   <div class="goals" id="pick-goals" style="margin-top:36px"></div>
   <section class="my-sec" aria-labelledby="h-my">
-    <div class="my-head"><h2 id="h-my" class="d-m">My routines.</h2><span class="tiny" id="my-limit"></span></div>
+    <div class="my-head"><h2 id="h-my" class="d-m">My routines.</h2><span class="my-tools"><span class="tiny" id="my-limit"></span><button class="pill sm out" type="button" id="imp-open">Import code</button></span></div>
     <div class="goals my-grid" id="my-routines"></div>
   </section>
 </main>
@@ -791,6 +913,7 @@ html.no-scroll { overflow: hidden; }
         <span>
           <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Sound at the end of a set"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
           <button class="icon-btn" type="button" id="full" aria-label="Full screen"><svg><use href="#i-full"/></svg></button>
+          <button class="end-btn" type="button" id="end-rt">End routine</button>
         </span>
       </div>
       <div class="dial" id="tr-dial"><svg viewBox="0 0 200 200" aria-hidden="true"></svg><div class="dial-mid"><span class="tiny" id="tr-kick"></span><span class="t" id="tr-clock" role="timer" aria-live="off">0:00</span><span class="tiny" id="tr-under"></span></div></div>
@@ -896,12 +1019,44 @@ html.no-scroll { overflow: hidden; }
   </div>
 </main>
 
-<a class="resume" id="resume-bar" href="#training" hidden aria-label="Back to your routine">
-  <span class="rs-ring" id="rs-ring" aria-hidden="true"></span>
-  <span class="rs-txt"><b id="rs-name"></b><span id="rs-sub"></span></span>
-  <span class="rs-time" id="rs-time"></span>
-  <span class="rs-go" aria-hidden="true">›</span>
-</a>
+<main class="view wrap flowv" data-view="board" id="v-board" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Leaderboards.</h1><p class="lead">Train, climb, win Pro.</p></div>
+    <div class="vtools"><label class="fo" for="fo-only"><input type="checkbox" id="fo-only"> Friends only</label>
+      <div class="seg" role="tablist" aria-label="Leaderboard" id="board-tabs"><button type="button" role="tab" data-bt="week">This week</button><button type="button" role="tab" data-bt="month">This month</button><button type="button" role="tab" data-bt="streaks">Streaks</button></div></div></div>
+  <div id="board-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="stats" id="v-stats" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Your stats.</h1><p class="lead" id="st-since"></p></div>
+    <div class="seg" role="tablist" aria-label="Range" id="stats-tabs"><button type="button" role="tab" data-sr="week">Week</button><button type="button" role="tab" data-sr="month">Month</button><button type="button" role="tab" data-sr="all">All time</button></div></div>
+  <div id="stats-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="badges" id="v-badges" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Badges.</h1><p class="lead" id="bd-sum"></p></div></div>
+  <div id="badges-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="friends" id="v-friends" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Friends.</h1><p class="lead">Train with your duo. Beat your friends.</p></div></div>
+  <div id="friends-body"></div>
+</main>
+
+<div class="resume" id="resume-bar" hidden>
+  <a class="rs-link" href="#training" aria-label="Back to your routine">
+    <span class="rs-ring" id="rs-ring" aria-hidden="true"></span>
+    <span class="rs-txt"><b id="rs-name"></b><span id="rs-sub"></span></span>
+    <span class="rs-time" id="rs-time"></span>
+    <span class="rs-go" aria-hidden="true">›</span>
+  </a>
+  <button class="rs-end" type="button" id="rs-end" aria-label="End routine">×</button>
+</div>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t"></div></div>
 
 <footer>
   <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span data-download="text"></span> · <span id="ft-legal"></span></span></div>
@@ -923,10 +1078,10 @@ html.no-scroll { overflow: hidden; }
    SITE — site-wide values. Optional values that are null are simply hidden.
    ===================================================================== */
 const SITE = {
-  url: "https://repline.gg",
+  url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.5", size: "79 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -966,7 +1121,7 @@ const SETS = {
   warmCourse: { name: "Raider's Warm-Up Course", type: "mech", hint: "All five levels, no stopping.", codes: [{ name: "Map code", by: "Raider464", value: "2559-0136-9834" }] },
   piece: { name: "Piece Control V2", type: "fight", hint: "Take walls and cones first. Reset.", codes: [{ name: "Map code", by: "Raider464", value: "3705-0960-8290" }] },
   real: { name: "Realistics 1v1", type: "fight", hint: "Real terrain. High ground, then pressure.", codes: [{ name: "Map code", value: "0550-1651-3094" }] },
-  box: { name: "1v1 Build Fights", type: "fight", hint: "Real players. Use today's focus.", codes: [{ name: "Map code", by: "VESIMAITO", value: "9289-6984-7768" }], kills: [{ name: "Round 1", kills: 10 }, { name: "Round 2", kills: 10 }, { name: "Round 3", kills: 10 }] },
+  box: { name: "1v1 Build Fights", type: "fight", hint: "Real players. Use today's focus.", codes: [{ name: "Map code", by: "Raider464", value: "1832-0431-4852" }], kills: [{ name: "Round 1", kills: 10 }, { name: "Round 2", kills: 10 }, { name: "Round 3", kills: 10 }] },
   zone: { name: "Zone Wars", type: "fight", hint: "Rotate early. Keep your mats.", codes: [{ name: "Map code", value: "3537-4087-0888" }] },
   focusDrill: { name: "Focus drill", type: "fight", where: "Any map that fits", hint: "Your weakest skill. One map, one goal.", usesFocus: true },
   fixDrill: { name: "Fix drill", type: "fight", where: "Any map that fits", hint: "Drill the fix you just picked.", usesFocus: true },
@@ -1037,7 +1192,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Settings ---------- */
   const SET = "rl.settings";
-  const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave", switchSec: 30 }, store.get(SET, {}));
+  const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave", switchSec: 30, weekGoal: 5, freezes: 0, freezeAt: "", best: 0, rpc: true, rpcName: true }, store.get(SET, {}));
   const CUSTOM = "rl.customSound";
   const saveSettings = () => { store.set(SET, settings); cloudPush(); };
   let testOn = false; // set from the account: only dev accounts see the test routine
@@ -1049,7 +1204,13 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Plans & own routines ---------- */
   const MYR = "rl.myRoutines";
   const myRoutines = () => store.get(MYR, []);
-  const planId = () => (account && account.real ? (account.isDev ? "pro" : (account.plan || "free")) : "free");
+  const RANK = { free: 0, standard: 1, pro: 2 };
+  function planId() {
+    if (!(account && account.real)) return "free";
+    if (account.isDev) return "pro";
+    const base = account.plan || "free", bonus = account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? account.bonusPlan : "free";
+    return RANK[bonus] > RANK[base] ? bonus : base;
+  }
   const planName = () => (PLANS.find((p) => p.id === planId()) || PLANS[0]).name;
   const routineLimit = () => ({ free: 1, standard: 2, pro: Infinity })[planId()];
   const customCache = {};
@@ -1077,6 +1238,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Session state ---------- */
   const KEY = "rl.session", DAYS = "rl.days", DONE = "rl.done";
+  const ROUT = "rl.rout", FIN = "rl.fin", MINS = "rl.mins", FROZ = "rl.frozen", BADGES = "rl.badges";
+  const VAPID_PUBLIC = "BL1_JnQ__0aDN0r83IBLweagLTxyyuCOhgzkmLzJ6Pwn0lGatksVYpFH6308HecpEa-syIeqTYS2pmT-Y6ryTVM"; // web push (public half; the private key lives only in Supabase secrets)
   let S = store.get(KEY, null);
   if (S && S.day !== today()) { S = null; store.del(KEY); }
   if (!S) S = fresh();
@@ -1138,6 +1301,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     return a;
   }
   function buildHome() {
+    buildHomeMe();
     const hg = $("home-goals"); hg.innerHTML = "";
     GOALS.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
     hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "When time is tight.", icon: "i-aim", range: "30 min – 3 h" }));
@@ -1180,7 +1344,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const c = document.createElement("div");
       c.className = "goal g-my";
       c.style.setProperty("--mc", bl[0] ? tcol(bl[0]) : "#3f8dff");
-      c.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-up"/></svg><span style="display:grid;gap:10px"><span class="gt">${esc(r.name || "My routine")}</span><span class="gd">${bl.length} sets · ${fmtMin(t || 0)}</span><span class="my-card-acts"><button class="pill sm" type="button" data-my-start="${esc(r.id)}" ${bl.length ? "" : "disabled"}>Start</button><button class="pill sm out" type="button" data-my-edit="${esc(r.id)}">Edit</button></span></span>`;
+      c.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-up"/></svg><span style="display:grid;gap:10px"><span class="gt">${esc(r.name || "My routine")}</span><span class="gd">${bl.length} sets · ${fmtMin(t || 0)}</span><span class="my-card-acts"><button class="pill sm" type="button" data-my-start="${esc(r.id)}" ${bl.length ? "" : "disabled"}>Start</button><button class="pill sm out" type="button" data-my-edit="${esc(r.id)}">Edit</button><button class="pill sm out" type="button" data-my-share="${esc(r.id)}">Share</button></span></span>`;
       box.appendChild(c);
     });
     const full = signedIn() && rs.length >= lim;
@@ -1194,6 +1358,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     n.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } if (full) { go("plans"); return; } draft = { id: null, name: "", sets: [] }; go("builder"); });
     box.appendChild(n);
     box.querySelectorAll("[data-my-start]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const gid = "my-" + b.dataset.myStart; if (S.goal !== gid) { S.goal = gid; S.len = "custom"; resetRun(); } S.len = "custom"; save(); go("plan"); }));
+    box.querySelectorAll("[data-my-share]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myShare); if (r) openShare(r); }));
     box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) }; go("builder"); }));
   }
   function buildLen() {
@@ -1253,7 +1418,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
   }
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
-  $("plan-start").addEventListener("click", () => { if (!signedIn()) { askSignIn("plan"); return; } S.active = true; save(); go("training"); });
+  $("plan-start").addEventListener("click", () => { if (!signedIn()) { askSignIn("plan"); return; } S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save(); go("training"); });
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
@@ -1389,7 +1554,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     document.title = swm ? `Get ready ${$("tr-clock").textContent} · Repline` : S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
     pushOverlay();
   }
-  let lastTick = null;
+  let lastTick = null, lastCount = 0;
   // After a set is done: move on to the switch countdown on its own (or finish a test routine).
   function autoNext() {
     const l = length(S.goal, S.len);
@@ -1427,15 +1592,16 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
     if (S.status !== "laeuft") return;
     const b = cur();
+    if (Date.now() - lastCount > 30000) { lastCount = Date.now(); countTime(); if (sb && cloudUser) cloudPush(); }
     if (b.min != null) { const left = Math.ceil((b.min * 60000 - elapsed()) / 1000); if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; tickSound(); } if (left > 3) lastTick = null; }
-    if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
+    if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; countTime(); S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
   function play(at) { if (isKill(cur()) || S.status === "fertig") return; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
-  function pause() { S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
-  function restart() { if (S.status === "wechsel") { addSwitch(15); return; } clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  function pause() { countTime(); S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
+  function restart() { if (S.status === "wechsel") { addSwitch(15); return; } countTime(); if (S.counted) S.counted[S.b] = 0; clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   function nextBlock() {
-    clearInterval(raf); keepAwake(false);
+    countTime(); clearInterval(raf); keepAwake(false);
     S.done[S.b] = true;
     if (S.b >= list().length - 1) { finish(); return; }
     S.b += 1; S.before = 0; S.runAt = null; S.swEnd = null; S.status = "bereit";
@@ -1460,7 +1626,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   $("b-next").addEventListener("click", nextBlock);
   addEventListener("keydown", (e) => {
     if (e.key === "Escape" && drawerOpen) { closeDrawer(); return; }
-    if (view !== "training" || drawerOpen || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (view !== "training" || drawerOpen || !$("modal").hidden || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.code === "Space") { e.preventDefault(); if (!$("b-main").disabled) mainAction(); }
     else if (e.key === "r" || e.key === "R") restart();
     else if (e.key === "n" || e.key === "N") nextBlock();
@@ -1498,6 +1664,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
       else if (name === "next") nextBlock();
       else if (name === "restart") restart();
+      else if (name === "end") askEnd();
       pushOverlay(true);
     });
     setInterval(() => pushOverlay(true), 5000);
@@ -1508,6 +1675,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const days = store.get(DAYS, []); const t = today();
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
     store.set(DONE, store.get(DONE, 0) + 1);
+    const rt = store.get(ROUT, {}); rt[t] = (rt[t] || 0) + 1; store.set(ROUT, rt);
+    store.set(FIN, store.get(FIN, []).concat([{ t: Date.now(), g: S.goal }]).slice(-300));
+    afterFinish();
     const z = goal(S.goal), l = length(S.goal, S.len);
     $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
@@ -1517,7 +1687,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     go("done");
   }
   function streak() {
-    const set = new Set(store.get(DAYS, [])); let n = 0; const d = new Date();
+    const set = new Set(store.get(DAYS, []).concat(store.get("rl.frozen", []))); let n = 0; const d = new Date();
     if (!set.has(today(d))) d.setDate(d.getDate() - 1);
     while (set.has(today(d))) { n++; d.setDate(d.getDate() - 1); }
     return n;
@@ -1567,11 +1737,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const a = store.get("rl.after", null); store.del("rl.after");
     if (a && Date.now() - a.at < 900000) { if (("#" + a.to) === location.hash || (!a.to && !location.hash)) route(); else go(a.to); }
     else refreshView();
+    if (!sb) { applyFreezes(); checkBadges(true); refreshView(); }
+    const pi = store.get("rl.pimp", null); if (pi) { store.del("rl.pimp"); setTimeout(() => openImport(pi), 700); }
   }
   function refreshView() {
     try {
       if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick();
       else if (view === "plans") buildPlans(); else if (view === "plan") buildPlan();
+      else if (view === "board") buildBoard(); else if (view === "stats") buildStats(); else if (view === "badges") buildBadges(); else if (view === "friends") buildFriends();
     } catch (e) {}
     updateResume();
   }
@@ -1623,7 +1796,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     } else {
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${account.isDev ? " · all unlocked (dev)" : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
+      h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${account.isDev ? " · all unlocked (dev)" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
           <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
           <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
@@ -1632,6 +1806,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
           ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
         </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts clicks and sign-ups.${account.real ? "" : " Demo numbers."}</p></section>`;
     }
+    if (account && account.isDev) h += devHTML();
     if (account) {
       h += `<section class="dr-sec"><div class="group">
           <button class="row" type="button" id="sign-out">Sign out</button>
@@ -1643,8 +1818,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><h3>Training</h3><div class="group">
         ${sw("set-sound", "Sound at the end of a set", settings.sound)}
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
+        <div class="row"><label for="wk-goal">Days a week (goal)</label><select class="in" id="wk-goal" style="flex:0 0 auto;width:auto;height:36px">${[3, 4, 5, 6, 7].map((n) => `<option value="${n}" ${(settings.weekGoal || 5) === n ? "selected" : ""}>${n}</option>`).join("")}</select></div>
         <div class="row stack"><span>Time to switch sets<br><span class="tiny">Before each set, to open the next map</span></span><span class="seg" role="group" aria-label="Time to switch sets">${SWITCH_OPTS.map((v) => `<button type="button" data-sw="${v}" aria-pressed="${(+settings.switchSec || 0) === v}">${v ? v + "s" : "Off"}</button>`).join("")}</span></div>
       </div></section>`;
+      h += remHTML();
       h += `<section class="dr-sec"><h3>Data</h3><div class="group">
         <button class="row go" type="button" id="reset-today" aria-expanded="${confirmReset === "today"}">Reset today's progress</button>
         ${confirmReset === "today" ? `<div class="confirm inline"><span class="small">This clears the routine you're doing today. Your streak stays.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-today-yes">Reset today</button></div></div>` : ""}
@@ -1667,6 +1844,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       }
     } else {
       h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}</div></section>`;
+      if (DESK) h += `<section class="dr-sec"><h3>Discord</h3><div class="group">${sw("rpc-on", "Show my training on Discord", settings.rpc !== false)}${sw("rpc-name", "Show the routine name", settings.rpcName !== false)}</div><p class="dr-foot">While a routine runs, friends see “Playing Repline” with your set and time left on your Discord profile. Needs the Discord app open on this PC.</p></section>`;
       if (DESK) {
         const cs = store.get(CUSTOM, null), unlocked = hasCustom();
         h += `<section class="dr-sec"><h3>Set alerts</h3>
@@ -1692,7 +1870,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
             <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
             <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
             ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
-          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
     }
       } else {
         h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
@@ -1730,6 +1908,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("dc-in", "click", startSignIn);
     document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; confirmReset = null; renderDrawer(); $("dr-body").scrollTop = 0; }));
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
+    bindRem(); bindDev();
+    document.querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => { closeDrawer(); go(b.dataset.nav); }));
+    on("wk-goal", "change", (e) => { settings.weekGoal = +e.target.value; saveSettings(); if (view === "home") buildHomeMe(); });
+    on("rpc-on", "change", (e) => { settings.rpc = e.target.checked; saveSettings(); pushRpc(); });
+    on("rpc-name", "change", (e) => { settings.rpcName = e.target.checked; saveSettings(); pushRpc(); });
     on("upd-check", "click", () => { DESK.updates.check(); upd = { ...(upd || {}), state: "checking" }; renderDrawer(); });
     on("upd-now", "click", installUpdate);
     document.querySelectorAll("[data-sw]").forEach((b) => b.addEventListener("click", () => {
@@ -1803,7 +1986,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         try { await sb.auth.signOut(); } catch (e) {}
         cloudUser = null;
       }
-      account = null; [ACC, DAYS, DONE, KEY, MYR].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
+      account = null; [ACC, DAYS, DONE, KEY, MYR, ROUT, FIN, MINS, FROZ, BADGES, "rl.rank", "rl.last", "rl.imports"].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
     });
   }
   function drawMini(pre) {
@@ -1877,25 +2060,24 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   async function cloudDay() {
     if (!sb || !cloudUser) return;
     const t = today();
-    const { data } = await sb.from("training_days").select("routines").eq("user_id", cloudUser.id).eq("day", t).maybeSingle();
-    await sb.from("training_days").upsert({ user_id: cloudUser.id, day: t, routines: (data ? data.routines : 0) + 1 });
+    await sb.from("training_days").upsert(Object.assign({ user_id: cloudUser.id, day: t, routines: (store.get(ROUT, {})[t] || 1) }, dayPayload(t)));
   }
   async function cloudLoad(user) {
     cloudUser = user; cloudBusy = true;
     try {
       const id = user.id;
       const [prof, code, state, days] = await Promise.all([
-        sb.from("profiles").select("username, avatar_url, is_dev, plan").eq("id", id).maybeSingle(),
+        sb.from("profiles").select("username, avatar_url, is_dev, plan, bonus_plan, bonus_until, created_at").eq("id", id).maybeSingle(),
         sb.from("referral_codes").select("code, clicks").eq("user_id", id).maybeSingle(),
         sb.from("user_state").select("settings, focus, session, updated_at").eq("user_id", id).maybeSingle(),
-        sb.from("training_days").select("day, routines").eq("user_id", id)
+        sb.from("training_days").select("day, routines, minutes, by_type, frozen").eq("user_id", id)
       ]);
       const { count } = await sb.from("referral_signups").select("referred_id", { count: "exact", head: true }).eq("referrer_id", id);
       const buys = await sb.from("purchases").select("item").eq("user_id", id);
       const meta = user.user_metadata || {};
       const p = prof.data || {};
       account = { real: true, id, name: p.username || meta.full_name || meta.name || "Player", avatar: p.avatar_url || meta.avatar_url || null,
-        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, plan: p.plan || "free", items: (buys.data || []).map((x) => x.item), since: today() };
+        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, plan: p.plan || "free", bonusPlan: p.bonus_plan || null, bonusUntil: p.bonus_until || null, created: p.created_at || null, items: (buys.data || []).map((x) => x.item), since: today() };
       // own routines: the account is the source of truth; routines made before signing in are uploaded once
       const rr = await sb.from("custom_routines").select("id, name, sets, updated_at").eq("user_id", id).order("created_at");
       const cloudList = (rr.data || []).map((x) => ({ id: x.id, name: x.name, sets: x.sets || [], updated_at: x.updated_at }));
@@ -1910,11 +2092,13 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       // training days: merge both ways
       const remote = days.data || [];
       const local = store.get(DAYS, []);
-      const remoteSet = new Set(remote.map((d) => d.day));
+      const remoteSet = new Set(remote.filter((d) => d.routines > 0).map((d) => d.day));
       const missing = local.filter((d) => !remoteSet.has(d));
-      if (missing.length) await sb.from("training_days").upsert(missing.map((d) => ({ user_id: id, day: d, routines: 1 })), { onConflict: "user_id,day", ignoreDuplicates: true });
-      store.set(DAYS, Array.from(new Set(local.concat(remote.map((d) => d.day)))).sort().slice(-400));
+      if (missing.length) await sb.from("training_days").upsert(missing.map((d) => Object.assign({ user_id: id, day: d, routines: store.get(ROUT, {})[d] || 1 }, dayPayload(d))), { onConflict: "user_id,day" });
+      store.set(DAYS, Array.from(new Set(local.concat(Array.from(remoteSet)))).sort().slice(-400));
       store.set(DONE, Math.max(store.get(DONE, 0), remote.reduce((a, d) => a + (d.routines || 0), 0)));
+      mergeRemoteDays(remote);
+      await cloudSocial();
       // settings, focus, routine in progress
       const st = state.data || {};
       if (st.settings && Object.keys(st.settings).length) { Object.assign(settings, st.settings); store.set(SET, settings); setSound(settings.sound); }
@@ -1933,7 +2117,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     cloudPush();
     topAccount();
     if (drawerOpen) renderDrawer();
+    applyFreezes(); checkBadges(true); syncDeskReminder();
     refreshView();
+    cloudNotices();
   }
   // Referral links: repline.pages.dev/r/abc123 (or ?ref=abc123)
   (function () {
@@ -2027,7 +2213,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     list.querySelectorAll("[data-min]").forEach((inp) => inp.addEventListener("change", () => { const v = Math.round(+inp.value); draft.sets[+inp.dataset.min].min = Math.max(1, Math.min(240, isFinite(v) && v > 0 ? v : 10)); renderBld(); }));
   }
   $("bld-name").addEventListener("input", (e) => { if (draft) draft.name = e.target.value.slice(0, 40); });
-  async function saveDraft() {
+  async function saveDraft(silent) {
     const name = (draft.name || "").trim(), sets = draft.sets.filter((x) => SETS[x.key]).map((x) => ({ key: x.key, min: x.min }));
     if (!name) { toast("Give your routine a name."); $("bld-name").focus(); return; }
     if (!sets.length) { toast("Add at least one set."); return; }
@@ -2048,7 +2234,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     } else if (!id) id = "l-" + Math.random().toString(36).slice(2, 10);
     const next = myRoutines().filter((x) => x.id !== id).concat([{ id, name, sets, updated_at: now }]);
     store.set(MYR, next);
-    toast("Routine saved"); draft = null; go("goal");
+    store.set("rl.built", true);
+    if (silent) { draft = null; checkBadges(); return true; }
+    toast("Routine saved"); draft = null; go("goal"); checkBadges();
   }
   async function deleteDraft() {
     const id = draft && draft.id; if (!id) return;
@@ -2057,7 +2245,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (S.goal === "my-" + id) { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
     toast("Routine deleted"); draft = null; bldConfirm = false; go("goal");
   }
-  $("bld-save").addEventListener("click", saveDraft);
+  $("bld-save").addEventListener("click", () => saveDraft(false));
   $("bld-del").addEventListener("click", () => {
     bldConfirm = !bldConfirm;
     $("bld-confirm").innerHTML = bldConfirm ? `<div class="confirm" style="border:0;padding:0"><span class="small">Delete “${esc(draft.name || "this routine")}”? This can't be undone.</span><div><button class="pill sm out" type="button" id="bld-no">Cancel</button><button class="pill sm red" type="button" id="bld-yes">Delete routine</button></div></div>` : "";
@@ -2118,6 +2306,608 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     DESK.updates.onState((u) => { upd = u; renderUpdBar(); if (drawerOpen && drawerTab === "settings") renderDrawer(); });
   }
 
+  /* ---------- 1.6 · time tracking, streak freezes, badges ---------- */
+  const TYPE_GROUP = { aim: "aim", mech: "mech", fight: "fight", live: "live", review: "other", prep: "other", rest: "other" };
+  const GROUPS = [["aim", "Aim", "#38e0ff"], ["mech", "Mechanics", "#3f8dff"], ["fight", "Fights", "#a855f7"], ["live", "Live games", "#8f7bff"], ["other", "Review & prep", "#86868b"]];
+  let statT = 0;
+  function countTime() {
+    try {
+      if (!S.goal || !S.active) return;
+      const b = cur(); if (!b) return;
+      const e = elapsed(); S.counted = S.counted || {};
+      const was = S.counted[S.b] || 0;
+      if (e <= was) return;
+      const add = Math.min(e - was, 6 * 3600000);
+      S.counted[S.b] = e;
+      const m = store.get(MINS, {}), d = today(), g = TYPE_GROUP[b.type] || "other";
+      m[d] = m[d] || {}; m[d][g] = (m[d][g] || 0) + add;
+      const ks = Object.keys(m).sort(); while (ks.length > 400) delete m[ks.shift()];
+      store.set(MINS, m);
+      clearTimeout(statT); statT = setTimeout(cloudStats, 3000);
+    } catch (e) {}
+  }
+  function dayPayload(d) {
+    const m = store.get(MINS, {})[d] || {}, by = {}; let tot = 0;
+    Object.keys(m).forEach((k) => { const v = Math.round(m[k] / 60000); if (v > 0) { by[k] = v; tot += v; } });
+    const o = { minutes: Math.min(1440, tot), by_type: by };
+    if (d === today()) o.streak = streak();
+    return o;
+  }
+  function cloudStats() {
+    if (!sb || !cloudUser) return;
+    const d = today();
+    sb.from("training_days").upsert(Object.assign({ user_id: cloudUser.id, day: d }, dayPayload(d)), { onConflict: "user_id,day" }).then(() => {});
+  }
+  function mergeRemoteDays(rows) {
+    const m = store.get(MINS, {}), rt = store.get(ROUT, {}), fz = new Set(store.get(FROZ, []));
+    rows.forEach((r) => {
+      if (r.frozen) fz.add(r.day);
+      if (r.routines > 0) rt[r.day] = Math.max(rt[r.day] || 0, r.routines);
+      const by = r.by_type || {};
+      Object.keys(by).forEach((k) => { m[r.day] = m[r.day] || {}; m[r.day][k] = Math.max(m[r.day][k] || 0, (+by[k] || 0) * 60000); });
+    });
+    store.set(MINS, m); store.set(ROUT, rt); store.set(FROZ, Array.from(fz).sort().slice(-400));
+  }
+  const dayMin = (d, g) => { const m = store.get(MINS, {})[d] || {}; return Math.round((g ? (m[g] || 0) : Object.values(m).reduce((a, v) => a + v, 0)) / 60000); };
+  const totalMinutes = (g) => Object.keys(store.get(MINS, {})).reduce((a, d) => a + dayMin(d, g), 0);
+  const trainedToday = () => store.get(DAYS, []).indexOf(today()) >= 0;
+  const routinesOn = (d) => store.get(ROUT, {})[d] || (store.get(DAYS, []).indexOf(d) >= 0 ? 1 : 0);
+  const bestStreak = () => Math.max(settings.best || 0, streak());
+  const freezeMax = () => (planId() === "pro" ? 3 : 2);
+  const dayPoints = (d, s) => { const m = dayMin(d), r = routinesOn(d); return (m <= 0 && r <= 0) ? 0 : Math.min(180, m + (r > 0 ? 25 : 0) + Math.min(40, 2 * (s || 0))); };
+  function applyFreezes() {
+    if (!signedIn()) return;
+    const have = new Set(store.get(DAYS, []).concat(store.get(FROZ, [])));
+    if (!have.size) return;
+    const d = new Date(); d.setDate(d.getDate() - 1);
+    const gap = [];
+    while (!have.has(today(d)) && gap.length <= 7) { gap.push(today(d)); d.setDate(d.getDate() - 1); }
+    if (!gap.length || gap.length > 7 || gap.length > (settings.freezes || 0)) return;
+    store.set(FROZ, store.get(FROZ, []).concat(gap).sort());
+    settings.freezes -= gap.length; saveSettings();
+    if (sb && cloudUser) sb.from("training_days").upsert(gap.map((day) => ({ user_id: cloudUser.id, day, frozen: true })), { onConflict: "user_id,day" }).then(() => {});
+    setTimeout(() => toast(gap.length > 1 ? `${gap.length} streak freezes saved your streak` : "A streak freeze saved your streak"), 900);
+  }
+  function afterFinish() {
+    const s = streak();
+    settings.best = Math.max(settings.best || 0, s);
+    if (s > 0 && s % 7 === 0 && settings.freezeAt !== today()) {
+      settings.freezeAt = today();
+      if ((settings.freezes || 0) < freezeMax()) { settings.freezes = (settings.freezes || 0) + 1; setTimeout(() => toast("Streak freeze earned"), 2600); }
+    }
+    saveSettings();
+    setTimeout(() => { checkBadges(); syncDeskReminder(); }, 1200);
+  }
+
+  const BI = {
+    check: '<path d="M5 12l4 4 10-10"/>',
+    flame: '<path d="M12 3c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 0-7.5z"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+    cup: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+    crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+    star: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
+    flag: '<path d="M4 20h16M6 16l2-8 4 3 4-7 2 12"/>',
+    medal: '<circle cx="12" cy="15" r="5"/><path d="M8.5 3h7l-2 7.5h-3z"/>',
+    gift: '<path d="M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7c-2-4-6-3-5-1s5 1 5 1zM12 7c2-4 6-3 5-1s-5 1-5 1z"/>',
+    snow: '<path d="M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/>'
+  };
+  const finCount = (fn) => store.get(FIN, []).filter((x) => fn(new Date(x.t).getHours())).length;
+  const BADGE_LIST = [
+    { id: "first_rep", g: "Streaks", n: "First rep", d: "Finish your first routine", ic: "check", c: "#38e0ff,#3f8dff", p: () => [store.get(DONE, 0), 1] },
+    { id: "streak_7", g: "Streaks", n: "One week", d: "7-day streak", ic: "flame", c: "#ff9f0a,#ff453a", p: () => [bestStreak(), 7], u: "days" },
+    { id: "streak_14", g: "Streaks", n: "Two weeks strong", d: "14-day streak", ic: "flame", c: "#ff9f0a,#ff453a", p: () => [bestStreak(), 14], u: "days" },
+    { id: "streak_30", g: "Streaks", n: "Iron month", d: "30-day streak", ic: "flame", c: "#ff453a,#a855f7", p: () => [bestStreak(), 30], u: "days" },
+    { id: "streak_100", g: "Streaks", n: "100 club", d: "100-day streak", ic: "flame", c: "#ffd60a,#ff453a", p: () => [bestStreak(), 100], u: "days" },
+    { id: "early_bird", g: "Training", n: "Early bird", d: "5 routines before 9:00", ic: "sun", c: "#ffd60a,#ff9f0a", p: () => [finCount((h) => h < 9), 5] },
+    { id: "night_owl", g: "Training", n: "Night owl", d: "5 routines after 22:00", ic: "moon", c: "#8f7bff,#a855f7", p: () => [finCount((h) => h >= 22), 5] },
+    { id: "cup_ready", g: "Training", n: "Cup ready", d: "10 cup warm-ups", ic: "cup", c: "#5ed39a,#30d158", p: () => [store.get(FIN, []).filter((x) => x.g === "cup").length, 10] },
+    { id: "grinder", g: "Training", n: "Grinder", d: "50 hours trained", ic: "clock", c: "#ffd60a,#5ed39a", p: () => [Math.floor(totalMinutes() / 60), 50], u: "hours" },
+    { id: "sharpshooter", g: "Training", n: "Sharpshooter", d: "10 hours of aim", ic: "target", c: "#38e0ff,#7debff", p: () => [Math.floor(totalMinutes("aim") / 60), 10], u: "hours" },
+    { id: "founding", g: "Community & leaderboards", n: "Founding member", d: "Joined in 2026", ic: "flag", c: "#f5f5f7,#86868b", p: () => [account && account.real && account.created && account.created.slice(0, 4) <= "2026" ? 1 : 0, 1] },
+    { id: "builder", g: "Community & leaderboards", n: "Builder", d: "Build your own routine", ic: "plus", c: "#7debff,#38e0ff", p: () => [myRoutines().length > 0 || store.get("rl.built", false) ? 1 : 0, 1] },
+    { id: "shared", g: "Community & leaderboards", n: "Shared", d: "Your routines imported 5 times", ic: "share", c: "#3f8dff,#a855f7", p: () => [store.get("rl.imports", 0), 5], u: "imports" },
+    { id: "weekly_top3", g: "Community & leaderboards", n: "Weekly Top 3", d: "Finish a week in the Top 3", ic: "medal", c: "#ffd60a,#ff9f0a" },
+    { id: "top50", g: "Community & leaderboards", n: "Top 50", d: "Finish a month in the Top 50", ic: "medal", c: "#86868b,#f5f5f7" },
+    { id: "top10", g: "Community & leaderboards", n: "Top 10", d: "Finish a month in the Top 10", ic: "crown", c: "#3f8dff,#38e0ff" },
+    { id: "podium", g: "Community & leaderboards", n: "Podium", d: "Finish a month in the Top 3", ic: "crown", c: "#c7c7cc,#f5f5f7" },
+    { id: "champion", g: "Community & leaderboards", n: "Champion", d: "Win a month", ic: "star", c: "#ffd60a,#ff9f0a" }
+  ];
+  const svgI = (k, extra) => `<svg viewBox="0 0 24 24" aria-hidden="true"${extra || ""}>${BI[k]}</svg>`;
+  function checkBadges(quiet) {
+    if (!signedIn()) return;
+    const have = store.get(BADGES, {}), got = [];
+    BADGE_LIST.forEach((b) => { if (!b.p || have[b.id]) return; const [c, g] = b.p(); if (c >= g) { have[b.id] = new Date().toISOString(); got.push(b); } });
+    if (!got.length) return;
+    store.set(BADGES, have);
+    if (sb && cloudUser) sb.from("user_badges").upsert(got.map((b) => ({ user_id: cloudUser.id, badge: b.id })), { onConflict: "user_id,badge", ignoreDuplicates: true }).then(() => {});
+    if (!quiet) got.forEach((b, i) => setTimeout(() => toast(`Badge unlocked · ${b.n}`), 2600 + i * 2400));
+    if (view === "badges") buildBadges();
+  }
+
+  /* ---------- 1.6 · modal sheet ---------- */
+  let modalNext = null;
+  function openModal(html, bind, onClose) {
+    const m = $("modal"), sh = $("sheet");
+    sh.innerHTML = html; m.hidden = false; root.classList.add("no-scroll");
+    const close = () => { if (m.hidden) return; m.hidden = true; sh.innerHTML = ""; root.classList.remove("no-scroll"); if (onClose) onClose(); };
+    sh.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", close));
+    if (bind) bind(sh, close);
+    const f = sh.querySelector("input, button:not([data-close])") || sh.querySelector("button"); if (f) setTimeout(() => f.focus(), 40);
+    return close;
+  }
+  $("modal").addEventListener("click", (e) => { if (e.target.id === "modal") { const c = $("sheet").querySelector("[data-close]"); if (c) c.click(); } });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal").hidden) { const c = $("sheet").querySelector("[data-close]"); if (c) c.click(); } });
+
+  /* ---------- 1.6 · end a routine ---------- */
+  function askEnd() {
+    if (!(S.goal && S.active)) return;
+    openModal(`<h2 id="sheet-t">End this routine?</h2><p class="small">Your progress in it is lost. It doesn't count for your streak.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill red" type="button" id="end-yes">End routine</button></div>`,
+      (sh, close) => sh.querySelector("#end-yes").addEventListener("click", () => { close(); endRoutine(); }));
+  }
+  function endRoutine() {
+    countTime(); clearInterval(raf); keepAwake(false);
+    S = fresh(); store.del(KEY); cloudPush(); pushOverlay(true); updateResume();
+    toast("Routine ended"); go("goal");
+  }
+  $("end-rt").addEventListener("click", askEnd);
+  $("rs-end").addEventListener("click", askEnd);
+
+  /* ---------- 1.6 · share and import routines ---------- */
+  const siteBase = () => (SITE.url || location.origin).replace(/\/$/, "");
+  async function openShare(r) {
+    openModal(`<h2 id="sheet-t">Share “${esc(r.name)}”</h2><div class="code-box"><span class="tiny">Routine code</span><b class="code" id="sh-code">· · ·</b><div class="acts" style="justify-content:center"><button class="pill" type="button" id="sh-copy" disabled>Copy code</button><button class="pill out" type="button" id="sh-link" disabled>Copy link</button></div></div><p class="tiny">The code is a copy of the routine as it is now. Change yours later and share again for a new code. Codes never expire.</p><div class="acts"><button class="pill out" type="button" data-close>Done</button></div>`);
+    let code = null;
+    if (sb && cloudUser) {
+      const { data, error } = await sb.rpc("share_routine", { r_name: r.name, r_sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) });
+      if (error || !data) { toast("Couldn't create a code. Please try again."); return; }
+      code = data;
+    } else code = "RPL-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-DEMO";
+    const el = $("sh-code"); if (!el) return;
+    el.textContent = code;
+    $("sh-copy").disabled = false; $("sh-link").disabled = false;
+    $("sh-copy").addEventListener("click", (e) => copyText(code, e.currentTarget, "Code copied"));
+    $("sh-link").addEventListener("click", (e) => copyText(`${siteBase()}/#import=${code}`, e.currentTarget, "Link copied"));
+  }
+  function openImport(prefill) {
+    if (!signedIn()) { if (prefill) store.set("rl.pimp", prefill); askSignIn("goal"); return; }
+    openModal(`<h2 id="sheet-t">Import a routine</h2><label class="small" for="imp-code">Paste a routine code</label><div class="inline-in"><input type="text" id="imp-code" class="code" placeholder="RPL-XXXX-XXXX" autocomplete="off" spellcheck="false" value="${esc(prefill || "")}"><button class="pill" type="button" id="imp-show">Show</button></div><div id="imp-prev"></div><div class="acts"><button class="pill out" type="button" data-close>Cancel</button></div>`, (sh, close) => {
+      const show = async () => {
+        const v = sh.querySelector("#imp-code").value.trim(); if (!v) return;
+        const box = sh.querySelector("#imp-prev"); box.innerHTML = '<p class="tiny">Looking it up…</p>';
+        let row = null;
+        if (sb && cloudUser) { const { data } = await sb.rpc("get_shared_routine", { r_code: v }); row = data && data[0]; }
+        else if (/^RPL-/i.test(v)) row = { code: v.toUpperCase(), name: "Box Fight Grind", owner_name: "demo", sets: [{ key: "skaavok", min: 10 }, { key: "piece", min: 15 }, { key: "box", min: 30 }, { key: "vod", min: 10 }] };
+        if (!row) { box.innerHTML = '<p class="small">No routine with this code. Check it and try again.</p>'; return; }
+        const sets = (row.sets || []).filter((x) => SETS[x.key]), tot = sets.reduce((a, x) => a + (+x.min || 0), 0);
+        const full = myRoutines().length >= routineLimit();
+        box.innerHTML = `<div class="code-box" style="justify-items:stretch"><div class="kv"><b style="font-size:20px">${esc(row.name)}</b><span class="tiny">by ${esc(row.owner_name || "a player")}</span></div><ol>${sets.map((x) => `<li><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:10px;background:${TYPES[SETS[x.key].type].color}"></i>${esc(SETS[x.key].name)}</span><span class="tiny">${+x.min} min</span></li>`).join("")}</ol><div class="sep"></div><div class="kv" style="align-items:center;flex-wrap:wrap"><span class="tiny">${sets.length} sets · ${fmtMin(tot)}${full ? " · your plan is full" : ""}</span><button class="pill" type="button" id="imp-add">${full ? "See plans" : "Add to My routines"}</button></div></div>`;
+        box.querySelector("#imp-add").addEventListener("click", async () => {
+          if (full) { close(); go("plans"); return; }
+          draft = { id: null, name: String(row.name).slice(0, 40), sets: sets.map((x) => ({ key: x.key, min: Math.max(1, Math.min(240, Math.round(+x.min) || 10)) })) };
+          if (await saveDraft(true)) { if (sb && cloudUser) sb.rpc("count_import", { r_code: row.code }).then(() => {}); close(); toast(`“${row.name}” added`); go("goal"); }
+        });
+      };
+      sh.querySelector("#imp-show").addEventListener("click", show);
+      sh.querySelector("#imp-code").addEventListener("keydown", (e) => { if (e.key === "Enter") show(); });
+      if (prefill) show();
+    });
+  }
+  $("imp-open").addEventListener("click", () => openImport(""));
+
+  /* ---------- 1.6 · rewards, gifts and other notices ---------- */
+  async function cloudSocial() {
+    try {
+      const [bd, imp, rem] = await Promise.all([
+        sb.from("user_badges").select("badge, earned_at"),
+        sb.rpc("my_share_imports"),
+        sb.from("reminders").select("*").maybeSingle()
+      ]);
+      const have = store.get(BADGES, {}); (bd.data || []).forEach((r) => { have[r.badge] = have[r.badge] || r.earned_at; }); store.set(BADGES, have);
+      if (typeof imp.data === "number") store.set("rl.imports", imp.data);
+      if (rem.data) { settings.rem = remFromRow(rem.data); store.set(SET, settings); }
+    } catch (e) {}
+  }
+  async function cloudNotices() {
+    if (!sb || !cloudUser) return;
+    const out = [];
+    try { const r = await sb.rpc("claim_rewards"); (r.data || []).forEach((x) => out.push(x)); } catch (e) {}
+    try { const n = await sb.from("notices").select("id, kind, payload").is("seen_at", null).order("created_at"); (n.data || []).forEach((x) => out.push(Object.assign({}, x.payload || {}, { kind: x.kind, notice: x.id }))); } catch (e) {}
+    if (!out.length) return;
+    if (out.some((x) => x.kind !== "weekly_top3")) {
+      const { data } = await sb.from("profiles").select("bonus_plan, bonus_until").eq("id", cloudUser.id).maybeSingle();
+      if (data && account) { account.bonusPlan = data.bonus_plan; account.bonusUntil = data.bonus_until; store.set(ACC, account); }
+    }
+    const have = store.get(BADGES, {});
+    out.forEach((x) => { const b = { weekly_top3: "weekly_top3" }[x.kind] || (x.kind === "monthly" ? (x.rank === 1 ? "champion" : x.rank <= 3 ? "podium" : x.rank <= 10 ? "top10" : "top50") : null); if (b) have[b] = have[b] || new Date().toISOString(); });
+    store.set(BADGES, have);
+    showNotices(out);
+    refreshView();
+  }
+  const planWord = (p) => (p === "pro" ? "Pro" : "Standard");
+  const monthsWord = (n) => `${n} month${n === 1 ? "" : "s"}`;
+  function showNotices(list) {
+    if (!list.length) return;
+    const x = list[0], rest = list.slice(1);
+    let t = "", b = "", ic = "gift";
+    if (x.kind === "gift") { t = `A gift from ${x.from || "Repline"}`; b = `You got <b>${planWord(x.plan)} for ${monthsWord(+x.months || 1)}</b>. ${x.note ? esc(x.note) : "Thanks for helping make Repline better."}`; }
+    else if (x.kind === "invite") { t = "Invite reward"; b = "3 friends trained with Repline. <b>1 month Standard</b> is yours. Thanks for spreading the word."; ic = "share"; }
+    else if (x.kind === "monthly") { ic = x.rank === 1 ? "star" : x.rank <= 10 ? "crown" : "medal"; t = `#${x.rank} last month`; b = x.rank === 1 ? "You won the month. <b>3 months Pro</b> and the Champion badge are yours." : x.rank <= 3 ? "You made the podium. <b>1 month Pro</b> and the Podium badge are yours." : x.rank <= 10 ? "Top 10. <b>1 month Standard</b> and the Top 10 badge are yours." : "Top 50. The Top 50 badge is yours."; }
+    else if (x.kind === "weekly_top3") { ic = "medal"; t = `#${x.rank} last week`; b = "You finished in the Top 3. The Weekly Top 3 badge is yours."; }
+    else { t = "News"; b = esc(x.text || ""); }
+    openModal(`<div class="gift-ico">${svgI(ic)}</div><h2 id="sheet-t" style="text-align:center">${esc(t)}</h2><p class="small" style="text-align:center;margin:0">${b}</p><div class="acts" style="justify-content:center"><button class="pill" type="button" data-close>Nice</button></div>`, null, () => {
+      if (x.notice && sb && cloudUser) sb.from("notices").update({ seen_at: new Date().toISOString() }).eq("id", x.notice).then(() => {});
+      if (rest.length) setTimeout(() => showNotices(rest), 250);
+    });
+  }
+
+  /* ---------- 1.6 · leaderboards ---------- */
+  let boardTab = "week";
+  const avHTML = (name, url, cls) => url ? `<span class="av${cls || ""}" style="background-image:url('${esc(String(url).replace(/['\\]/g, ""))}')"></span>` : `<span class="av${cls || ""}">${esc((name || "?").slice(0, 1).toUpperCase())}</span>`;
+  function demoBoard(fo) {
+    const me = { username: (account && account.name) || "you", is_me: true, points: 955, streak: 12 };
+    const all = [["nyxbuilds", 1586, 22], ["kxvin", 1412, 19], ["tiltproof", 1377, 9], ["vortexqt", 1290, 27], ["ramprush", 1244, 9], ["edit.exe", 1198, 41], ["coldhands", 1150, 14], ["sunsetboxer", 1102, 6], ["lowground", 1087, 18], ["pieceking", 1041, 11]];
+    let rows = (fo ? all.filter((_, i) => i === 1 || i === 6) : all).map(([u, p, s]) => ({ username: u, points: p, streak: s }));
+    rows.push(me);
+    rows.sort((a, b) => (boardTab === "streaks" ? b.streak - a.streak : b.points - a.points));
+    rows = rows.map((r, i) => Object.assign(r, { rank: i + 1, training_now: fo && r.username === "kxvin", total: rows.length }));
+    if (!fo) { const i = rows.indexOf(me); rows.splice(i, 1); me.rank = 14; me.total = 312; rows.push(me); }
+    return rows;
+  }
+  async function fetchBoard(period, fo) {
+    if (sb && cloudUser) {
+      const { data, error } = await sb.rpc("leaderboard", { period, friends_only: fo });
+      if (error) return null;
+      return data || [];
+    }
+    return demoBoard(fo);
+  }
+  function lockHTML(text, to) {
+    return `<div class="c-card lock-card"><b style="font-size:22px">${esc(text)}</b><p class="small" style="margin:0">Sign in with Discord. It's free.</p><button class="pill" type="button" data-signin="${esc(to)}"><svg aria-hidden="true" style="width:20px;height:20px"><use href="#i-discord"/></svg>Sign in</button></div>`;
+  }
+  function bindLock(el) { el.querySelectorAll("[data-signin]").forEach((b) => b.addEventListener("click", () => askSignIn(b.dataset.signin))); }
+  function boardInfoHTML() {
+    return `<div style="display:grid;gap:24px">
+      <div class="c-card"><b style="font-size:22px">Monthly prizes</b>
+        <div class="kv"><span><b style="color:#ffd60a">#1</b> Champion</span><span>3 months Pro</span></div>
+        <div class="kv"><span><b style="color:#c7c7cc">#2–3</b> Podium</span><span>1 month Pro</span></div>
+        <div class="kv"><span><b>#4–10</b> Top 10</span><span>1 month Standard</span></div>
+        <div class="kv"><span><b>#11–50</b> Top 50</span><span>Badge</span></div>
+        <div class="sep"></div><b>Weekly</b><span class="small">Top 3: the Weekly Top 3 badge and a shout-out on our Discord.</span>
+        <span class="tiny">Every prize comes with its badge. Pro and Standard from prizes add to a plan you already have.</span></div>
+      <div class="c-card"><b style="font-size:22px">How points work</b>
+        <div class="kv"><span>Each minute in a running set</span><b>+1</b></div>
+        <div class="kv"><span>Finish a routine (once a day)</span><b>+25</b></div>
+        <div class="kv"><span>Streak bonus</span><b>+2 per day, max +40</b></div>
+        <span class="tiny">At most 180 points a day count. Paused time and the switch countdown don't count. Streak freezes keep your streak but earn no points. Weeks start Monday 00:00 (Berlin time).</span></div>
+      <div class="c-card" style="background:var(--graphite);box-shadow:inset 0 0 0 1px var(--keyline)"><b>Fair play</b><span class="tiny" style="font-size:13px;line-height:1.5">Signed-in accounts only, at least 7 days old. Dev accounts don't take part. One account per person. Suspicious timers are checked and can be removed.</span></div>
+    </div>`;
+  }
+  async function buildBoard() {
+    const body = $("board-body"), fo = !!store.get("rl.fo", false);
+    $("fo-only").checked = fo;
+    document.querySelectorAll("[data-bt]").forEach((b) => { const on = b.dataset.bt === boardTab; b.setAttribute("aria-pressed", on); b.setAttribute("aria-selected", on); });
+    if (!signedIn()) { body.innerHTML = `<div class="bgrid">${lockHTML("Sign in to join the leaderboard", "board")}${boardInfoHTML()}</div>`; bindLock(body); return; }
+    body.innerHTML = `<div class="bgrid"><div class="lb-list"><p class="small" style="margin:12px">Loading…</p></div>${boardInfoHTML()}</div>`;
+    const rows = await fetchBoard(boardTab, fo);
+    if (view !== "board") return;
+    const list = body.querySelector(".lb-list");
+    if (!rows) { list.innerHTML = '<p class="small" style="margin:12px">Couldn\'t load the leaderboard. Please try again.</p>'; return; }
+    const st = boardTab === "streaks", val = (r) => (st ? `${r.streak} d` : Number(r.points).toLocaleString("en-US").replace(/,/g, " "));
+    const top = rows.filter((r) => r.rank <= 3 && (st ? r.streak > 0 : r.points > 0));
+    const me = rows.find((r) => r.is_me);
+    let pod = "";
+    if (top.length >= 3 && !fo) {
+      pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b>${esc(r.username)}</b><span class="tiny">${val(r)}${st ? "" : " points"}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
+    }
+    const shown = rows.filter((r) => !(pod && r.rank <= 3)).filter((r) => r.rank <= 50 || r.is_me);
+    let h = `<div class="lb head"><span>Rank</span><span></span><span>Player</span><span>${st ? "Streak" : "Points"}</span><span>${st ? "" : "Streak"}</span></div>`;
+    let lastRank = pod ? 3 : 0;
+    shown.forEach((r) => {
+      if (r.rank > lastRank + 1 && r.is_me) h += `<div class="tiny" style="text-align:center;padding:4px">· · ·</div>`;
+      lastRank = r.rank;
+      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}${esc(r.username)}${r.training_now ? '<span class="live">Training now</span>' : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
+    });
+    const others = rows.filter((r) => !r.is_me && (st ? r.streak > 0 : r.points > 0)).length;
+    let note = "";
+    if (!fo && !me) note = account && account.isDev ? "Dev accounts aren't ranked. Untick nothing, it's just you testing." : "You join the board 7 days after you sign up.";
+    else if (fo && others === 0) note = "No friends on the board yet. Add them on the Friends page.";
+    else if (!others && !me) note = "No points yet. Train to get on the board.";
+    h += `<p class="tiny" style="margin:10px 14px 6px">${note ? esc(note) + " " : ""}${fo ? `<a href="#friends">Friends</a>` : `${rows.length ? (rows[0].total || rows.length) + " players" : ""}`}</p>`;
+    list.outerHTML = `<div style="display:grid;gap:0">${pod}<div class="lb-list">${h}</div></div>`;
+  }
+  document.querySelectorAll("[data-bt]").forEach((b) => b.addEventListener("click", () => { boardTab = b.dataset.bt; buildBoard(); }));
+  $("fo-only").addEventListener("change", (e) => { store.set("rl.fo", e.target.checked); buildBoard(); });
+
+  /* ---------- 1.6 · friends and invite reward ---------- */
+  async function buildFriends() {
+    const body = $("friends-body");
+    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to add friends", "friends"); bindLock(body); return; }
+    body.innerHTML = '<p class="small">Loading…</p>';
+    let fr = [], inv = [];
+    if (sb && cloudUser) {
+      const [a, b] = await Promise.all([sb.rpc("my_friends"), sb.rpc("invite_progress")]);
+      fr = a.data || []; inv = b.data || [];
+    } else {
+      fr = [{ user_id: "d1", username: "kxvin", status: "accepted", training_now: true }, { user_id: "d2", username: "lucaedits", status: "accepted" }, { user_id: "d3", username: "tiltproof", status: "pending", incoming: true }];
+      inv = [{ username: "lucaedits", days: 3 }, { username: "jonasfn", days: 1 }];
+    }
+    if (view !== "friends") return;
+    const incoming = fr.filter((f) => f.status === "pending" && f.incoming), outgoing = fr.filter((f) => f.status === "pending" && !f.incoming), friends = fr.filter((f) => f.status === "accepted");
+    const done = inv.filter((i) => i.days >= 3).length, earned = Math.floor(done / 3), cycle = done % 3;
+    const open = inv.filter((i) => i.days < 3);
+    const slots = []; for (let i = 0; i < 3; i++) slots.push(i < cycle ? { ok: true, name: "Counted" } : open[i - cycle] ? { name: `${open[i - cycle].days} / 3 days`, u: open[i - cycle].username } : { name: "Open" });
+    const row = (f, acts) => `<div class="fr-row">${avHTML(f.username, f.avatar_url)}<span>${esc(f.username)}${f.training_now ? '<span class="live" style="display:block;font-size:12px;color:var(--pos)">Training now</span>' : ""}</span>${acts}</div>`;
+    body.innerHTML = `<div class="bgrid">
+      <div style="display:grid;gap:24px;align-content:start">
+        <div class="c-card"><div class="kv" style="align-items:center"><b style="font-size:22px">Your friends</b><a class="pill sm out" href="#board" id="fr-board">Friends leaderboard</a></div>
+          ${friends.length ? friends.map((f) => row(f, `<button class="pill sm out" type="button" data-unfriend="${esc(f.user_id)}">Remove</button>`)).join("") : '<p class="small" style="margin:0">No friends yet. Add them by their Discord name.</p>'}
+          ${outgoing.length ? `<div class="sep"></div><span class="tiny">Sent</span>${outgoing.map((f) => row(f, `<button class="pill sm out" type="button" data-unfriend="${esc(f.user_id)}">Cancel</button>`)).join("")}` : ""}
+        </div>
+        <div class="c-card" style="background:linear-gradient(135deg,#12361f 0%,var(--carbon) 65%)">
+          <span class="tiny" style="color:var(--pos);text-transform:uppercase;letter-spacing:1.4px">Invite reward</span>
+          <b style="font-size:24px;letter-spacing:-.4px">Bring 3 friends. Get 1 month Standard.</b>
+          <span class="small">A friend counts once they sign up with your link and finish a routine on 3 days.</span>
+          <div class="inv-slots">${slots.map((x) => `<div class="${x.ok ? "ok" : ""}">${x.u ? avHTML(x.u) : `<span class="av" style="background:var(--steel);color:var(--ash)">${x.ok ? "✓" : "+"}</span>`}<span>${esc(x.name)}</span></div>`).join("")}</div>
+          <div class="inline-in"><code style="flex:1;min-width:0;font-size:14px;background:#000;padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill" type="button" id="inv-copy">Copy link</button></div>
+          <span class="tiny">${earned ? `${monthsWord(earned)} earned so far. ` : ""}Every 3 friends = another month. Already on Standard or Pro? The month is added on top.</span>
+        </div>
+      </div>
+      <div style="display:grid;gap:24px;align-content:start">
+        <div class="c-card"><b style="font-size:20px">Add a friend</b><label class="tiny" for="fr-name">Their Discord name</label>
+          <div class="inline-in"><input type="text" id="fr-name" placeholder="e.g. kxvin" autocomplete="off" spellcheck="false"><button class="pill" type="button" id="fr-send">Send</button></div>
+          <span class="tiny">They need a Repline account. They get a request and accept it. Your Discord name: <b>${esc((account && account.name) || "")}</b></span></div>
+        ${incoming.length ? `<div class="c-card"><b style="font-size:20px">Requests</b>${incoming.map((f) => row(f, `<button class="pill sm" type="button" data-accept="${esc(f.user_id)}">Accept</button><button class="pill sm out" type="button" data-decline="${esc(f.user_id)}">Decline</button>`)).join("")}</div>` : ""}
+      </div></div>`;
+    $("fr-board").addEventListener("click", () => store.set("rl.fo", true));
+    $("inv-copy").addEventListener("click", (e) => copyText(refLink(), e.currentTarget, "Invite link copied"));
+    const send = async () => {
+      const v = $("fr-name").value.trim(); if (!v) return;
+      if (!(sb && cloudUser)) { toast("Friend request sent (demo)"); return; }
+      const { data, error } = await sb.rpc("friend_request", { discord_name: v });
+      const msg = { sent: "Request sent", accepted: "You're friends now", not_found: "No Repline player with that Discord name", self: "That's you", already: "You're already friends", pending: "Request already sent", limit: "Too many open requests" }[error ? "" : data] || "Couldn't send. Please try again.";
+      toast(msg); if (!error && (data === "sent" || data === "accepted")) buildFriends();
+    };
+    $("fr-send").addEventListener("click", send);
+    $("fr-name").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+    const respond = async (id, yes) => { if (sb && cloudUser) await sb.rpc("friend_respond", { other: id, accept: yes }); toast(yes ? "You're friends now" : "Removed"); buildFriends(); };
+    body.querySelectorAll("[data-accept]").forEach((b) => b.addEventListener("click", () => respond(b.dataset.accept, true)));
+    body.querySelectorAll("[data-decline], [data-unfriend]").forEach((b) => b.addEventListener("click", () => respond(b.dataset.decline || b.dataset.unfriend, false)));
+  }
+
+  /* ---------- 1.6 · stats ---------- */
+  let statsRange = "week";
+  const dShift = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const weekStart = (d) => { const x = new Date(d); const w = (x.getDay() + 6) % 7; x.setDate(x.getDate() - w); x.setHours(12, 0, 0, 0); return x; };
+  function buildStats() {
+    const body = $("stats-body");
+    document.querySelectorAll("[data-sr]").forEach((b) => { const on = b.dataset.sr === statsRange; b.setAttribute("aria-pressed", on); b.setAttribute("aria-selected", on); });
+    if (!signedIn()) { $("st-since").textContent = ""; body.innerHTML = lockHTML("Sign in to see your stats", "stats"); bindLock(body); return; }
+    const mins = store.get(MINS, {}), allDays = Object.keys(mins).concat(store.get(DAYS, [])).sort();
+    $("st-since").textContent = allDays.length ? `Since ${new Date(allDays[0] + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long" })}` : "Your first routine starts your stats.";
+    const now = new Date();
+    let from, cols = [];
+    if (statsRange === "week") { from = weekStart(now); for (let i = 0; i < 7; i++) { const d = dShift(from, i); cols.push({ days: [today(d)], label: d.toLocaleDateString("en-GB", { weekday: "short" }), future: d > now }); } }
+    else if (statsRange === "month") { from = new Date(now.getFullYear(), now.getMonth(), 1, 12); const n = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); for (let i = 0; i < n; i++) { const d = dShift(from, i); cols.push({ days: [today(d)], label: (i % 5 === 0 || i === n - 1) ? String(i + 1) : "", future: d > now }); } }
+    else { from = dShift(weekStart(now), -77); for (let w = 0; w < 12; w++) { const s0 = dShift(from, w * 7); const ds = []; for (let i = 0; i < 7; i++) ds.push(today(dShift(s0, i))); cols.push({ days: ds, label: w % 3 === 0 || w === 11 ? s0.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "", future: false }); } }
+    const rangeDays = cols.reduce((a, c) => a.concat(c.days), []);
+    const sumG = (days, g) => days.reduce((a, d) => a + dayMin(d, g), 0);
+    const tot = sumG(rangeDays), routs = rangeDays.reduce((a, d) => a + routinesOn(d), 0);
+    const prevDays = statsRange === "week" ? rangeDays.map((d) => today(dShift(new Date(d + "T12:00"), -7))) : null;
+    const diff = prevDays ? tot - sumG(prevDays) : null;
+    let s = streak(), pts = 0; const wk = weekStart(now); for (let i = 0; i < 7; i++) { const d = dShift(wk, i); if (d <= now) pts += dayPoints(today(d), today(d) === today() ? s : 0); }
+    const fmtH = (m) => m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`;
+    const maxCol = Math.max(30, ...cols.map((c) => sumG(c.days)));
+    const bars = cols.map((c) => `<div class="col"><div class="stk"${c.future ? ' style="opacity:.35"' : ""}>${GROUPS.map(([g, , col]) => { const v = sumG(c.days, g); return v ? `<i style="height:${Math.max(2, Math.round(v / maxCol * 170))}px;background:${col}"></i>` : ""; }).join("")}</div><span class="tiny">${esc(c.label)}</span></div>`).join("");
+    const share = GROUPS.map(([g, n, col]) => { const v = sumG(rangeDays, g); return { g, n, col, v, p: tot ? Math.round(v / tot * 100) : 0 }; }).filter((x) => x.v > 0);
+    const fights = share.find((x) => x.g === "fight");
+    const tip = tot >= 60 && (!fights || fights.p < 20) ? "Tip: Fights are under 20 %. Add Piece Control V2 or 1v1 Build Fights." : "";
+    // heatmap: last 12 weeks, Monday first
+    const hs = dShift(weekStart(now), -77), fz = new Set(store.get(FROZ, [])), cells = [];
+    for (let i = 0; i < 84; i++) { const d = dShift(hs, i), k = today(d), m = dayMin(k); const lvl = m >= 60 ? "#38e0ff" : m >= 25 ? "#1c86a6" : m > 0 || routinesOn(k) ? "#0d4a63" : ""; cells.push(d > now ? '<span class="x"></span>' : `<span class="${fz.has(k) ? "f" : ""}${k === today() ? " t" : ""}"${lvl ? ` style="background:${lvl}"` : ""} title="${k}${m ? " · " + m + " min" : ""}${fz.has(k) ? " · freeze" : ""}"></span>`); }
+    body.innerHTML = `<div class="st-tiles">
+        <div class="c-card"><span class="tiny">Trained ${statsRange === "week" ? "this week" : statsRange === "month" ? "this month" : "in 12 weeks"}</span><b>${fmtH(tot)}</b>${diff != null ? `<span class="tiny" style="color:${diff >= 0 ? "var(--pos)" : "var(--ash)"}">${diff >= 0 ? "+" : "−"}${fmtH(Math.abs(diff))} vs. last week</span>` : ""}</div>
+        <div class="c-card"><span class="tiny">Routines finished</span><b>${routs}</b><span class="tiny">${store.get(DONE, 0)} in total</span></div>
+        <div class="c-card"><span class="tiny">Current streak</span><b>${s} day${s === 1 ? "" : "s"}</b><span class="tiny">Best: ${bestStreak()} days</span></div>
+        <div class="c-card"><span class="tiny">Points this week</span><b>${pts}</b><a class="tiny" href="#board">Leaderboard ›</a></div>
+      </div>
+      <div class="bgrid" style="margin-bottom:24px">
+        <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Minutes per ${statsRange === "all" ? "week" : "day"}</b><span class="legend">${GROUPS.map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("")}</span></div>
+          <div class="bars" role="img" aria-label="Minutes trained, split by area">${bars}</div></div>
+        <div class="c-card"><b style="font-size:20px">Where your time goes</b>
+          ${share.length ? share.map((x) => `<div style="display:grid;gap:6px"><div class="kv"><span>${x.n}</span><span class="tiny">${fmtH(x.v)} · ${x.p} %</span></div><div class="meter"><i style="width:${x.p}%;background:${x.col}"></i></div></div>`).join("") : '<p class="small" style="margin:0">No training in this range yet.</p>'}
+          ${tip ? `<span class="tiny">${tip}</span>` : ""}</div>
+      </div>
+      <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Last 12 weeks</b><span class="tiny">Each square is a day · brighter = more minutes${fz.size ? " · outlined = streak freeze" : ""}</span></div>
+        <div class="hm"><div class="hm-days"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span></div><div class="hm-grid" role="img" aria-label="Training days over the last 12 weeks">${cells.join("")}</div></div></div>`;
+  }
+  document.querySelectorAll("[data-sr]").forEach((b) => b.addEventListener("click", () => { statsRange = b.dataset.sr; buildStats(); }));
+
+  /* ---------- 1.6 · badges page ---------- */
+  function buildBadges() {
+    const body = $("badges-body");
+    if (!signedIn()) { $("bd-sum").textContent = ""; body.innerHTML = lockHTML("Sign in to earn badges", "badges"); bindLock(body); return; }
+    const have = store.get(BADGES, {}), n = BADGE_LIST.filter((b) => have[b.id]).length;
+    $("bd-sum").textContent = `${n} of ${BADGE_LIST.length} earned.`;
+    const fzn = settings.freezes || 0, max = freezeMax(), s = streak(), next = 7 - (s % 7);
+    let h = `<div class="c-card freeze-card"><div class="ico">${svgI("snow", ' style="stroke:#7debff;fill:none;stroke-width:1.7;stroke-linecap:round"')}</div>
+      <div style="display:grid;gap:6px"><b style="font-size:22px">Streak freeze · ${fzn} ready</b><span class="small">Miss a day and a freeze saves your streak on its own. You earn one for every 7 days in a row.</span><span class="tiny">Hold up to ${max}${max < 3 ? " · Pro: up to 3" : ""}${fzn < max ? ` · Next one in ${next} day${next === 1 ? "" : "s"}` : " · Full"}</span></div>
+      <div class="fz-slots" aria-hidden="true">${Array.from({ length: max }, (_, i) => `<i class="${i < fzn ? "on" : ""}"></i>`).join("")}</div></div>`;
+    ["Streaks", "Training", "Community & leaderboards"].forEach((g) => {
+      h += `<h2 class="d-s" style="margin:0 0 14px;font-size:22px">${esc(g)}</h2><div class="bd-grid">`;
+      BADGE_LIST.filter((b) => b.g === g).forEach((b) => {
+        const on = !!have[b.id], [c1, c2] = b.c.split(",");
+        let sub = b.d;
+        if (!on && b.p) { const [c, goal] = b.p(); sub = `${Math.min(c, goal)} / ${goal}${b.u ? " " + b.u : ""}`; }
+        h += `<div class="bd${on ? "" : " off"}"><div class="ic" style="background:linear-gradient(135deg,${c1},${c2})">${svgI(b.ic)}</div><b>${esc(b.n)}</b><span class="tiny">${esc(on ? b.d : sub)}</span></div>`;
+      });
+      h += `</div>`;
+    });
+    body.innerHTML = h;
+  }
+
+  /* ---------- 1.6 · personal home ---------- */
+  function nextBadge() {
+    const have = store.get(BADGES, {});
+    let best = null;
+    BADGE_LIST.forEach((b) => { if (have[b.id] || !b.p) return; const [c, g] = b.p(); const r = Math.min(1, c / g); if (!best || r > best.r) best = { b, c, g, r }; });
+    return best;
+  }
+  function remSummary() {
+    const r = settings.rem; if (!r || !r.on) return null;
+    const dn = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], ds = (r.days || []).slice().sort();
+    const days = ds.length === 7 ? "Every day" : ds.join() === "1,2,3,4,5" ? "Mon–Fri" : ds.map((d) => dn[d - 1]).join(", ");
+    const via = [r.win && DESK ? "Windows" : null, r.dc ? "Discord" : null, r.push ? "this device" : null].filter(Boolean).join(" and ");
+    return { time: r.time || "18:00", days, via };
+  }
+  function buildHomeMe() {
+    const me = $("home-me"), on = signedIn();
+    me.hidden = !on; $("hero").hidden = on;
+    if (!on) return;
+    const now = new Date(), h = now.getHours();
+    const part = h < 5 ? "Late night" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    $("me-date").textContent = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+    $("me-hi").textContent = `${part}, ${account.name || "player"}.`;
+    const s = streak(), t = trainedToday();
+    $("me-sub").textContent = t ? (s > 1 ? `Day ${s} done. See you tomorrow.` : "Done for today. See you tomorrow.") : s > 0 ? `Day ${s + 1} is waiting. One routine keeps it alive.` : "Day 1 starts with one routine.";
+    // today
+    const l = S.goal && length(S.goal, S.len), last = store.get("rl.last", null);
+    const lastOk = last && goal(last.goal) && length(last.goal, last.len) && !lengthLocked(goal(last.goal), length(last.goal, last.len));
+    let tc;
+    if (S.active && l) tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">In progress · Set ${S.b + 1} of ${list().length}</span><b>${esc(goal(S.goal).name)} · ${esc(l.name)}</b><span class="small">${esc(cur().name || "")}</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><a class="pill big" href="#training">Continue</a></div></div>`;
+    else if (lastOk) { const lg = length(last.goal, last.len); tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">Your usual${t ? " · done today" : ""}</span><b>${esc(goal(last.goal).name)} · ${esc(lg.name)}</b><span class="small">${lg.sets.length} sets · ${fmtMin(totalMin(lg.sets) || 0)}</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><button class="pill big" type="button" id="me-again">${t ? "Train again" : "Start again"}</button><a class="pill big out" href="#goal">Pick another</a></div></div>`; }
+    else tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">Today</span><b>Pick your routine</b><span class="small">Cup warm-up, a full day or a quick aim session.</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><a class="pill big" href="#goal">Start routine</a></div></div>`;
+    $("me-today").innerHTML = tc;
+    const again = $("me-again");
+    if (again) again.addEventListener("click", () => { if (S.goal !== last.goal || S.len !== last.len) { S.goal = last.goal; S.len = last.len; resetRun(); } save(); go("plan"); });
+    // cards
+    const wk = weekStart(now), goalN = settings.weekGoal || 5; let wd = 0; const marks = [];
+    for (let i = 0; i < 7; i++) { const d = dShift(wk, i), k = today(d), on2 = store.get(DAYS, []).indexOf(k) >= 0; if (on2) wd++; marks.push(`<i class="${on2 ? "on" : ""}"></i>`); }
+    const circ = 2 * Math.PI * 30, frac = Math.min(1, wd / goalN);
+    const nb = nextBadge(), rm = remSummary(), fz = settings.freezes || 0;
+    const rank = store.get("rl.rank", null);
+    $("me-cards").innerHTML = `
+      <a class="c-card" href="#stats"><span class="tiny">This week</span><div style="display:flex;align-items:center;gap:16px"><svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="${wd} of ${goalN} training days this week"><circle cx="36" cy="36" r="30" fill="none" stroke="#333336" stroke-width="8"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="#38e0ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(circ * frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 36 36)"></circle></svg><div><span class="big-n">${wd}<small> / ${goalN} days</small></span><br><span class="tiny">Stats ›</span></div></div><div class="wk" aria-hidden="true">${marks.join("")}</div></a>
+      <a class="c-card" href="#badges"><span class="tiny">Streak</span><span class="big-n">${s}<small> day${s === 1 ? "" : "s"}</small></span><span class="frz">${svgI("snow", ' style="stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round"')}${fz} streak freeze${fz === 1 ? "" : "s"} ready</span><span class="tiny">Best: ${bestStreak()} days</span></a>
+      <a class="c-card" href="#board" id="me-rank"><span class="tiny">Weekly leaderboard</span><span class="big-n">${rank && rank.rank ? "#" + rank.rank + `<small> of ${rank.total}</small>` : "–"}</span><span class="tiny">${rank && rank.note ? esc(rank.note) : "Train to climb"}</span></a>
+      ${nb ? `<a class="c-card wide" href="#badges" style="display:flex;align-items:center;gap:18px"><div class="bd" style="padding:0;background:none"><div class="ic" style="width:60px;height:60px;background:linear-gradient(135deg,${nb.b.c})">${svgI(nb.b.ic)}</div></div><div style="flex:1;display:grid;gap:8px;min-width:0"><span class="tiny">Next badge</span><b style="font-size:19px">${esc(nb.b.n)}</b><div class="meter"><i style="width:${Math.round(nb.r * 100)}%"></i></div><span class="tiny">${Math.min(nb.c, nb.g)} / ${nb.g}${nb.b.u ? " " + nb.b.u : ""} · ${esc(nb.b.d)}</span></div></a>` : `<a class="c-card wide" href="#badges"><span class="tiny">Badges</span><b style="font-size:19px">All training badges earned.</b></a>`}
+      <div class="c-card"><span class="tiny">Reminder</span>${rm ? `<b style="font-size:19px">${esc(rm.time)} · ${esc(rm.days)}</b><span class="tiny">${esc(rm.via || "Turn on a way to get it")}</span>` : `<b style="font-size:19px">No reminder yet</b><span class="tiny">Get a nudge on Windows or Discord.</span>`}<button class="pill sm out" type="button" id="me-rem" style="justify-self:start">${rm ? "Change" : "Set a reminder"}</button></div>`;
+    $("me-rem").addEventListener("click", () => { drawerTab = "settings"; openDrawer(); setTimeout(() => { const r = $("rem-sec"); if (r) r.scrollIntoView({ block: "start" }); }, 60); });
+    loadMyRank();
+  }
+  let rankT = 0;
+  async function loadMyRank() {
+    if (Date.now() - rankT < 60000) return;
+    rankT = Date.now();
+    let info = null;
+    if (sb && cloudUser) {
+      const { data } = await sb.rpc("leaderboard", { period: "week", friends_only: false });
+      const me = (data || []).find((r) => r.is_me);
+      info = me ? { rank: me.rank, total: me.total, note: `${me.points} points this week` } : { note: account && account.isDev ? "Dev accounts aren't ranked" : "You join 7 days after sign-up" };
+    } else info = { rank: 14, total: 312, note: "Demo numbers" };
+    store.set("rl.rank", info);
+    const el = $("me-rank");
+    if (el && view === "home") el.innerHTML = `<span class="tiny">Weekly leaderboard</span><span class="big-n">${info.rank ? "#" + info.rank + `<small> of ${info.total}</small>` : "–"}</span><span class="tiny">${esc(info.note || "")}</span>`;
+  }
+
+  /* ---------- 1.6 · reminder settings ---------- */
+  const REM_DEF = { on: false, time: "18:00", days: [1, 2, 3, 4, 5], skip: true, danger: true, win: true, dc: false, push: false };
+  const remGet = () => Object.assign({}, REM_DEF, settings.rem || {});
+  function remFromRow(r) { return { on: r.enabled, time: String(r.at_time || "18:00").slice(0, 5), days: r.days || [1, 2, 3, 4, 5], skip: r.skip_if_trained, danger: r.danger, win: (settings.rem || REM_DEF).win !== false, dc: r.via_discord, push: r.via_push }; }
+  let remT = 0;
+  function saveRem(patch) {
+    settings.rem = Object.assign(remGet(), patch); saveSettings(); syncDeskReminder();
+    clearTimeout(remT);
+    remT = setTimeout(() => {
+      if (!sb || !cloudUser) return;
+      const r = settings.rem;
+      let tz = "Europe/Berlin"; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (e) {}
+      sb.from("reminders").upsert({ user_id: cloudUser.id, enabled: !!r.on, at_time: r.time, days: r.days, tz, skip_if_trained: !!r.skip, danger: !!r.danger, via_discord: !!r.dc, via_push: !!r.push, updated_at: new Date().toISOString() }).then(() => {});
+    }, 600);
+  }
+  function syncDeskReminder() {
+    if (!(DESK && DESK.reminder)) return;
+    const last = store.get("rl.last", null), lg = last && goal(last.goal) && length(last.goal, last.len);
+    try { DESK.reminder.set(Object.assign(remGet(), { trained: trainedToday(), streak: streak(), freezes: settings.freezes || 0, usual: lg ? `${goal(last.goal).name} · ${lg.name}` : "" })); } catch (e) {}
+  }
+  function remHTML() {
+    const r = remGet(), dn = ["M", "T", "W", "T", "F", "S", "S"];
+    const canPush = !DESK && "serviceWorker" in navigator && "PushManager" in window;
+    return `<section class="dr-sec" id="rem-sec"><h3>Reminder</h3><div class="group">
+      ${sw("rem-on", "Training reminder", r.on)}
+      <div class="row"><label for="rem-time">Time</label><input type="time" id="rem-time" value="${esc(r.time)}" class="in" style="flex:0 0 auto;width:auto;height:36px"></div>
+      <div class="row stack"><span>Days</span><span class="days-pick" role="group" aria-label="Days">${dn.map((d, i) => `<button type="button" data-rd="${i + 1}" aria-pressed="${r.days.indexOf(i + 1) >= 0}" aria-label="${["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i]}">${d}</button>`).join("")}</span></div>
+      ${sw("rem-skip", "Skip if I already trained today", r.skip)}
+      ${sw("rem-danger", "Streak in danger at 21:00", r.danger)}
+    </div><h3 style="margin-top:16px">Send it to</h3><div class="group">
+      ${DESK ? sw("rem-win", "Windows notification (while Repline is open)", r.win) : ""}
+      ${sw("rem-dc", "Discord DM from the Repline bot", r.dc)}
+      ${canPush ? sw("rem-push", "This browser or iPhone", r.push) : ""}
+    </div><p class="dr-foot">Discord: you need to be on the Repline server so the bot can message you.${canPush ? " iPhone: add Repline to your Home Screen first." : ""}</p></section>`;
+  }
+  function bindRem() {
+    const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+    on("rem-on", "change", (e) => { saveRem({ on: e.target.checked }); toast(e.target.checked ? "Reminder on" : "Reminder off"); });
+    on("rem-time", "change", (e) => { if (/^\d\d:\d\d$/.test(e.target.value)) saveRem({ time: e.target.value }); });
+    document.querySelectorAll("[data-rd]").forEach((b) => b.addEventListener("click", () => {
+      const d = +b.dataset.rd, days = remGet().days.slice(), i = days.indexOf(d);
+      if (i >= 0) days.splice(i, 1); else days.push(d);
+      saveRem({ days: days.sort() }); b.setAttribute("aria-pressed", i < 0);
+    }));
+    on("rem-skip", "change", (e) => saveRem({ skip: e.target.checked }));
+    on("rem-danger", "change", (e) => saveRem({ danger: e.target.checked }));
+    on("rem-win", "change", (e) => saveRem({ win: e.target.checked }));
+    on("rem-dc", "change", (e) => { saveRem({ dc: e.target.checked }); if (e.target.checked) toast(SITE.discordUrl ? "Join the Repline Discord so the bot can message you" : "Discord reminders on"); });
+    on("rem-push", "change", async (e) => {
+      if (!e.target.checked) { saveRem({ push: false }); return; }
+      const ok = await pushSubscribe();
+      if (!ok) { e.target.checked = false; return; }
+      saveRem({ push: true });
+    });
+  }
+  async function pushSubscribe() {
+    try {
+      if (!VAPID_PUBLIC) { toast("Browser reminders aren't ready yet."); return false; }
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") { toast("Allow notifications for Repline in your browser first."); return false; }
+      const reg = await navigator.serviceWorker.ready;
+      const key = Uint8Array.from(atob(VAPID_PUBLIC.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((VAPID_PUBLIC.length + 3) % 4)), (c) => c.charCodeAt(0));
+      const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }));
+      if (sb && cloudUser) await sb.from("reminders").upsert({ user_id: cloudUser.id, push_sub: sub.toJSON(), via_push: true, updated_at: new Date().toISOString() });
+      toast("Reminders on this device are on");
+      return true;
+    } catch (e) { toast("This browser can't show reminders."); return false; }
+  }
+
+  /* ---------- 1.6 · dev tools: gift a plan ---------- */
+  function devHTML() {
+    return `<section class="dr-sec"><h3>Dev · gift a plan</h3><div class="group" style="padding:14px;display:grid;gap:10px">
+      <label class="tiny" for="gf-name">Discord name</label><input class="in" id="gf-name" type="text" placeholder="e.g. kxvin" autocomplete="off" spellcheck="false">
+      <div style="display:flex;gap:10px"><select class="in" id="gf-plan" aria-label="Plan"><option value="standard">Standard</option><option value="pro">Pro</option></select>
+      <select class="in" id="gf-months" aria-label="How long"><option value="1">1 month</option><option value="2">2 months</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></div>
+      <label class="tiny" for="gf-note">Message (optional)</label><input class="in" id="gf-note" type="text" maxlength="140" placeholder="Thanks for the idea with the duo mode!">
+      <button class="pill" type="button" id="gf-send" style="justify-self:start">Gift plan</button></div>
+      <p class="dr-foot">They see it with a message the next time they open Repline. It adds to any plan they already have.</p></section>`;
+  }
+  function bindDev() {
+    const b = $("gf-send"); if (!b) return;
+    b.addEventListener("click", async () => {
+      const name = $("gf-name").value.trim(), plan = $("gf-plan").value, months = +$("gf-months").value, note = $("gf-note").value.trim();
+      if (!name) { toast("Enter their Discord name"); return; }
+      if (!(sb && cloudUser)) { toast(`Gift sent (demo): ${planWord(plan)} · ${monthsWord(months)}`); return; }
+      b.disabled = true;
+      const { data, error } = await sb.rpc("dev_gift", { discord_name: name, gift_plan: plan, months, note: note || null });
+      b.disabled = false;
+      if (error) { toast(/not_found/.test(error.message || "") ? "No Repline player with that Discord name" : /not_dev/.test(error.message || "") ? "Only dev accounts can gift plans" : "Couldn't send the gift"); return; }
+      toast(`${planWord(plan)} for ${monthsWord(months)} gifted to ${data && data.username || name}`);
+      $("gf-name").value = ""; $("gf-note").value = "";
+    });
+  }
+
   /* ---------- Resume bar ---------- */
   function updateResume() {
     const bar = $("resume-bar"), l = S.goal && length(S.goal, S.len);
@@ -2152,7 +2942,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -2163,6 +2953,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function go(name) { if (("#" + name) === location.hash || (!name && !location.hash)) route(); else location.hash = name ? name : ""; }
   function route() {
     let name = location.hash.replace("#", "");
+    let importCode = null;
+    if (/^import=/.test(name)) { importCode = decodeURIComponent(name.slice(7)); name = "goal"; }
     const asked = name;
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
@@ -2183,6 +2975,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "goal") buildPick();
     if (id === "plans") buildPlans();
     if (id === "builder") buildBuilder();
+    if (id === "board") buildBoard();
+    if (id === "stats") buildStats();
+    if (id === "badges") buildBadges();
+    if (id === "friends") buildFriends();
+    if (importCode) setTimeout(() => openImport(importCode), 300);
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
     if (id === "training") buildTraining();
@@ -2192,6 +2989,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     updateResume();
   }
   addEventListener("hashchange", route);
+  function pushRpc() { if (DESK && DESK.rpc) { try { DESK.rpc.set({ on: settings.rpc !== false, name: settings.rpcName !== false }); } catch (e) {} } }
+  pushRpc();
+  if (signedIn() && !sb) { applyFreezes(); checkBadges(true); }
+  syncDeskReminder(); setInterval(syncDeskReminder, 5 * 60 * 1000);
   ensureLoop();
   route();
   updateResume();

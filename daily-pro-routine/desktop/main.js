@@ -1,5 +1,5 @@
 // Repline for Windows: the main app window plus an optional in-game overlay.
-const { app, BrowserWindow, shell, Menu, ipcMain, screen, globalShortcut } = require("electron");
+const { app, BrowserWindow, shell, Menu, ipcMain, screen, globalShortcut, Notification } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
@@ -169,7 +169,7 @@ function setMoving(on) {
 }
 
 /* ---------- Hotkeys that work while the game is in front ---------- */
-const HOTKEYS = { "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay" };
+const HOTKEYS = { "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay", "CommandOrControl+Shift+E": "end" };
 function registerHotkeys() {
   globalShortcut.unregisterAll();
   if (!overlaySettings.hotkeys) return;
@@ -177,6 +177,7 @@ function registerHotkeys() {
     try {
       globalShortcut.register(accel, () => {
         if (name === "overlay") { overlaySettings.enabled = !overlaySettings.enabled; saveSettings(); updateOverlayVisibility(); if (win) win.webContents.send("overlay:settings", overlaySettings); return; }
+        if (name === "end" && win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
         if (win) win.webContents.send("hotkey", name);
       });
     } catch (e) {}
@@ -246,18 +247,91 @@ ipcMain.on("overlay:state", (_e, state) => {
   lastState = state && typeof state === "object" ? state : { active: false };
   sendOverlay();
   updateOverlayVisibility();
+  updateRpc();
 });
+
+/* ---------- Discord status ("Playing Repline") ----------
+   Talks to the Discord app on this PC. Shows the running set while a routine is active, nothing otherwise. */
+const DISCORD_APP_ID = "1570194691465420870";
+let rpc = null, rpcReady = false, rpcConnecting = false, rpcRetry = 0, rpcKey = "", rpcSentAt = 0, rpcTimer = 0;
+let rpcSettings = { on: true, name: true };
+function rpcConnect() {
+  if (rpcReady || rpcConnecting || Date.now() < rpcRetry) return;
+  let Client; try { ({ Client } = require("@xhayper/discord-rpc")); } catch (e) { return; }
+  rpcConnecting = true;
+  rpc = new Client({ clientId: DISCORD_APP_ID, transport: { type: "ipc" } });
+  rpc.on("ready", () => { rpcReady = true; rpcConnecting = false; rpcKey = ""; updateRpc(); });
+  rpc.on("disconnected", () => { rpcReady = false; rpcRetry = Date.now() + 60000; });
+  rpc.login().catch(() => { rpcConnecting = false; rpcReady = false; rpcRetry = Date.now() + 60000; });
+}
+function rpcActivity(s) {
+  if (!rpcSettings.on || !s || !s.active) return null;
+  const pos = `Set ${s.idx + 1} of ${s.count}${rpcSettings.name && s.routine ? " · " + s.routine : ""}`;
+  const a = { largeImageKey: "https://repline.pages.dev/icons/icon-512.png", largeImageText: "Repline · Daily Pro Routine", buttons: [{ label: "Get Repline", url: "https://repline.pages.dev" }], instance: false };
+  if (s.status === "wechsel") return Object.assign(a, { details: `Getting ready · next: ${s.name}`, state: pos, endTimestamp: s.switchEnd ? new Date(s.switchEnd) : undefined });
+  if (s.status === "pause") return Object.assign(a, { details: `Paused · ${s.name}`, state: pos });
+  if (s.status === "fertig") return Object.assign(a, { details: s.next ? "Set done" : "Routine done", state: pos });
+  if (s.status === "laeuft") {
+    const now = Date.now(), e = s.elapsed + (now - s.at);
+    if (s.kind === "timer" && s.total) return Object.assign(a, { details: s.name, state: pos, endTimestamp: new Date(now + Math.max(0, s.total - e)) });
+    return Object.assign(a, { details: s.name, state: pos, startTimestamp: new Date(now - e) });
+  }
+  return Object.assign(a, { details: s.name, state: `Ready · ${pos}` });
+}
+function updateRpc() {
+  const act = rpcActivity(lastState);
+  if (!act && !rpcReady) return;
+  if (act) rpcConnect();
+  if (!rpcReady) return;
+  const key = act ? [act.details, act.state, lastState.status, lastState.idx, lastState.switchEnd || "", Math.round((lastState.elapsed || 0) / 30000)].join("|") : "none";
+  if (key === rpcKey) return;
+  const wait = 15000 - (Date.now() - rpcSentAt);   // Discord allows about 5 updates per 20 seconds
+  clearTimeout(rpcTimer);
+  if (wait > 0) { rpcTimer = setTimeout(updateRpc, wait); return; }
+  rpcKey = key; rpcSentAt = Date.now();
+  const p = act ? rpc.user && rpc.user.setActivity(act) : rpc.user && rpc.user.clearActivity();
+  if (p && p.catch) p.catch(() => {});
+}
+ipcMain.on("rpc:set", (_e, v) => { rpcSettings = { on: !(v && v.on === false), name: !(v && v.name === false) }; rpcKey = ""; updateRpc(); });
+
+/* ---------- Training reminder as a Windows notification (while Repline is open) ---------- */
+let remCfg = null, remFile = null, remSent = { day: "", danger: "" };
+function remLoad() { remFile = path.join(app.getPath("userData"), "reminder.json"); try { remSent = Object.assign(remSent, JSON.parse(fs.readFileSync(remFile, "utf8"))); } catch (e) {} }
+function remSave() { try { fs.writeFileSync(remFile, JSON.stringify(remSent)); } catch (e) {} }
+function notify(title, body) {
+  if (!Notification.isSupported()) return;
+  const n = new Notification({ title, body, icon: path.join(__dirname, "app", "icons", "icon-window-256.png"), silent: false });
+  n.on("click", () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); } });
+  n.show();
+}
+function remTick() {
+  const r = remCfg; if (!r || !r.on || r.win === false) return;
+  const d = new Date(), p2 = (n) => String(n).padStart(2, "0");
+  const day = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`, dow = ((d.getDay() + 6) % 7) + 1, mins = d.getHours() * 60 + d.getMinutes();
+  const [hh, mm] = String(r.time || "18:00").split(":").map(Number), at = hh * 60 + (mm || 0);
+  if ((r.days || []).indexOf(dow) >= 0 && mins >= at && mins < at + 180 && remSent.day !== day) {
+    remSent.day = day; remSave();
+    if (!(r.skip && r.trained)) notify("Time for your routine", r.streak > 0 ? `Day ${r.streak + 1} is waiting.${r.usual ? " Your usual: " + r.usual + "." : ""}` : `Day 1 starts with one routine.${r.usual ? " Your usual: " + r.usual + "." : ""}`);
+  }
+  if (r.danger && mins >= 21 * 60 && mins < 23 * 60 + 30 && remSent.danger !== day) {
+    remSent.danger = day; remSave();
+    if (!r.trained && r.streak > 0 && !(r.freezes > 0)) notify("Your streak is in danger", `Your ${r.streak}-day streak ends at midnight. One routine keeps it alive.`);
+  }
+}
+ipcMain.on("reminder:set", (_e, v) => { remCfg = v && typeof v === "object" ? v : null; remTick(); });
 
 /* ---------- App ---------- */
 app.on("second-instance", () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
   loadSettings();
+  app.setAppUserModelId("gg.repline.app");
+  remLoad(); setInterval(remTick, 30000);
   try { setupUpdates(); } catch (e) { ulog("update setup failed", e); }
   createMain();
   try { if (overlaySettings.enabled) createOverlay(); } catch (e) { ulog("overlay failed", e); }
   try { registerHotkeys(); } catch (e) {}
   screen.on("display-metrics-changed", applyOverlayLook);
 });
-app.on("will-quit", () => globalShortcut.unregisterAll());
+app.on("will-quit", () => { globalShortcut.unregisterAll(); try { if (rpc && rpcReady) rpc.destroy(); } catch (e) {} });
 app.on("window-all-closed", () => app.quit());

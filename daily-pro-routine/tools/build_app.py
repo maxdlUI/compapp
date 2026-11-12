@@ -106,6 +106,15 @@ self.addEventListener("fetch", (e) => {{
   }}
   e.respondWith(caches.match(r).then((hit) => hit || fetch(r)));
 }});
+// Training reminders sent by the "remind" edge function
+self.addEventListener("push", (e) => {{
+  let d = {{}}; try {{ d = e.data ? e.data.json() : {{}}; }} catch (x) {{}}
+  e.waitUntil(self.registration.showNotification(d.title || "Repline", {{ body: d.body || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png", tag: "repline-reminder", data: {{ url: d.url || "./" }} }}));
+}});
+self.addEventListener("notificationclick", (e) => {{
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({{ type: "window", includeUncontrolled: true }}).then((ws) => {{ for (const w of ws) if ("focus" in w) return w.focus(); return self.clients.openWindow((e.notification.data && e.notification.data.url) || "./"); }}));
+}});
 """
 open(os.path.join(APP, "sw.js"), "w", encoding="utf-8").write(sw)
 

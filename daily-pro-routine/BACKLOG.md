@@ -163,7 +163,15 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
   4. Die vorletzte Version aus dem Bucket löschen.
   5. In #download posten und @App updates pingen.
 
-## Beim nächsten gemeinsamen Update
+## v1.6 (erledigt am 12.11.2026)
+
+- Persönlicher Startbildschirm, Bestenlisten (Woche/Monat/Streaks, „Friends only“), Freunde über den Discord-Namen, Einladungsbelohnung (3 Freunde → 1 Monat Standard), Statistik, 18 Abzeichen, Streak-Freezes, Routinen teilen per Code (`RPL-XXXX-XXXX`, Link `#import=CODE`), Erinnerungen, Discord-Status in der Windows-App, „End routine“ (Knopf, Resume-Leiste, Ctrl+Shift+E), Geschenke von Dev-Konten, Raider's 1v1 Build Fights (1832-0431-4852).
+- Datenbank: `supabase/003_v16_social.sql` und `004_gifts_reminders.sql`. Edge Function `remind` (alle 5 Minuten per pg_cron; Discord-DM und Web-Push).
+- Secrets in Supabase: `DISCORD_BOT_TOKEN`, `VAPID_PUBLIC`, `VAPID_PRIVATE`. Der VAPID-Public-Key steht auch in `index.html`.
+- Die GitHub-Automatik ist gelöscht.
+- **Offen:** wöchentliche Shout-outs und die goldene Discord-Rolle für die Top 3 (noch von Hand); Teilnahmebedingungen für die Preise; Pro-Routinen-Inhalte; Stripe; Domain.
+
+## Erledigt aus „Beim nächsten gemeinsamen Update“
 
 - `.github/workflows/repline-windows.yml` löschen. Der Nutzer will kein GitHub, gebaut wird jetzt lokal mit electron-builder und Wine.
 - **Routine beenden (abbrechen, nicht abschließen):**
