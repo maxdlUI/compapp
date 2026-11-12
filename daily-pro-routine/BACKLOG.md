@@ -97,7 +97,16 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - **Discord:** Sobald der Einladungslink steht, `SITE.discordUrl` setzen. Dann werden alle Discord-Knöpfe automatisch aktiv.
 - **Custom Sound:** Der Preis für den Einmalkauf ist noch offen.
 
-## Nächstes Update (v1.4): Pause zwischen Sets, Konto-Pflicht, angemeldet bleiben
+## v1.4 (erledigt): Pause zwischen Sets, Konto-Pflicht, angemeldet bleiben
+
+> **Umgesetzt am 12.11.2026:**
+> - Umstellzeit mit „Get ready“-Countdown (Off/15/30/45/60 s, Standard 30 s), „Start now“, „+15“ (auch per R), auch im Overlay. Die Dev-Test-Routine nutzt 3 s.
+> - Ohne Konto nur ansehen: „Sign in to start“ führt direkt zu Discord und danach zurück zum Plan. Baukasten und Einstellungen gibt es nur angemeldet.
+> - Angemeldet bleiben: Fehlt beim Öffnen das Netz, bleibt man angemeldet und die Sitzung wird erneuert, sobald man wieder online ist. Beim Abmelden wird eine laufende Routine pausiert.
+> - Download-Button vorbereitet. Er zeigt „coming soon“, bis `SITE.download` gesetzt ist; dafür muss R2 aktiviert sein.
+> - Noch zu prüfen, mit echtem Discord-Konto: Browser schließen und wieder öffnen; nach mehr als einer Stunde neu laden.
+
+### Ursprüngliche Beschreibung
 
 ### Umstellzeit zwischen den Sets
 - Nach jedem Set nicht direkt ins nächste springen, sondern eine kurze **Umstellpause** einlegen, damit man die nächste Map oder App (z. B. KovaaK's) öffnen kann.
@@ -129,3 +138,8 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
   - Safari/iPhone löscht Website-Daten nach 7 Tagen ohne Besuch. Als installierte Home-Screen-App (PWA) passiert das nicht, das im FAQ erwähnen.
   - Die Windows-App bleibt über ihren eigenen Speicher angemeldet. Das nach einem Neustart des Programms testen.
   - Mit Playwright testen: anmelden, Browser schließen und wieder öffnen, die Seite nach mehr als einer Stunde (abgelaufener Token) neu laden. Man muss angemeldet bleiben.
+
+## Offen: Installer, Auto-Update und Download
+
+- **Blockiert durch R2:** In Cloudflare ist R2 noch nicht aktiviert (API-Antwort: „Please enable R2 through the Cloudflare Dashboard“). Der Nutzer muss R2 aktivieren und dem Token „Workers R2 Storage · Edit“ geben.
+- **Danach:** NSIS-Installer mit electron-builder (ohne Signatur), electron-updater mit generic provider auf die R2-URL, `latest.yml`, Release-Notes und `SITE.download = { url, version, size }`.

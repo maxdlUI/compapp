@@ -253,6 +253,16 @@ footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-conten
 .state { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; letter-spacing: -0.224px; color: var(--ash); }
 .state i { width: 8px; height: 8px; border-radius: 50%; background: var(--slate); }
 .stage[data-status="laeuft"] .state i { background: var(--c1); box-shadow: 0 0 10px var(--c1); }
+.stage[data-status="wechsel"] .state i { background: #ffd60a; box-shadow: 0 0 10px #ffd60a; }
+html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-out infinite; }
+.stage[data-status="wechsel"] .dial-mid .t { color: #ffd60a; }
+.unlock-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
+.unlock-list li { display: flex; gap: 10px; align-items: center; color: var(--porcelain); font-size: 15px; }
+.unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
+.dl-meta { display: block; margin-top: 10px; }
+.row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.row.stack .seg { display: flex; }
+.row.stack .seg button { flex: 1; }
 html.anim .stage[data-status="laeuft"] .state i { animation: blink 1.6s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .35; } }
 .stage.flash::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 3px var(--c1); animation: flash 1.2s var(--ease) forwards; pointer-events: none; }
@@ -624,6 +634,7 @@ html.no-scroll { overflow: hidden; }
 </svg>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M19.3 5.3A16.7 16.7 0 0 0 15.2 4l-.5 1a15.5 15.5 0 0 0-5.4 0l-.5-1a16.6 16.6 0 0 0-4.1 1.3C2.1 9.2 1.4 13 1.7 16.7a16.8 16.8 0 0 0 5.1 2.6l1.1-1.8a10.8 10.8 0 0 1-1.7-.8l.4-.3a11.9 11.9 0 0 0 10.8 0l.4.3a10.8 10.8 0 0 1-1.7.8l1.1 1.8a16.8 16.8 0 0 0 5.1-2.6c.4-4.3-.7-8-3-11.4zM8.7 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></symbol>
+  <symbol id="i-windows" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5.2l7.4-1v7.2H3zm8.4-1.2L21 2.7v8.7h-9.6zM3 12.5h7.4v7.3L3 18.8zm8.4 0H21v8.8l-9.6-1.4z"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></symbol>
 </svg>
 
@@ -681,7 +692,7 @@ html.no-scroll { overflow: hidden; }
         <h2 id="h-ov" class="d-l rv d1">Your routine.<br>Over your game.</h2>
         <p class="lead rv d2">An in-game overlay shows your set, time left and a finish alert. Hotkeys start, pause and skip without leaving the game.</p>
         <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li></ul>
-        <button class="pill out rv d4" type="button" disabled>Windows app · coming soon</button>
+        <span class="rv d4" data-download="lg"></span>
       </div>
       <figure class="ovt-stage rv d1"><div class="slot"><div class="ov" id="tz"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="tz-ring" aria-hidden="true"></svg><b id="tz-pos">2<small>/4</small></b></div><div class="meta"><span class="chip" id="tz-chip"><i></i>Mechanics</span><span class="name" id="tz-name">Freebuild · 110–120%</span><span class="next" id="tz-next">Next · Freebuild · 90%</span></div><div class="time"><b id="tz-clock">0:03</b><span id="tz-sub">left</span></div><div class="bar" id="tz-bar"></div></div><div class="fx" id="tz-fx"></div></div></div><figcaption class="tiny" id="tz-cap">Finish animation: Wave</figcaption></figure>
     </div>
@@ -715,9 +726,11 @@ html.no-scroll { overflow: hidden; }
     <div class="qa rv d1">
       <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order, built from how pros practise. Every set has one focus.</p></details>
       <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
-      <details><summary>Do I need an account?<i></i></summary><p>No. An account adds your referral link and keeps your settings in one place.</p></details>
+      <details><summary>Do I need an account?<i></i></summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
+      <details><summary>Do I stay signed in?<i></i></summary><p>Yes, on this device until you sign out. On iPhone, add Repline to your Home Screen: Safari clears website data after 7 days without a visit.</p></details>
+      <details><summary>Why is there a pause between sets?<i></i></summary><p>Time to open the next map. 30 seconds by default, the set then starts on its own. Change it in Settings.</p></details>
       <details><summary>Where does today's focus come from?<i></i></summary><p>From your last replay review. Focus drills and ranked games use it.</p></details>
-      <details><summary>Which keys can I use?<i></i></summary><p>Space start/pause · R restart · N next · F full screen.</p></details>
+      <details><summary>Which keys can I use?<i></i></summary><p>Space start/pause · R restart (+15 s while you switch) · N next · F full screen.</p></details>
     </div>
   </section>
 </main>
@@ -881,7 +894,7 @@ html.no-scroll { overflow: hidden; }
 </a>
 
 <footer>
-  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span id="ft-legal"></span></span></div>
+  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span data-download="text"></span> · <span id="ft-legal"></span></span></div>
 </footer>
 
 <!-- Account drawer -->
@@ -903,6 +916,7 @@ const SITE = {
   url: "https://repline.gg",
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: null,          // Discord invite link; null shows "Join Discord · soon"
+  download: null,            // Windows app: { url, version, size } — null shows "Windows app · coming soon"
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1013,7 +1027,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Settings ---------- */
   const SET = "rl.settings";
-  const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave" }, store.get(SET, {}));
+  const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave", switchSec: 30 }, store.get(SET, {}));
   const CUSTOM = "rl.customSound";
   const saveSettings = () => { store.set(SET, settings); cloudPush(); };
   let testOn = false; // set from the account: only dev accounts see the test routine
@@ -1159,17 +1173,18 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       c.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-up"/></svg><span style="display:grid;gap:10px"><span class="gt">${esc(r.name || "My routine")}</span><span class="gd">${bl.length} sets · ${fmtMin(t || 0)}</span><span class="my-card-acts"><button class="pill sm" type="button" data-my-start="${esc(r.id)}" ${bl.length ? "" : "disabled"}>Start</button><button class="pill sm out" type="button" data-my-edit="${esc(r.id)}">Edit</button></span></span>`;
       box.appendChild(c);
     });
-    const full = rs.length >= lim;
+    const full = signedIn() && rs.length >= lim;
     const n = document.createElement("button");
     n.type = "button"; n.className = "new-card";
     if (full) n.setAttribute("aria-disabled", "true");
     n.innerHTML = full
       ? `<span class="plus">+</span><b>New routine</b><span class="small">${planId() === "free" ? "Standard gives you 2, Pro unlimited." : "Pro gives you unlimited routines."}</span><span class="pill sm out">See plans</span>`
-      : `<span class="plus">+</span><b>New routine</b><span class="small">Build it from sets and set every time.</span>`;
-    n.addEventListener("click", () => { if (full) { go("plans"); return; } draft = { id: null, name: "", sets: [] }; go("builder"); });
+      : signedIn() ? `<span class="plus">+</span><b>New routine</b><span class="small">Build it from sets and set every time.</span>`
+      : `<span class="plus">+</span><b>New routine</b><span class="small">Sign in with Discord to build your own.</span><span class="pill sm out">Sign in</span>`;
+    n.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } if (full) { go("plans"); return; } draft = { id: null, name: "", sets: [] }; go("builder"); });
     box.appendChild(n);
-    box.querySelectorAll("[data-my-start]").forEach((b) => b.addEventListener("click", () => { const gid = "my-" + b.dataset.myStart; if (S.goal !== gid) { S.goal = gid; S.len = "custom"; resetRun(); } S.len = "custom"; save(); go("plan"); }));
-    box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) }; go("builder"); }));
+    box.querySelectorAll("[data-my-start]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const gid = "my-" + b.dataset.myStart; if (S.goal !== gid) { S.goal = gid; S.len = "custom"; resetRun(); } S.len = "custom"; save(); go("plan"); }));
+    box.querySelectorAll("[data-my-edit]").forEach((b) => b.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } const r = myRoutines().find((x) => x.id === b.dataset.myEdit); if (!r) return; draft = { id: r.id, name: r.name, sets: (r.sets || []).map((x) => ({ key: x.key, min: x.min })) }; go("builder"); }));
   }
   function buildLen() {
     $("len-goal").textContent = goal(S.goal).name;
@@ -1188,8 +1203,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function startTimes() {
     const bl = list(), t = totalMin(bl), m = /^(\d{1,2}):(\d{2})$/.exec(S.cup || "");
     if (!goal(S.goal).cupTime || t == null || !m) return null;
-    let start = (+m[1]) * 60 + (+m[2]) - t; const out = [];
-    bl.forEach((b) => { const v = ((start % 1440) + 1440) % 1440; out.push(`${two(Math.floor(v / 60))}:${two(v % 60)}`); start += b.min; });
+    const sw = bl.length > 1 ? switchSec() : 0; const out = [];
+    let start = ((+m[1]) * 60 + (+m[2]) - t) * 60 - sw * (bl.length - 1);
+    bl.forEach((b) => { const v = ((Math.floor(start / 60) % 1440) + 1440) % 1440; out.push(`${two(Math.floor(v / 60))}:${two(v % 60)}`); start += b.min * 60 + sw; });
     return out;
   }
   function codesHTML(b) {
@@ -1199,7 +1215,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
     const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.custom ? "goal" : "length"; bk.textContent = z.custom ? "Routines" : "Length";
-    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets`;
+    const swt = switchTotalSec(bl.length);
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
+    $("plan-start").innerHTML = signedIn() ? "Start training" : `<svg aria-hidden="true" style="width:20px;height:20px;margin-right:10px;vertical-align:-4px"><use href="#i-discord"/></svg>Sign in to start`;
     $("plan-bar").innerHTML = bl.map((b) => `<i style="flex:${b.min || 1};background:${tcol(b)}" title="${esc(b.name)}"></i>`).join("");
     $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
     $("cup-time").value = S.cup || "";
@@ -1225,10 +1243,16 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
   }
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
-  $("plan-start").addEventListener("click", () => { S.active = true; save(); go("training"); });
+  $("plan-start").addEventListener("click", () => { if (!signedIn()) { askSignIn("plan"); return; } S.active = true; save(); go("training"); });
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
+  // Time to switch between sets (open the next map). Test routines use 3 s.
+  const SWITCH_OPTS = [0, 15, 30, 45, 60];
+  function switchSec() { const l = S.goal && length(S.goal, S.len); return l && l.auto ? 3 : Math.max(0, +settings.switchSec || 0); }
+  const swLeft = () => Math.max(0, (S.swEnd || 0) - Date.now());
+  function switchTotalSec(n) { return n > 1 ? (n - 1) * switchSec() : 0; }
+  const fmtSwitch = (sec) => sec < 60 ? sec + " s" : Math.floor(sec / 60) + " min" + (sec % 60 ? " " + (sec % 60) + " s" : "");
   function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.live = {}; S.checks = {}; S.active = false; }
   function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
   setSound(settings.sound);
@@ -1335,47 +1359,81 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function render() {
     const b = cur(), st = $("stage"), bl = list(), e = elapsed(), kill = isKill(b);
     st.dataset.status = S.status;
-    $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done" }[S.status];
+    $("st-word").textContent = { bereit: "Ready", laeuft: "Running", pause: "Paused", fertig: "Done", wechsel: "Get ready" }[S.status];
+    const swm = S.status === "wechsel", rb = $("b-restart");
+    if (rb.dataset.mode !== (swm ? "sw" : "rs")) { rb.dataset.mode = swm ? "sw" : "rs"; rb.innerHTML = swm ? '<b style="font-size:15px;font-weight:600">+15</b>' : '<svg><use href="#i-restart"/></svg>'; rb.setAttribute("aria-label", swm ? "15 more seconds (R)" : "Restart set (R)"); }
     const rem = b.min != null ? b.min * 60000 - e : null;
     st.classList.toggle("ending", !kill && rem != null && S.status === "laeuft" && rem <= Math.min(10000, Math.max(3000, b.min * 60000 * 0.34)));
-    if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
+    if (swm) { $("tr-kick").textContent = "Get ready"; $("tr-clock").textContent = clock(swLeft() + 999); $("tr-under").textContent = kill ? "Open the map" : "Starts on its own"; }
+    else if (kill) { $("tr-kick").textContent = "Kill targets"; $("tr-clock").textContent = `${killsDone(S.b)} / ${b.kills.length}`; $("tr-under").textContent = "done"; }
     else if (b.min != null) { const tot = b.min * 60000; $("tr-kick").textContent = S.status === "fertig" ? "Set done" : (b.type === "rest" ? "Break" : "left"); $("tr-clock").textContent = clock(S.status === "fertig" ? 0 : tot - e + 999); $("tr-under").textContent = `${clock(e)} of ${clock(tot)}`; }
     else { $("tr-kick").textContent = "Time in set"; $("tr-clock").textContent = clock(e); $("tr-under").textContent = "Finish when you're done"; }
     const last = S.b === bl.length - 1, main = $("b-main");
-    if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next set";
+    if (swm) main.textContent = kill ? "I'm ready" : "Start now";
+    else if (S.status === "fertig") main.textContent = last ? "Finish routine" : "Next set";
     else if (kill) main.textContent = "Tick all targets";
     else main.textContent = S.status === "laeuft" ? "Pause" : (S.status === "pause" ? "Resume" : "Start");
-    main.disabled = kill && S.status !== "fertig";
-    $("b-restart").disabled = kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
+    main.disabled = kill && S.status !== "fertig" && !swm;
+    rb.disabled = swm ? false : kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
-    document.title = S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
+    document.title = swm ? `Get ready ${$("tr-clock").textContent} · Repline` : S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
     pushOverlay();
   }
   let lastTick = null;
+  // After a set is done: move on to the switch countdown on its own (or finish a test routine).
   function autoNext() {
     const l = length(S.goal, S.len);
-    if (!l || !l.auto) return;
-    const at = S.b;
-    setTimeout(() => { if (S.status === "fertig" && S.b === at && S.active) { nextBlock(); if (S.active && !isKill(cur())) play(); } }, 1800);
+    if (!l) return;
+    const at = S.b, last = S.b >= list().length - 1;
+    if (last ? !l.auto : !switchSec()) return;
+    setTimeout(() => { if (S.status === "fertig" && S.b === at && S.active) nextBlock(); }, 1800);
+  }
+  function beginSwitch() {
+    const n = switchSec();
+    if (!n) return false;
+    S.status = "wechsel"; S.swEnd = Date.now() + n * 1000; lastTick = null;
+    clearInterval(raf); raf = setInterval(loop, 200); keepAwake(true);
+    return true;
+  }
+  function startNow(auto) {
+    const at = auto && S.swEnd ? Math.min(Date.now(), S.swEnd) : Date.now();
+    S.swEnd = null; S.status = "bereit"; lastTick = null;
+    if (isKill(cur())) { clearInterval(raf); save(); render(); pushOverlay(true); return; }
+    play(at);
+  }
+  function addSwitch(sec) { S.swEnd = Math.max(Date.now(), S.swEnd || 0) + sec * 1000; lastTick = null; save(); render(); pushOverlay(true); }
+  function ensureLoop() {
+    clearInterval(raf);
+    if (!signedIn() || !S.active) return;
+    if ((S.status === "laeuft" && S.runAt) || S.status === "wechsel") { raf = setInterval(loop, 200); keepAwake(true); }
   }
   function loop() {
+    if (S.status === "wechsel") {
+      const left = Math.ceil(swLeft() / 1000);
+      if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; tickSound(); }
+      if (left > 3) lastTick = null;
+      if (swLeft() <= 0) { startNow(true); return; }
+      render(); return;
+    }
     if (S.status !== "laeuft") return;
     const b = cur();
     if (b.min != null) { const left = Math.ceil((b.min * 60000 - elapsed()) / 1000); if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; tickSound(); } if (left > 3) lastTick = null; }
     if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
-  function play() { if (isKill(cur()) || S.status === "fertig") return; S.runAt = Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
+  function play(at) { if (isKill(cur()) || S.status === "fertig") return; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
   function pause() { S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
-  function restart() { clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  function restart() { if (S.status === "wechsel") { addSwitch(15); return; } clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   function nextBlock() {
     clearInterval(raf); keepAwake(false);
     S.done[S.b] = true;
     if (S.b >= list().length - 1) { finish(); return; }
-    S.b += 1; S.before = 0; S.status = "bereit"; save(); buildTraining();
+    S.b += 1; S.before = 0; S.runAt = null; S.swEnd = null; S.status = "bereit";
+    beginSwitch();
+    save(); buildTraining(); pushOverlay(true);
     const v = $("v-training"); v.classList.remove("enter-f"); void v.offsetWidth; v.classList.add("enter-f");
   }
-  function mainAction() { if (S.status === "fertig") nextBlock(); else if (S.status === "laeuft") pause(); else play(); }
+  function mainAction() { if (S.status === "wechsel") startNow(false); else if (S.status === "fertig") nextBlock(); else if (S.status === "laeuft") pause(); else play(); }
   let finT = 0;
   function flash() {
     const st = $("stage"), a = settings.alertAnim;
@@ -1405,7 +1463,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   let ovSent = 0;
   function overlayState() {
     const l = S.goal && length(S.goal, S.len);
-    if (!S.active || !l) return { active: false };
+    if (!S.active || !l || !signedIn()) return { active: false };
     const bl = list(), b = cur(), kill = isKill(b);
     return {
       active: true, routine: `${goal(S.goal).name} · ${l.name}`, idx: S.b, count: bl.length,
@@ -1413,7 +1471,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       segs: bl.map((x) => ({ w: x.min || 1, color: tcol(x) })), done: bl.map((_, i) => !!S.done[i]),
       status: S.status, kind: kill ? "kills" : (b.min != null ? "timer" : "watch"),
       kills: kill ? [killsDone(S.b), b.kills.length] : null, total: b.min != null ? b.min * 60000 : null,
-      elapsed: elapsed(), at: Date.now(), sound: !!settings.sound, auto: !!l.auto, alertSound: settings.alertSound, alertAnim: settings.alertAnim
+      elapsed: elapsed(), at: Date.now(), switchEnd: S.status === "wechsel" ? S.swEnd : null, sound: !!settings.sound, auto: !!l.auto, alertSound: settings.alertSound, alertAnim: settings.alertAnim
     };
   }
   function pushOverlay(force) {
@@ -1426,7 +1484,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (DESK) {
     const cs0 = store.get(CUSTOM, null); if (cs0 && cs0.data && DESK.overlay.custom) DESK.overlay.custom(cs0.data);
     DESK.onHotkey((name) => {
-      if (!(S.active && length(S.goal, S.len))) return;
+      if (!(S.active && length(S.goal, S.len) && signedIn())) return;
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
       else if (name === "next") nextBlock();
       else if (name === "restart") restart();
@@ -1492,6 +1550,21 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Account (demo sign-in; swap for Supabase + Discord OAuth later) ---------- */
   const ACC = "rl.account";
   let account = store.get(ACC, null);
+  const signedIn = () => !!account;
+  // Remember where to go back to after Discord sign-in (kept 15 minutes).
+  function askSignIn(to) { store.set("rl.after", { to: to || "", at: Date.now() }); toast("Sign in with Discord to start"); startSignIn(); }
+  function afterSignIn() {
+    const a = store.get("rl.after", null); store.del("rl.after");
+    if (a && Date.now() - a.at < 900000) { if (("#" + a.to) === location.hash || (!a.to && !location.hash)) route(); else go(a.to); }
+    else refreshView();
+  }
+  function refreshView() {
+    try {
+      if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick();
+      else if (view === "plans") buildPlans(); else if (view === "plan") buildPlan();
+    } catch (e) {}
+    updateResume();
+  }
   let drawerOpen = false, lastFocus = null, confirmDelete = false, signingIn = false;
   let ov = null, ovMoving = false;
   if (window.replineDesktop) {
@@ -1509,6 +1582,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function topAccount() {
     applyDev();
+    ensureLoop();
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
     const btn = $("acct-open-in");
@@ -1525,12 +1599,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
     const TABS = [["account", "Account"], ["settings", "Settings"], ["appearance", "Appearance"]];
+    if (!account) drawerTab = "account";
+    $("dr-tabs").hidden = !account;
     $("dr-tabs").innerHTML = `<div class="seg" role="tablist" aria-label="Sections">${TABS.map(([id, nm]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${drawerTab === id}" aria-pressed="${drawerTab === id}">${nm}</button>`).join("")}</div>`;
     $("dr-title").textContent = TABS.find((t) => t[0] === drawerTab)[1];
     let h = "";
     if (drawerTab === "account") {
     if (!account) {
-      h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">With an account you get your referral link and all your settings in one place. Every routine also works without an account.</p>
+      h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">Look around freely. To train, sign in with Discord. It's free.</p>
+        <ul class="unlock-list"><li>Start every routine</li><li>Build your own routine</li><li>Sound, animations and set alerts</li><li>Your streak on every device</li>${DESK ? "<li>In-game overlay settings</li>" : ""}<li>Your referral link</li></ul>
         <button class="discord" type="button" id="dc-in" ${signingIn ? "disabled" : ""}><svg aria-hidden="true"><use href="#i-discord"/></svg>${signingIn ? "Connecting to Discord…" : "Continue with Discord"}</button>
         <p class="dr-foot">${sb ? "Repline only uses your Discord ID, name and avatar. Your progress and settings are saved to your account." : "Demo: this signs you in with an example account on this device. Real sign-in works on repline.pages.dev."}</p></section>`;
     } else {
@@ -1556,6 +1633,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><h3>Training</h3><div class="group">
         ${sw("set-sound", "Sound at the end of a set", settings.sound)}
         ${sw("set-awake", "Keep screen on while training", settings.awake)}
+        <div class="row stack"><span>Time to switch sets<br><span class="tiny">Before each set, to open the next map</span></span><span class="seg" role="group" aria-label="Time to switch sets">${SWITCH_OPTS.map((v) => `<button type="button" data-sw="${v}" aria-pressed="${(+settings.switchSec || 0) === v}">${v ? v + "s" : "Off"}</button>`).join("")}</span></div>
       </div></section>`;
       h += `<section class="dr-sec"><h3>Data</h3><div class="group">
         <button class="row go" type="button" id="reset-today" aria-expanded="${confirmReset === "today"}">Reset today's progress</button>
@@ -1602,34 +1680,44 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
           <b>Your routine. Over your game.</b>
           <span class="small">The Windows app shows an in-game overlay with your set, time left and a finish alert. Pick from 7 sounds and 7 animations, or upload your own sound <span class="pro">✦ Pro</span>.</span>
-          <button class="pill sm out" type="button" id="see-app">See what's inside</button>
+          <span style="display:flex;gap:8px;flex-wrap:wrap"><span data-download="sm"></span><button class="pill sm out" type="button" id="see-app">See what's inside</button></span>
         </div></section>`;
       }
     }
     body.innerHTML = h;
+    fillDownloads(body);
     bindDrawer();
   }
-  function bindDrawer() {
-    const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
-    on("dc-in", "click", () => {
-      signingIn = true; renderDrawer();
+  function startSignIn() {
+      if (signingIn) return;
+      signingIn = true; if (drawerOpen) renderDrawer();
+      const fail = (msg) => { signingIn = false; if (drawerOpen) renderDrawer(); toast(msg); };
       if (sb && DESK && DESK.auth) {
         // Windows app: Discord opens in a small sign-in window; the code comes back here.
         sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: "https://repline.pages.dev/auth/desktop", skipBrowserRedirect: true } })
           .then(({ data, error }) => { if (error || !data || !data.url) throw error || new Error("no url"); return DESK.auth(data.url); })
           .then((code) => code ? sb.auth.exchangeCodeForSession(code) : null)
-          .then((r) => { if (!r || r.error) { signingIn = false; renderDrawer(); if (r && r.error) toast("Sign-in didn't finish. Please try again."); } })
-          .catch(() => { signingIn = false; renderDrawer(); toast("Sign-in didn't finish. Please try again."); });
+          .then((r) => { if (!r || r.error) { if (r && r.error) fail("Sign-in didn't finish. Please try again."); else { signingIn = false; if (drawerOpen) renderDrawer(); store.del("rl.after"); } } })
+          .catch(() => fail("Sign-in didn't finish. Please try again."));
         return;
       }
       if (sb) {
-        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/" } }).then(({ error }) => { if (error) { signingIn = false; renderDrawer(); toast("Sign-in didn't start. Please try again."); } });
+        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/" } }).then(({ error }) => { if (error) fail("Sign-in didn't start. Please try again."); });
         return;
       }
-      setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); renderDrawer(); toast("Signed in (demo)"); $("dr-close").focus(); }, 900);
-    });
+      setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); if (drawerOpen) { renderDrawer(); $("dr-close").focus(); } toast("Signed in (demo)"); afterSignIn(); }, 900);
+  }
+  function bindDrawer() {
+    const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+    on("dc-in", "click", startSignIn);
     document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; confirmReset = null; renderDrawer(); $("dr-body").scrollTop = 0; }));
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
+    document.querySelectorAll("[data-sw]").forEach((b) => b.addEventListener("click", () => {
+      settings.switchSec = +b.dataset.sw; saveSettings(); renderDrawer();
+      toast(settings.switchSec ? `${settings.switchSec} seconds to switch between sets` : "No time to switch. Sets wait for you.");
+      if (view === "plan") buildPlan();
+      if (S.status === "wechsel" && !settings.switchSec) startNow(false);
+    }));
     on("cs-info", "click", () => { csInfo = !csInfo; renderDrawer(); });
     on("see-app", "click", () => { closeDrawer(); const t = $("overlay-teaser"); if (t) { if (view !== "home") { go(""); setTimeout(() => $("overlay-teaser").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }), 80); } else t.scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); } });
     on("cs-up", "click", () => $("cs-file").click());
@@ -1680,7 +1768,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", async () => {
       if (account && account.real && sb) { try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; store.set(MYR, myRoutines().filter((x) => String(x.id).indexOf("l-") === 0)); }
+      if (S.status === "laeuft") { S.before = elapsed(); S.runAt = null; S.status = "pause"; }
+      if (S.status === "wechsel") { S.swEnd = null; S.status = "bereit"; }
+      save(); pushOverlay(true);
       account = null; store.del(ACC); topAccount(); confirmDelete = false; renderDrawer(); toast("Signed out");
+      if (view === "training") go("plan"); else refreshView();
     });
     on("del-acc", "click", () => { confirmDelete = !confirmDelete; renderDrawer(); });
     on("del-no", "click", () => { confirmDelete = false; renderDrawer(); });
@@ -1809,7 +1901,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const lf = store.get(FOCUS, null);
       if (st.focus && st.focus.text && (!lf || (st.focus.day || "") >= (lf.day || ""))) store.set(FOCUS, st.focus);
       const ls = store.get(KEY, null);
-      if (st.session && st.session.day === today() && st.session.active && !(ls && ls.active)) { S = Object.assign(fresh(), st.session); store.set(KEY, S); if (S.status === "laeuft" && S.runAt) { clearInterval(raf); raf = setInterval(loop, 200); } }
+      if (st.session && st.session.day === today() && st.session.active && !(ls && ls.active)) { S = Object.assign(fresh(), st.session); store.set(KEY, S); ensureLoop(); }
       // referral from a link opened before signing in
       const ref = store.get("rl.ref", null);
       if (ref && ref !== account.ref) { await sb.rpc("claim_referral", { ref_code: ref }); }
@@ -1821,7 +1913,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     cloudPush();
     topAccount();
     if (drawerOpen) renderDrawer();
-    if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick(); else if (view === "plans") buildPlans();
+    refreshView();
   }
   // Referral links: repline.pages.dev/r/abc123 (or ?ref=abc123)
   (function () {
@@ -1831,17 +1923,22 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (!(account && account.ref === code)) { store.set("rl.ref", code); if (sb) sb.rpc("track_ref_click", { ref_code: code }).then(() => {}); }
     try { history.replaceState(null, "", "/" + location.hash); } catch (e) {}
   })();
+  // Sessions are kept in this browser until you sign out. If the network is down when the page opens,
+  // the saved account stays and the session is refreshed once you're back online.
+  const hasStoredSession = () => { try { return !!localStorage.getItem("sb-wjwjvwjwlipjxsgufffj-auth-token"); } catch (e) { return false; } };
   if (sb) {
     if (account && !account.real) { account = null; store.del(ACC); }
+    addEventListener("online", () => { if (account && account.real && !cloudUser) sb.auth.getSession().then(() => {}); });
     sb.auth.onAuthStateChange((event, session) => {
       if (session && session.user) {
         if (!cloudUser || cloudUser.id !== session.user.id) {
           signingIn = false;
           if (/[?&]code=/.test(location.search)) { try { history.replaceState(null, "", location.pathname.replace(/^\/r\/.*$/, "/") + location.hash); } catch (e) {} }
-          setTimeout(() => { cloudLoad(session.user).then(() => { if (event === "SIGNED_IN") toast(`Signed in as ${account ? account.name : "you"}`); }); }, 0);
+          const isNew = !(account && account.real && account.id === session.user.id);
+          setTimeout(() => { cloudLoad(session.user).then(() => { if (isNew) { toast(`Signed in as ${account ? account.name : "you"}`); afterSignIn(); } }); }, 0);
         }
-      } else if (event === "SIGNED_OUT" || (event === "INITIAL_SESSION" && account && account.real)) {
-        cloudUser = null; if (account && account.real) { account = null; store.del(ACC); } topAccount(); if (drawerOpen) renderDrawer();
+      } else if (event === "SIGNED_OUT" || (event === "INITIAL_SESSION" && account && account.real && !hasStoredSession())) {
+        cloudUser = null; if (account && account.real) { account = null; store.del(ACC); } topAccount(); if (drawerOpen) renderDrawer(); refreshView();
       }
     });
   }
@@ -1891,7 +1988,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function renderBld() {
     const list = $("bld-list"), sets = draft.sets.filter((x) => SETS[x.key]);
     const tot = sets.reduce((a, x) => a + x.min, 0);
-    $("bld-sum").textContent = sets.length ? `${sets.length} sets · ${fmtMin(tot)}` : "Add sets from the right to start.";
+    const swt = sets.length > 1 ? (sets.length - 1) * Math.max(0, +settings.switchSec || 0) : 0;
+    $("bld-sum").textContent = sets.length ? `${sets.length} sets · ${fmtMin(tot)}${swt ? ` + ${fmtSwitch(swt)} to switch` : ""}` : "Add sets from the right to start.";
     $("bld-bar").innerHTML = sets.map((x) => `<i style="flex:${x.min};background:${TYPES[SETS[x.key].type].color}"></i>`).join("");
     if (!sets.length) { list.innerHTML = `<li class="bld-empty">Your routine is empty. Tap a set to add it.</li>`; return; }
     list.innerHTML = draft.sets.map((x, i) => { const st = SETS[x.key]; if (!st) return ""; return `<li class="bld-item${i === lastAdded ? " new" : ""}">
@@ -1967,11 +2065,20 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       : `<button class="pill big out" type="button" disabled><svg aria-hidden="true" style="width:20px;height:20px"><use href="#i-discord"/></svg>Join Discord · soon</button>`;
   }
   document.querySelectorAll("[data-discord]").forEach((el) => { el.innerHTML = discordHTML(el.dataset.discord); });
+  function downloadHTML(kind) {
+    const d = SITE.download, ico = `<svg aria-hidden="true" style="width:18px;height:18px;margin-right:8px;vertical-align:-3px"><use href="#i-windows"/></svg>`;
+    if (kind === "text") return d ? `<a href="${esc(d.url)}">Windows app</a>` : "Windows app (soon)";
+    const cls = kind === "sm" ? "pill sm" : "pill";
+    return d ? `<a class="${cls}" href="${esc(d.url)}" download>${ico}Download for Windows</a>${kind === "lg" ? `<span class="tiny dl-meta">Version ${esc(d.version || "")}${d.size ? " · " + esc(d.size) : ""} · Windows 10 and 11</span>` : ""}`
+      : `<button class="${cls} out" type="button" disabled>${ico}Windows app · coming soon</button>`;
+  }
+  function fillDownloads(rootEl) { (rootEl || document).querySelectorAll("[data-download]").forEach((el) => { el.innerHTML = downloadHTML(el.dataset.download); }); }
+  if (!DESK) fillDownloads(); else document.querySelectorAll("[data-download]").forEach((el) => { el.hidden = true; });
 
   /* ---------- Resume bar ---------- */
   function updateResume() {
     const bar = $("resume-bar"), l = S.goal && length(S.goal, S.len);
-    const show = !!(l && S.active && view && view !== "training" && !drawerOpen);
+    const show = !!(l && S.active && signedIn() && view && view !== "training" && !drawerOpen);
     bar.hidden = !show;
     document.body.classList.toggle("has-resume", show);
     if (!show) return;
@@ -1981,10 +2088,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     bar.style.setProperty("--rc", tcol(b));
     $("rs-ring").style.setProperty("--p", Math.round((done + curPart) / tot * 100));
     $("rs-name").textContent = b.name || "Your routine";
-    const st = { laeuft: "Running", pause: "Paused", bereit: "Ready", fertig: "Set done" }[S.status];
+    const st = { laeuft: "Running", pause: "Paused", bereit: "Ready", fertig: "Set done", wechsel: "Get ready" }[S.status];
     $("rs-sub").textContent = `${st} · Set ${S.b + 1} of ${bl.length}`;
-    $("rs-time").textContent = S.status === "fertig" ? "Done" : kill ? `${killsDone(S.b)}/${b.kills.length}` : b.min != null ? clock(b.min * 60000 - e + 999) : clock(e);
-    bar.classList.toggle("paused", S.status !== "laeuft");
+    $("rs-time").textContent = S.status === "wechsel" ? clock(swLeft() + 999) : S.status === "fertig" ? "Done" : kill ? `${killsDone(S.b)}/${b.kills.length}` : b.min != null ? clock(b.min * 60000 - e + 999) : clock(e);
+    bar.classList.toggle("paused", S.status !== "laeuft" && S.status !== "wechsel");
   }
   setInterval(updateResume, 1000);
 
@@ -2017,7 +2124,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
     if (name === "length" && goal(S.goal) && goal(S.goal).custom) name = S.len ? "plan" : "goal";
-    if (name === "builder" && !draft) name = "goal";
+    if (name === "builder" && (!draft || !signedIn())) name = "goal";
+    if (name === "training" && !signedIn()) name = S.goal && length(S.goal, S.len) ? "plan" : "goal";
     if ((name === "plan" || name === "training") && (!S.goal || !length(S.goal, S.len))) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
     if (name === "training") S.active = true;
@@ -2041,7 +2149,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     updateResume();
   }
   addEventListener("hashchange", route);
-  if (S.status === "laeuft" && S.active && S.runAt) { raf = setInterval(loop, 200); keepAwake(true); }
+  ensureLoop();
   route();
   updateResume();
 })();
