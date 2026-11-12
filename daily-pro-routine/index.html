@@ -236,6 +236,9 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
 .dl-meta { display: block; margin-top: 10px; }
 .row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.viewas-bar { position: fixed; z-index: 60; top: 78px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; border-radius: 999px; background: #3a2a05; box-shadow: inset 0 0 0 1px #ffd60a; color: #ffd60a; font-size: 13px; font-weight: 600; max-width: calc(100vw - 32px); }
+.viewas-bar[hidden] { display: none; }
+.viewas-bar button { border: 0; border-radius: 999px; background: #ffd60a; color: #000; font: 600 12px var(--text); padding: 6px 12px; cursor: pointer; }
 .tip { color: var(--c2); }
 .note.tip::before, .tip::before { content: "Tip · "; font-weight: 600; }
 /* ---------- 1.6: personal home, boards, stats, badges, friends ---------- */
@@ -1056,7 +1059,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.2", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1181,9 +1184,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const MYR = "rl.myRoutines";
   const myRoutines = () => store.get(MYR, []);
   const RANK = { free: 0, standard: 1, pro: 2 };
+  // Dev accounts can look at the site as a Free, Standard or Pro player ("View as" in the account panel).
+  const viewAs = () => { const v = account && account.isDev ? store.get("rl.viewAs", null) : null; return v === "free" || v === "standard" || v === "pro" ? v : null; };
+  const devMode = () => !!(account && account.isDev && !viewAs());
   function planId() {
     if (!(account && account.real)) return "free";
-    if (account.isDev) return "pro";
+    if (account.isDev) return viewAs() || "pro";
     const base = account.plan || "free", bonus = account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? account.bonusPlan : "free";
     return RANK[bonus] > RANK[base] ? bonus : base;
   }
@@ -1313,7 +1319,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function buildMy() {
     const box = $("my-routines"); if (!box) return;
     const rs = myRoutines(), lim = routineLimit();
-    $("my-limit").textContent = `${rs.length} of ${lim === Infinity ? "unlimited" : lim} · ${planName()}${account && account.isDev ? " (dev)" : ""}`;
+    $("my-limit").textContent = `${rs.length} of ${lim === Infinity ? "unlimited" : lim} · ${planName()}${devMode() ? " (dev)" : viewAs() ? " (view as)" : ""}`;
     box.innerHTML = "";
     rs.forEach((r) => {
       const g = customGoal(r.id), bl = g ? g.lengths[0].sets : [], t = totalMin(bl);
@@ -1738,13 +1744,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function refLink() { return account ? `${SITE.url ? SITE.url.replace(/\/$/, "") : "***"}/r/${account.ref}` : ""; }
   function applyDev() {
     const was = testOn;
-    testOn = !!(account && account.real && account.isDev);
+    testOn = !!(account && account.real && devMode());
     syncTest();
     if (!testOn && S.goal === "test") { clearInterval(raf); S = fresh(); store.del(KEY); pushOverlay(true); }
     if (was !== testOn) { try { if (view === "goal") buildPick(); } catch (e) { /* not routed yet */ } }
   }
   function topAccount() {
     applyDev();
+    try { updateViewBar(); } catch (e) { /* not ready yet */ }
     ensureLoop();
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
@@ -1758,7 +1765,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
   let drawerTab = "account", csInfo = false, confirmReset = null;
-  const hasCustom = () => !!(account && account.real && (account.isDev || (account.items || []).indexOf("custom_sound") >= 0));
+  const hasCustom = () => !!(account && account.real && (devMode() || (account.items || []).indexOf("custom_sound") >= 0));
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
     const TABS = [["account", "Account"], ["settings", "Settings"], ["appearance", "Appearance"]];
@@ -1775,9 +1782,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         <p class="dr-foot">${sb ? "Repline only uses your Discord ID, name and avatar. Your progress and settings are saved to your account." : "Demo: this signs you in with an example account on this device. Real sign-in works on repline.pages.dev."}</p></section>`;
     } else {
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
+      if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
-      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${account.isDev ? " · all unlocked (dev)" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
           <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
           <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
@@ -1786,7 +1794,6 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
           ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
         </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts clicks and sign-ups.${account.real ? "" : " Demo numbers."}</p></section>`;
     }
-    if (account && account.isDev) h += devHTML();
     if (account) {
       h += `<section class="dr-sec"><div class="group">
           <button class="row" type="button" id="sign-out">Sign out</button>
@@ -1832,7 +1839,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
           <div class="group">
             <div class="row pro-row"><label class="snd" for="al-custom"><input type="radio" name="al-s" id="al-custom" value="custom" ${settings.alertSound === "custom" ? "checked" : ""} ${unlocked && cs ? "" : "disabled"}>Custom sound<span class="pro">✦ Pro</span></label>
               ${unlocked ? `${cs ? `<button class="play-s" type="button" data-al-play="custom" aria-label="Play custom sound"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>` : ""}<button class="pill sm out" type="button" id="cs-up">${cs ? "Replace" : "Upload"}</button>` : `<button class="pill sm out" type="button" id="cs-info">Unlock</button>`}</div>
-            ${unlocked ? `<div class="row"><span class="tiny">${cs ? esc(cs.name) : "MP3, WAV or OGG · up to 5 seconds · max 1 MB"}</span>${account && account.isDev && (account.items || []).indexOf("custom_sound") < 0 ? '<span class="tiny">Unlocked for devs</span>' : ""}</div>` : ""}
+            ${unlocked ? `<div class="row"><span class="tiny">${cs ? esc(cs.name) : "MP3, WAV or OGG · up to 5 seconds · max 1 MB"}</span>${devMode() && (account.items || []).indexOf("custom_sound") < 0 ? '<span class="tiny">Unlocked for devs</span>' : ""}</div>` : ""}
             ${!unlocked && csInfo ? `<div class="confirm"><span class="small"><b style="color:var(--porcelain)">Custom sound · one-time purchase.</b> Play your own sound when a set is done. Price coming soon.</span><div><button class="pill sm" type="button" disabled>Coming soon</button></div></div>` : ""}
             ${ALERT_SOUNDS.map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}
           </div>
@@ -2242,7 +2249,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       <ul>${pl.perks.map((x) => `<li class="${(pl.soon || []).indexOf(x) >= 0 ? "soonli" : ""}"><span>${esc(x)}${(pl.soon || []).indexOf(x) >= 0 ? ' <span class="soon">soon</span>' : ""}</span></li>`).join("")}</ul>
       ${pl.id === cur ? '<button class="pill out" type="button" disabled>Your plan</button>' : pl.price ? `<button class="pill${pl.id === "pro" ? "" : " out"}" type="button" disabled>Coming soon</button>` : ""}
     </div>`).join("");
-    $("plans-note").textContent = account && account.isDev ? "Dev account: every feature is unlocked for testing. Payments open soon." : "Payments open soon. Monthly, cancel anytime.";
+    $("plans-note").textContent = devMode() ? "Dev account: every feature is unlocked for testing. Payments open soon." : viewAs() ? `Dev · viewing as ${planWord2(viewAs())}. Switch back in your account.` : "Payments open soon. Monthly, cancel anytime.";
   }
 
   /* ---------- Discord buttons ---------- */
@@ -2864,8 +2871,13 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
 
   /* ---------- 1.6 · dev tools: gift a plan ---------- */
+  const planWord2 = (p) => ({ free: "Free", standard: "Standard", pro: "Pro" })[p] || "Dev";
   function devHTML() {
-    return `<section class="dr-sec"><h3>Dev · gift a plan</h3><div class="group" style="padding:14px;display:grid;gap:10px">
+    const va = viewAs() || "dev";
+    return `<section class="dr-sec"><h3>Dev · view as</h3><div class="group" style="padding:14px;display:grid;gap:10px">
+      <span class="seg" role="group" aria-label="View the site as" style="display:flex">${[["dev", "Dev"], ["free", "Free"], ["standard", "Standard"], ["pro", "Pro"]].map(([id, n]) => `<button type="button" data-viewas="${id}" aria-pressed="${va === id}" style="flex:1">${n}</button>`).join("")}</span>
+      <span class="tiny">See and use Repline like a player on that plan: locked lengths, routine limits, Pro badges. Dev extras like the test routine are hidden. Leaderboards still treat you as a dev.</span></div></section>
+      <section class="dr-sec"><h3>Dev · gift a plan</h3><div class="group" style="padding:14px;display:grid;gap:10px">
       <label class="tiny" for="gf-name">Discord name</label><input class="in" id="gf-name" type="text" placeholder="e.g. kxvin" autocomplete="off" spellcheck="false">
       <div style="display:flex;gap:10px"><select class="in" id="gf-plan" aria-label="Plan"><option value="standard">Standard</option><option value="pro">Pro</option></select>
       <select class="in" id="gf-months" aria-label="How long"><option value="1">1 month</option><option value="2">2 months</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></div>
@@ -2873,7 +2885,25 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       <button class="pill" type="button" id="gf-send" style="justify-self:start">Gift plan</button></div>
       <p class="dr-foot">They see it with a message the next time they open Repline. It adds to any plan they already have.</p></section>`;
   }
+  function setViewAs(v) {
+    if (v === "dev") store.del("rl.viewAs"); else store.set("rl.viewAs", v);
+    applyDev(); topAccount(); renderDrawer(); updateViewBar(); refreshView();
+    toast(v === "dev" ? "Back to dev view" : `Viewing as ${planWord2(v)}`);
+  }
+  function updateViewBar() {
+    let bar = $("viewas-bar");
+    if (!bar) {
+      bar = document.createElement("div"); bar.id = "viewas-bar"; bar.className = "viewas-bar"; bar.hidden = true; bar.setAttribute("role", "status");
+      bar.innerHTML = `<span id="viewas-t"></span><button type="button" id="viewas-x">Back to dev</button>`;
+      document.body.appendChild(bar);
+      $("viewas-x").addEventListener("click", () => setViewAs("dev"));
+    }
+    const v = viewAs();
+    bar.hidden = !v;
+    if (v) $("viewas-t").textContent = `Viewing as ${planWord2(v)}`;
+  }
   function bindDev() {
+    document.querySelectorAll("[data-viewas]").forEach((x) => x.addEventListener("click", () => setViewAs(x.dataset.viewas)));
     const b = $("gf-send"); if (!b) return;
     b.addEventListener("click", async () => {
       const name = $("gf-name").value.trim(), plan = $("gf-plan").value, months = +$("gf-months").value, note = $("gf-note").value.trim();
