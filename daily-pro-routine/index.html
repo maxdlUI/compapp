@@ -236,6 +236,13 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
 .dl-meta { display: block; margin-top: 10px; }
 .row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.upd-gate { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; background: rgba(0, 0, 0, .78); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); }
+.upd-gate[hidden] { display: none; }
+.ug-box { width: min(520px, 100%); display: grid; gap: 16px; justify-items: center; text-align: center; padding: 36px 28px; border-radius: 32px; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--steel); }
+html.anim .ug-box { animation: updrise .5s var(--ease); }
+.ug-box h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.8px; }
+.ug-bar { width: 100%; height: 8px; border-radius: 4px; background: var(--steel); overflow: hidden; }
+.ug-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c4)); border-radius: 4px; transition: width .4s var(--ease); }
 .launch-wrap { padding: 10px var(--gut-r) 0 var(--gut-l); }
 .launch-wrap[hidden] { display: none; }
 .launch { max-width: 1024px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: 20px; background: linear-gradient(90deg, #2a1d4d 0%, #0b2a5c 100%); box-shadow: inset 0 0 0 1px rgba(168, 85, 247, .45); font-size: 14px; }
@@ -1079,7 +1086,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.4", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.5", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1674,6 +1681,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (DESK) {
     const cs0 = store.get(CUSTOM, null); if (cs0 && cs0.data && DESK.overlay.custom) DESK.overlay.custom(cs0.data);
     DESK.onHotkey((name) => {
+      if (typeof gateOn !== "undefined" && gateOn) return;
       if (!(S.active && length(S.goal, S.len) && signedIn())) return;
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
       else if (name === "next") nextBlock();
@@ -2328,13 +2336,36 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       $("upd-go").addEventListener("click", installUpdate);
       $("upd-x").addEventListener("click", () => { bar.dataset.later = (upd && upd.version) || "1"; bar.hidden = true; toast("It installs the next time you open Repline."); });
     }
-    const show = !!(upd && upd.state === "ready" && bar.dataset.later !== upd.version);
+    const show = false && !!(upd && upd.state === "ready" && bar.dataset.later !== upd.version);
     $("upd-v").textContent = show ? `Repline ${upd.version}` : "";
     bar.hidden = !show;
   }
+  /* An old app version can't be used: as soon as a newer one exists, this screen covers the app until it is installed.
+     Progress and a running routine are saved and continue after the restart. Offline (nothing known) the app stays usable. */
+  let gateOn = false;
+  function renderUpdGate() {
+    const u = upd || {};
+    const need = !!(DESK && u.enabled !== false && u.version && (u.state === "downloading" || u.state === "ready" || u.state === "error"));
+    let g = $("upd-gate");
+    if (!need) { if (g) g.hidden = true; gateOn = false; root.classList.toggle("no-scroll", drawerOpen || !$("modal").hidden); return; }
+    if (!g) {
+      g = document.createElement("div"); g.id = "upd-gate"; g.className = "upd-gate"; g.setAttribute("role", "dialog"); g.setAttribute("aria-modal", "true"); g.setAttribute("aria-labelledby", "ug-t");
+      document.body.appendChild(g);
+    }
+    gateOn = true; g.hidden = false; root.classList.add("no-scroll");
+    if (drawerOpen) closeDrawer();
+    const v = esc(u.version), pct = Math.max(0, Math.min(100, u.progress || 0));
+    let body;
+    if (u.state === "ready") body = `<p class="small">Repline ${v} is downloaded. It installs in a few seconds and opens again by itself.</p><button class="pill big" type="button" id="ug-go">Update now</button>`;
+    else if (u.state === "error") body = `<p class="small">The update didn't download. Check your internet and try again.</p><div class="hero-cta" style="margin:0"><button class="pill big" type="button" id="ug-retry">Try again</button><a class="pill big out" href="https://repline.pages.dev/download/windows" target="_blank" rel="noopener">Download from the website</a></div>`;
+    else body = `<p class="small">Downloading Repline ${v}… ${pct} %</p><div class="ug-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
+    g.innerHTML = `<div class="ug-box"><div class="gift-ico">${svgI("star")}</div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
+    const go = $("ug-go"); if (go) go.addEventListener("click", installUpdate);
+    const rt = $("ug-retry"); if (rt) rt.addEventListener("click", () => { DESK.updates.check(); upd = Object.assign({}, upd, { state: "downloading", progress: 0 }); renderUpdGate(); });
+  }
   if (DESK && DESK.updates) {
-    DESK.updates.get().then((u) => { upd = u; renderUpdBar(); }).catch(() => {});
-    DESK.updates.onState((u) => { upd = u; renderUpdBar(); if (drawerOpen && drawerTab === "settings") renderDrawer(); });
+    DESK.updates.get().then((u) => { upd = u; renderUpdBar(); renderUpdGate(); }).catch(() => {});
+    DESK.updates.onState((u) => { upd = u; renderUpdBar(); renderUpdGate(); if (drawerOpen && drawerTab === "settings") renderDrawer(); });
   }
 
   /* ---------- 1.6 · time tracking, streak freezes, badges ---------- */

@@ -33,13 +33,14 @@ function setupUpdates() {
   autoUpdater.on("update-not-available", () => { updState = { state: "latest", at: Date.now() }; sendUpd(); });
   autoUpdater.on("download-progress", (p) => { updState = { ...updState, state: "downloading", progress: Math.round(p.percent || 0) }; sendUpd(); });
   autoUpdater.on("update-downloaded", (i) => { updState = { state: "ready", version: i.version }; sendUpd(); });
-  autoUpdater.on("error", () => { if (updState.state !== "ready") { updState = { state: "error" }; sendUpd(); } });
+  autoUpdater.on("error", () => { if (updState.state !== "ready") { updState = { state: "error", version: updState.version || null }; sendUpd(); } });
   const check = () => { if (updState.state !== "ready" && updState.state !== "downloading") autoUpdater.checkForUpdates().catch((e) => ulog("check failed", e)); };
-  setTimeout(check, 5000);
-  setInterval(check, 6 * 60 * 60 * 1000);
+  // Using an old version isn't allowed: check right at start and every 30 minutes, the app then asks to update.
+  setTimeout(check, 1500);
+  setInterval(check, 30 * 60 * 1000);
 }
 ipcMain.handle("update:get", () => ({ ...updState, current: app.getVersion(), enabled: updOn() }));
-ipcMain.handle("update:check", () => { if (updOn() && updState.state !== "ready" && updState.state !== "downloading") autoUpdater.checkForUpdates().catch(() => {}); return true; });
+ipcMain.handle("update:check", () => { if (updOn() && updState.state !== "ready" && updState.state !== "downloading") autoUpdater.checkForUpdates().catch((e) => ulog("check failed", e)); return true; });
 ipcMain.handle("update:install", () => { if (updOn() && updState.state === "ready") setImmediate(() => autoUpdater.quitAndInstall(true, true)); return true; });
 
 /* ---------- Overlay settings (saved in the user's app data folder) ---------- */

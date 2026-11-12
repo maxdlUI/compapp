@@ -209,3 +209,9 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - Nur Zeit zählt: keine Kill-Ziele, Reps, Checklisten, Zähler oder Eingabefelder mehr.
 - Alte Set-Schlüssel aus gespeicherten oder geteilten Routinen werden über `SET_ALIAS` auf neue Bausteine abgebildet.
 - Der Tipp „andere EU-Subregion + FPS runter“ steht bei Edit wall, Freebuild und Piece control.
+
+## Update-Pflicht (ab 1.6.5)
+
+- Die App prüft beim Start (nach 1,5 s) und alle 30 Minuten. Gibt es eine neuere Version, deckt ein Update-Bildschirm die App ab: erst Download mit Fortschritt, dann „Update now“; bei Fehler „Try again“ oder „Download from the website“.
+- Hotkeys sind während der Sperre aus. Ohne Internet (keine Version bekannt) bleibt die App nutzbar.
+- Wichtig: 1.6.4 und älter haben die Sperre noch nicht. Sie aktualisieren sich aber selbst auf 1.6.5 (Installer-Versionen ab 1.5). Die alte Zip-Version 1.4 kann man nicht zwingen.
