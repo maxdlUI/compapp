@@ -13,6 +13,8 @@ TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=u
          ".png": "image/png", ".webp": "image/webp", ".ico": "image/x-icon", ".svg": "image/svg+xml", ".json": "application/json", ".css": "text/css; charset=utf-8"}
 NO_CACHE = {"/index.html", "/sw.js", "/manifest.webmanifest"}
 
+REL = json.load(open(os.path.join(ROOT, "release.json")))
+
 files = {}
 for dirpath, _, names in os.walk(APP):
     for n in names:
@@ -27,13 +29,25 @@ for dirpath, _, names in os.walk(APP):
 
 worker = """// Repline web app, served from one Pages worker. Built by tools/build_worker.py; do not edit by hand.
 const FILES = %s;
+const RELEASE = %s;
 const bin = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 const cache = new Map();
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
     let path = decodeURIComponent(url.pathname);
+    // Windows app download: streamed from the private R2 bucket (binding DOWNLOADS). No public bucket link exists.
+    if (path === "/download/windows" || path === "/download/windows/") {
+      if (!env || !env.DOWNLOADS) return new Response("Download is not available right now.", { status: 503, headers: { "content-type": "text/plain" } });
+      const w = RELEASE.windows;
+      const head = { "content-type": "application/zip", "content-disposition": `attachment; filename="${w.filename}"`, "cache-control": "no-store", "x-content-type-options": "nosniff" };
+      if (request.method === "HEAD") return new Response(null, { headers: { ...head, "content-length": String(w.bytes) } });
+      const obj = await env.DOWNLOADS.get(w.key);
+      if (!obj) return new Response("Download is not available right now.", { status: 404, headers: { "content-type": "text/plain" } });
+      return new Response(obj.body, { headers: { ...head, "content-length": String(obj.size), etag: obj.httpEtag } });
+    }
+    if (path === "/download/windows.json") return new Response(JSON.stringify({ version: RELEASE.version, url: "/download/windows", bytes: RELEASE.windows.bytes }), { headers: { "content-type": "application/json", "cache-control": "no-cache" } });
     if (path === "/" || path === "") path = "/index.html";
     let f = FILES[path];
     let status = 200;
@@ -43,7 +57,7 @@ export default {
     return new Response(request.method === "HEAD" ? null : cache.get(path), { status, headers });
   }
 };
-""" % json.dumps(files, separators=(",", ":"))
+""" % (json.dumps(files, separators=(",", ":")), json.dumps(REL))
 
 os.makedirs(OUT, exist_ok=True)
 open(os.path.join(OUT, "_worker.js"), "w", encoding="utf-8").write(worker)

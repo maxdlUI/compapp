@@ -728,7 +728,7 @@ html.no-scroll { overflow: hidden; }
       <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
       <details><summary>Do I need an account?<i></i></summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
       <details><summary>Do I stay signed in?<i></i></summary><p>Yes, on this device until you sign out. On iPhone, add Repline to your Home Screen: Safari clears website data after 7 days without a visit.</p></details>
-      <details><summary>Where do I get the Windows app?<i></i></summary><p>On our Discord server, in #download. Free, for Windows 10 and 11.</p></details>
+      <details><summary>Where do I get the Windows app?<i></i></summary><p>Right here: Download for Windows, free, for Windows 10 and 11. Extract the zip and start Repline.exe. If Windows warns you, click More info, then Run anyway.</p></details>
       <details><summary>Why is there a pause between sets?<i></i></summary><p>Time to open the next map. 30 seconds by default, the set then starts on its own. Change it in Settings.</p></details>
       <details><summary>Where does today's focus come from?<i></i></summary><p>From your last replay review. Focus drills and ranked games use it.</p></details>
       <details><summary>Which keys can I use?<i></i></summary><p>Space start/pause · R restart (+15 s while you switch) · N next · F full screen.</p></details>
@@ -917,7 +917,7 @@ const SITE = {
   url: "https://repline.gg",
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: null,            // Windows app hosted directly: { url, version, size }. While null, the button leads to #download on Discord.
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.4", size: "110 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page

@@ -143,3 +143,15 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 
 - **Blockiert durch R2:** In Cloudflare ist R2 noch nicht aktiviert (API-Antwort: „Please enable R2 through the Cloudflare Dashboard“). Der Nutzer muss R2 aktivieren und dem Token „Workers R2 Storage · Edit“ geben.
 - **Danach:** NSIS-Installer mit electron-builder (ohne Signatur), electron-updater mit generic provider auf die R2-URL, `latest.yml`, Release-Notes und `SITE.download = { url, version, size }`.
+
+## Windows-Download (eingerichtet am 12.11.2026)
+
+- Die Datei liegt im **privaten** R2-Bucket `repline-downloads` (WEUR). Der öffentliche r2.dev-Link ist aus.
+- Ausgeliefert wird sie über den Pages-Worker unter `https://repline.pages.dev/download/windows`, mit dem Binding `DOWNLOADS`.
+- Kostenschutz: Der Worker läuft im kostenlosen Workers-Plan mit hartem Limit von 100.000 Aufrufen pro Tag. Damit sind höchstens etwa 3 Mio. R2-Lesezugriffe pro Monat möglich, frei sind 10 Mio. Höchstens 2 Versionen im Bucket behalten. Kein Workers Paid buchen.
+- **Neue Version veröffentlichen:**
+  1. Zip bauen.
+  2. Per API hochladen: `PUT /accounts/{acc}/r2/buckets/repline-downloads/objects/windows/Repline-Windows-X.Y.zip`.
+  3. `release.json` und `SITE.download.version` anpassen, dann `tools/deploy.sh production`.
+  4. Die vorletzte Version aus dem Bucket löschen.
+  5. In #download posten und @App updates pingen.
