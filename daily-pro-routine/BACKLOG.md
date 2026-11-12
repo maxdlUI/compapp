@@ -96,3 +96,36 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 - **AI Training:** nur für Pro, bisher Coming Soon.
 - **Discord:** Sobald der Einladungslink steht, `SITE.discordUrl` setzen. Dann werden alle Discord-Knöpfe automatisch aktiv.
 - **Custom Sound:** Der Preis für den Einmalkauf ist noch offen.
+
+## Nächstes Update (v1.4): Pause zwischen Sets, Konto-Pflicht, angemeldet bleiben
+
+### Umstellzeit zwischen den Sets
+- Nach jedem Set nicht direkt ins nächste springen, sondern eine kurze **Umstellpause** einlegen, damit man die nächste Map oder App (z. B. KovaaK's) öffnen kann.
+- **Standard: 30 Sekunden.** In den Einstellungen wählbar (z. B. Off / 15 / 30 / 45 / 60 s).
+- Anzeige im Apple-Stil: „Next: {Set-Name}“ mit Map-Code zum Kopieren, Countdown-Ring und den Knöpfen **„Start now“** (sofort weiter) und **„+15 s“**.
+- Die Pause zählt nicht zur Trainingszeit des Sets. Sie läuft wie der Rest wanduhr-basiert weiter, auch beim Seitenwechsel und nach dem Neuladen.
+- Das Overlay in der Windows-App zeigt die Pause mit an (z. B. „Get ready · 0:24 · next: Freebuild 90%“). Die Hotkeys „Next“ und „Start/Pause“ beenden die Pause.
+- Auch im Routine-Baukasten berücksichtigen: Die Gesamtzeit zeigt die Pausen getrennt an, z. B. „35 min + 1 min switch time“.
+
+### Ohne Konto: alles ansehen, aber nichts benutzen
+- **Ohne Anmeldung sichtbar:** Homescreen, alle Routinen mit Plänen, Sets und Map-Codes, Plans, Partners, FAQ, Overlay-Teaser.
+- **Gesperrt ohne Anmeldung:**
+  - Routinen starten, auch die Dev-Test-Routine.
+  - Eigene Routinen im Baukasten anlegen.
+  - Das Einstellungs-Panel (Settings und Appearance): Sound an/aus, Animationen an/aus, Set alerts, Overlay und die Länge der Umstellpause.
+- Statt „Start routine“ steht dort **„Sign in to start“** mit Discord-Logo und führt direkt in die Discord-Anmeldung. Danach geht es zurück zu genau der Routine, die man starten wollte.
+- Das Konto-Panel zeigt ohne Anmeldung nur „Sign in with Discord“ und eine kurze Liste, was man damit freischaltet.
+- **Folgen beachten:**
+  - Lokal gespeicherte Daten von früher (Streak, eigene Routinen) bei der ersten Anmeldung wie bisher ins Konto übernehmen.
+  - Eine laufende Routine von vor dem Update nicht verlieren.
+  - In der Windows-App gilt dasselbe, dort ist die Anmeldung schon eingebaut.
+
+### Angemeldet bleiben
+- Ziel: Wer sich einmal mit Discord anmeldet, bleibt auf diesem Gerät dauerhaft angemeldet, bis er selbst „Sign out“ drückt.
+- **Heute:** Der Code speichert die Sitzung schon (`persistSession` und `autoRefreshToken` sind an). Im nächsten Update prüfen und absichern:
+  - In Supabase → Auth → Sessions dürfen keine Zeitbegrenzung und kein Inaktivitäts-Timeout gesetzt sein.
+  - Beim Start soll nicht kurz „Sign in“ aufblitzen, solange die gespeicherte Sitzung noch geladen wird.
+  - Bei kurzzeitig fehlendem Internet nicht abmelden. Erneuern, sobald man wieder online ist.
+  - Safari/iPhone löscht Website-Daten nach 7 Tagen ohne Besuch. Als installierte Home-Screen-App (PWA) passiert das nicht, das im FAQ erwähnen.
+  - Die Windows-App bleibt über ihren eigenen Speicher angemeldet. Das nach einem Neustart des Programms testen.
+  - Mit Playwright testen: anmelden, Browser schließen und wieder öffnen, die Seite nach mehr als einer Stunde (abgelaufener Token) neu laden. Man muss angemeldet bleiben.
