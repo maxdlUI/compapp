@@ -800,7 +800,7 @@ html.no-scroll { overflow: hidden; }
         <span class="new rv">Windows app</span>
         <h2 id="h-ov" class="d-l rv d1">Your routine.<br>Over your game.</h2>
         <p class="lead rv d2">An in-game overlay shows your set, time left and a finish alert. Hotkeys start, pause and skip without leaving the game.</p>
-        <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li></ul>
+        <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li><li>Overlay with <b>Standard</b> or <b>Pro</b></li></ul>
         <span class="rv d4" data-download="lg"></span>
       </div>
       <figure class="ovt-stage rv d1"><div class="slot"><div class="ov" id="tz"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="tz-ring" aria-hidden="true"></svg><b id="tz-pos">2<small>/4</small></b></div><div class="meta"><span class="chip" id="tz-chip"><i></i>Mechanics</span><span class="name" id="tz-name">Freebuild · 110–120%</span><span class="next" id="tz-next">Next · Freebuild · 90%</span></div><div class="time"><b id="tz-clock">0:03</b><span id="tz-sub">left</span></div><div class="bar" id="tz-bar"></div></div><div class="fx" id="tz-fx"></div></div></div><figcaption class="tiny" id="tz-cap">Finish animation: Wave</figcaption></figure>
@@ -1059,7 +1059,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.2", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.3", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1099,6 +1099,7 @@ const SETS = {
   fast: { name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110% or 120%. Push your mechs: 90s, ramp rushes, retakes.", tip: REAL_TIP, img: "img/speed-110.webp", alt: "Speed set to 110 percent", codes: [V5] },
   piece: { name: "Piece control", type: "fight", hint: "Take walls and cones first, then reset. Stay calm.", tip: REAL_TIP, codes: [V5] },
   box: { name: "1v1 Build Fights", type: "fight", where: "With a friend or by matchmaking", hint: "Real opponents. Use what you just trained.", codes: [{ name: "Map code", by: "Raider464", value: "1832-0431-4852" }] },
+  turtle: { name: "Turtle Fights", type: "fight", where: "Free for all", hint: "Box fights, free for all. Turtle up, take the walls, win the box.", codes: [{ name: "Map code", by: "martoz", value: "1513-6690-9481" }] },
   real: { name: "Pro Realistics", type: "fight", hint: "Real terrain and loot. High ground, then pressure.", codes: [{ name: "Map code", by: "chap", value: "9520-0654-8075" }] },
   ranked: { name: "Ranked · one focus", type: "live", where: "Fortnite · Ranked", hint: "Pick one focus for every game: only your new mechanic, only crosshair placement, only piece control in fights, or only high-ground retakes." },
   scrims: { name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
@@ -1114,19 +1115,19 @@ const L = (id, name, list, extra) => Object.assign({ id, name, sets: list.map(([
 const GOALS = [
   { id: "better", name: "Daily Pro Routine", text: "Aim, mechanics, fights, ranked, review.", icon: "i-up", lengths: [
     L("short", "Short", [["kovaaks", 8], ["editWall", 5], ["slow", 5], ["fast", 5], ["piece", 7], ["ranked", 20], ["vod", 5], ["fixDrill", 5]]),
-    L("normal", "Normal", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5], ["editWall", 10], ["slow", 8], ["fast", 8], ["piece", 12], ["box", 15], ["brk", 5], ["ranked", 25], ["vod", 10], ["fixDrill", 7]]),
-    L("long", "Long", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 8], ["v5Bounce", 8], ["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["brk", 10], ["box", 25], ["real", 20], ["brk", 10], ["ranked", 45], ["vod", 15], ["fixDrill", 10]]),
-    L("full", "Full day", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["editWall", 15], ["slow", 15], ["fast", 15], ["piece", 20], ["brk", 15], ["box", 40], ["real", 40], ["brk", 30], ["ranked", 120], ["brk", 10], ["vod", 30], ["fixDrill", 20]])
+    L("normal", "Normal", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5], ["editWall", 10], ["slow", 8], ["fast", 8], ["piece", 12], ["box", 15], ["turtle", 10], ["brk", 5], ["ranked", 25], ["vod", 10], ["fixDrill", 7]]),
+    L("long", "Long", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 8], ["v5Bounce", 8], ["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["brk", 10], ["box", 25], ["turtle", 20], ["real", 20], ["brk", 10], ["ranked", 45], ["vod", 15], ["fixDrill", 10]]),
+    L("full", "Full day", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["editWall", 15], ["slow", 15], ["fast", 15], ["piece", 20], ["brk", 15], ["box", 40], ["turtle", 30], ["real", 40], ["brk", 30], ["ranked", 120], ["brk", 10], ["vod", 30], ["fixDrill", 20]])
   ] },
   { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head. Nothing new.", icon: "i-cup", cupTime: true, lengths: [
     L("short", "Short", [["kovaaks", 6], ["v5Flick", 4], ["editWall", 5], ["fast", 5], ["piece", 5], ["prep", 5]]),
-    L("normal", "Normal", [["kovaaks", 8], ["v5Flick", 4], ["v5Bounce", 3], ["editWall", 5], ["slow", 4], ["fast", 5], ["piece", 6], ["box", 5], ["prep", 5]]),
-    L("long", "Long", [["kovaaks", 8], ["v5Flick", 5], ["v5Bounce", 4], ["editWall", 6], ["slow", 5], ["fast", 6], ["piece", 8], ["box", 13], ["prep", 5]])
+    L("normal", "Normal", [["kovaaks", 8], ["v5Flick", 4], ["v5Bounce", 3], ["editWall", 5], ["slow", 4], ["fast", 5], ["piece", 6], ["box", 5], ["turtle", 5], ["prep", 5]]),
+    L("long", "Long", [["kovaaks", 8], ["v5Flick", 5], ["v5Bounce", 4], ["editWall", 6], ["slow", 5], ["fast", 6], ["piece", 8], ["box", 13], ["turtle", 7], ["prep", 5]])
   ] },
   { id: "aim", name: "Quick: Aim", text: "Tjino playlists, V5 aim, real fights.", icon: "i-aim", lengths: [
     L("short", "Short", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5]]),
-    L("normal", "Normal", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 5], ["v5Bounce", 5], ["box", 20]]),
-    L("long", "Long", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["box", 25], ["ranked", 25, { name: "Ranked · crosshair placement", hint: "Every game, only one focus: crosshair placement. Head height, on the next angle." }], ["vod", 10]])
+    L("normal", "Normal", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 5], ["v5Bounce", 5], ["box", 20], ["turtle", 10]]),
+    L("long", "Long", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["box", 25], ["turtle", 15], ["ranked", 25, { name: "Ranked · crosshair placement", hint: "Every game, only one focus: crosshair placement. Head height, on the next angle." }], ["vod", 10]])
   ] },
   { id: "mechanics", name: "Quick: Mechanics", text: "Edit wall, freebuild at 90% and 120%, piece control.", icon: "i-mech", lengths: [
     L("short", "Short", [["editWall", 6], ["slow", 7], ["fast", 7], ["piece", 10]]),
@@ -1141,7 +1142,7 @@ const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], [
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
 const PLANS = [
   { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
-  { id: "standard", name: "Standard", price: 2.99, perks: ["Every routine in every length", "2 own routines", "Everything in Free"] },
+  { id: "standard", name: "Standard", price: 2.99, perks: ["Every routine in every length", "2 own routines", "In-game overlay (Windows app)", "Everything in Free"] },
   { id: "pro", name: "Pro", price: 5.99, perks: ["Unlimited own routines", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
@@ -1416,7 +1417,9 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
   setSound(settings.sound);
   $("snd").addEventListener("click", () => setSound(!settings.sound));
-  const overlayHandlesSound = () => !!(window.replineDesktop && typeof ov !== "undefined" && ov && ov.enabled);
+  // The in-game overlay (Windows app) comes with Standard and Pro.
+  const overlayAllowed = () => planId() !== "free";
+  const overlayHandlesSound = () => !!(window.replineDesktop && typeof ov !== "undefined" && ov && ov.enabled && overlayAllowed());
   function tickSound() {
     if (!settings.sound || overlayHandlesSound()) return;
     try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const o = audio.createOscillator(), g = audio.createGain(); o.type = "sine"; o.frequency.value = 660; g.gain.setValueAtTime(0.0001, audio.currentTime); g.gain.exponentialRampToValueAtTime(0.12, audio.currentTime + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.12); o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + 0.15); } catch (e) {}
@@ -1625,7 +1628,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   let ovSent = 0;
   function overlayState() {
     const l = S.goal && length(S.goal, S.len);
-    if (!S.active || !l || !signedIn()) return { active: false };
+    if (!S.active || !l || !signedIn() || !overlayAllowed()) return { active: false };
     const bl = list(), b = cur(), kill = isKill(b);
     return {
       active: true, routine: `${goal(S.goal).name} · ${l.name}`, idx: S.b, count: bl.length,
@@ -1752,6 +1755,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function topAccount() {
     applyDev();
     try { updateViewBar(); } catch (e) { /* not ready yet */ }
+    try { pushOverlay(true); } catch (e) { /* not ready yet */ }
     ensureLoop();
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
@@ -1845,9 +1849,16 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
           </div>
           <input type="file" id="cs-file" accept="audio/*" hidden>
           <div class="anim-grid" role="group" aria-label="Finish animation">${ALERT_ANIMS.map(([id, nm]) => `<button type="button" data-al-anim="${id}" aria-pressed="${settings.alertAnim === id}">${nm}</button>`).join("")}</div>
-          <button class="pill sm" type="button" id="al-prev" style="justify-self:start">▶ Preview here and in overlay</button>
+          <button class="pill sm" type="button" id="al-prev" style="justify-self:start">${overlayAllowed() ? "▶ Preview here and in overlay" : "▶ Preview"}</button>
           <p class="dr-foot">Sound plays when “Sound at the end of a set” is on (Settings).</p></section>`;
-        if (ov) {
+        if (ov && !overlayAllowed()) {
+          h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="teaser-card">
+            <b>Your set and time left, over your game. <span class="pro">Standard</span></b>
+            <span class="small">The in-game overlay comes with Standard and Pro: set, time left, finish alerts, 8 positions, size and opacity.</span>
+            <button class="pill sm" type="button" id="ov-plans" style="justify-self:start">See plans</button></div>
+            <div class="group" style="margin-top:12px">${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}</div>
+            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+E end routine." : "Hotkeys are off."}</p></section>`;
+        } else if (ov) {
           const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
           h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
             ${sw("ov-on", "Show overlay", ov.enabled)}
@@ -1937,7 +1948,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       document.querySelectorAll("[data-al-anim]").forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
       playMini(false);
     }));
-    on("al-prev", "click", () => { playMini(true); if (DESK && DESK.overlay.preview) DESK.overlay.preview({ sound: settings.sound ? settings.alertSound : "off", anim: settings.alertAnim }); });
+    on("al-prev", "click", () => { playMini(true); if (DESK && DESK.overlay.preview && overlayAllowed()) DESK.overlay.preview({ sound: settings.sound ? settings.alertSound : "off", anim: settings.alertAnim }); });
     if (DESK && ov) {
       const setOv = (patch, msg) => DESK.overlay.set(patch).then((n) => { ov = n; renderDrawer(); if (msg) toast(msg); });
       on("ov-on", "change", (e) => setOv({ enabled: e.target.checked }, e.target.checked ? "Overlay on" : "Overlay off"));
@@ -1952,6 +1963,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("reset-today", "click", () => { confirmReset = confirmReset === "today" ? null : "today"; renderDrawer(); });
     on("rs-no", "click", () => { confirmReset = null; renderDrawer(); });
     on("to-plans", "click", () => { closeDrawer(); go("plans"); });
+    on("ov-plans", "click", () => { closeDrawer(); go("plans"); });
     on("rs-today-yes", "click", () => { confirmReset = null; clearInterval(raf); S = fresh(); store.del(KEY); cloudPush(); toast("Today's progress was reset"); if (view !== "home") go(""); else buildHome(); renderDrawer(); });
     on("reset-streak", "click", () => { confirmReset = confirmReset === "streak" ? null : "streak"; renderDrawer(); });
     on("rs-streak-yes", "click", () => { confirmReset = null; store.del(DAYS); store.del(DONE); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
@@ -2887,7 +2899,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function setViewAs(v) {
     if (v === "dev") store.del("rl.viewAs"); else store.set("rl.viewAs", v);
-    applyDev(); topAccount(); renderDrawer(); updateViewBar(); refreshView();
+    applyDev(); topAccount(); renderDrawer(); updateViewBar(); refreshView(); pushOverlay(true);
     toast(v === "dev" ? "Back to dev view" : `Viewing as ${planWord2(v)}`);
   }
   function updateViewBar() {
