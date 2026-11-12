@@ -166,3 +166,17 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 ## Beim nächsten gemeinsamen Update
 
 - `.github/workflows/repline-windows.yml` löschen. Der Nutzer will kein GitHub, gebaut wird jetzt lokal mit electron-builder und Wine.
+- **Routine beenden (abbrechen, nicht abschließen):**
+  - **Wo:**
+    - im Training, z. B. als Knopf „End routine“ oben bei Ton/Vollbild oder unter den Steuerknöpfen
+    - in der „Resume routine“-Leiste, die auf allen anderen Seiten erscheint, z. B. als kleines × oder „End“ neben dem Pfeil
+  - **Rückfrage im Apple-Stil:** „End this routine? Your progress in it is lost. It doesn't count for your streak.“ mit den Knöpfen „Keep training“ und „End routine“ (rot).
+  - **Folgen:**
+    - Timer und Umstellzeit stoppen, die laufende Routine wird gelöscht (wie „Reset today's progress“).
+    - Der Tag zählt **nicht** für den Streak, „Routines done“ bleibt gleich.
+    - Die Resume-Leiste verschwindet.
+    - Das Overlay in der Windows-App blendet sich aus.
+    - Mit Konto wird auch der gespeicherte Stand gelöscht, damit die Routine nicht auf einem anderen Gerät wieder auftaucht.
+  - **Danach:** zurück zur Routinen-Auswahl (Schritt 1) und Toast „Routine ended“.
+  - **Optional:** In der Windows-App ein Hotkey, z. B. Ctrl+Shift+E, ebenfalls mit Rückfrage in der App.
+  - **Zurück zur Routine springen:** Das gibt es schon über die „Resume routine“-Leiste. Prüfen, dass sie in Website und App gut sichtbar ist und direkt ins Training führt.
