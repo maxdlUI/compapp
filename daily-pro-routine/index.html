@@ -1804,6 +1804,48 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
   let drawerTab = "account", csInfo = false, confirmReset = null;
   const hasCustom = () => !!(account && account.real && (devMode() || (launchActive() && !viewAs()) || (account.items || []).indexOf("custom_sound") >= 0));
+  /* ---------- Creator codes ---------- */
+  let ccEdit = false;
+  const crRate = () => Math.round(((account && account.cr && account.cr.rate) || 0.4) * 100);
+  const euros = (c) => "€" + ((+c || 0) / 100).toFixed(2);
+  function creatorRowHTML() {
+    const cr = account && account.cr;
+    if (cr && cr.creator && !ccEdit) return `<div class="row"><span>Creator code<br><span class="tiny">Supporting <b style="color:var(--porcelain)">${esc(cr.creator)}</b> · ${esc(cr.code || "")}</span></span><span style="display:flex;gap:6px"><button class="pill sm out" type="button" id="cc-change">Change</button><button class="pill sm out" type="button" id="cc-remove">Remove</button></span></div>`;
+    return `<div class="row stack"><label for="cc-in">Creator code</label><span class="inline-in"><input class="in" id="cc-in" type="text" maxlength="24" placeholder="Enter a creator code" autocomplete="off" spellcheck="false"><button class="pill sm" type="button" id="cc-use">Use code</button></span></div>`;
+  }
+  function myCodeHTML() {
+    const cr = (account && account.cr) || {}, code = cr.my_code || account.ref || "";
+    return `<section class="dr-sec"><h3>Your creator code</h3><div class="group">
+      <div class="reflink"><code style="font-size:18px;letter-spacing:2px">${esc(code)}</code><button class="pill sm" type="button" data-copy="${esc(code)}" data-ok="Creator code copied">Copy code</button></div>
+      <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm out" type="button" data-copy="${esc(refLink())}" data-ok="Link copied">Copy link</button></div>
+      <div class="stats"><div><span class="tiny">Link clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Supporters</span><b>${cr.supporters || 0}</b></div><div><span class="tiny">Paying</span><b>${cr.paying_supporters || 0}</b></div><div><span class="tiny">Earned</span><b>${euros(cr.earned_cents)}</b></div></div>
+      <div class="row"><span>You get</span><span class="val">${crRate()} % of every payment from players using your code</span></div>
+      <div class="row"><span>Payout</span><span class="val">${SITE.affiliate.minPayout ? "from " + esc(SITE.affiliate.minPayout) + " " + esc(SITE.affiliate.currency) : "No minimum"}${cr.paid_out_cents ? " · " + euros(cr.paid_out_cents) + " paid out" : ""}</span></div>
+    </div><p class="dr-foot">Players enter your code in their account, or sign up through your link. You earn ${crRate()} % of every payment they make for as long as they keep your code. Payments start soon; until then your code collects supporters.${account.real ? "" : " Demo numbers."}</p></section>`;
+  }
+  async function loadCreator() {
+    if (!(sb && cloudUser)) return;
+    const { data, error } = await sb.rpc("my_creator");
+    if (!error && data && account) { account.cr = data; store.set(ACC, account); if (drawerOpen && drawerTab === "account") renderDrawer(); }
+  }
+  function bindCreator() {
+    const on = (id, fn) => { const el = $(id); if (el) el.addEventListener("click", fn); };
+    on("cc-change", () => { ccEdit = true; renderDrawer(); setTimeout(() => $("cc-in") && $("cc-in").focus(), 30); });
+    on("cc-remove", async () => {
+      if (sb && cloudUser) { const { error } = await sb.rpc("clear_creator_code"); if (error) { toast("Couldn't remove it. Please try again."); return; } }
+      account.cr = Object.assign({}, account.cr, { creator: null, code: null }); store.set(ACC, account); ccEdit = false; renderDrawer(); toast("Creator code removed");
+    });
+    const use = async () => {
+      const v = ($("cc-in").value || "").trim(); if (!v) { toast("Enter a creator code"); return; }
+      if (!(sb && cloudUser)) { account.cr = Object.assign({}, account.cr, { creator: "Demo creator", code: v.toLowerCase() }); ccEdit = false; renderDrawer(); toast("Now supporting Demo creator (demo)"); return; }
+      const { data, error } = await sb.rpc("set_creator_code", { c: v });
+      if (error || !data) { toast("Couldn't save the code. Please try again."); return; }
+      if (data.error) { toast({ not_found: "No creator with this code", self: "That's your own code", signed_out: "Sign in first" }[data.error] || "Couldn't save the code"); return; }
+      ccEdit = false; toast(`Now supporting ${data.creator}`); await loadCreator(); renderDrawer();
+    };
+    on("cc-use", use);
+    const inp = $("cc-in"); if (inp) inp.addEventListener("keydown", (e) => { if (e.key === "Enter") use(); });
+  }
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
     const TABS = [["account", "Account"], ["settings", "Settings"], ["appearance", "Appearance"]];
@@ -1823,14 +1865,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
-      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
-      h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
-          <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
-          <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
-          <div class="row"><span>Commission</span><span class="val">${esc(A.commissionPercent)} % per subscription · ${A.duration === "lifetime" ? "lifetime" : esc(A.duration)}</span></div>
-          <div class="row"><span>Payout</span><span class="val">${A.minPayout ? "from " + esc(A.minPayout) + " " + esc(A.currency) : "No minimum"}${A.payoutMethod ? " · " + esc(A.payoutMethod) : ""}</span></div>
-          ${A.cookieDays != null ? `<div class="row"><span>Referral window</span><span class="val">${esc(A.cookieDays)} days</span></div>` : ""}
-        </div><p class="dr-foot">Share your link. You earn ${esc(A.commissionPercent)} % of every subscription from people who sign up through it, for as long as they stay subscribed. Subscriptions are coming soon, until then your link counts clicks and sign-ups.${account.real ? "" : " Demo numbers."}</p></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
+      h += myCodeHTML();
     }
     if (account) {
       h += `<section class="dr-sec"><div class="group">
@@ -1940,7 +1976,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     on("dc-in", "click", startSignIn);
     document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { drawerTab = b.dataset.tab; csInfo = false; confirmReset = null; renderDrawer(); $("dr-body").scrollTop = 0; }));
     on("set-sound", "change", (e) => { setSound(e.target.checked); });
-    bindRem(); bindDev();
+    bindRem(); bindDev(); bindCreator();
     document.querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => { closeDrawer(); go(b.dataset.nav); }));
     on("wk-goal", "change", (e) => { settings.weekGoal = +e.target.value; saveSettings(); if (view === "home") buildHomeMe(); });
     on("rpc-on", "change", (e) => { settings.rpc = e.target.checked; saveSettings(); pushRpc(); });
@@ -2121,6 +2157,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         if (!ins.error) { cloudList.push({ id: ins.data.id, name: r.name, sets: r.sets, updated_at: ins.data.updated_at }); if (S.goal === "my-" + r.id) S.goal = "my-" + ins.data.id; }
       }
       store.set(MYR, cloudList);
+      try { const mc = await sb.rpc("my_creator"); if (!mc.error && mc.data) account.cr = mc.data; } catch (e) {}
       store.set(ACC, account);
       // training days: merge both ways
       const remote = days.data || [];
