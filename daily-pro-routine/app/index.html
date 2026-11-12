@@ -261,6 +261,18 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #3f8dff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
 .dl-meta { display: block; margin-top: 10px; }
 .row.stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.launch-wrap { padding: 10px var(--gut-r) 0 var(--gut-l); }
+.launch-wrap[hidden] { display: none; }
+.launch { max-width: 1024px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: 20px; background: linear-gradient(90deg, #2a1d4d 0%, #0b2a5c 100%); box-shadow: inset 0 0 0 1px rgba(168, 85, 247, .45); font-size: 14px; }
+.launch-tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; background: linear-gradient(90deg, var(--c4), var(--c3)); color: #fff; white-space: nowrap; }
+.launch-txt { flex: 1 1 260px; color: var(--porcelain); }
+.launch-cd { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
+.launch-cd.big { font-size: clamp(22px, 3.4vw, 34px); letter-spacing: -.5px; }
+.launch-act .pill { min-height: 0; padding: 7px 14px; font-size: 13px; }
+.launch-x { border: 0; background: rgba(255, 255, 255, .1); color: var(--ash); width: 28px; height: 28px; border-radius: 50%; font-size: 17px; line-height: 1; cursor: pointer; }
+.launch-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 28px; margin: 28px 0 24px; border-radius: 28px; background: linear-gradient(135deg, #2a1d4d 0%, #0b2a5c 60%, var(--carbon) 100%); box-shadow: inset 0 0 0 1px rgba(168, 85, 247, .4); }
+.launch-card[hidden] { display: none; }
+@media (max-width: 720px) { .launch-card { grid-template-columns: minmax(0, 1fr); } .launch-card > div:last-child { justify-items: start !important; } }
 .viewas-bar { position: fixed; z-index: 60; top: 78px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; border-radius: 999px; background: #3a2a05; box-shadow: inset 0 0 0 1px #ffd60a; color: #ffd60a; font-size: 13px; font-weight: 600; max-width: calc(100vw - 32px); }
 .viewas-bar[hidden] { display: none; }
 .viewas-bar button { border: 0; border-radius: 999px; background: #ffd60a; color: #000; font: 600 12px var(--text); padding: 6px 12px; cursor: pointer; }
@@ -784,6 +796,13 @@ html.no-scroll { overflow: hidden; }
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
 </header>
+<div class="launch-wrap" id="launch-bar" hidden><div class="launch" role="region" aria-label="Launch month">
+  <span class="launch-tag">Launch month</span>
+  <span class="launch-txt" id="launch-txt"></span>
+  <span class="launch-cd" data-countdown aria-label="Time left"></span>
+  <span class="launch-act" id="launch-act"></span>
+  <button class="launch-x" type="button" id="launch-x" aria-label="Hide for today">×</button>
+</div></div>
 
 <!-- Home -->
 <main class="view" data-view="home" id="v-home">
@@ -967,6 +986,7 @@ html.no-scroll { overflow: hidden; }
   <button class="back" type="button" data-go="">Home</button>
   <h1 class="d-l">Plans.</h1>
   <p class="lead" style="margin-top:12px">Train free. Go further with Standard or Pro.</p>
+  <div class="launch-card" id="plans-launch" hidden></div>
   <div class="plans" id="plans-grid"></div>
   <p class="small" id="plans-note" style="margin-top:20px">Payments open soon. Monthly, cancel anytime.</p>
 </main>
@@ -1086,7 +1106,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.3", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.4", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1215,9 +1235,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   // Dev accounts can look at the site as a Free, Standard or Pro player ("View as" in the account panel).
   const viewAs = () => { const v = account && account.isDev ? store.get("rl.viewAs", null) : null; return v === "free" || v === "standard" || v === "pro" ? v : null; };
   const devMode = () => !!(account && account.isDev && !viewAs());
+  // Launch month: everyone who signs in gets every Standard and Pro feature until LAUNCH_END. After that the plans apply again.
+  const LAUNCH_END = Date.parse("2026-12-13T00:00:00+01:00");
+  const launchActive = () => Date.now() < LAUNCH_END;
   function planId() {
-    if (!(account && account.real)) return "free";
-    if (account.isDev) return viewAs() || "pro";
+    if (!account) return "free";
+    if (account.real && account.isDev) return viewAs() || "pro";
+    if (launchActive()) return "pro";
+    if (!account.real) return "free";
     const base = account.plan || "free", bonus = account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? account.bonusPlan : "free";
     return RANK[bonus] > RANK[base] ? bonus : base;
   }
@@ -1783,6 +1808,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     applyDev();
     try { updateViewBar(); } catch (e) { /* not ready yet */ }
     try { pushOverlay(true); } catch (e) { /* not ready yet */ }
+    try { updateLaunchBar(); } catch (e) { /* not ready yet */ }
     ensureLoop();
     $("acct-open-out").hidden = !!account;
     $("acct-open-in").hidden = !account;
@@ -1796,7 +1822,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
   let drawerTab = "account", csInfo = false, confirmReset = null;
-  const hasCustom = () => !!(account && account.real && (devMode() || (account.items || []).indexOf("custom_sound") >= 0));
+  const hasCustom = () => !!(account && account.real && (devMode() || (launchActive() && !viewAs()) || (account.items || []).indexOf("custom_sound") >= 0));
   function renderDrawer() {
     const A = SITE.affiliate, body = $("dr-body");
     const TABS = [["account", "Account"], ["settings", "Settings"], ["appearance", "Appearance"]];
@@ -1816,7 +1842,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
-      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div></div></section>`;
       h += `<section class="dr-sec"><h3>Affiliate</h3><div class="group">
           <div class="reflink"><code>${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill sm" type="button" data-copy="${esc(refLink())}" data-ok="Referral link copied">Copy</button></div>
           <div class="stats"><div><span class="tiny">Clicks</span><b>${account.clicks || 0}</b></div><div><span class="tiny">Sign-ups</span><b>${account.signups || 0}</b></div><div><span class="tiny">Subscriptions</span><b>0</b></div><div><span class="tiny">Earnings</span><b>${esc(A.currency)}0.00</b></div></div>
@@ -2280,6 +2306,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Plans page ---------- */
   function buildPlans() {
+    const lc = $("plans-launch");
+    lc.hidden = !launchActive();
+    if (launchActive()) {
+      lc.innerHTML = `<div style="display:grid;gap:8px"><span class="launch-tag" style="justify-self:start">Launch month</span><b style="font-size:clamp(22px,3vw,30px);letter-spacing:-.4px">Every Standard and Pro feature is free until ${launchEndText()}.</b><span class="small">For everyone who signs in with Discord: every routine length, unlimited own routines, the in-game overlay and your own sound. After that, Free, Standard and Pro work as shown below.</span></div><div style="display:grid;gap:10px;justify-items:end"><span class="launch-cd big" data-countdown></span>${signedIn() ? '<span class="tiny">You have Pro right now</span>' : '<button class="pill" type="button" data-signin="plans">Sign in with Discord</button>'}</div>`;
+      bindLock(lc); tickLaunch();
+    }
     const cur = planId(), euro = (n) => "€" + n.toFixed(2);
     $("plans-grid").innerHTML = PLANS.map((pl) => `<div class="plan-card${pl.id === "pro" ? " pro-card" : ""}">
       ${pl.id === cur ? '<span class="cur-tag">Current plan</span>' : ""}
@@ -2957,6 +2989,32 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     });
   }
 
+  /* ---------- Launch month: countdown bar ---------- */
+  function launchEndText() { return new Date(LAUNCH_END - 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long" }); }
+  function cdText() {
+    const ms = Math.max(0, LAUNCH_END - Date.now()), t = Math.floor(ms / 1000);
+    const d = Math.floor(t / 86400), h = Math.floor(t % 86400 / 3600), m = Math.floor(t % 3600 / 60), s2 = t % 60, p2 = (n) => String(n).padStart(2, "0");
+    return `${d}d ${p2(h)}h ${p2(m)}m ${p2(s2)}s`;
+  }
+  let launchWasActive = launchActive();
+  function tickLaunch() {
+    const txt = cdText();
+    document.querySelectorAll("[data-countdown]").forEach((el) => { el.textContent = txt; });
+    if (launchWasActive && !launchActive()) { launchWasActive = false; updateLaunchBar(); refreshView(); pushOverlay(true); toast("The launch month is over. Thanks for training with Repline!"); }
+  }
+  function updateLaunchBar() {
+    const bar = $("launch-bar"), hideDay = store.get("rl.launchHide", "");
+    const show = launchActive() && hideDay !== today();
+    bar.hidden = !show;
+    if (!show) return;
+    $("launch-txt").innerHTML = signedIn() ? `You have <b>every Pro feature free</b> until ${esc(launchEndText())}. Try it all.` : `<b>Every Standard and Pro feature is free</b> for everyone who signs in, until ${esc(launchEndText())}.`;
+    $("launch-act").innerHTML = signedIn() ? `<a class="pill out" href="#plans">What's included</a>` : `<button class="pill" type="button" data-signin="">Sign in with Discord</button>`;
+    bindLock($("launch-act"));
+    tickLaunch();
+  }
+  $("launch-x").addEventListener("click", () => { store.set("rl.launchHide", today()); updateLaunchBar(); });
+  setInterval(() => { if (launchActive() || launchWasActive) tickLaunch(); }, 1000);
+
   /* ---------- Resume bar ---------- */
   function updateResume() {
     const bar = $("resume-bar"), l = S.goal && length(S.goal, S.len);
@@ -3042,6 +3100,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (S.goal && (!length(S.goal, S.len) || S.b >= list().length)) { S = fresh(); store.del(KEY); }
   function pushRpc() { if (DESK && DESK.rpc) { try { DESK.rpc.set({ on: settings.rpc !== false, name: settings.rpcName !== false }); } catch (e) {} } }
   pushRpc();
+  updateLaunchBar();
   if (signedIn() && !sb) { applyFreezes(); checkBadges(true); }
   syncDeskReminder(); setInterval(syncDeskReminder, 5 * 60 * 1000);
   ensureLoop();
