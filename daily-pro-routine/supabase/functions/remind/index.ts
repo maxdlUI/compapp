@@ -1,5 +1,5 @@
 // Repline reminders: called every 5 minutes by pg_cron (see 004_gifts_reminders.sql).
-// Also sends a DM for every gifted plan (see sendGiftDMs).
+// Also sends a DM for every gifted plan (see sendGiftDMs) and posts wheel wins in #drops (see postDrops).
 // Sends the daily training reminder and the "streak in danger" alert as a Discord DM from the Repline bot
 // and/or as a web push to the browser/iPhone. It only sends what is due and remembers what it sent,
 // so calling it more often does no harm.
@@ -74,6 +74,54 @@ async function sendGiftDMs() {
   }
   return sent;
 }
+// Wheel wins (item or better) and the monthly jackpot, posted in #drops with a ping. Claimed first, posted once.
+const DROPS_CHANNEL = "1570793070125908108";
+const DROP_COLOR: Record<string, number> = { item: 0x3f8dff, pro3d: 0xa855f7, pro1m: 0xff4fa3, prolife: 0xffcf4a };
+const DROP_ODDS: Record<string, string> = { item: "14 % chance", pro3d: "5 % chance", pro1m: "about 1 in 100", prolife: "1 in 50,000" };
+async function channelPost(content: string, embed: Record<string, unknown>, ping: string) {
+  if (!BOT) return false;
+  const r = await fetch(`https://discord.com/api/v10/channels/${DROPS_CHANNEL}/messages`, {
+    method: "POST", headers: { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ content, embeds: [embed], allowed_mentions: { users: ping ? [ping] : [] } })
+  });
+  return r.ok;
+}
+async function postDrops() {
+  const since = new Date(Date.now() - 2 * 86400000).toISOString();
+  const { data: rows } = await db.from("drops").select("id, user_id, prize, item").in("prize", ["item", "pro3d", "pro1m", "prolife"]).is("posted_at", null).gte("created_at", since).order("id").limit(30);
+  let n = 0;
+  for (const d of rows || []) {
+    const { data: claimed } = await db.from("drops").update({ posted_at: new Date().toISOString() }).eq("id", d.id).is("posted_at", null).select("id");
+    if (!claimed || !claimed.length) continue;
+    const [{ data: prof }, { data: it }] = await Promise.all([
+      db.from("profiles").select("discord_id, username").eq("id", d.user_id).maybeSingle(),
+      d.item ? db.from("drop_items").select("name").eq("id", d.item).maybeSingle() : Promise.resolve({ data: null })
+    ]);
+    const who = prof?.discord_id ? `<@${prof.discord_id}>` : `**${prof?.username || "Someone"}**`;
+    const what = d.prize === "item" ? (it?.name || "a new item") : d.prize === "pro3d" ? "3 days Pro" : d.prize === "pro1m" ? "1 month Pro" : "PRO FOREVER";
+    const head = d.prize === "prolife" ? "🚨🚨 GOLDEN SPIN 🚨🚨 " : d.prize === "pro1m" ? "🔥 " : d.prize === "pro3d" ? "⚡ " : "✨ ";
+    const ok = await channelPost(`${head}${who} won **${what}**!`, {
+      title: what, color: DROP_COLOR[d.prize] || 0x38e0ff, url: SITE,
+      description: `${DROP_ODDS[d.prize] || ""}. Finish a routine and spin for yours on Repline.`,
+      footer: { text: "Repline Drops · repline.pages.dev" }
+    }, prof?.discord_id || "");
+    if (ok) n++;
+  }
+  const { data: jps } = await db.from("jackpots").select("month, user_id, tickets").is("posted_at", null).limit(3);
+  for (const j of jps || []) {
+    const { data: claimed } = await db.from("jackpots").update({ posted_at: new Date().toISOString() }).eq("month", j.month).is("posted_at", null).select("month");
+    if (!claimed || !claimed.length || !j.user_id) continue;
+    const { data: prof } = await db.from("profiles").select("discord_id, username").eq("id", j.user_id).maybeSingle();
+    const who = prof?.discord_id ? `<@${prof.discord_id}>` : `**${prof?.username || "Someone"}**`;
+    const monthName = new Date(`${j.month}-15T12:00:00Z`).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+    if (await channelPost(`🎟️ Golden Ticket draw for ${monthName}: ${who} wins **1 year of Pro**!`, {
+      title: "Monthly jackpot · 1 year Pro", color: 0xffcf4a, url: SITE,
+      description: `Drawn from ${j.tickets} tickets. Every spin is a ticket. Next draw on the 1st.`,
+      footer: { text: "Repline Drops · repline.pages.dev" }
+    }, prof?.discord_id || "")) n++;
+  }
+  return n;
+}
 async function push(sub: unknown, title: string, body: string) {
   if (!sub || !pushReady) return false;
   try { await webpush.sendNotification(sub as webpush.PushSubscription, JSON.stringify({ title, body, url: SITE })); return true; }
@@ -92,7 +140,9 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ discordToken: !!BOT, vapidPublic: !!VPUB, vapidPrivate: !!VPRIV, vapidValid, vapidMatchesSite: VPUB === SITE_VAPID }), { headers: { "Content-Type": "application/json" } });
   }
   const gifts = await sendGiftDMs();
-  if ((body as { gifts?: boolean }).gifts) return new Response(JSON.stringify({ gifts }), { headers: { "Content-Type": "application/json" } });
+  const drops = await postDrops().catch(() => 0);
+  const b2 = body as { gifts?: boolean; drops?: boolean };
+  if (b2.gifts || b2.drops) return new Response(JSON.stringify({ gifts, drops }), { headers: { "Content-Type": "application/json" } });
   const { data: rems, error } = await db.from("reminders").select("*").eq("enabled", true).or("via_discord.eq.true,via_push.eq.true");
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   let sent = 0;
@@ -138,5 +188,5 @@ Deno.serve(async (req) => {
       await db.from("reminders").update({ last_danger: now.date }).eq("user_id", r.user_id);
     }
   }
-  return new Response(JSON.stringify({ checked: rems?.length || 0, sent, gifts }), { headers: { "Content-Type": "application/json" } });
+  return new Response(JSON.stringify({ checked: rems?.length || 0, sent, gifts, drops }), { headers: { "Content-Type": "application/json" } });
 });

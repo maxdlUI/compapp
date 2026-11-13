@@ -762,6 +762,91 @@ img.avatar { object-fit: cover; display: block; }
 .pill.red:hover { background: #ff3b30; }
 .dr-foot { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; line-height: 1.4; margin: 0; }
 html.no-scroll { overflow: hidden; }
+/* ---------- Drops: the reward wheel ---------- */
+.wh-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .wh-grid { grid-template-columns: minmax(0, 1fr); } }
+.wh-stage { position: relative; border-radius: 32px; background: radial-gradient(70% 60% at 50% 45%, #10131b, #000 75%); box-shadow: inset 0 0 0 1px var(--keyline); padding: 28px 16px 22px; display: grid; justify-items: center; gap: 18px; overflow: hidden; isolation: isolate; }
+.wh-stage::before { content: ""; position: absolute; inset: -40%; background: conic-gradient(from 0deg, transparent, rgba(56,224,255,.07), transparent 30%, rgba(168,85,247,.08), transparent 60%); z-index: -1; }
+.anim .wh-stage::before { animation: wh-sweep 14s linear infinite; }
+@keyframes wh-sweep { to { transform: rotate(360deg); } }
+.wh-vig { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, transparent 30%, rgba(0,0,0,.85) 75%); opacity: 0; transition: opacity .5s; pointer-events: none; z-index: 1; }
+.wh-stage.focus .wh-vig { opacity: 1; }
+.wh-box { position: relative; width: min(440px, 84vw); max-width: 100%; aspect-ratio: 1; transition: transform .7s cubic-bezier(.2,.8,.2,1); z-index: 2; }
+.wh-stage.focus .wh-box { transform: scale(1.06); }
+.wh-box canvas { width: 100%; height: 100%; display: block; }
+.wh-flap { position: absolute; top: -6px; left: 50%; width: 34px; height: 54px; transform: translateX(-50%); transform-origin: 50% 12px; z-index: 3; filter: drop-shadow(0 6px 10px rgba(0,0,0,.7)); }
+.wh-flap svg { width: 100%; height: 100%; display: block; }
+.wh-hub { position: absolute; inset: 0; margin: auto; width: 24%; height: 24%; border-radius: 50%; background: radial-gradient(circle at 50% 30%, #222734, #07080b 70%); box-shadow: 0 0 0 3px #1c2029, 0 0 0 6px #0a0b0e, 0 10px 30px rgba(0,0,0,.7); display: grid; place-items: center; z-index: 3; }
+.wh-hub i { width: 46%; height: 46%; border-radius: 50%; background: conic-gradient(from 200deg, var(--c4), var(--c1), var(--c3), var(--c4)); -webkit-mask: radial-gradient(circle, transparent 50%, #000 54%); mask: radial-gradient(circle, transparent 50%, #000 54%); }
+.anim .wh-stage.spinning .wh-hub i { animation: wh-sweep .6s linear infinite; }
+.wh-btn { position: relative; z-index: 2; width: min(320px, 100%); border: 0; border-radius: 980px; padding: 0; height: 62px; overflow: hidden; color: #001018; font-weight: 800; font-size: 17px; letter-spacing: .08em; text-transform: uppercase; background: #0b2a33; box-shadow: 0 0 0 2px rgba(56,224,255,.5), 0 14px 50px -12px var(--c1); touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
+.wh-btn .fill { position: absolute; inset: 0; background: linear-gradient(90deg, var(--c1), var(--c2) 60%, #fff); transform-origin: left; transform: scaleX(var(--pw, 1)); }
+.wh-btn .lbl { position: relative; display: grid; place-items: center; height: 100%; }
+.anim .wh-btn.ready { animation: wh-breathe 1.6s ease-in-out infinite; }
+@keyframes wh-breathe { 50% { box-shadow: 0 0 0 2px rgba(56,224,255,.85), 0 14px 70px -6px var(--c1); transform: scale(1.02); } }
+.wh-btn:disabled { cursor: default; animation: none; color: var(--ash); box-shadow: 0 0 0 1px var(--steel); }
+.wh-btn:disabled .fill { transform: scaleX(0); }
+.wh-side { display: grid; gap: 12px; align-content: start; }
+.wh-card { background: var(--carbon); border-radius: 22px; padding: 16px 18px; display: grid; gap: 10px; }
+.wh-card h3 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.2px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.wh-card h3 small { font-family: var(--mono); font-size: 13px; color: var(--ash); font-weight: 500; }
+.wh-pips { display: flex; gap: 8px; }
+.wh-pips i { flex: 1; height: 12px; border-radius: 6px; background: #000; box-shadow: inset 0 0 0 1px var(--steel); }
+.wh-pips i.on { background: linear-gradient(90deg, var(--c1), var(--c2)); box-shadow: 0 0 14px -2px var(--c1); }
+.wh-bar { height: 12px; border-radius: 6px; background: #000; box-shadow: inset 0 0 0 1px var(--steel); overflow: hidden; }
+.wh-bar > i { display: block; height: 100%; width: var(--p, 0%); border-radius: 6px; background: linear-gradient(90deg, var(--c4), #ff4fa3); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.wh-bar.gold > i { background: linear-gradient(90deg, #ffb020, #ffcf4a, #fff1b3); }
+.wh-bar.blue > i { background: linear-gradient(90deg, var(--c3), var(--c1)); }
+.wh-feed { display: grid; gap: 6px; }
+.wh-feed div { display: flex; gap: 8px; align-items: baseline; font-size: 13px; color: var(--ash); min-width: 0; }
+.wh-feed div b { color: var(--fc, var(--porcelain)); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wh-feed div span:first-child { color: var(--porcelain); }
+.wh-odds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .wh-odds { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .wh-odds { grid-template-columns: minmax(0, 1fr); } }
+.wh-odd { background: var(--carbon); border-radius: 20px; padding: 16px; display: grid; gap: 4px; position: relative; overflow: hidden; }
+.wh-odd::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--tc); box-shadow: 0 0 16px var(--tc); }
+.wh-odd b { font-size: 18px; color: var(--tc); letter-spacing: -.2px; }
+.wh-odd .pct { font-family: var(--mono); font-size: 14px; }
+.wh-col { display: grid; gap: 22px; }
+.wh-group { display: grid; gap: 10px; }
+.wh-group h3 { margin: 0; font-size: 19px; font-weight: 600; }
+.wh-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.wh-item { position: relative; border: 0; border-radius: 18px; background: var(--carbon); padding: 12px; display: grid; gap: 8px; justify-items: start; text-align: left; color: var(--porcelain); cursor: pointer; min-width: 0; font-size: 14px; }
+.wh-item .sw { width: 100%; height: 52px; border-radius: 12px; display: grid; place-items: center; font-weight: 700; font-size: 14px; overflow: hidden; }
+.wh-item span { font-size: 13px; color: var(--ash); }
+.wh-item[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--blue); }
+.wh-item[aria-pressed="true"] span { color: var(--blue); }
+.wh-item.locked { cursor: default; opacity: .45; }
+.wh-item.locked .sw { background: #000 !important; color: var(--ash); box-shadow: inset 0 0 0 1px var(--steel); }
+.wh-win { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.74); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); overflow: hidden; }
+.wh-rays { position: absolute; width: 1100px; height: 1100px; left: 50%; top: 50%; margin: -550px 0 0 -550px; background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--wc) 38%, transparent) 0 8deg, transparent 8deg 20deg); -webkit-mask: radial-gradient(circle, #000 0, transparent 58%); mask: radial-gradient(circle, #000 0, transparent 58%); }
+.anim .wh-rays { animation: wh-sweep 9s linear infinite; }
+.wh-wcard { position: relative; display: grid; gap: 10px; justify-items: center; text-align: center; padding: 28px 30px 24px; border-radius: 28px; width: min(380px, 100%); background: radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--wc) 28%, #0d0f13), #0b0d11 70%); box-shadow: 0 0 0 2px color-mix(in srgb, var(--wc) 70%, transparent), 0 0 80px -10px var(--wc), 0 30px 80px rgba(0,0,0,.8); }
+.anim .wh-wcard { animation: wh-slam .6s cubic-bezier(.2,1.8,.35,1); }
+@keyframes wh-slam { 0% { transform: scale(.3) rotate(-6deg); opacity: 0; } 60% { transform: scale(1.08) rotate(1deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+.wh-kick { font-family: var(--mono); font-weight: 800; font-size: 12px; letter-spacing: .3em; color: var(--wc); }
+.wh-big { font-family: var(--display); font-size: clamp(34px, 7vw, 54px); font-weight: 800; letter-spacing: -.03em; line-height: 1.02; text-shadow: 0 0 30px color-mix(in srgb, var(--wc) 60%, transparent); }
+.wh-big.gold { background: linear-gradient(90deg, #fff4c2, #ffcf4a, #ffa51f, #fff4c2); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.anim .wh-big.gold { animation: wh-shine 2.2s linear infinite; }
+@keyframes wh-shine { to { background-position: 300% 0; } }
+.wh-collect { margin-top: 6px; border: 0; border-radius: 980px; padding: 13px 30px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #000; background: var(--wc); box-shadow: 0 10px 40px -10px var(--wc); cursor: pointer; font-size: 15px; }
+.wh-fx { position: fixed; inset: 0; pointer-events: none; z-index: 95; width: 100%; height: 100%; }
+.wh-flash { position: fixed; inset: 0; z-index: 94; pointer-events: none; background: radial-gradient(circle at 50% 40%, var(--fc), transparent 62%); opacity: 0; }
+.wh-flash.on { animation: wh-flash 1.4s ease-out; }
+@keyframes wh-flash { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; } }
+.quake { animation: wh-quake .55s cubic-bezier(.36,.07,.19,.97); }
+@keyframes wh-quake { 10%, 90% { transform: translate(-2px, 1px); } 20%, 80% { transform: translate(4px, -2px); } 30%, 50%, 70% { transform: translate(-7px, 3px); } 40%, 60% { transform: translate(7px, -3px); } }
+.spin-cta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 16px 18px; border-radius: 22px; background: linear-gradient(120deg, rgba(56,224,255,.16), rgba(168,85,247,.16)); box-shadow: inset 0 0 0 1px rgba(56,224,255,.35); }
+.spin-cta b { font-size: 19px; }
+.lb-title { display: block; font-size: 12px; color: var(--ash); letter-spacing: 0; font-weight: 500; }
+/* Themes and backgrounds from Drops */
+.th-light .pill:not(.out), .th-light .pill:not(.out):hover { color: #000; }
+html.bg-aurora body { background: radial-gradient(60% 45% at 15% 0%, rgba(56,224,255,.16), transparent 70%), radial-gradient(50% 45% at 90% 8%, rgba(168,85,247,.2), transparent 70%), var(--obsidian); background-attachment: fixed; }
+html.bg-grid body { background: linear-gradient(rgba(63,141,255,.07) 1px, transparent 1px) 0 0 / 44px 44px, linear-gradient(90deg, rgba(63,141,255,.07) 1px, transparent 1px) 0 0 / 44px 44px, var(--obsidian); background-attachment: fixed; }
+html.bg-stars body { background: radial-gradient(1.5px 1.5px at 20% 30%, #fff8, transparent), radial-gradient(1px 1px at 70% 20%, #fff7, transparent), radial-gradient(1.5px 1.5px at 40% 80%, #fff6, transparent), radial-gradient(1px 1px at 85% 65%, #fff8, transparent), radial-gradient(1px 1px at 10% 90%, #fff6, transparent), radial-gradient(1.2px 1.2px at 55% 50%, #fff5, transparent) 0 0 / 320px 320px, var(--obsidian); background-attachment: fixed; }
+html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,106,43,.22), transparent 70%), radial-gradient(60% 40% at 80% 100%, rgba(255,79,163,.18), transparent 70%), var(--obsidian); background-attachment: fixed; }
+@media (prefers-reduced-motion: reduce) { .quake { animation: none; } }
 </style>
 
 </head>
@@ -797,7 +882,7 @@ html.no-scroll { overflow: hidden; }
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <a class="pill sm" href="#goal">Start routine</a>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
@@ -979,6 +1064,7 @@ html.no-scroll { overflow: hidden; }
     <div style="display:grid;gap:16px;justify-items:start">
       <h1 class="d-xl burst">Done.</h1>
       <p class="lead" id="done-sum"></p>
+      <div id="done-spin"></div>
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
     <div style="display:grid;gap:20px">
@@ -1076,6 +1162,12 @@ html.no-scroll { overflow: hidden; }
   <button class="back" type="button" data-go="">Home</button>
   <div class="vhead"><div><h1 class="d-l">Friends.</h1><p class="lead">Train with your duo. Beat your friends.</p></div></div>
   <div id="friends-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="drops" id="v-drops" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Drops.</h1><p class="lead">Finish a routine, spin the wheel. Up to 3 spins a day.</p></div></div>
+  <div id="drops-body"></div>
 </main>
 
 <div class="resume" id="resume-bar" hidden>
@@ -1727,6 +1819,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const rt = store.get(ROUT, {}); rt[t] = (rt[t] || 0) + 1; store.set(ROUT, rt);
     store.set(FIN, store.get(FIN, []).concat([{ t: Date.now(), g: S.goal }]).slice(-300));
     afterFinish();
+    doneSpinCTA();
     const z = goal(S.goal), l = length(S.goal, S.len);
     $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
@@ -1793,7 +1886,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     try {
       if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick();
       else if (view === "plans") buildPlans(); else if (view === "plan") buildPlan();
-      else if (view === "board") buildBoard(); else if (view === "stats") buildStats(); else if (view === "badges") buildBadges(); else if (view === "friends") buildFriends();
+      else if (view === "board") buildBoard(); else if (view === "stats") buildStats(); else if (view === "badges") buildBadges(); else if (view === "friends") buildFriends(); else if (view === "drops") buildDrops();
     } catch (e) {}
     updateResume();
   }
@@ -1814,6 +1907,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function topAccount() {
     applyDev();
+    try { applyCosmetics(); } catch (e) { /* not ready yet */ }
     try { updateViewBar(); } catch (e) { /* not ready yet */ }
     try { pushOverlay(true); } catch (e) { /* not ready yet */ }
     try { updateLaunchBar(); } catch (e) { /* not ready yet */ }
@@ -1891,7 +1985,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
+      h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="drops">Drops</button><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
       h += myCodeHTML();
     }
@@ -2083,7 +2177,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         try { await sb.auth.signOut(); } catch (e) {}
         cloudUser = null;
       }
-      account = null; [ACC, DAYS, DONE, KEY, MYR, ROUT, FIN, MINS, FROZ, BADGES, "rl.rank", "rl.last", "rl.imports"].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
+      account = null; [ACC, DAYS, DONE, KEY, MYR, ROUT, FIN, MINS, FROZ, BADGES, "rl.rank", "rl.last", "rl.imports", "rl.drop", "rl.demodrop"].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
     });
   }
   function drawMini(pre) {
@@ -2715,6 +2809,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       <div class="c-card" style="background:var(--graphite);box-shadow:inset 0 0 0 1px var(--keyline)"><b>Fair play</b><span class="tiny" style="font-size:13px;line-height:1.5">Signed-in accounts only, at least 7 days old. Dev accounts don't take part. One account per person. Suspicious timers are checked and can be removed.</span></div>
     </div>`;
   }
+  const nameStyle = (r) => (r && /^#[0-9a-f]{6}$/i.test(r.name_color || "") ? ` style="color:${r.name_color};text-shadow:0 0 12px ${r.name_color}66"` : "");
   async function buildBoard() {
     const body = $("board-body"), fo = !!store.get("rl.fo", false);
     $("fo-only").checked = fo;
@@ -2730,7 +2825,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const me = rows.find((r) => r.is_me);
     let pod = "";
     if (top.length >= 3 && !fo) {
-      pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b>${esc(r.username)}</b><span class="tiny">${val(r)}${st ? "" : " points"}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
+      pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b${nameStyle(r)}>${esc(r.username)}</b>${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}<span class="tiny">${val(r)}${st ? "" : " points"}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
     }
     const shown = rows.filter((r) => !(pod && r.rank <= 3)).filter((r) => r.rank <= 50 || r.is_me);
     let h = `<div class="lb head"><span>Rank</span><span></span><span>Player</span><span>${st ? "Streak" : "Points"}</span><span>${st ? "" : "Streak"}</span></div>`;
@@ -2738,7 +2833,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     shown.forEach((r) => {
       if (r.rank > lastRank + 1 && r.is_me) h += `<div class="tiny" style="text-align:center;padding:4px">· · ·</div>`;
       lastRank = r.rank;
-      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}${esc(r.username)}${r.training_now ? '<span class="live">Training now</span>' : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
+      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}<span${nameStyle(r)}>${esc(r.username)}</span>${r.training_now ? '<span class="live">Training now</span>' : ""}${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
     });
     const others = rows.filter((r) => !r.is_me && (st ? r.streak > 0 : r.points > 0)).length;
     let note = "";
@@ -2919,6 +3014,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const nb = nextBadge(), rm = remSummary(), fz = settings.freezes || 0;
     const rank = store.get("rl.rank", null);
     $("me-cards").innerHTML = `
+      ${dropCardHTML()}
       <a class="c-card" href="#stats"><span class="tiny">This week</span><div style="display:flex;align-items:center;gap:16px"><svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="${wd} of ${goalN} training days this week"><circle cx="36" cy="36" r="30" fill="none" stroke="#333336" stroke-width="8"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="#38e0ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(circ * frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 36 36)"></circle></svg><div><span class="big-n">${wd}<small> / ${goalN} days</small></span><br><span class="tiny">Stats ›</span></div></div><div class="wk" aria-hidden="true">${marks.join("")}</div></a>
       <a class="c-card" href="#badges"><span class="tiny">Streak</span><span class="big-n">${s}<small> day${s === 1 ? "" : "s"}</small></span><span class="frz">${svgI("snow", ' style="stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round"')}${fz} streak freeze${fz === 1 ? "" : "s"} ready</span><span class="tiny">Best: ${bestStreak()} days</span></a>
       <a class="c-card" href="#board" id="me-rank"><span class="tiny">Weekly leaderboard</span><span class="big-n">${rank && rank.rank ? "#" + rank.rank + `<small> of ${rank.total}</small>` : "–"}</span><span class="tiny">${rank && rank.note ? esc(rank.note) : "Train to climb"}</span></a>
@@ -2940,6 +3036,461 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     store.set("rl.rank", info);
     const el = $("me-rank");
     if (el && view === "home") el.innerHTML = `<span class="tiny">Weekly leaderboard</span><span class="big-n">${info.rank ? "#" + info.rank + `<small> of ${info.total}</small>` : "–"}</span><span class="tiny">${esc(info.note || "")}</span>`;
+  }
+
+  /* ---------- Drops · the reward wheel ----------
+     One spin per finished routine (3 a day). The server draws the prize (spin_drop); the wheel only shows it.
+     Item-or-better wins are posted in Discord #drops by the Repline bot. */
+  const PRIZE = {
+    pts10: { label: "+10 PTS", big: "+10", sub: "Leaderboard points", c: "#8fa3b8", tier: 0 },
+    pts15: { label: "+15 PTS", big: "+15", sub: "Leaderboard points", c: "#8fa3b8", tier: 0 },
+    pts25: { label: "+25 PTS", big: "+25", sub: "Leaderboard points", c: "#8fa3b8", tier: 0 },
+    pts50: { label: "+50 PTS", big: "+50", sub: "Leaderboard points", c: "#38e0ff", tier: 1 },
+    freeze: { label: "STREAK FREEZE", big: "Streak freeze", sub: "Saves your streak on a missed day", c: "#38e0ff", tier: 1 },
+    item: { label: "NEW ITEM", big: "New item", sub: "Added to your collection", c: "#3f8dff", tier: 2 },
+    pro3d: { label: "3 DAYS PRO", big: "3 days Pro", sub: "Active right now", c: "#a855f7", tier: 3 },
+    pro1m: { label: "1 MONTH PRO", big: "1 month Pro", sub: "Active right now", c: "#ff4fa3", tier: 4 },
+    prolife: { label: "PRO FOREVER", big: "Pro forever", sub: "Gold name and gold theme unlocked", c: "#ffcf4a", tier: 5 }
+  };
+  const ITEM_LIST = [
+    { id: "theme_violet", kind: "theme", name: "Violet theme", value: "#a855f7" },
+    { id: "theme_ember", kind: "theme", name: "Ember theme", value: "#ff6a2b" },
+    { id: "theme_mint", kind: "theme", name: "Mint theme", value: "#2ee6a6", light: true },
+    { id: "theme_rose", kind: "theme", name: "Rose theme", value: "#ff4fa3" },
+    { id: "theme_gold", kind: "theme", name: "Gold theme", value: "#ffcf4a", light: true, ex: true },
+    { id: "bg_aurora", kind: "bg", name: "Aurora background", value: "aurora", sw: "radial-gradient(60% 80% at 20% 0%,rgba(56,224,255,.5),transparent 70%),radial-gradient(60% 80% at 90% 10%,rgba(168,85,247,.55),#000 75%)" },
+    { id: "bg_grid", kind: "bg", name: "Grid background", value: "grid", sw: "linear-gradient(rgba(63,141,255,.4) 1px,transparent 1px) 0 0/12px 12px,linear-gradient(90deg,rgba(63,141,255,.4) 1px,transparent 1px) 0 0/12px 12px,#000" },
+    { id: "bg_stars", kind: "bg", name: "Starfield background", value: "stars", sw: "radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 65%,#fff,transparent),#000" },
+    { id: "bg_sunset", kind: "bg", name: "Sunset background", value: "sunset", sw: "radial-gradient(90% 70% at 50% 120%,rgba(255,106,43,.75),transparent 70%),radial-gradient(70% 60% at 85% 110%,rgba(255,79,163,.6),#000 75%)" },
+    { id: "title_edit", kind: "title", name: "Title: Edit Machine", value: "Edit Machine" },
+    { id: "title_box", kind: "title", name: "Title: Box God", value: "Box God" },
+    { id: "title_aim", kind: "title", name: "Title: Aim Lab Rat", value: "Aim Lab Rat" },
+    { id: "title_grind", kind: "title", name: "Title: No Days Off", value: "No Days Off" },
+    { id: "title_clutch", kind: "title", name: "Title: Clutch King", value: "Clutch King" },
+    { id: "title_piece", kind: "title", name: "Title: Piece Control Pro", value: "Piece Control Pro" },
+    { id: "color_cyan", kind: "color", name: "Cyan name", value: "#38e0ff" },
+    { id: "color_violet", kind: "color", name: "Violet name", value: "#c084fc" },
+    { id: "color_pink", kind: "color", name: "Pink name", value: "#ff4fa3" },
+    { id: "color_mint", kind: "color", name: "Mint name", value: "#2ee6a6" },
+    { id: "color_gold", kind: "color", name: "Gold name", value: "#ffcf4a", ex: true }
+  ];
+  const itemById = (id) => ITEM_LIST.find((i) => i.id === id) || null;
+  const WSEG = [["pts10", 40], ["freeze", 34], ["item", 30], ["pts15", 40], ["pts50", 34], ["pro3d", 18], ["pts25", 40], ["item", 30], ["freeze", 34], ["pro1m", 12], ["pts10", 40], ["prolife", 8]];
+  const DROPC = "rl.drop", DEMOD = "rl.demodrop";
+  let drop = null, spinning = false;
+
+  /* cached owned items, so themes apply right away on the next visit */
+  const ownedItems = () => new Set((store.get(DROPC, {}).items) || []);
+  function applyCosmetics() {
+    const on = signedIn(), owned = ownedItems();
+    const th = on && settings.theme && owned.has(settings.theme) ? itemById(settings.theme) : null;
+    ["--blue", "--blue-hover", "--link"].forEach((k) => root.style.removeProperty(k));
+    if (th) { root.style.setProperty("--blue", th.value); root.style.setProperty("--blue-hover", th.value); root.style.setProperty("--link", th.value); }
+    root.classList.toggle("th-light", !!(th && th.light));
+    ["aurora", "grid", "stars", "sunset"].forEach((b) => root.classList.remove("bg-" + b));
+    const bg = on && settings.bg && owned.has(settings.bg) ? itemById(settings.bg) : null;
+    if (bg) root.classList.add("bg-" + bg.value);
+  }
+  function cacheDrop() {
+    if (!drop) return;
+    store.set(DROPC, { day: today(), used: drop.used || 0, items: drop.items || [] });
+    applyCosmetics();
+  }
+  /* routines finished today count right away, even before the server has the new day */
+  const spinsEarned = () => Math.max(drop ? drop.earned || 0 : 0, Math.min(3, routinesOn(today())));
+  const spinsUsed = () => { const c = store.get(DROPC, {}); return Math.max(drop ? drop.used || 0 : 0, c.day === today() ? c.used || 0 : 0); };
+  const spinsLeft = () => Math.max(0, spinsEarned() - spinsUsed());
+
+  /* demo mode (no account backend): same rules, kept in this browser */
+  function demoState() {
+    const d = store.get(DEMOD, { day: "", used: 0, since: 0, tickets: 0, items: [], title: null, color: null });
+    if (d.day !== today()) { d.day = today(); d.used = 0; }
+    return d;
+  }
+  function demoDrop() {
+    const d = demoState();
+    return { earned: Math.min(3, routinesOn(today())), used: d.used, since: d.since, tickets: d.tickets, all_tickets: 412 + d.tickets, items: d.items, title: d.title, name_color: d.color, demo: true,
+      feed: [{ u: "kxvin", prize: "item", item_name: "Aurora background" }, { u: "lucaedits", prize: "pro3d" }, { u: "tiltproof", prize: "item", item_name: "Title: Box God" }, { u: "jonasfn", prize: "pro1m" }] };
+  }
+  function demoSpin(full) {
+    const d = demoState(), earned = Math.min(3, routinesOn(today()));
+    if (d.used >= earned) return { error: "no_spins" };
+    let r = Math.random() * 100; if (d.since >= 9) r = 80 + Math.random() * 20;
+    let k = r < 55 ? ["pts10", "pts15", "pts25"][Math.floor(Math.random() * 3)] : r < 80 ? (Math.random() < 0.5 ? "freeze" : "pts50") : r < 94 ? "item" : r < 99 ? "pro3d" : r < 99.998 ? "pro1m" : "prolife";
+    if (k === "freeze" && full) k = "pts50";
+    let it = null;
+    if (k === "item") { const pool = ITEM_LIST.filter((i) => !i.ex && d.items.indexOf(i.id) < 0); if (pool.length) { it = pool[Math.floor(Math.random() * pool.length)]; d.items.push(it.id); } else k = "pts50"; }
+    if (k === "prolife") ["theme_gold", "color_gold"].forEach((x) => { if (d.items.indexOf(x) < 0) d.items.push(x); });
+    d.used++; d.tickets++; d.since = PRIZE[k].tier >= 2 ? 0 : d.since + 1;
+    store.set(DEMOD, d);
+    return { prize: k, item: it ? it.id : null, item_name: it ? it.name : null, points: { pts10: 10, pts15: 15, pts25: 25, pts50: 50 }[k] || 0, left: earned - d.used, earned };
+  }
+
+  async function loadDrop() {
+    if (!signedIn()) { drop = null; return null; }
+    if (sb && cloudUser) {
+      try { const { data, error } = await sb.rpc("drop_status", { client_day: today() }); if (!error && data) drop = data; } catch (e) { /* keep the last state */ }
+    } else drop = demoDrop();
+    cacheDrop();
+    return drop;
+  }
+
+  /* home card + done screen */
+  function dropCardHTML() {
+    const left = spinsLeft(), routines = routinesOn(today());
+    const txt = left > 0 ? `${left} spin${left === 1 ? "" : "s"} ready` : routines >= 3 ? "All spins used" : "Finish a routine";
+    const sub = left > 0 ? "Tap to spin the wheel" : routines >= 3 ? "New spins tomorrow" : "Every routine gives one spin";
+    return `<a class="c-card" href="#drops"${left > 0 ? ' style="box-shadow:inset 0 0 0 1px rgba(56,224,255,.45);background:linear-gradient(135deg,rgba(56,224,255,.14),var(--carbon) 70%)"' : ""}><span class="tiny"${left > 0 ? ' style="color:var(--c1)"' : ""}>Drops</span><b style="font-size:21px">${txt}</b><span class="tiny">${sub}</span></a>`;
+  }
+  function doneSpinCTA() {
+    const el = $("done-spin"); if (!el) return;
+    if (!signedIn()) { el.innerHTML = ""; return; }
+    const n = Math.min(3, routinesOn(today()));
+    el.innerHTML = n > 0 ? `<a class="spin-cta" href="#drops"><span style="display:grid;gap:2px"><b>You earned a spin</b><span class="small">Spin the wheel for Pro, items and points.</span></span><span class="pill">Spin now</span></a>` : "";
+    if (sb && cloudUser) loadDrop().then(() => { const left = spinsLeft(); if (left <= 0 && el) el.innerHTML = ""; });
+  }
+
+  /* ---------- page ---------- */
+  async function buildDrops() {
+    if (spinning) return;
+    const body = $("drops-body");
+    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to spin the wheel", "drops"); bindLock(body); return; }
+    if (!drop) body.innerHTML = '<p class="small">Loading…</p>';
+    await loadDrop();
+    if (view !== "drops") return;
+    if (!drop) { body.innerHTML = '<p class="small">Couldn\'t load your spins. Please try again.</p>'; return; }
+    const odds = [["+10 to +25 points", "55 %", "#8fa3b8"], ["Streak freeze or +50 points", "25 %", "#38e0ff"], ["New item", "14 %", "#3f8dff"], ["3 days Pro", "5 %", "#a855f7"], ["1 month Pro", "about 1 in 100", "#ff4fa3"], ["Pro forever", "1 in 50,000", "#ffcf4a"]];
+    body.innerHTML = `<div style="display:grid;gap:44px">
+      <div class="wh-grid">
+        <div class="wh-stage" id="wh-stage">
+          <span class="wh-vig" aria-hidden="true"></span>
+          <div class="wh-box" id="wh-box">
+            <span class="wh-flap" id="wh-flap" aria-hidden="true"><svg viewBox="0 0 34 54"><circle cx="17" cy="12" r="11" fill="#1c2029" stroke="#3a4150" stroke-width="2"/><path d="M6 14 L17 52 L28 14 Z" fill="#eef2f7"/><circle cx="17" cy="12" r="5" fill="#38e0ff"/></svg></span>
+            <canvas id="wh-canvas" width="760" height="760" aria-label="Prize wheel"></canvas>
+            <span class="wh-hub" aria-hidden="true"><i></i></span>
+          </div>
+          <button class="wh-btn" type="button" id="wh-spin"><span class="fill" aria-hidden="true"></span><span class="lbl" id="wh-lbl">Hold to spin</span></button>
+          <p class="tiny" id="wh-hint" style="text-align:center;position:relative;z-index:2;margin:0"></p>
+        </div>
+        <aside class="wh-side" aria-label="Your spins">
+          <div class="wh-card"><h3>Spins today <small id="wh-left"></small></h3><div class="wh-pips" id="wh-pips"></div><span class="tiny">One spin for every finished routine, up to 3 a day.</span></div>
+          <div class="wh-card"><h3>Guaranteed item <small id="wh-pity"></small></h3><div class="wh-bar"><i id="wh-pity-bar"></i></div><span class="tiny">At the latest every 10th spin wins an item or better.</span></div>
+          <div class="wh-card"><h3>Collection <small id="wh-col"></small></h3><div class="wh-bar blue"><i id="wh-col-bar"></i></div></div>
+          <div class="wh-card"><h3>Golden Tickets <small id="wh-tix"></small></h3><div class="wh-bar gold"><i id="wh-tix-bar"></i></div><span class="tiny" id="wh-jp"></span></div>
+          <div class="wh-card"><h3>Latest wins <small>${drop.demo ? "demo" : "live"}</small></h3><div class="wh-feed" id="wh-feed"></div></div>
+        </aside>
+      </div>
+      <section style="display:grid;gap:16px"><h2 class="d-m">Your collection.</h2><div class="wh-col" id="wh-collection"></div></section>
+      <section style="display:grid;gap:16px"><h2 class="d-m">What you can win.</h2>
+        <div class="wh-odds">${odds.map((o) => `<div class="wh-odd" style="--tc:${o[2]}"><b>${o[0]}</b><span class="pct">${o[1]}</span></div>`).join("")}</div>
+        <p class="small">Every spin is drawn on the server and is also one Golden Ticket for the monthly draw: one ticket wins a year of Pro on the 1st. Spins can't be bought, and Pro doesn't get more of them. New items and better are posted in #drops on our Discord.</p>
+      </section>
+    </div>`;
+    wheelInit();
+    dropUI();
+    renderCollection();
+  }
+
+  function dropUI() {
+    if (!drop || view !== "drops") return;
+    const left = spinsLeft(), earned = spinsEarned(), since = drop.since || 0, owned = (drop.items || []).length;
+    $("wh-left").textContent = `${left} / ${earned}`;
+    $("wh-pips").innerHTML = [0, 1, 2].map((i) => `<i class="${i < earned ? (i < earned - left ? "" : "on") : ""}"${i >= earned ? ' style="opacity:.35"' : ""}></i>`).join("");
+    const need = 10 - since; $("wh-pity").textContent = need <= 1 ? "next spin" : `in ${need} spins`;
+    $("wh-pity-bar").style.setProperty("--p", Math.min(100, since * 10) + "%");
+    $("wh-col").textContent = `${owned} / ${ITEM_LIST.length}`; $("wh-col-bar").style.setProperty("--p", (owned / ITEM_LIST.length * 100) + "%");
+    $("wh-tix").textContent = String(drop.tickets || 0);
+    $("wh-tix-bar").style.setProperty("--p", Math.min(100, (drop.tickets || 0) / 90 * 100) + "%");
+    const nd = new Date(); const next = new Date(nd.getFullYear(), nd.getMonth() + 1, 1); const days = Math.ceil((next - nd) / 864e5);
+    $("wh-jp").textContent = `Every spin is a ticket for 1 year of Pro. Draw in ${days} day${days === 1 ? "" : "s"}${drop.all_tickets ? `, ${drop.all_tickets} tickets so far` : ""}.${drop.last_jackpot && drop.last_jackpot.username ? ` Last winner: ${drop.last_jackpot.username}.` : ""}`;
+    $("wh-feed").innerHTML = (drop.feed || []).length ? drop.feed.map((f) => { const p = PRIZE[f.prize] || PRIZE.item; return `<div style="--fc:${p.c}"><span>${esc(f.u || "Someone")}</span><span>won</span><b>${esc(f.item_name || p.big)}</b></div>`; }).join("") : '<span class="tiny">No big wins yet this month. Be the first.</span>';
+    const btn = $("wh-spin"), lbl = $("wh-lbl"), hint = $("wh-hint");
+    btn.disabled = left <= 0 || spinning; btn.classList.toggle("ready", left > 0 && !spinning);
+    lbl.textContent = spinning ? "Spinning…" : left > 0 ? "Hold to spin" : earned >= 3 ? "Back tomorrow" : "Finish a routine";
+    hint.textContent = left > 0 ? "Tap works too. Hold longer for a faster spin." : earned >= 3 ? "You used all 3 spins today. New spins at midnight." : "Every finished routine gives you one spin.";
+    if (!(left > 0) && earned < 3) hint.innerHTML = `Every finished routine gives you one spin. <a href="#goal">Start a routine</a>`;
+  }
+
+  function renderCollection() {
+    const el = $("wh-collection"); if (!el || !drop) return;
+    const owned = new Set(drop.items || []);
+    const groups = [["theme", "Themes", "Changes the accent color of Repline."], ["bg", "Backgrounds", "Sits behind every page."], ["title", "Titles", "Shown under your name on leaderboards."], ["color", "Name colors", "Your name on leaderboards."]];
+    el.innerHTML = groups.map(([kind, title, note]) => {
+      const cur = kind === "theme" ? settings.theme || "" : kind === "bg" ? settings.bg || "" : kind === "title" ? (ITEM_LIST.find((i) => i.kind === "title" && i.value === drop.title) || {}).id || "" : (ITEM_LIST.find((i) => i.kind === "color" && i.value === drop.name_color) || {}).id || "";
+      const def = { theme: ["Default", "linear-gradient(135deg,#0071e3,#2997ff)"], bg: ["None", "#000"], title: ["No title", "#000"], color: ["Default", "#000"] }[kind];
+      let h = `<button class="wh-item" type="button" data-eq="${kind}" data-id="" aria-pressed="${cur === "" ? "true" : "false"}"><span class="sw" style="background:${def[1]};box-shadow:inset 0 0 0 1px var(--steel)">${kind === "color" ? '<b style="color:var(--porcelain)">Aa</b>' : ""}</span><b style="font-size:14px">${def[0]}</b><span>${cur === "" ? "Equipped" : "Use"}</span></button>`;
+      ITEM_LIST.filter((i) => i.kind === kind).forEach((i) => {
+        const has = owned.has(i.id), on = has && cur === i.id;
+        const sw = kind === "theme" ? `background:linear-gradient(135deg,${i.value},${i.value}99)` : kind === "bg" ? `background:${i.sw}` : kind === "color" ? "background:#000" : "background:#000";
+        const inner = !has ? "?" : kind === "color" ? `<b style="color:${i.value};text-shadow:0 0 12px ${i.value}">Aa</b>` : kind === "title" ? `<b style="font-size:12px;color:var(--porcelain);padding:0 6px;text-align:center">${esc(i.value)}</b>` : "";
+        h += `<button class="wh-item${has ? "" : " locked"}" type="button" data-eq="${kind}" data-id="${i.id}" aria-pressed="${on ? "true" : "false"}" ${has ? "" : 'aria-disabled="true"'}><span class="sw" style="${sw}">${inner}</span><b style="font-size:14px">${has ? esc(i.name.replace(/^Title: /, "")) : i.ex ? "Pro forever only" : "Not found yet"}</b><span>${has ? (on ? "Equipped" : "Use") : "Win it on the wheel"}</span></button>`;
+      });
+      return `<div class="wh-group"><h3>${title}</h3><span class="small">${note}</span><div class="wh-items">${h}</div></div>`;
+    }).join("");
+    el.querySelectorAll("[data-eq]").forEach((b) => b.addEventListener("click", () => equip(b.dataset.eq, b.dataset.id)));
+  }
+
+  async function equip(kind, id) {
+    const it = id ? itemById(id) : null;
+    if (id && !(drop.items || []).includes(id)) return;
+    if (kind === "theme" || kind === "bg") {
+      settings[kind] = id || ""; saveSettings(); applyCosmetics(); renderCollection();
+      toast(id ? `${it.name} on` : kind === "theme" ? "Default theme on" : "Background off");
+      return;
+    }
+    if (sb && cloudUser) {
+      const { data, error } = await sb.rpc("equip_item", { item_kind: kind, item_id: id || null });
+      if (error || (data && data.error)) { toast("Couldn't change it. Please try again."); return; }
+    } else { const d = demoState(); d[kind === "title" ? "title" : "color"] = it ? it.value : null; store.set(DEMOD, d); }
+    if (kind === "title") drop.title = it ? it.value : null; else drop.name_color = it ? it.value : null;
+    renderCollection(); toast(it ? `${it.name.replace(/^Title: /, "Title: ")} on` : kind === "title" ? "Title off" : "Default name color");
+  }
+
+  /* ---------- wheel drawing ---------- */
+  let W = null;
+  function wheelInit() {
+    const cv = $("wh-canvas"); if (!cv) return;
+    const segs = []; let acc = 0;
+    WSEG.forEach(([k, size]) => { segs.push({ k, p: PRIZE[k], start: acc, size }); acc += size; });
+    W = { cv, ctx: cv.getContext("2d"), segs, rot: W ? W.rot : 0, speed: 0, mode: "idle", win: "#38e0ff", t: 0, last: performance.now(), raf: 0 };
+    cancelAnimationFrame(wheelInit.raf);
+    const loop = (now) => {
+      if (!W || !document.body.contains(W.cv)) return;
+      W.t = now;
+      if (W.mode === "idle" && anim()) W.rot += (now - W.last) * 0.004;
+      W.last = now;
+      if (W.mode === "idle" || W.mode === "win") wheelDraw();
+      wheelInit.raf = requestAnimationFrame(loop);
+    };
+    wheelInit.raf = requestAnimationFrame(loop);
+    const btn = $("wh-spin");
+    let charging = false, power = 0, c0 = 0, craf = 0;
+    const charge = (now) => { if (!charging) return; power = Math.min(1, (now - c0) / 900); btn.style.setProperty("--pw", (0.15 + power * 0.85).toFixed(3)); craf = requestAnimationFrame(charge); };
+    btn.addEventListener("pointerdown", (e) => { if (btn.disabled) return; e.preventDefault(); audioCtx(); charging = true; power = 0; c0 = performance.now(); btn.style.setProperty("--pw", 0.15); craf = requestAnimationFrame(charge); try { btn.setPointerCapture(e.pointerId); } catch (x) { /* fine */ } });
+    const release = () => { if (!charging) return; charging = false; cancelAnimationFrame(craf); btn.style.setProperty("--pw", 1); doSpin(power); };
+    btn.addEventListener("pointerup", release); btn.addEventListener("pointercancel", release);
+    btn.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { e.preventDefault(); audioCtx(); doSpin(0.6); } });
+    wheelDraw();
+  }
+  const SZ = 760, CX = 380, R_RIM = 376, R_BULB = 352, R_WHEEL = 326, BULBS = 32;
+  function wheelSegAt(rot) { const at = ((360 - (rot % 360)) % 360 + 360) % 360; const s = W.segs; for (let i = 0; i < s.length; i++) if (at >= s[i].start && at < s[i].start + s[i].size) return i; return 0; }
+  function wheelFace(r, alpha) {
+    const x = W.ctx;
+    x.save(); x.translate(CX, CX); x.rotate(r * Math.PI / 180); x.globalAlpha = alpha;
+    W.segs.forEach((s, i) => {
+      const a = (s.start - 90) * Math.PI / 180, b = (s.start + s.size - 90) * Math.PI / 180;
+      x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, R_WHEEL, a, b); x.closePath();
+      const g = x.createRadialGradient(0, 0, 40, 0, 0, R_WHEEL); g.addColorStop(0, "#07080b"); g.addColorStop(0.55, s.p.c); g.addColorStop(1, s.p.c);
+      x.fillStyle = g; x.fill();
+      if (i % 2) { x.fillStyle = "rgba(0,0,0,.14)"; x.fill(); }
+      x.strokeStyle = "rgba(4,5,7,.9)"; x.lineWidth = 3; x.stroke();
+    });
+    const sh = x.createLinearGradient(-R_WHEEL, -R_WHEEL, R_WHEEL, R_WHEEL); sh.addColorStop(0, "rgba(255,255,255,.10)"); sh.addColorStop(0.5, "rgba(255,255,255,0)");
+    x.beginPath(); x.arc(0, 0, R_WHEEL, 0, Math.PI * 2); x.fillStyle = sh; x.fill();
+    W.segs.forEach((s) => {
+      x.save(); x.rotate((s.start + s.size / 2 - 90) * Math.PI / 180);
+      const dark = s.p.tier === 0 || s.k === "prolife";
+      x.fillStyle = dark ? "#06080b" : "#ffffff";
+      const fs = s.size <= 12 ? 19 : s.size <= 18 ? 21 : 23;
+      x.font = `800 ${fs}px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Inter, Arial, sans-serif`;
+      x.textAlign = "right"; x.textBaseline = "middle";
+      if (!dark) { x.shadowColor = "rgba(0,0,0,.45)"; x.shadowBlur = 6; }
+      x.fillText(s.p.label, R_WHEEL - 22, 1);
+      x.restore();
+    });
+    W.segs.forEach((s) => {
+      const a = (s.start - 90) * Math.PI / 180;
+      x.beginPath(); x.arc(Math.cos(a) * (R_WHEEL - 8), Math.sin(a) * (R_WHEEL - 8), 7, 0, Math.PI * 2);
+      x.fillStyle = "#e8edf5"; x.fill(); x.strokeStyle = "#0a0c10"; x.lineWidth = 2; x.stroke();
+    });
+    x.restore();
+  }
+  function wheelDraw() {
+    if (!W) return;
+    const x = W.ctx; x.clearRect(0, 0, SZ, SZ);
+    const rg = x.createRadialGradient(CX, CX, R_WHEEL, CX, CX, R_RIM); rg.addColorStop(0, "#0a0c10"); rg.addColorStop(0.5, "#1d222c"); rg.addColorStop(1, "#090a0d");
+    x.beginPath(); x.arc(CX, CX, R_RIM, 0, Math.PI * 2); x.fillStyle = rg; x.fill();
+    for (let i = 0; i < BULBS; i++) {
+      const a = i / BULBS * Math.PI * 2, bx = CX + Math.cos(a) * R_BULB, by = CX + Math.sin(a) * R_BULB;
+      let on, c = "#ffe9a8";
+      if (W.mode === "idle") on = (i + Math.floor(W.t / 140)) % 4 === 0;
+      else if (W.mode === "spin") on = (i + Math.floor(W.t / 45)) % 3 === 0;
+      else if (W.mode === "focus") on = (i + Math.floor(W.t / 110)) % 2 === 0;
+      else { on = Math.floor(W.t / 140) % 2 === 0 ? i % 2 === 0 : i % 2 === 1; c = W.win; }
+      x.beginPath(); x.arc(bx, by, 7.5, 0, Math.PI * 2);
+      if (on) { x.shadowColor = c; x.shadowBlur = 18; x.fillStyle = c; } else { x.shadowBlur = 0; x.fillStyle = "#2a2f3a"; }
+      x.fill(); x.shadowBlur = 0;
+    }
+    if (anim() && W.speed > 6) { wheelFace(W.rot - W.speed * 0.6, 0.35); wheelFace(W.rot - W.speed * 0.3, 0.5); }
+    wheelFace(W.rot, 1);
+    x.beginPath(); x.arc(CX, CX, R_WHEEL + 2, 0, Math.PI * 2); x.strokeStyle = "rgba(255,255,255,.08)"; x.lineWidth = 3; x.stroke();
+  }
+
+  /* ---------- sound ---------- */
+  let AC = null;
+  function audioCtx() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } } return AC; }
+  function beep(freq, dur, type, vol, when) {
+    if (settings.sound === false) return; const a = audioCtx(); if (!a) return;
+    const t = a.currentTime + (when || 0), o = a.createOscillator(), g = a.createGain();
+    o.type = type || "square"; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.05, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + 0.02);
+  }
+  const thump = () => { beep(70, 0.18, "sine", 0.22); beep(55, 0.22, "sine", 0.18, 0.16); };
+  function winTune(tier) {
+    const n = [[523, 659], [523, 659, 784], [523, 659, 784, 1047], [523, 659, 784, 1047, 1319], [392, 523, 659, 784, 1047, 1319, 1568], [392, 523, 659, 784, 1047, 1319, 1568, 2093, 2637]][tier];
+    n.forEach((f, i) => { beep(f, 0.35, "triangle", 0.07, i * 0.075); beep(f * 2, 0.2, "sine", 0.025, i * 0.075); });
+    const end = n.length * 0.075;
+    if (tier >= 2) [523, 659, 784].forEach((f) => beep(f * (tier >= 4 ? 2 : 1), 0.9, "triangle", 0.05, end));
+    if (tier >= 4) for (let i = 0; i < 14; i++) beep(2000 + Math.random() * 1600, 0.06, "sine", 0.03, end + 0.1 + i * 0.06);
+  }
+  let flapT = 0;
+  function flapKick(strength) {
+    const now = performance.now(); if (now - flapT < 35) return; flapT = now;
+    const f = $("wh-flap");
+    if (f && anim() && f.animate) f.animate([{ transform: "translateX(-50%) rotate(0deg)" }, { transform: `translateX(-50%) rotate(${-10 - strength * 20}deg)` }, { transform: "translateX(-50%) rotate(0deg)" }], { duration: 90 + (1 - strength) * 120, easing: "ease-out" });
+    beep(1500 + Math.random() * 500, 0.025, "square", 0.02 + strength * 0.015);
+  }
+
+  /* ---------- particles ---------- */
+  let FX = null;
+  function fxBurst(px, py, colors, n, power, coins) {
+    if (!anim()) return;
+    if (!FX) { const c = document.createElement("canvas"); c.className = "wh-fx"; c.setAttribute("aria-hidden", "true"); document.body.appendChild(c); FX = { c, x: c.getContext("2d"), parts: [], run: false }; }
+    const dpr = Math.min(2, window.devicePixelRatio || 1); FX.c.width = innerWidth * dpr; FX.c.height = innerHeight * dpr;
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, s = (2 + Math.random() * 10) * (power || 1);
+      FX.parts.push({ x: px * dpr, y: py * dpr, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 7, life: 70 + Math.random() * 60, c: colors[i % colors.length], w: (3 + Math.random() * 5) * dpr, h: (2 + Math.random() * 3) * dpr, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4, coin: coins && Math.random() < 0.5 });
+    }
+    if (FX.run) return; FX.run = true;
+    const tick = () => {
+      const x = FX.x; x.clearRect(0, 0, FX.c.width, FX.c.height);
+      FX.parts = FX.parts.filter((p) => p.life > 0 && p.y < FX.c.height + 40);
+      FX.parts.forEach((p) => {
+        p.vy += 0.32; p.vx *= 0.985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+        x.globalAlpha = Math.max(0, Math.min(1, p.life / 30)); x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c;
+        if (p.coin) { x.beginPath(); x.ellipse(0, 0, p.w * 0.8, p.w * 0.8 * Math.abs(Math.cos(p.r * 2)) + 1, 0, 0, Math.PI * 2); x.fill(); } else x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        x.restore();
+      });
+      x.globalAlpha = 1;
+      if (FX.parts.length) requestAnimationFrame(tick); else { FX.run = false; x.clearRect(0, 0, FX.c.width, FX.c.height); }
+    };
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- the spin ---------- */
+  async function doSpin(power) {
+    if (spinning || !drop || !W) return;
+    if (spinsLeft() <= 0) return;
+    spinning = true; dropUI();
+    const stage = $("wh-stage"); stage.classList.add("spinning");
+    const vmax = (0.75 + power * 0.55) * (anim() ? 1 : 3);
+    let result = null, phase = "wind", t0 = performance.now(), from = W.rot, v = 0, lastSeg = wheelSegAt(W.rot), lastNow = t0;
+    let land = null, heart = 0, focusOn = false;
+    W.mode = "spin";
+    beep(180, 0.4, "sawtooth", 0.02); beep(900, 0.3, "sawtooth", 0.015, 0.2);
+    const frame = (now) => {
+      if (!W) return;
+      W.t = now;
+      const prev = W.rot, dt = Math.min(50, now - lastNow); lastNow = now;
+      if (phase === "wind") {
+        const p = Math.min(1, (now - t0) / 240); W.rot = from - Math.sin(p * Math.PI / 2) * 14;
+        if (p >= 1) { phase = "run"; t0 = now; from = W.rot; }
+      } else if (phase === "run") {
+        const p = Math.min(1, (now - t0) / 550); v = vmax * p * p; W.rot += v * dt;
+        if (p >= 1 && result) phase = "land";
+      } else if (phase === "land") {
+        if (!land) {
+          const keys = W.segs.filter((s) => s.k === result.prize);
+          const seg = keys[Math.floor(Math.random() * keys.length)] || W.segs[0];
+          const inside = seg.start + seg.size * (0.2 + Math.random() * 0.6);
+          const base = ((360 - inside) - (W.rot % 360) + 720) % 360;
+          const tier = PRIZE[result.prize].tier, want = 4200 + power * 1200 + (tier >= 4 ? 1800 : tier >= 2 ? 500 : 0);
+          const vd = Math.max(0.05, v); // deg per ms
+          let k = Math.max(2, Math.round((vd * want / 4.2 - base) / 360));
+          const dist = base + 360 * k, dur = anim() ? Math.max(1500, 4.2 * dist / vd) : 300;
+          land = { r0: W.rot, dist, dur, t: now };
+        }
+        const p = Math.min(1, (now - land.t) / land.dur);
+        W.rot = land.r0 + land.dist * (1 - Math.pow(1 - p, 4.2));
+        if (!focusOn && p > 0.7 && anim()) { focusOn = true; W.mode = "focus"; stage.classList.add("focus"); thump(); heart = setInterval(thump, 560); }
+        if (p >= 1) { phase = "done"; }
+      }
+      W.speed = W.rot - prev;
+      const sIdx = wheelSegAt(W.rot);
+      if (sIdx !== lastSeg) { lastSeg = sIdx; if (phase !== "wind") flapKick(Math.min(1, Math.abs(W.speed) / 12)); }
+      wheelDraw();
+      if (phase === "done") {
+        clearInterval(heart); W.speed = 0; stage.classList.remove("spinning");
+        W.win = PRIZE[result.prize].c; W.mode = "win";
+        setTimeout(() => { stage.classList.remove("focus"); showDropWin(result); }, anim() ? 380 : 0);
+        return;
+      }
+      if (phase === "fail") { clearInterval(heart); stage.classList.remove("spinning", "focus"); W.mode = "idle"; W.speed = 0; spinning = false; dropUI(); return; }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+    // ask the server while the wheel winds up
+    const full = (settings.freezes || 0) >= freezeMax();
+    let res;
+    try {
+      if (sb && cloudUser) {
+        await cloudDay();
+        const { data, error } = await sb.rpc("spin_drop", { client_day: today(), freezes_full: full });
+        res = error ? { error: "network" } : data;
+      } else res = demoSpin(full);
+    } catch (e) { res = { error: "network" }; }
+    if (!res || res.error || !PRIZE[res.prize]) {
+      phase = "fail";
+      toast(res && res.error === "no_spins" ? "No spins left. Finish a routine to earn one." : res && res.error === "no_discord" ? "Sign in with Discord to spin." : "Couldn't reach the server. Your spin is still there.");
+      loadDrop().then(dropUI);
+      return;
+    }
+    result = res;
+  }
+
+  function showDropWin(res) {
+    const p = PRIZE[res.prize], it = res.item ? itemById(res.item) : null;
+    const host = document.createElement("div"); host.className = "wh-win"; host.style.setProperty("--wc", p.c);
+    const kick = p.tier >= 5 ? "1 IN 50,000" : p.tier >= 4 ? "JACKPOT" : p.tier >= 3 ? "HUGE WIN" : p.tier >= 2 ? "NEW ITEM" : "YOU WON";
+    const big = it ? it.name : p.big;
+    const sub = it ? "Added to your collection. Use it below." : res.prize === "freeze" ? "Saves your streak on a missed day" : p.sub;
+    host.innerHTML = `<span class="wh-rays" aria-hidden="true"></span><div class="wh-wcard" role="dialog" aria-modal="true" aria-labelledby="wh-big"><span class="wh-kick">${kick}</span><span class="wh-big${p.tier >= 5 ? " gold" : ""}" id="wh-big">${esc(big)}</span><span class="small" style="max-width:30ch">${esc(sub)}</span><button class="wh-collect" type="button" id="wh-collect">Collect</button></div>`;
+    document.body.appendChild(host);
+    const bigEl = host.querySelector("#wh-big");
+    const m = /^\+(\d+)$/.exec(p.big);
+    if (m && !it && anim()) { const n = +m[1], s0 = performance.now(); const up = (now) => { const q = Math.min(1, (now - s0) / 700); bigEl.textContent = "+" + Math.round(n * (1 - Math.pow(1 - q, 3))); if (q < 1) requestAnimationFrame(up); }; requestAnimationFrame(up); }
+    const box = $("wh-box").getBoundingClientRect(), cx = box.left + box.width / 2, cy = box.top + box.height / 2;
+    const pal = p.tier >= 5 ? ["#fff4c2", "#ffcf4a", "#ffa51f", "#ffffff"] : [p.c, "#ffffff", p.c];
+    fxBurst(cx, cy, pal, [16, 40, 80, 140, 220, 380][p.tier], 1 + p.tier * 0.12, p.tier === 0 || p.tier >= 5);
+    if (p.tier >= 3) {
+      let fl = document.querySelector(".wh-flash"); if (!fl) { fl = document.createElement("div"); fl.className = "wh-flash"; document.body.appendChild(fl); }
+      fl.style.setProperty("--fc", p.c + "aa"); fl.classList.remove("on"); void fl.offsetWidth; if (anim()) fl.classList.add("on");
+      const mv = $("v-drops"); if (anim() && mv) { mv.classList.remove("quake"); void mv.offsetWidth; mv.classList.add("quake"); }
+      if (p.tier >= 4 && anim()) { setTimeout(() => fxBurst(cx - 180, cy - 60, pal, 120, 1.3, true), 350); setTimeout(() => fxBurst(cx + 180, cy - 60, pal, 120, 1.3, true), 650); }
+    }
+    try { if (navigator.vibrate) navigator.vibrate(p.tier >= 3 ? [60, 40, 120] : 30); } catch (e) { /* no vibration */ }
+    winTune(p.tier);
+    // apply the prize in this browser right away
+    drop.used = (drop.used || 0) + 1; drop.tickets = (drop.tickets || 0) + 1; drop.since = p.tier >= 2 ? 0 : (drop.since || 0) + 1;
+    if (res.item && (drop.items || []).indexOf(res.item) < 0) drop.items = (drop.items || []).concat([res.item]);
+    if (res.prize === "prolife") ["theme_gold", "color_gold"].forEach((x) => { if (drop.items.indexOf(x) < 0) drop.items.push(x); });
+    if (res.prize === "freeze") { settings.freezes = Math.min(freezeMax(), (settings.freezes || 0) + 1); saveSettings(); }
+    if (/^pro/.test(res.prize) && account) {
+      account.bonusPlan = "pro"; account.bonusUntil = res.until || new Date(Date.now() + ({ pro3d: 3, pro1m: 30, prolife: 36500 }[res.prize]) * 864e5).toISOString();
+      store.set(ACC, account); try { topAccount(); } catch (e) { /* ok */ }
+    }
+    if (p.tier >= 2) drop.feed = [{ u: account ? account.name : "You", prize: res.prize, item_name: it ? it.name : null }].concat(drop.feed || []).slice(0, 8);
+    cacheDrop();
+    const close = () => {
+      host.remove(); spinning = false; if (W) W.mode = "idle";
+      beep(880, 0.08, "triangle", 0.05); beep(1320, 0.12, "triangle", 0.05, 0.06);
+      dropUI(); renderCollection(); const b = $("wh-spin"); if (b) b.focus({ preventScroll: true });
+      if (sb && cloudUser) setTimeout(() => loadDrop().then(() => { dropUI(); renderCollection(); }), 1500);
+    };
+    host.querySelector("#wh-collect").addEventListener("click", close);
+    host.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+    host.querySelector("#wh-collect").focus({ preventScroll: true });
   }
 
   /* ---------- 1.6 · reminder settings ---------- */
@@ -3119,7 +3670,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends", "drops"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -3156,6 +3707,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "stats") buildStats();
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
+    if (id === "drops") buildDrops();
     if (importCode) setTimeout(() => openImport(importCode), 300);
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
