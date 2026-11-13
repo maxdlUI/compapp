@@ -1086,7 +1086,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.5", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.6", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1169,8 +1169,8 @@ const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], [
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
 const PLANS = [
   { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
-  { id: "standard", name: "Standard", price: 2.99, perks: ["Every routine in every length", "2 own routines", "In-game overlay (Windows app)", "Everything in Free"] },
-  { id: "pro", name: "Pro", price: 5.99, perks: ["Unlimited own routines", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
+  { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "In-game overlay (Windows app)", "Everything in Free"] },
+  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
@@ -2335,10 +2335,11 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       ${pl.id === cur ? '<span class="cur-tag">Current plan</span>' : ""}
       <span class="pn">${pl.name}${pl.id === "pro" ? '<span class="pro" style="margin-left:0">✦ Pro</span>' : ""}</span>
       <span class="pp">${pl.price ? euro(pl.price) : "€0"}<small>${pl.price ? " / month" : ""}</small></span>
+      ${pl.year ? `<span class="tiny">or ${euro(pl.year)} / year · save ${Math.round((1 - pl.year / (pl.price * 12)) * 100)}%</span>` : ""}
       <ul>${pl.perks.map((x) => `<li class="${(pl.soon || []).indexOf(x) >= 0 ? "soonli" : ""}"><span>${esc(x)}${(pl.soon || []).indexOf(x) >= 0 ? ' <span class="soon">soon</span>' : ""}</span></li>`).join("")}</ul>
       ${pl.id === cur ? '<button class="pill out" type="button" disabled>Your plan</button>' : pl.price ? `<button class="pill${pl.id === "pro" ? "" : " out"}" type="button" disabled>Coming soon</button>` : ""}
     </div>`).join("");
-    $("plans-note").textContent = devMode() ? "Dev account: every feature is unlocked for testing. Payments open soon." : viewAs() ? `Dev · viewing as ${planWord2(viewAs())}. Switch back in your account.` : "Payments open soon. Monthly, cancel anytime.";
+    $("plans-note").textContent = devMode() ? "Dev account: every feature is unlocked for testing. Payments open soon." : viewAs() ? `Dev · viewing as ${planWord2(viewAs())}. Switch back in your account.` : "Payments open soon. Monthly or yearly, cancel anytime.";
   }
 
   /* ---------- Discord buttons ---------- */

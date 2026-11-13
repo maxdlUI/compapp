@@ -90,7 +90,7 @@ Ersetzt Punkt 1 oben („Inhalte live laden“). Jede neue Version aktualisiert 
 
 ## Plans, Bezahlung und Pro-Inhalte (Stand v1.3)
 
-- **Erledigt:** Plans-Seite (Free / Standard €2.99 / Pro €5.99), Routine-Baukasten mit Limits (Free 1, Standard 2, Pro unbegrenzt; die Datenbank setzt das Limit selbst durch), gesperrte Längen für Free, Partners-Seite, „Join Discord · soon“, Rückfrage bei beiden Resets.
+- **Erledigt:** Plans-Seite (Free / Standard €3.99 (€29.99/Jahr) / Pro €6.99 (€49.99/Jahr)), Routine-Baukasten mit Limits (Free 1, Standard 2, Pro unbegrenzt; die Datenbank setzt das Limit selbst durch), gesperrte Längen für Free, Partners-Seite, „Join Discord · soon“, Rückfrage bei beiden Resets.
 - **Stripe-Bezahlung (offen):** Wartet auf ein Stripe-Konto. Danach: Stripe-Keys als Supabase-Secrets im Dashboard (nie im Chat), eine Edge Function für Checkout und eine für den Webhook, die `profiles.plan` und `purchases` schreibt. „Manage subscription“ führt dann ins Stripe-Kundenportal.
 - **Erinnerung: Pro-Routinen / Pro-Playlists:** Die Inhalte fehlen noch. Die Karte „Pro routines · Coming Soon“ steht schon in Schritt 1.
 - **AI Training:** nur für Pro, bisher Coming Soon.
