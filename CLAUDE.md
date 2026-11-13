@@ -44,7 +44,7 @@ Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app i
 
 ## Open right now (13 Nov 2026)
 
-- **Drops is built but not live.** Needed: run `daily-pro-routine/supabase/008_drops.sql` (the owner may already have run it in the SQL editor; check with `select count(*) from drop_items` = 20), deploy the `remind` edge function from `supabase/functions/remind/index.ts` (verify_jwt false), then release the website and Windows app 1.6.8 (steps above), test a spin and commit.
+- **Drops is live** (website + Windows app 1.6.8, `008_drops.sql` applied). Still open: deploy the `remind` edge function from `supabase/functions/remind/index.ts` (verify_jwt false) so the bot posts wins in #drops; it posts wins of the last 2 days on its first run. The Supabase connector failed to connect on 13 Nov.
 - Drop points were lowered to +10/+15/+25/+50 so spins don't outweigh training on the leaderboard; the owner still has to confirm that.
 - Later for Drops: overlay skins, timer ring styles and sound packs as wheel items.
 - Partners: per-partner commission (50 % for 3 months, then 40 %) and vanity creator codes, once a partner agrees.
