@@ -1113,7 +1113,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.6", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.6.7", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1197,7 +1197,7 @@ const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], [
 const PLANS = [
   { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
   { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "In-game overlay (Windows app)", "Everything in Free"] },
-  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
+  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization: your own finish sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
@@ -1830,7 +1830,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
   let drawerTab = "account", csInfo = false, confirmReset = null;
-  const hasCustom = () => !!(account && account.real && (devMode() || (launchActive() && !viewAs()) || (account.items || []).indexOf("custom_sound") >= 0));
+  const hasCustom = () => !!(account && account.real && (planId() === "pro" || (account.items || []).indexOf("custom_sound") >= 0));
   /* ---------- Creator codes ---------- */
   let ccEdit = false;
   const crRate = () => Math.round(((account && account.cr && account.cr.rate) || 0.4) * 100);
@@ -1941,7 +1941,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
             <div class="row pro-row"><label class="snd" for="al-custom"><input type="radio" name="al-s" id="al-custom" value="custom" ${settings.alertSound === "custom" ? "checked" : ""} ${unlocked && cs ? "" : "disabled"}>Custom sound<span class="pro">✦ Pro</span></label>
               ${unlocked ? `${cs ? `<button class="play-s" type="button" data-al-play="custom" aria-label="Play custom sound"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>` : ""}<button class="pill sm out" type="button" id="cs-up">${cs ? "Replace" : "Upload"}</button>` : `<button class="pill sm out" type="button" id="cs-info">Unlock</button>`}</div>
             ${unlocked ? `<div class="row"><span class="tiny">${cs ? esc(cs.name) : "MP3, WAV or OGG · up to 5 seconds · max 1 MB"}</span>${devMode() && (account.items || []).indexOf("custom_sound") < 0 ? '<span class="tiny">Unlocked for devs</span>' : ""}</div>` : ""}
-            ${!unlocked && csInfo ? `<div class="confirm"><span class="small"><b style="color:var(--porcelain)">Custom sound · one-time purchase.</b> Play your own sound when a set is done. Price coming soon.</span><div><button class="pill sm" type="button" disabled>Coming soon</button></div></div>` : ""}
+            ${!unlocked && csInfo ? `<div class="confirm"><span class="small"><b style="color:var(--porcelain)">Custom sound · included in Pro.</b> Play your own sound when a set is done.</span><div><button class="pill sm" type="button" id="cs-plans">See plans</button></div></div>` : ""}
             ${ALERT_SOUNDS.map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}
           </div>
           <input type="file" id="cs-file" accept="audio/*" hidden>
@@ -2017,6 +2017,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       if (S.status === "wechsel" && !settings.switchSec) startNow(false);
     }));
     on("cs-info", "click", () => { csInfo = !csInfo; renderDrawer(); });
+    on("cs-plans", "click", () => { closeDrawer(); go("plans"); });
     on("see-app", "click", () => { closeDrawer(); const t = $("overlay-teaser"); if (t) { if (view !== "home") { go(""); setTimeout(() => $("overlay-teaser").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }), 80); } else t.scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); } });
     on("cs-up", "click", () => $("cs-file").click());
     on("cs-file", "change", (e) => {
