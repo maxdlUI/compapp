@@ -1,6 +1,6 @@
 # Notes for Claude
 
-The active project in this repository is **Repline** in `daily-pro-routine/`. The files in the repository root belong to an older project (KREVO) and are not touched.
+This repository is **Repline**; everything lives in `daily-pro-routine/`. The old KREVO project was removed on purpose: Repline and KREVO are separate and must not be mixed.
 
 ## How the owner wants to work
 
