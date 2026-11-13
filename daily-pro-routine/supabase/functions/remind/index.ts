@@ -1,4 +1,5 @@
 // Repline reminders: called every 5 minutes by pg_cron (see 004_gifts_reminders.sql).
+// Also sends a DM for every gifted plan (see sendGiftDMs).
 // Sends the daily training reminder and the "streak in danger" alert as a Discord DM from the Repline bot
 // and/or as a web push to the browser/iPhone. It only sends what is due and remembers what it sent,
 // so calling it more often does no harm.
@@ -32,14 +33,46 @@ function localNow(tz: string) {
 }
 const toMins = (t: string) => { const [h, m] = String(t).split(":").map(Number); return h * 60 + (m || 0); };
 
-async function discordDM(discordId: string, content: string) {
+async function discordDM(discordId: string, content: string, embed?: Record<string, unknown>) {
   if (!BOT || !discordId) return false;
   const h = { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" };
   const ch = await fetch("https://discord.com/api/v10/users/@me/channels", { method: "POST", headers: h, body: JSON.stringify({ recipient_id: discordId }) });
   if (!ch.ok) return false;
   const { id } = await ch.json();
-  const r = await fetch(`https://discord.com/api/v10/channels/${id}/messages`, { method: "POST", headers: h, body: JSON.stringify({ content, allowed_mentions: { parse: [] } }) });
+  const msg: Record<string, unknown> = { content, allowed_mentions: { parse: [] } };
+  if (embed) msg.embeds = [embed];
+  const r = await fetch(`https://discord.com/api/v10/channels/${id}/messages`, { method: "POST", headers: h, body: JSON.stringify(msg) });
   return r.ok;
+}
+
+// Gifted plans: a DM from the Repline bot right after a dev gifts a plan (dev_gift calls this function at once;
+// the 5-minute cron catches anything missed). Each gift is claimed first, so it is never sent twice.
+const PLAN_NAME: Record<string, string> = { standard: "Standard", pro: "Pro" };
+async function sendGiftDMs() {
+  const since = new Date(Date.now() - 2 * 86400000).toISOString();
+  const { data: gifts } = await db.from("notices").select("id, user_id, payload").eq("kind", "gift").is("dm_at", null).gte("created_at", since).limit(50);
+  let sent = 0;
+  for (const g of gifts || []) {
+    const { data: claimed } = await db.from("notices").update({ dm_at: new Date().toISOString() }).eq("id", g.id).is("dm_at", null).select("id");
+    if (!claimed || !claimed.length) continue;
+    const { data: prof } = await db.from("profiles").select("discord_id, bonus_until").eq("id", g.user_id).maybeSingle();
+    if (!prof?.discord_id) continue;
+    const p = (g.payload || {}) as { plan?: string; months?: number; from?: string; note?: string };
+    const plan = PLAN_NAME[p.plan || ""] || "a plan", months = Number(p.months || 1);
+    const until = prof.bonus_until ? new Date(prof.bonus_until).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Berlin" }) : "";
+    const lines = [
+      `You got **Repline ${plan}** for **${months} ${months === 1 ? "month" : "months"}**${p.from ? `, a gift from **${p.from}**` : ""}. It's already active.`,
+      p.note ? `> ${String(p.note).replace(/\n/g, " ")}` : "",
+      until ? `Active until **${until}**.` : "",
+      `Open Repline and sign in with Discord to use it.`
+    ].filter(Boolean);
+    const ok = await discordDM(prof.discord_id, "", {
+      title: `🎁 You got Repline ${plan}!`, description: lines.join("\n\n"), url: SITE, color: 0xa855f7,
+      footer: { text: "Repline · repline.pages.dev" }
+    });
+    if (ok) sent++;
+  }
+  return sent;
 }
 async function push(sub: unknown, title: string, body: string) {
   if (!sub || !pushReady) return false;
@@ -58,6 +91,8 @@ Deno.serve(async (req) => {
     try { webpush.getVapidHeaders("https://fcm.googleapis.com", "https://repline.pages.dev", VPUB, VPRIV, "aes128gcm"); vapidValid = true; } catch { vapidValid = false; }
     return new Response(JSON.stringify({ discordToken: !!BOT, vapidPublic: !!VPUB, vapidPrivate: !!VPRIV, vapidValid, vapidMatchesSite: VPUB === SITE_VAPID }), { headers: { "Content-Type": "application/json" } });
   }
+  const gifts = await sendGiftDMs();
+  if ((body as { gifts?: boolean }).gifts) return new Response(JSON.stringify({ gifts }), { headers: { "Content-Type": "application/json" } });
   const { data: rems, error } = await db.from("reminders").select("*").eq("enabled", true).or("via_discord.eq.true,via_push.eq.true");
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   let sent = 0;
@@ -103,5 +138,5 @@ Deno.serve(async (req) => {
       await db.from("reminders").update({ last_danger: now.date }).eq("user_id", r.user_id);
     }
   }
-  return new Response(JSON.stringify({ checked: rems?.length || 0, sent }), { headers: { "Content-Type": "application/json" } });
+  return new Response(JSON.stringify({ checked: rems?.length || 0, sent, gifts }), { headers: { "Content-Type": "application/json" } });
 });
