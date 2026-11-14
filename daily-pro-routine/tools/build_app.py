@@ -90,7 +90,7 @@ if os.path.isdir(os.path.join(APP, "vendor")):
     shutil.rmtree(os.path.join(APP, "vendor"))
 if os.path.isdir(VENDOR):
     shutil.copytree(VENDOR, os.path.join(APP, "vendor"), ignore=shutil.ignore_patterns("*.txt"))
-files = ["./", "index.html", "manifest.webmanifest"] + (["img/" + f for f in sorted(os.listdir(IMG))] if os.path.isdir(IMG) else []) + (["vendor/" + f for f in sorted(os.listdir(os.path.join(APP, "vendor")))] if os.path.isdir(os.path.join(APP, "vendor")) else []) + ["icons/" + f for f in sorted(os.listdir(os.path.join(APP, "icons"))) if f.endswith(".png")]
+files = ["./", "index.html", "manifest.webmanifest"] + (["img/" + f for f in sorted(os.listdir(IMG)) if f.endswith("-s.webp")] if os.path.isdir(IMG) else []) + (["vendor/" + f for f in sorted(os.listdir(os.path.join(APP, "vendor")))] if os.path.isdir(os.path.join(APP, "vendor")) else []) + ["icons/" + f for f in sorted(os.listdir(os.path.join(APP, "icons"))) if f.endswith(".png")]
 version = hashlib.sha1(page.encode("utf-8")).hexdigest()[:10]
 sw = f"""// Repline service worker: keeps the app working offline.
 const CACHE = "repline-{version}";

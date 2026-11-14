@@ -207,6 +207,22 @@ footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-conten
 .blk .nm .tag { margin-left: 8px; vertical-align: 1px; }
 .blk summary::-webkit-details-marker { display: none; }
 .blk .dot { width: 10px; height: 10px; border-radius: 50%; }
+.blk .bth { position: relative; flex: none; width: 96px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #0b0b0c; margin: -6px 0 -6px -6px; }
+.blk .bth img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.blk .bth i { position: absolute; left: 6px; bottom: 6px; width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(0,0,0,.55); }
+@media (max-width: 560px) { .blk .bth { width: 64px; } }
+.maps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 960px) { .maps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .maps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.map-card { border-radius: 22px; overflow: hidden; background: var(--carbon); display: grid; align-content: start; color: var(--porcelain); text-decoration: none; min-width: 0; border: 0; padding: 0; font: inherit; text-align: left; cursor: pointer; }
+.map-card:hover { text-decoration: none; }
+.anim .map-card { transition: transform .3s var(--ease); }
+.anim .map-card:hover { transform: translateY(-3px); }
+.map-card img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #0b0b0c; }
+.map-card div { padding: 12px 14px 14px; display: grid; gap: 2px; min-width: 0; }
+.map-card b { font-size: 16px; font-weight: 600; letter-spacing: -.2px; }
+.map-card span { font-size: 13px; color: var(--ash); }
+.map-card code { font-family: var(--mono); font-size: 12px; color: var(--c1); margin-top: 4px; }
 .blk .when { font-variant-numeric: tabular-nums; color: var(--ash); font-size: 14px; min-width: 44px; }
 .blk .nm { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
 .blk .du { color: var(--ash); font-size: 14px; white-space: nowrap; }
@@ -464,7 +480,7 @@ html.anim .stage.ending .dial { animation: beat 1s var(--ease) infinite; }
 .stage[data-type="rest"] { background: linear-gradient(#141416, var(--obsidian) 420px); }
 
 /* Screenshots */
-.shot { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 18px; background: #0b0b0c; box-shadow: 0 0 0 1px var(--keyline); }
+.shot { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 18px; background: #0b0b0c; box-shadow: 0 0 0 1px var(--keyline); }
 .gallery { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); align-items: start; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
 .gallery::-webkit-scrollbar { display: none; }
 .gallery figure { margin: 0; scroll-snap-align: start; display: grid; align-content: start; gap: 12px; }
@@ -486,7 +502,7 @@ html.anim .stage.ending .dial { animation: beat 1s var(--ease) infinite; }
 .range { width: 150px; accent-color: var(--blue); }
 
 /* Set alerts: mini overlay preview in the account panel */
-.ap-wrap { width: 100%; padding: 18px 12px; border-radius: 18px; background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), url(img/edit-drill.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); overflow: hidden; }
+.ap-wrap { width: 100%; padding: 18px 12px; border-radius: 18px; background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), url(img/map-buildfights.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); overflow: hidden; }
 .ap-wrap .ov { height: auto; aspect-ratio: 380 / 112; }
 /* ===== Overlay capsule (same as the Windows overlay) ===== */
 .ov { --op: .92; --sc: #3f8dff; position: relative; width: 100%; height: 100%; container-type: inline-size; font-family: var(--display); color: var(--porcelain); user-select: none; }
@@ -604,7 +620,7 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 .ovt-list { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .ovt-list li { font-size: 14px; letter-spacing: -0.224px; padding: 7px 13px; border-radius: 99px; background: var(--carbon); color: var(--ash); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); display: inline-flex; align-items: center; }
 .ovt-list li b { color: var(--porcelain); margin-right: 4px; font-weight: 600; }
-.ovt-stage { position: relative; margin: 0; aspect-ratio: 16 / 10; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.45)), url(img/edit-drill.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); }
+.ovt-stage { position: relative; margin: 0; aspect-ratio: 16 / 10; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.45)), url(img/map-buildfights.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); }
 .ovt-stage .slot { position: absolute; left: 5%; top: 7%; width: min(380px, 72%); aspect-ratio: 380 / 112; }
 .ovt-stage .slot .ov { height: 100%; }
 .ovt-stage figcaption { position: absolute; left: 16px; bottom: 14px; background: rgba(22,22,24,.8); color: var(--porcelain); padding: 5px 11px; border-radius: 99px; }
@@ -894,14 +910,15 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 
   <section class="sec wrap" aria-labelledby="h-in" style="padding-top:0">
     <div class="sec-head">
-      <h2 id="h-in" class="d-m rv">Inside the routine.</h2>
+      <h2 id="h-in" class="d-m rv">The maps you train on.</h2>
       <div class="v5 rv d1"><span class="small">Most sets run on Raider's Mechanics Training V5.</span><code>2424-4344-7824</code><button class="pill sm" type="button" data-copy="2424-4344-7824" data-ok="Map code copied">Copy</button></div>
     </div>
-    <div class="gallery">
-      <figure class="rv"><div class="frame"><img src="img/speed-110.webp" alt="Speed set to 110 percent" loading="lazy" width="580" height="362"></div><figcaption><b>110–120%</b>Build fast.</figcaption></figure>
-      <figure class="rv d1"><div class="frame"><img src="img/speed-90.webp" alt="Speed set to 90 percent" loading="lazy" width="580" height="362"></div><figcaption><b>90%</b>Build exact.</figcaption></figure>
-      <figure class="rv d2"><div class="frame"><img src="img/edit-drill.webp" alt="Edit drill wall" loading="lazy" width="960" height="600"></div><figcaption><b>Edit drills</b>Clean, then fast.</figcaption></figure>
-      <figure class="rv d3"><div class="frame"><img src="img/aim-menu.webp" alt="Aim scenario menu" loading="lazy" width="1120" height="700"></div><figcaption><b>Aim scenarios</b>Shoot to pick.</figcaption></figure>
+    <div class="maps">
+      <button class="map-card rv d0" type="button" data-copy="2424-4344-7824" data-ok="Map code copied"><img src="img/map-v5-s.webp" alt="Mechanics Training V5 map" loading="lazy" decoding="async" width="640" height="360"><div><b>Mechanics Training V5</b><span>by Raider464</span><code>2424-4344-7824</code></div></button>
+      <button class="map-card rv d1" type="button" data-copy="1832-0431-4852" data-ok="Map code copied"><img src="img/map-buildfights-s.webp" alt="1v1 Build Fights map" loading="lazy" decoding="async" width="640" height="360"><div><b>1v1 Build Fights</b><span>by Rezon</span><code>1832-0431-4852</code></div></button>
+      <button class="map-card rv d2" type="button" data-copy="1513-6690-9481" data-ok="Map code copied"><img src="img/map-turtle-s.webp" alt="Turtle Fights map" loading="lazy" decoding="async" width="640" height="360"><div><b>Turtle Fights</b><span>by martoz</span><code>1513-6690-9481</code></div></button>
+      <button class="map-card rv d3" type="button" data-copy="9520-0654-8075" data-ok="Map code copied"><img src="img/map-realistics-s.webp" alt="Pro Realistics map" loading="lazy" decoding="async" width="640" height="360"><div><b>Pro Realistics</b><span>by chap</span><code>9520-0654-8075</code></div></button>
+      <button class="map-card rv d3" type="button" data-copy="6791-7475-7946" data-ok="Map code copied"><img src="img/map-clutch-s.webp" alt="Clutch Realistics map" loading="lazy" decoding="async" width="640" height="360"><div><b>Clutch Realistics</b><span>2v3 clutch fights</span><code>6791-7475-7946</code></div></button>
     </div>
   </section>
 
@@ -1209,23 +1226,24 @@ const TYPES = {
 const V5 = { name: "Map code", by: "Raider464", value: "2424-4344-7824" };
 const REAL_TIP = "More realistic: pick another EU subregion (higher ping) and cap your FPS lower.";
 const SETS = {
-  kovaaks: { name: "KovaaK's · Tjino Tracking", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Smooth tracking, don't chase scores.", codes: [{ name: "Playlist share code", value: "KovaaKsNamedroppingRoyalpurpleCamper" }] },
-  tjUpd: { name: "KovaaK's · Tjino Updated", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Clean hits first, then speed.", codes: [{ name: "Playlist share code", value: "KovaaKsBackflippingCeruleanNuns" }] },
-  v5Flick: { name: "V5 Aim · Reaction flick", type: "aim", hint: "Shoot the reaction flick scenario. React, flick, stop on the target.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [V5] },
-  v5Bounce: { name: "V5 Aim · Bounce tracking", type: "aim", hint: "Bounce tracking scenario. Stay on the target through every bounce.", img: "img/aim-menu.webp", alt: "Aim scenario menu on Mechanics Training V5", codes: [V5] },
-  editWall: { name: "Edit wall", type: "mech", hint: "Edits on the wall. Clean first, then fast.", tip: REAL_TIP, img: "img/edit-drill.webp", alt: "Edit drill wall on Mechanics Training V5", codes: [V5] },
-  slow: { name: "Freebuild · 90%", type: "mech", hint: "Speed to 90%. Optimize your edits: exact, no misedits.", tip: REAL_TIP, img: "img/speed-90.webp", alt: "Speed set to 90 percent", codes: [V5] },
-  fast: { name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110% or 120%. Push your mechs: 90s, ramp rushes, retakes.", tip: REAL_TIP, img: "img/speed-110.webp", alt: "Speed set to 110 percent", codes: [V5] },
-  piece: { name: "Piece control", type: "fight", hint: "Take walls and cones first, then reset. Stay calm.", tip: REAL_TIP, codes: [V5] },
-  box: { name: "1v1 Build Fights", type: "fight", where: "With a friend or by matchmaking", hint: "Real opponents. Use what you just trained.", codes: [{ name: "Map code", by: "Raider464", value: "1832-0431-4852" }] },
-  turtle: { name: "Turtle Fights", type: "fight", where: "Free for all", hint: "Box fights, free for all. Turtle up, take the walls, win the box.", codes: [{ name: "Map code", by: "martoz", value: "1513-6690-9481" }] },
-  real: { name: "Pro Realistics", type: "fight", hint: "Real terrain and loot. High ground, then pressure.", codes: [{ name: "Map code", by: "chap", value: "9520-0654-8075" }] },
-  ranked: { name: "Ranked · one focus", type: "live", where: "Fortnite · Ranked", hint: "Pick one focus for every game: only your new mechanic, only crosshair placement, only piece control in fights, or only high-ground retakes." },
-  scrims: { name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
-  vod: { name: "VOD review", type: "review", where: "Career → Replays", hint: "Watch one fight you lost. What killed you: crosshair, movement or the enemy?" },
-  fixDrill: { name: "Fix drill", type: "mech", where: "Raider's Mechanics V5 or a map that fits", hint: "Drill the exact mechanic that killed you in the replay.", codes: [V5] },
-  prep: { name: "Cup check", type: "prep", hint: "Settings unchanged, rules and start time checked, drop and first rotation planned, water ready. Nothing new before a cup." },
-  brk: { name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
+  kovaaks: { img: "img/tile-kovaaks.webp", name: "KovaaK's · Tjino Tracking", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Smooth tracking, don't chase scores.", codes: [{ name: "Playlist share code", value: "KovaaKsNamedroppingRoyalpurpleCamper" }] },
+  tjUpd: { img: "img/tile-kovaaks2.webp", name: "KovaaK's · Tjino Updated", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Clean hits first, then speed.", codes: [{ name: "Playlist share code", value: "KovaaKsBackflippingCeruleanNuns" }] },
+  v5Flick: { img: "img/map-v5.webp", name: "V5 Aim · Reaction flick", type: "aim", hint: "Shoot the reaction flick scenario. React, flick, stop on the target.", codes: [V5] },
+  v5Bounce: { img: "img/map-v5.webp", name: "V5 Aim · Bounce tracking", type: "aim", hint: "Bounce tracking scenario. Stay on the target through every bounce.", codes: [V5] },
+  editWall: { img: "img/map-v5.webp", name: "Edit wall", type: "mech", hint: "Edits on the wall. Clean first, then fast.", tip: REAL_TIP, codes: [V5] },
+  slow: { img: "img/art-build.webp", name: "Freebuild · 90%", type: "mech", hint: "Speed to 90%. Optimize your edits: exact, no misedits.", tip: REAL_TIP, codes: [V5] },
+  fast: { img: "img/art-build.webp", name: "Freebuild · 110–120%", type: "mech", hint: "Speed to 110% or 120%. Push your mechs: 90s, ramp rushes, retakes.", tip: REAL_TIP, codes: [V5] },
+  piece: { img: "img/map-v5.webp", name: "Piece control", type: "fight", hint: "Take walls and cones first, then reset. Stay calm.", tip: REAL_TIP, codes: [V5] },
+  box: { img: "img/map-buildfights.webp", name: "1v1 Build Fights", type: "fight", where: "With a friend or by matchmaking", hint: "Real opponents. Use what you just trained.", codes: [{ name: "Map code", by: "Rezon", value: "1832-0431-4852" }] },
+  turtle: { img: "img/map-turtle.webp", name: "Turtle Fights", type: "fight", where: "Free for all", hint: "Box fights, free for all. Turtle up, take the walls, win the box.", codes: [{ name: "Map code", by: "martoz", value: "1513-6690-9481" }] },
+  real: { img: "img/map-realistics.webp", name: "Pro Realistics", type: "fight", hint: "Real terrain and loot. High ground, then pressure.", codes: [{ name: "Map code", by: "chap", value: "9520-0654-8075" }] },
+  clutch: { img: "img/map-clutch.webp", name: "Clutch Realistics", type: "fight", hint: "Outnumbered on purpose: 2v3 and worse. Take one fight at a time, reset, then the next.", tip: REAL_TIP, codes: [{ name: "Map code", value: "6791-7475-7946" }] },
+  ranked: { img: "img/art-ranked.webp", name: "Ranked · one focus", type: "live", where: "Fortnite · Ranked", hint: "Pick one focus for every game: only your new mechanic, only crosshair placement, only piece control in fights, or only high-ground retakes." },
+  scrims: { img: "img/tile-scrims.webp", name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
+  vod: { img: "img/tile-vod.webp", name: "VOD review", type: "review", where: "Career → Replays", hint: "Watch one fight you lost. What killed you: crosshair, movement or the enemy?" },
+  fixDrill: { img: "img/map-v5.webp", name: "Fix drill", type: "mech", where: "Raider's Mechanics V5 or a map that fits", hint: "Drill the exact mechanic that killed you in the replay.", codes: [V5] },
+  prep: { img: "img/tile-prep.webp", name: "Cup check", type: "prep", hint: "Settings unchanged, rules and start time checked, drop and first rotation planned, water ready. Nothing new before a cup." },
+  brk: { img: "img/tile-brk.webp", name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
 };
 /* Older sets from saved or shared routines map to the closest new set */
 const SET_ALIAS = { mech: "editWall", v5aim: "v5Flick", skaavok: "v5Flick", clixAim: "v5Flick", edit: "editWall", warmCourse: "fast", zone: "real", focusDrill: "fixDrill", realGame: "ranked" };
@@ -1234,9 +1252,9 @@ const L = (id, name, list, extra) => Object.assign({ id, name, sets: list.map(([
 const GOALS = [
   { id: "better", name: "Daily Pro Routine", text: "Aim, mechanics, fights, ranked, review.", icon: "i-up", lengths: [
     L("short", "Short", [["kovaaks", 8], ["editWall", 5], ["slow", 5], ["fast", 5], ["piece", 7], ["ranked", 20], ["vod", 5], ["fixDrill", 5]]),
-    L("normal", "Normal", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5], ["editWall", 10], ["slow", 8], ["fast", 8], ["piece", 12], ["box", 15], ["turtle", 10], ["brk", 5], ["ranked", 25], ["vod", 10], ["fixDrill", 7]]),
-    L("long", "Long", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 8], ["v5Bounce", 8], ["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["brk", 10], ["box", 25], ["turtle", 20], ["real", 20], ["brk", 10], ["ranked", 45], ["vod", 15], ["fixDrill", 10]]),
-    L("full", "Full day", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["editWall", 15], ["slow", 15], ["fast", 15], ["piece", 20], ["brk", 15], ["box", 40], ["turtle", 30], ["real", 40], ["brk", 30], ["ranked", 120], ["brk", 10], ["vod", 30], ["fixDrill", 20]])
+    L("normal", "Normal", [["kovaaks", 10], ["tjUpd", 10], ["v5Flick", 5], ["v5Bounce", 5], ["editWall", 10], ["slow", 8], ["fast", 8], ["piece", 12], ["box", 15], ["turtle", 10], ["clutch", 10], ["brk", 5], ["ranked", 25], ["vod", 10], ["fixDrill", 7]]),
+    L("long", "Long", [["kovaaks", 15], ["tjUpd", 15], ["v5Flick", 8], ["v5Bounce", 8], ["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["brk", 10], ["box", 25], ["turtle", 20], ["real", 20], ["clutch", 20], ["brk", 10], ["ranked", 45], ["vod", 15], ["fixDrill", 10]]),
+    L("full", "Full day", [["kovaaks", 20], ["tjUpd", 20], ["v5Flick", 10], ["v5Bounce", 10], ["editWall", 15], ["slow", 15], ["fast", 15], ["piece", 20], ["brk", 15], ["box", 40], ["turtle", 30], ["real", 40], ["clutch", 30], ["brk", 30], ["ranked", 120], ["brk", 10], ["vod", 30], ["fixDrill", 20]])
   ] },
   { id: "cup", name: "Cup warm-up", text: "Warm hands, calm head. Nothing new.", icon: "i-cup", cupTime: true, lengths: [
     L("short", "Short", [["kovaaks", 6], ["v5Flick", 4], ["editWall", 5], ["fast", 5], ["piece", 5], ["prep", 5]]),
@@ -1251,7 +1269,7 @@ const GOALS = [
   { id: "mechanics", name: "Quick: Mechanics", text: "Edit wall, freebuild at 90% and 120%, piece control.", icon: "i-mech", lengths: [
     L("short", "Short", [["editWall", 6], ["slow", 7], ["fast", 7], ["piece", 10]]),
     L("normal", "Normal", [["editWall", 10], ["slow", 10], ["fast", 10], ["piece", 15], ["real", 15]]),
-    L("long", "Long", [["editWall", 12], ["slow", 15], ["fast", 15], ["piece", 18], ["brk", 5], ["real", 20], ["ranked", 25, { name: "Ranked · new mechanic", hint: "Every game, only one focus: use the mechanic you trained today, even if it costs a fight." }], ["vod", 5], ["fixDrill", 5]])
+    L("long", "Long", [["editWall", 12], ["slow", 15], ["fast", 15], ["piece", 18], ["brk", 5], ["real", 20], ["clutch", 15], ["ranked", 25, { name: "Ranked · new mechanic", hint: "Every game, only one focus: use the mechanic you trained today, even if it costs a fight." }], ["vod", 5], ["fixDrill", 5]])
   ] }
 ];
 /* Test routine: every set lasts 3 seconds and the routine runs on its own. Switch it on in Account → Data. */
@@ -1494,6 +1512,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (!b.codes || !b.codes.length) return b.where ? `<div class="where"><span class="tiny">Where</span><b>${esc(b.where)}</b></div>` : "";
     return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}${c.by ? " · " + esc(c.by) : ""}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
   }
+  const thumbOf = (u) => String(u).replace(/\.webp$/, "-s.webp");
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
     const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.custom ? "goal" : "length"; bk.textContent = z.custom ? "Routines" : "Length";
@@ -1510,14 +1529,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       const d = document.createElement("details"); d.className = "blk rv" + (i < 4 ? " d" + i : ""); if (i === 0) d.open = true;
       const when = z.cupTime ? (times ? times[i] : "***") : "";
       let body = "";
-      if (b.img) body += `<img class="shot" src="${esc(b.img)}" alt="${esc(b.alt || b.name)}" loading="lazy" style="max-width:360px">`;
+      if (b.img) body += `<img class="shot" src="${esc(b.img)}" alt="${esc(b.alt || b.name)}" loading="lazy" style="max-width:480px">`;
       if (b.hint !== undefined) body += `<p class="note">${b.hint ? esc(b.hint) : P}</p>`;
       if (b.where && b.codes && b.codes.length) body += `<p class="note">Where: ${esc(b.where)}</p>`;
       if (b.tip) body += `<p class="note tip">${esc(b.tip)}</p>`;
       body += codesHTML(b);
       if (isKill(b)) body += `<p class="note">${b.kills.map((k, j) => `${k.name ? esc(k.name) : "Mode " + (j + 1)} · ${k.kills != null ? k.kills : "***"} kills`).join(" · ")}</p>`;
       if (b.checks) body += `<p class="note">${b.checks.map(esc).join(" · ")}</p>`;
-      d.innerHTML = `<summary><i class="dot" style="background:${tcol(b)}"></i><span class="when">${when}</span><span class="nm">${nameOf(b, i)}${tag(b)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
+      d.innerHTML = `<summary>${b.img ? `<span class="bth"><img src="${esc(thumbOf(b.img))}" alt="" loading="lazy" decoding="async"><i style="background:${tcol(b)}"></i></span>` : `<i class="dot" style="background:${tcol(b)}"></i>`}<span class="when">${when}</span><span class="nm">${nameOf(b, i)}${tag(b)}</span><span class="du">${durOf(b)}</span></summary><div class="blk-body">${body}</div>`;
       box.appendChild(d); observe(d);
     });
     if (z.cupTime) {
