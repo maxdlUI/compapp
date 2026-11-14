@@ -134,6 +134,10 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .goal .gt { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.1; letter-spacing: 0.007em; }
 .goal .gd { font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: rgba(245, 245, 247, .74); max-width: 30ch; }
 .goal .gi { width: 36px; height: 36px; color: var(--c1); }
+.goal:has(.gstrip), .goal.tall:has(.gstrip) { min-height: 0; align-content: start; gap: 26px; }
+.goal .gstrip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.goal .gstrip img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; background: #0b0b0c; }
+.goal .gstrip span { display: grid; place-items: center; aspect-ratio: 1; border-radius: 12px; background: var(--steel); color: var(--ash); font-size: 14px; font-weight: 600; }
 .goal { background: var(--carbon); box-shadow: none; }
 .goal::before { display: none; }
 .goal .gd { color: var(--ash); }
@@ -1413,6 +1417,16 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
 
   /* ---------- Home ---------- */
+  /* the sets inside a routine as a strip of pictures (Normal length, or the only one) */
+  function goalStrip(z) {
+    const ls = z.lengths || [], l = ls[1] || ls[0];
+    if (!l || !l.sets) return "";
+    const seen = new Set(), imgs = [];
+    l.sets.forEach((b) => { if (b && b.img && !seen.has(b.img) && imgs.length < 4) { seen.add(b.img); imgs.push(b.img); } });
+    if (imgs.length < 2) return "";
+    const rest = l.sets.length - imgs.length;
+    return `<span class="gstrip" aria-hidden="true">${imgs.map((u) => `<img src="${esc(thumbOf(u))}" alt="" loading="lazy" decoding="async">`).join("")}${rest > 0 ? `<span>+${rest}</span>` : ""}</span>`;
+  }
   function goalCard(z, mode) {
     const a = document.createElement(mode === "pick" ? "button" : "a");
     a.className = `goal g-${z.id === "better" ? "besser" : z.id}${mode === "pick" && (z.id === "cup" || z.id === "better") ? " tall" : ""}`;
@@ -1420,7 +1434,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     else a.href = "#goal";
     const ts = (z.lengths || []).map((l) => totalMin(l.sets)).filter((x) => x != null);
     const range = ts.length ? (ts.length > 1 ? `${fmtMin(Math.min(...ts))} – ${fmtMin(Math.max(...ts))}` : fmtMin(ts[0])) : (z.range || "");
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg><span style="display:grid;gap:8px">${z.dev ? '<span class="devtag">For devs only</span>' : ""}<span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
+    a.innerHTML = `${goalStrip(z) || `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg>`}<span style="display:grid;gap:8px">${z.dev ? '<span class="devtag">For devs only</span>' : ""}<span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
     a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
