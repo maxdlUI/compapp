@@ -82,7 +82,7 @@ button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit
 .brand { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.012em; margin-right: auto; color: var(--porcelain); white-space: nowrap; }
 .brand:hover { text-decoration: none; }
 .top nav { display: flex; gap: 22px; }
-.top nav a { color: var(--ash); font-size: 14px; letter-spacing: -0.224px; transition: color .2s; }
+.top nav a { color: var(--ash); font-size: 14px; letter-spacing: -0.224px; transition: color .2s; white-space: nowrap; }
 .top nav a:hover { color: var(--porcelain); text-decoration: none; }
 @media (max-width: 720px) { .top nav { display: none; } }
 
@@ -133,7 +133,13 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 .goal > * { position: relative; }
 .goal .gt { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.1; letter-spacing: 0.007em; }
 .goal .gd { font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: rgba(245, 245, 247, .74); max-width: 30ch; }
-.goal .gi { width: 36px; height: 36px; }
+.goal .gi { width: 36px; height: 36px; color: var(--c1); }
+.goal { background: var(--carbon); box-shadow: none; }
+.goal::before { display: none; }
+.goal .gd { color: var(--ash); }
+.goal .meta { color: var(--ash); }
+.goal .arr { background: var(--steel); }
+.goal[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--c1); }
 .goal[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--blue); }
 .g-cup { --bg: radial-gradient(90% 90% at 100% 0%, #1b4a8f, #08142a 62%, #000); }
 .g-besser { --bg: radial-gradient(90% 90% at 100% 0%, #4b2a8f, #120a26 62%, #000); }
@@ -872,7 +878,6 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
     <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
-    <a class="pill sm" href="#goal">Start routine</a>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -3004,7 +3009,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     for (let i = 0; i < 7; i++) { const d = dShift(wk, i), k = today(d), on2 = store.get(DAYS, []).indexOf(k) >= 0; if (on2) wd++; marks.push(`<i class="${on2 ? "on" : ""}"></i>`); }
     const circ = 2 * Math.PI * 30, frac = Math.min(1, wd / goalN);
     const nb = nextBadge(), rm = remSummary(), fz = settings.freezes || 0;
-    const rank = store.get("rl.rank", null);
+    let rank = store.get("rl.rank", null);
+    if (rank && account && account.real && rank.note === "Demo numbers") rank = null;
     $("me-cards").innerHTML = `
       ${dropCardHTML()}
       <a class="c-card" href="#stats"><span class="tiny">This week</span><div style="display:flex;align-items:center;gap:16px"><svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="${wd} of ${goalN} training days this week"><circle cx="36" cy="36" r="30" fill="none" stroke="#333336" stroke-width="8"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="#38e0ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(circ * frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 36 36)"></circle></svg><div><span class="big-n">${wd}<small> / ${goalN} days</small></span><br><span class="tiny">Stats ›</span></div></div><div class="wk" aria-hidden="true">${marks.join("")}</div></a>
@@ -3018,6 +3024,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   let rankT = 0;
   async function loadMyRank() {
     if (Date.now() - rankT < 60000) return;
+    if (account && account.real && !(sb && cloudUser)) return; // wait for the account, never show demo numbers
     rankT = Date.now();
     let info = null;
     if (sb && cloudUser) {
