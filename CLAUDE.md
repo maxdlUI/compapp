@@ -42,6 +42,10 @@ The Cloudflare token and the Discord bot token are saved on this cloud environme
 
 Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app id `1570194691465420870`. Channel #drops `1570793070125908108` (only the bot posts there), #announcements `1570387421269467186`, #ideas `1570387442668671079`, #download `1570387423895224410`.
 
+## Routine Studio (dev only)
+
+Public routines and blocks are stored in the database table `routine_catalog` (newest row is live, `009_routine_studio.sql`). The app applies the cached catalog on load (`applyCatalog`, localStorage `rl.catalog`) and refreshes it from the database; the routines in `index.html` are only the fallback. Devs edit them on `#studio` and publish; pictures go to the storage bucket `set-images`. To change routines, prefer the studio (or publish a new catalog version) over editing `index.html`.
+
 ## Open right now (13 Nov 2026)
 
 - **Drops is live** (website + Windows app 1.6.8, `008_drops.sql` applied, `remind` edge function v7 deployed: wins post in #drops).
