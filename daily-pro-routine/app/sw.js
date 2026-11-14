@@ -1,5 +1,5 @@
 // Repline service worker: keeps the app working offline.
-const CACHE = "repline-d24389b730";
+const CACHE = "repline-3dd3bd0fca";
 const FILES = ["./", "index.html", "manifest.webmanifest", "img/art-build-s.webp", "img/art-ranked-s.webp", "img/map-buildfights-s.webp", "img/map-clutch-s.webp", "img/map-realistics-s.webp", "img/map-turtle-s.webp", "img/map-v5-s.webp", "img/tile-brk-s.webp", "img/tile-kovaaks-s.webp", "img/tile-kovaaks2-s.webp", "img/tile-prep-s.webp", "img/tile-scrims-s.webp", "img/tile-vod-s.webp", "vendor/supabase.js", "icons/apple-touch-icon.png", "icons/favicon-32.png", "icons/icon-1024.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/icon-window-256.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

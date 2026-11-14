@@ -763,6 +763,83 @@ img.avatar { object-fit: cover; display: block; }
 .pill.red:hover { background: #ff3b30; }
 .dr-foot { font-size: 12px; color: var(--ash); letter-spacing: -0.12px; line-height: 1.4; margin: 0; }
 html.no-scroll { overflow: hidden; }
+/* ---------- Routine Studio (dev) ---------- */
+#v-studio.wrap { max-width: 1320px; }
+.st-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.st-sp { flex: 1; }
+.st-status { font-size: 14px; color: var(--ash); }
+.st-status.dirty { color: var(--c1); }
+.st-btn { border: 0; border-radius: 980px; padding: 9px 18px; background: var(--steel); color: var(--porcelain); font: 600 14px var(--text); cursor: pointer; }
+.st-btn.pri { background: var(--c1); color: #00141a; }
+.st-btn.ghost { background: none; box-shadow: inset 0 0 0 1px var(--steel); }
+.st-btn.sm { padding: 6px 12px; font-size: 13px; }
+.st-btn.danger { background: none; color: #ff6961; box-shadow: inset 0 0 0 1px rgba(255,105,97,.4); }
+.st-btn:disabled { opacity: .4; cursor: default; }
+#studio-body { display: grid; gap: 16px; }
+.st-cols { display: grid; grid-template-columns: 240px minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .st-cols { grid-template-columns: 220px minmax(0, 1fr); } .st-ed { grid-column: 1 / -1; } }
+@media (max-width: 720px) { .st-cols { grid-template-columns: minmax(0, 1fr); } }
+.st-card { background: var(--carbon); border-radius: 22px; padding: 16px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.st-lbl { font-size: 12px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: var(--ash); }
+.st-rlist { display: grid; gap: 6px; }
+.st-ritem { border: 0; text-align: left; background: none; border-radius: 14px; padding: 10px 12px; display: grid; gap: 2px; color: var(--porcelain); cursor: pointer; font: inherit; }
+.st-ritem:hover, .st-ritem[aria-pressed="true"] { background: var(--steel); }
+.st-ritem[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--c1); }
+.st-ritem span { font-size: 12px; color: var(--ash); }
+.st-in { width: 100%; background: #000; border: 0; border-radius: 12px; padding: 10px 12px; box-shadow: inset 0 0 0 1px var(--steel); color: var(--porcelain); font: 15px var(--text); }
+.st-in:focus { box-shadow: inset 0 0 0 1.5px var(--c1); outline: none; }
+textarea.st-in { resize: vertical; min-height: 64px; }
+.st-title { font-family: var(--display); font-size: 24px; font-weight: 600; background: none; box-shadow: none; padding: 4px 0; }
+.st-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: end; }
+.st-field { display: grid; gap: 6px; }
+.st-check { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--ash); padding-bottom: 10px; }
+.st-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.st-tab { border: 0; border-radius: 980px; padding: 7px 14px; background: var(--steel); color: var(--porcelain); font: 500 14px var(--text); cursor: pointer; }
+.st-tab small { font-size: 11px; color: var(--c1); }
+.st-tab[aria-pressed="true"] { background: var(--porcelain); color: #000; }
+.st-tots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 720px) { .st-tots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.st-tots div { background: #000; border-radius: 16px; padding: 12px 14px; display: grid; gap: 2px; }
+.st-tots b { font-family: var(--display); font-size: 26px; font-weight: 700; letter-spacing: -.6px; font-variant-numeric: tabular-nums; }
+.st-tots span { font-size: 12px; color: var(--ash); }
+.st-segs { display: flex; gap: 4px; height: 10px; }
+.st-segs i { border-radius: 3px; background: rgba(56,224,255,.55); min-width: 4px; }
+.st-segs i.rest { background: var(--steel); }
+.st-segs i.sel { background: var(--c1); }
+.st-blocks { display: grid; gap: 8px; }
+.st-blk { display: grid; grid-template-columns: 22px 64px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 8px 10px 8px 6px; border-radius: 16px; background: #000; cursor: pointer; }
+.st-blk[aria-selected="true"] { box-shadow: inset 0 0 0 1.5px var(--c1); }
+.st-blk.drag { opacity: .4; }
+.st-blk.over { box-shadow: inset 0 2px 0 var(--c1); }
+.st-grip { color: var(--ash); cursor: grab; text-align: center; user-select: none; }
+.st-th { width: 64px; aspect-ratio: 16 / 9; border-radius: 8px; background: var(--steel); object-fit: cover; display: block; }
+.st-nm { display: grid; min-width: 0; }
+.st-nm b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-nm span { font-size: 12px; color: var(--ash); }
+.st-step { display: flex; align-items: center; gap: 4px; }
+.st-step button { width: 28px; height: 28px; border-radius: 50%; border: 0; background: var(--steel); color: var(--porcelain); font-size: 16px; cursor: pointer; }
+.st-step input { width: 48px; text-align: center; background: none; border: 0; color: var(--porcelain); font: 600 15px var(--text); font-variant-numeric: tabular-nums; }
+.st-x { border: 0; background: none; color: var(--ash); font-size: 18px; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; }
+.st-x:hover { color: #ff6961; background: var(--steel); }
+.st-lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.st-libi { border: 0; text-align: left; background: #000; border-radius: 14px; padding: 8px; display: grid; gap: 6px; color: var(--porcelain); cursor: pointer; font: inherit; }
+.st-libi:hover, .st-libi[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--c1); }
+.st-libi .st-th { width: 100%; }
+.st-libi b { font-size: 13px; font-weight: 600; }
+.st-img { position: relative; border-radius: 16px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--steel); }
+.st-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.st-img label { position: relative; z-index: 1; background: rgba(0,0,0,.65); border-radius: 980px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.st-img.drop { box-shadow: inset 0 0 0 2px var(--c1); }
+.st-code { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 28px; gap: 6px; }
+.st-code .st-in { padding: 8px 10px; font-size: 13px; }
+.st-code .st-in.v { grid-column: 1 / 3; font-family: var(--mono); }
+.st-used { font-size: 13px; color: var(--ash); }
+.st-empty { color: var(--ash); font-size: 14px; padding: 20px; text-align: center; }
+.st-vers { display: grid; gap: 8px; }
+.st-ver { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #000; }
+.st-ver > span { display: grid; gap: 2px; min-width: 0; }
+.st-live { font-size: 11px; font-weight: 700; color: #000; background: var(--c1); border-radius: 99px; padding: 2px 7px; margin-left: 6px; }
+
 /* ---------- Drops: the reward wheel ---------- */
 .wh-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 900px) { .wh-grid { grid-template-columns: minmax(0, 1fr); } }
@@ -1169,6 +1246,12 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div id="drops-body"></div>
 </main>
 
+<main class="view wrap flowv" data-view="studio" id="v-studio" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Routine Studio.</h1><p class="lead">Edit the public routines and blocks. Dev accounts only.</p></div></div>
+  <div id="studio-body"></div>
+</main>
+
 <div class="resume" id="resume-bar" hidden>
   <a class="rs-link" href="#training" aria-label="Back to your routine">
     <span class="rs-ring" id="rs-ring" aria-hidden="true"></span>
@@ -1295,6 +1378,29 @@ const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
   L("quick", "3 s sets", [["kovaaks", 0.05], ["editWall", 0.05], ["slow", 0.05], ["fast", 0.05], ["ranked", 0.05], ["vod", 0.05], ["brk", 0.05], ["box", 0.05]], { auto: true })
 ] };
+/* Routine Studio: the public routines can come from the database (table routine_catalog, edited by devs).
+   The routines above are the built-in fallback; applyCatalog() swaps them in place. */
+const GOAL_EXTRA = {}; GOALS.forEach((g) => { GOAL_EXTRA[g.id] = { icon: g.icon, cupTime: g.cupTime }; });
+function applyCatalog(cat) {
+  if (!cat || typeof cat.sets !== "object" || !Array.isArray(cat.goals) || !cat.goals.length) return false;
+  try {
+    const sets = {};
+    Object.keys(cat.sets).forEach((k) => { const v = cat.sets[k]; if (v && typeof v.name === "string") sets[k] = Object.assign({}, v, { type: TYPES[v.type] ? v.type : "mech" }); });
+    const raw = cat.goals.filter((g) => g && g.id && Array.isArray(g.lengths) && g.lengths.length);
+    if (!raw.length) return false;
+    Object.keys(SETS).forEach((k) => { delete SETS[k]; }); Object.assign(SETS, sets);
+    const hadTest = GOALS.indexOf(TEST_GOAL) >= 0;
+    GOALS.length = 0;
+    raw.forEach((g) => {
+      const extra = {}; Object.keys(g).forEach((k) => { if (k !== "lengths") extra[k] = g[k]; });
+      const lengths = g.lengths.filter((l) => l && l.id && Array.isArray(l.sets)).map((l) => L(l.id, l.name || l.id, l.sets.filter((x) => Array.isArray(x) && SETS[x[0]]).map((x) => [x[0], Math.max(0.05, +x[1] || 1), x[2]])));
+      GOALS.push(Object.assign({ icon: "i-up" }, GOAL_EXTRA[g.id] || {}, extra, { lengths }));
+    });
+    if (hadTest) GOALS.push(TEST_GOAL);
+    return true;
+  } catch (e) { return false; }
+}
+try { const c = JSON.parse(localStorage.getItem("rl.catalog")); if (c && c.data) applyCatalog(c.data); } catch (e) { /* built-in routines */ }
 const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff", "#c084fc"];
 
 (function () {
@@ -1996,7 +2102,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><div class="group"><button class="row go" type="button" data-nav="drops">Drops</button><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
+      h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="drops">Drops</button><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
       h += myCodeHTML();
     }
@@ -3506,6 +3612,216 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     host.querySelector("#wh-collect").focus({ preventScroll: true });
   }
 
+  /* ---------- Routine Studio (dev only) ----------
+     Public routines and blocks live in the database (routine_catalog). loadCatalog() keeps this browser up to date;
+     the studio edits a draft and publishes it as a new version. Pictures go to the storage bucket "set-images". */
+  const CATK = "rl.catalog";
+  let catalogT = 0;
+  async function loadCatalog(force) {
+    if (!sb) return store.get(CATK, null);
+    if (!force && Date.now() - catalogT < 5 * 60 * 1000) return store.get(CATK, null);
+    catalogT = Date.now();
+    try {
+      const { data, error } = await sb.from("routine_catalog").select("id, data").order("id", { ascending: false }).limit(1).maybeSingle();
+      if (error || !data) return store.get(CATK, null);
+      const cur = store.get(CATK, null);
+      if (!cur || cur.id !== data.id) {
+        store.set(CATK, { id: data.id, data: data.data });
+        if (applyCatalog(data.data)) {
+          if (S.goal && S.active && S.b >= list().length) S.b = Math.max(0, list().length - 1);
+          if (view !== "studio") refreshView();
+        }
+      }
+      return store.get(CATK, null);
+    } catch (e) { return store.get(CATK, null); }
+  }
+  const isDevAcc = () => !!(account && account.isDev);
+  let ST = null; // { draft, base, g, l, b, sel, versions }
+  const stFmt = (min) => { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? (m ? `${h} h ${m}` : `${h} h`) : `${m} min`; };
+  const ICONS = [["i-up", "Trend"], ["i-cup", "Cup"], ["i-aim", "Aim"], ["i-mech", "Mechanics"], ["i-ki", "AI"]];
+
+  async function buildStudio() {
+    const body = $("studio-body");
+    if (!isDevAcc()) { body.innerHTML = '<p class="small">The Routine Studio is for dev accounts.</p>'; return; }
+    if (!ST) {
+      body.innerHTML = '<p class="small">Loading the published routines…</p>';
+      const cur = await loadCatalog(true);
+      if (view !== "studio") return;
+      if (!cur || !cur.data) { body.innerHTML = '<p class="small">Couldn\'t load the routines. Check your connection and try again.</p>'; return; }
+      ST = { base: JSON.stringify(cur.data), baseId: cur.id, draft: JSON.parse(JSON.stringify(cur.data)), g: 0, l: 0, b: null, sel: null, versions: null };
+      ST.l = Math.min(1, ST.draft.goals[0].lengths.length - 1);
+      loadVersions();
+    }
+    body.innerHTML = `<div class="st-top"><span class="st-status" id="st-status"></span><span class="st-sp"></span>
+        <button class="st-btn ghost" type="button" id="st-undo">Undo all</button><button class="st-btn pri" type="button" id="st-pub">Publish</button></div>
+      <div class="st-cols"><div class="st-card"><span class="st-lbl">Public routines</span><div class="st-rlist" id="st-rlist"></div><button class="st-btn sm ghost" type="button" id="st-new-r">+ New routine</button></div>
+        <div class="st-card" id="st-mid"></div><div class="st-card st-ed" id="st-ed"></div></div>
+      <div class="st-card"><div class="st-top"><span class="st-lbl">Block library</span><span class="st-sp"></span><button class="st-btn sm" type="button" id="st-new-b">+ New block</button></div>
+        <span class="st-used">Click a block to add it to the selected length. A block can be used in many routines; editing it changes all of them.</span><div class="st-lib" id="st-lib"></div></div>
+      <div class="st-card"><span class="st-lbl">Published versions</span><div class="st-vers" id="st-vers"></div></div>`;
+    $("st-undo").addEventListener("click", () => { ST.draft = JSON.parse(ST.base); ST.g = 0; ST.l = 0; ST.b = null; ST.sel = null; stRender(); toast("Back to the published version"); });
+    $("st-pub").addEventListener("click", stPublish);
+    $("st-new-b").addEventListener("click", () => { const k = "b" + Date.now().toString(36); ST.draft.sets[k] = { name: "New block", type: "mech", hint: "", codes: [] }; ST.b = k; stRender(); toast("New block · fill it in on the right"); });
+    $("st-new-r").addEventListener("click", () => { ST.draft.goals.push({ id: "r" + Date.now().toString(36), name: "New routine", text: "Describe it in one line.", icon: "i-up", lengths: [{ id: "short", name: "Short", sets: [] }] }); ST.g = ST.draft.goals.length - 1; ST.l = 0; ST.sel = null; stRender(); });
+    stRender();
+  }
+  const stGoal = () => ST.draft.goals[ST.g];
+  const stLen = () => { const g = stGoal(); return g.lengths[Math.min(ST.l, g.lengths.length - 1)]; };
+  const stSet = (k) => ST.draft.sets[k] || { name: k + " (missing)", type: "rest" };
+  const stUsed = (k) => { let n = 0; ST.draft.goals.forEach((g) => g.lengths.forEach((l) => l.sets.forEach((x) => { if (x[0] === k) n++; }))); return n; };
+  function stDirty() {
+    const d = JSON.stringify(ST.draft) !== ST.base, el = $("st-status");
+    if (el) { el.textContent = d ? "Draft · not published yet" : `Live · version ${ST.baseId}`; el.classList.toggle("dirty", d); }
+    return d;
+  }
+  function stRender() { stList(); stMid(); stEd(); stLib(); stVers(); stDirty(); }
+  function stList() {
+    $("st-rlist").innerHTML = ST.draft.goals.map((g, i) => {
+      const ts = g.lengths.map((l) => l.sets.reduce((a, x) => a + (+x[1] || 0), 0));
+      const r = ts.length ? stFmt(Math.min(...ts)) + (ts.length > 1 ? " – " + stFmt(Math.max(...ts)) : "") : "empty";
+      return `<button class="st-ritem" type="button" data-g="${i}" aria-pressed="${i === ST.g}"><b>${esc(g.name)}</b><span>${g.lengths.length} length${g.lengths.length === 1 ? "" : "s"} · ${r}</span></button>`;
+    }).join("");
+    $("st-rlist").querySelectorAll("[data-g]").forEach((b) => b.addEventListener("click", () => { ST.g = +b.dataset.g; ST.l = Math.min(1, stGoal().lengths.length - 1); ST.sel = null; stRender(); }));
+  }
+  function stMid() {
+    const g = stGoal(), l = stLen(), sets = l.sets;
+    const total = sets.reduce((a, x) => a + (+x[1] || 0), 0), sw = Math.max(0, sets.length - 1) * (settings.switchSec || 30) / 60;
+    let h = `<input class="st-in st-title" id="st-g-name" value="${esc(g.name)}" aria-label="Routine name">
+      <input class="st-in" id="st-g-text" value="${esc(g.text || "")}" aria-label="Short description">
+      <div class="st-two"><label class="st-field"><span class="st-lbl">Icon</span><select class="st-in" id="st-g-icon">${ICONS.map(([v, n]) => `<option value="${v}"${g.icon === v ? " selected" : ""}>${n}</option>`).join("")}</select></label>
+        <label class="st-check"><input type="checkbox" id="st-g-cup"${g.cupTime ? " checked" : ""}> Ask for the cup start time</label></div>
+      <div class="st-tabs">${g.lengths.map((x, i) => `<button class="st-tab" type="button" data-l="${i}" aria-pressed="${x === l}">${esc(x.name)}${x.id === "short" ? ' <small>Free</small>' : ""}</button>`).join("")}<button class="st-tab" type="button" id="st-add-l">+ Length</button></div>
+      <div class="st-two"><input class="st-in" id="st-l-name" value="${esc(l.name)}" aria-label="Length name"><button class="st-btn sm danger" type="button" id="st-del-l"${g.lengths.length < 2 || l.id === "short" ? " disabled" : ""}>${l.id === "short" ? "The free length stays" : "Delete this length"}</button></div>
+      <span class="st-used">${l.id === "short" ? "Free players can use this length." : "Standard and Pro only. Only the length called \"short\" inside is free."}</span>
+      <div class="st-tots"><div><b>${stFmt(total)}</b><span>training</span></div><div><b>${sets.length}</b><span>blocks</span></div><div><b>${stFmt(sw)}</b><span>switching maps</span></div><div><b>${stFmt(total + sw)}</b><span>in total</span></div></div>
+      <div class="st-segs">${sets.map((x, i) => `<i class="${stSet(x[0]).type === "rest" ? "rest" : ""}${i === ST.sel ? " sel" : ""}" style="flex:${Math.max(1, +x[1] || 1)}"></i>`).join("")}</div>
+      <div class="st-blocks" id="st-blocks">${sets.length ? sets.map((x, i) => {
+        const b = stSet(x[0]), nm = x[2] && x[2].name ? x[2].name : b.name;
+        return `<div class="st-blk" draggable="true" data-i="${i}" aria-selected="${i === ST.sel}"><span class="st-grip" title="Drag to move">⋮⋮</span>${b.img ? `<img class="st-th" src="${esc(thumbOf(b.img))}" alt="">` : '<span class="st-th"></span>'}<span class="st-nm"><b>${i + 1} · ${esc(nm)}</b><span>${esc((TYPES[b.type] || TYPES.mech).label)}${x[2] ? " · own text here" : ""}</span></span><span class="st-step"><button type="button" data-d="-1" aria-label="Less">−</button><input type="number" min="1" max="600" value="${x[1]}" aria-label="Minutes"><button type="button" data-d="1" aria-label="More">+</button></span><button class="st-x" type="button" data-rm aria-label="Remove">×</button></div>`;
+      }).join("") : '<div class="st-empty">No blocks yet. Add one from the block library below.</div>'}</div>
+      <div class="st-two"><button class="st-btn sm danger" type="button" id="st-del-g"${ST.draft.goals.length < 2 ? " disabled" : ""}>Delete this routine</button></div>`;
+    $("st-mid").innerHTML = h;
+    $("st-g-name").addEventListener("input", (e) => { g.name = e.target.value; stDirty(); stList(); });
+    $("st-g-text").addEventListener("input", (e) => { g.text = e.target.value; stDirty(); });
+    $("st-g-icon").addEventListener("change", (e) => { g.icon = e.target.value; stDirty(); });
+    $("st-g-cup").addEventListener("change", (e) => { if (e.target.checked) g.cupTime = true; else delete g.cupTime; stDirty(); });
+    $("st-l-name").addEventListener("input", (e) => { l.name = e.target.value; stDirty(); });
+    $("st-mid").querySelectorAll("[data-l]").forEach((b) => b.addEventListener("click", () => { ST.l = +b.dataset.l; ST.sel = null; stRender(); }));
+    $("st-add-l").addEventListener("click", () => { g.lengths.push({ id: "len" + Date.now().toString(36), name: "New length", sets: l.sets.map((x) => JSON.parse(JSON.stringify(x))) }); ST.l = g.lengths.length - 1; stRender(); toast("Length added, copied from " + l.name); });
+    $("st-del-l").addEventListener("click", (e) => { if (g.lengths.length < 2 || l.id === "short") return; if (!e.target.dataset.sure) { e.target.dataset.sure = "1"; e.target.textContent = "Tap again to delete " + l.name; return; } g.lengths.splice(ST.l, 1); ST.l = 0; ST.sel = null; stRender(); toast("Length deleted"); });
+    $("st-del-g").addEventListener("click", (e) => { if (ST.draft.goals.length < 2) return; if (!e.target.dataset.sure) { e.target.dataset.sure = "1"; e.target.textContent = "Tap again to delete " + g.name; return; } ST.draft.goals.splice(ST.g, 1); ST.g = 0; ST.l = 0; ST.sel = null; stRender(); toast("Routine deleted"); });
+    let drag = null;
+    $("st-blocks").querySelectorAll(".st-blk").forEach((row) => {
+      const i = +row.dataset.i;
+      row.addEventListener("click", (e) => { if (e.target.closest("button, input")) return; ST.sel = i; ST.b = sets[i][0]; stRender(); });
+      row.querySelectorAll("[data-d]").forEach((b) => b.addEventListener("click", () => { sets[i][1] = Math.max(1, Math.round(+sets[i][1] || 1) + +b.dataset.d); stRender(); }));
+      row.querySelector("input").addEventListener("change", (e) => { sets[i][1] = Math.max(1, Math.min(600, Math.round(+e.target.value || 1))); stRender(); });
+      row.querySelector("[data-rm]").addEventListener("click", () => { sets.splice(i, 1); ST.sel = null; stRender(); });
+      row.addEventListener("dragstart", () => { drag = i; row.classList.add("drag"); });
+      row.addEventListener("dragend", () => row.classList.remove("drag"));
+      row.addEventListener("dragover", (e) => { e.preventDefault(); row.classList.add("over"); });
+      row.addEventListener("dragleave", () => row.classList.remove("over"));
+      row.addEventListener("drop", (e) => { e.preventDefault(); row.classList.remove("over"); if (drag == null || drag === i) return; const m = sets.splice(drag, 1)[0]; sets.splice(i, 0, m); ST.sel = i; stRender(); });
+    });
+  }
+  function stEd() {
+    const k = ST.b, b = k && ST.draft.sets[k], ed = $("st-ed");
+    if (!b) { ed.innerHTML = '<span class="st-lbl">Block</span><div class="st-empty">Pick a block in the routine or in the library to edit it.</div>'; return; }
+    const codes = b.codes || [];
+    ed.innerHTML = `<span class="st-lbl">Block</span>
+      <div class="st-img" id="st-img">${b.img ? `<img src="${esc(b.img)}" alt="">` : ""}<label for="st-file">${b.img ? "Replace picture" : "Add picture"}</label><input type="file" id="st-file" accept="image/*" hidden></div>
+      ${b.img ? '<button class="st-btn sm ghost" type="button" id="st-img-rm">Remove picture</button>' : ""}
+      <label class="st-field"><span class="st-lbl">Name</span><input class="st-in" id="st-b-name" value="${esc(b.name)}"></label>
+      <div class="st-two"><label class="st-field"><span class="st-lbl">Type</span><select class="st-in" id="st-b-type">${Object.keys(TYPES).map((t) => `<option value="${t}"${t === b.type ? " selected" : ""}>${esc(TYPES[t].label)}</option>`).join("")}</select></label>
+        <label class="st-field"><span class="st-lbl">Where</span><input class="st-in" id="st-b-where" value="${esc(b.where || "")}" placeholder="e.g. KovaaK's · Playlists"></label></div>
+      <label class="st-field"><span class="st-lbl">What to do</span><textarea class="st-in" id="st-b-hint">${esc(b.hint || "")}</textarea></label>
+      <label class="st-field"><span class="st-lbl">Tip (optional)</span><textarea class="st-in" id="st-b-tip">${esc(b.tip || "")}</textarea></label>
+      <div class="st-field"><span class="st-lbl">Map codes</span>${codes.map((c, i) => `<div class="st-code" data-c="${i}"><input class="st-in" data-f="name" value="${esc(c.name || "")}" placeholder="Label" aria-label="Label"><input class="st-in" data-f="by" value="${esc(c.by || "")}" placeholder="Creator" aria-label="Creator"><button class="st-x" type="button" data-rmc aria-label="Remove code">×</button><input class="st-in v" data-f="value" value="${esc(c.value || "")}" placeholder="0000-0000-0000" aria-label="Code"></div>`).join("")}<button class="st-btn sm ghost" type="button" id="st-add-c">+ Map code</button></div>
+      <span class="st-used">Used ${stUsed(k)}× in public routines.</span>
+      <div class="st-two"><button class="st-btn sm" type="button" id="st-dup">Duplicate</button><button class="st-btn sm danger" type="button" id="st-del-b">Delete block</button></div>`;
+    const bind = (id, f) => $(id).addEventListener("input", (e) => { if (e.target.value) b[f] = e.target.value; else delete b[f]; if (f === "name") b.name = e.target.value; stDirty(); if (f === "name") { stMid(); stLib(); } });
+    bind("st-b-name", "name"); bind("st-b-where", "where"); bind("st-b-hint", "hint"); bind("st-b-tip", "tip");
+    $("st-b-type").addEventListener("change", (e) => { b.type = e.target.value; stDirty(); stMid(); });
+    const up = (f) => stUpload(k, f);
+    $("st-file").addEventListener("change", (e) => up(e.target.files[0]));
+    const box = $("st-img");
+    box.addEventListener("dragover", (e) => { e.preventDefault(); box.classList.add("drop"); });
+    box.addEventListener("dragleave", () => box.classList.remove("drop"));
+    box.addEventListener("drop", (e) => { e.preventDefault(); box.classList.remove("drop"); up(e.dataTransfer.files[0]); });
+    const rmI = $("st-img-rm"); if (rmI) rmI.addEventListener("click", () => { delete b.img; stRender(); });
+    ed.querySelectorAll("[data-c]").forEach((row) => {
+      const i = +row.dataset.c;
+      row.querySelectorAll("[data-f]").forEach((inp) => inp.addEventListener("input", () => { b.codes[i][inp.dataset.f] = inp.value; stDirty(); }));
+      row.querySelector("[data-rmc]").addEventListener("click", () => { b.codes.splice(i, 1); stEd(); stDirty(); });
+    });
+    $("st-add-c").addEventListener("click", () => { b.codes = (b.codes || []).concat([{ name: "Map code", by: "", value: "" }]); stEd(); stDirty(); });
+    $("st-dup").addEventListener("click", () => { const nk = "b" + Date.now().toString(36); ST.draft.sets[nk] = JSON.parse(JSON.stringify(b)); ST.draft.sets[nk].name = b.name + " (copy)"; ST.b = nk; stRender(); toast("Block duplicated"); });
+    $("st-del-b").addEventListener("click", (e) => {
+      const n = stUsed(k);
+      if (n && !e.target.dataset.sure) { e.target.dataset.sure = "1"; e.target.textContent = `Used ${n}× · tap again to delete`; return; }
+      ST.draft.goals.forEach((g) => g.lengths.forEach((l) => { l.sets = l.sets.filter((x) => x[0] !== k); }));
+      delete ST.draft.sets[k]; ST.b = null; ST.sel = null; stRender(); toast("Block deleted");
+    });
+  }
+  function stLib() {
+    $("st-lib").innerHTML = Object.keys(ST.draft.sets).map((k) => { const b = ST.draft.sets[k]; return `<button class="st-libi" type="button" data-k="${esc(k)}" aria-pressed="${k === ST.b}">${b.img ? `<img class="st-th" src="${esc(thumbOf(b.img))}" alt="">` : '<span class="st-th"></span>'}<b>${esc(b.name)}</b><span class="st-used">${esc((TYPES[b.type] || TYPES.mech).label)}</span></button>`; }).join("");
+    $("st-lib").querySelectorAll("[data-k]").forEach((el) => el.addEventListener("click", () => { const k = el.dataset.k; stLen().sets.push([k, 10]); ST.sel = stLen().sets.length - 1; ST.b = k; stRender(); toast(stSet(k).name + " added · 10 min"); }));
+  }
+  function stVers() {
+    const el = $("st-vers"); if (!el) return;
+    const v = ST.versions;
+    el.innerHTML = !v ? '<span class="st-used">Loading…</span>' : v.map((x) => `<div class="st-ver"><span><b>Version ${x.id}</b>${x.id === ST.baseId ? ' <small class="st-live">Live</small>' : ""}<span class="st-used">${new Date(x.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}${x.username ? " · " + esc(x.username) : ""}${x.note ? " · " + esc(x.note) : ""}</span></span>${x.id === ST.baseId ? "" : `<button class="st-btn sm ghost" type="button" data-v="${x.id}">Make live again</button>`}</div>`).join("");
+    el.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", async () => {
+      if (!b.dataset.sure) { b.dataset.sure = "1"; b.textContent = "Tap again to restore"; return; }
+      const { error } = await sb.rpc("restore_catalog", { vid: +b.dataset.v });
+      if (error) { toast("Couldn't restore it. Please try again."); return; }
+      ST = null; await buildStudio(); toast("Version restored and live");
+    }));
+  }
+  async function loadVersions() {
+    if (!sb) return;
+    const { data } = await sb.rpc("catalog_versions");
+    if (!ST) return; ST.versions = data || []; if (view === "studio") stVers();
+  }
+  async function stPublish() {
+    if (!stDirty()) { toast("Nothing changed"); return; }
+    const bad = ST.draft.goals.find((g) => !g.name.trim() || g.lengths.some((l) => !l.sets.length));
+    if (bad) { toast(`"${bad.name || "A routine"}" has a length without blocks`); return; }
+    const btn = $("st-pub"); btn.disabled = true; btn.textContent = "Publishing…";
+    const note = `${ST.draft.goals.length} routines · ${Object.keys(ST.draft.sets).length} blocks`;
+    const { data, error } = await sb.rpc("publish_catalog", { d: ST.draft, note });
+    btn.disabled = false; btn.textContent = "Publish";
+    if (error) { toast(error.message === "not_dev" ? "Only dev accounts can publish." : "Couldn't publish. Please try again."); return; }
+    store.set(CATK, { id: data, data: JSON.parse(JSON.stringify(ST.draft)) });
+    applyCatalog(ST.draft);
+    ST.base = JSON.stringify(ST.draft); ST.baseId = data;
+    stDirty(); loadVersions(); toast("Published · players get it on their next visit");
+  }
+  /* pictures: resized in the browser (1280 px and a 640 px thumbnail), stored in "set-images" */
+  function stScale(img, w) {
+    const c = document.createElement("canvas"), r = Math.min(1, w / img.naturalWidth);
+    c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return new Promise((res) => c.toBlob((b) => res(b), "image/webp", 0.82));
+  }
+  async function stUpload(k, file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    if (!sb || !cloudUser) { toast("Sign in to upload pictures."); return; }
+    toast("Uploading picture…");
+    try {
+      const url = URL.createObjectURL(file), img = new Image();
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
+      const [big, small] = await Promise.all([stScale(img, 1280), stScale(img, 640)]);
+      URL.revokeObjectURL(url);
+      const ext = big && big.type === "image/webp" ? "webp" : "png", name = `${k.replace(/[^a-z0-9]/gi, "")}-${Date.now().toString(36)}`;
+      const a = await sb.storage.from("set-images").upload(`${name}.${ext}`, big, { contentType: big.type, upsert: false });
+      if (a.error) throw a.error;
+      if (ext === "webp") await sb.storage.from("set-images").upload(`${name}-s.webp`, small, { contentType: "image/webp", upsert: false });
+      ST.draft.sets[k].img = sb.storage.from("set-images").getPublicUrl(`${name}.${ext}`).data.publicUrl;
+      stRender(); toast("Picture added · publish to make it live");
+    } catch (e) { toast("Couldn't upload the picture. Use a JPG, PNG or WebP under 10 MB."); }
+  }
+
   /* ---------- 1.6 · reminder settings ---------- */
   const REM_DEF = { on: false, time: "18:00", days: [1, 2, 3, 4, 5], skip: true, danger: true, win: true, dc: false, push: false };
   const remGet = () => Object.assign({}, REM_DEF, settings.rem || {});
@@ -3683,7 +3999,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends", "drops"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends", "drops", "studio"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -3701,6 +4017,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (name === "length" && !S.goal) name = "goal";
     if (name === "length" && goal(S.goal) && goal(S.goal).custom) name = S.len ? "plan" : "goal";
     if (name === "builder" && (!draft || !signedIn())) name = "goal";
+    if (name === "studio" && !(account && account.isDev)) name = "";
     if (name === "training" && !signedIn()) name = S.goal && length(S.goal, S.len) ? "plan" : "goal";
     if ((name === "plan" || name === "training") && (!S.goal || !length(S.goal, S.len))) name = S.goal ? "length" : "goal";
     if (name !== asked) { try { history.replaceState(null, "", name ? "#" + name : location.pathname + location.search); } catch (e) {} }
@@ -3721,6 +4038,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "drops") buildDrops();
+    if (id === "studio") buildStudio();
     if (importCode) setTimeout(() => openImport(importCode), 300);
     if (id === "length") buildLen();
     if (id === "plan") buildPlan();
@@ -3739,6 +4057,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   if (signedIn() && !sb) { applyFreezes(); checkBadges(true); }
   syncDeskReminder(); setInterval(syncDeskReminder, 5 * 60 * 1000);
   ensureLoop();
+  if (sb) loadCatalog();
   route();
   updateResume();
 })();
