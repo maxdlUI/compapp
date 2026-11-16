@@ -624,6 +624,41 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 .teaser-card b { font-family: var(--display); font-size: 21px; font-weight: 600; }
 
 /* Overlay teaser on the home screen (website only) */
+/* 1.9 · coach */
+.co-grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .co-grid { grid-template-columns: minmax(0, 1fr); } }
+.co-in .row, .co-out .row, .co-fb .row { display: grid; gap: 8px; }
+.co-seg { flex-wrap: wrap; justify-content: flex-start; width: fit-content; max-width: 100%; }
+.co-msg { width: 100%; box-sizing: border-box; min-height: 110px; resize: vertical; background: var(--graphite); color: var(--porcelain); border: 1px solid var(--steel); border-radius: 16px; padding: 14px; font: inherit; font-size: 17px; line-height: 1.45; }
+.co-msg:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.co-tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.co-tips li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; color: var(--ash); }
+.co-tips li > span { display: grid; gap: 1px; }
+.co-tips li b { font-weight: 500; font-size: 15px; color: var(--ash); }
+.co-tips i { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--steel); display: grid; place-items: center; font-style: normal; font-size: 13px; font-weight: 700; color: #000; transition: background .2s, border-color .2s; }
+.co-tips li.ok i { background: var(--pos); border-color: var(--pos); }
+.co-tips li.ok b { color: var(--porcelain); }
+.co-go { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
+.co-got { display: flex; flex-wrap: wrap; gap: 6px; }
+.co-got span { font-size: 13px; padding: 5px 11px; border-radius: 99px; background: var(--steel); }
+.co-got .bad { background: rgba(255,179,64,.16); color: #ffb340; }
+.co-got .no { background: rgba(255,105,97,.14); color: #ff8f88; text-decoration: line-through; }
+.co-got .ok { background: rgba(94,211,154,.14); color: var(--pos); }
+.co-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.co-head b { font-size: 26px; letter-spacing: -.5px; }
+.co-sets { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.co-sets li { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 9px; border-radius: 14px; }
+.co-sets li:nth-child(odd) { background: rgba(255,255,255,.025); }
+.co-sets img, .co-ph { width: 88px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 9px; display: block; max-width: 100%; }
+.co-sets li > span { display: grid; gap: 2px; }
+.co-sets b { font-size: 16px; font-weight: 600; }
+.co-m { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 520px) { .co-sets li { grid-template-columns: 60px minmax(0, 1fr) auto; gap: 10px; } .co-sets img, .co-ph { width: 60px; } }
+.co-empty { display: grid; gap: 10px; justify-items: start; padding: 12px 0; }
+.co-empty .gi { width: 40px; height: 40px; color: var(--c1); }
+.co-empty b { font-size: 22px; }
+.co-lock { max-width: 640px; }
+.co-fb { margin-top: 4px; }
 /* 1.8 · verified routines + aim progress */
 .round-ph { width: 56px; height: 56px; }
 .gstat { display: inline-flex; align-items: center; gap: 8px; justify-self: center; font-size: 14px; color: var(--ash); background: rgba(66,66,69,.45); padding: 7px 14px; border-radius: 99px; }
@@ -1008,7 +1043,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">AI Training</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Coach</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1211,6 +1246,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       <h1 class="d-xl burst">Done.</h1>
       <p class="lead" id="done-sum"></p>
       <div id="done-check"></div>
+      <div id="done-coach"></div>
       <div id="done-spin"></div>
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
@@ -1265,23 +1301,11 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div class="partner-cta rv"><div><b class="h3">Want to partner with Repline?</b><p class="small" style="margin-top:6px">Talk to us on Discord.</p></div><span data-discord="lg"></span></div>
 </main>
 
-<!-- AI Training -->
-<main class="view wrap" data-view="ai" id="v-ai" hidden>
-  <div class="ki">
-    <div class="ki-txt">
-      <button class="back" type="button" data-go="" style="margin:0">Home</button>
-      <span><span class="pro" style="margin-left:0">✦ Pro</span> <span class="soon" style="font-size:14px;margin-left:6px">Coming Soon</span></span>
-      <h1 class="d-l">AI Training. Made for you.</h1>
-      <p class="lead">Tell it your goal and your time. It builds your routine.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:12px"><button class="pill big" type="button" disabled>Coming Soon</button><a class="pill big out" href="#goal">See fixed routines</a></div>
-    </div>
-    <div class="ki-demo" aria-hidden="true">
-      <textarea disabled tabindex="-1">I have *** today and want to work on ***.</textarea>
-      <div class="blk"><summary><i class="dot" style="background:var(--c1)"></i><span class="when"></span><span class="nm">Set 1 · ***</span><span class="du">*** min</span></summary></div>
-      <div class="blk"><summary><i class="dot" style="background:var(--c3)"></i><span class="when"></span><span class="nm">Set 2 · ***</span><span class="du">*** min</span></summary></div>
-      <div class="blk"><summary><i class="dot" style="background:var(--c4)"></i><span class="when"></span><span class="nm">Set 3 · ***</span><span class="du">*** min</span></summary></div>
-    </div>
-  </div>
+<!-- Coach -->
+<main class="view wrap flowv" data-view="ai" id="v-ai" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Coach.</h1><p class="lead">Write what you want to train. It builds your routine from the Repline sets.</p></div></div>
+  <div id="coach-body"></div>
 </main>
 
 <main class="view wrap flowv" data-view="board" id="v-board" hidden>
@@ -1449,8 +1473,8 @@ const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], [
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
 const PLANS = [
   { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
-  { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "In-game overlay (Windows app)", "Everything in Free"] },
-  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "AI Training", "Everything in Standard"], soon: ["Pro routines", "AI Training"] }
+  { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "Coach: 1 routine a day, made for you", "In-game overlay (Windows app)", "Everything in Free"] },
+  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "Coach: 3 routines a day", "Everything in Standard"], soon: ["Pro routines"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
@@ -1541,7 +1565,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     customCache[rid] = { key, goal: g };
     return g;
   }
-  const goal = (id) => (typeof id === "string" && id.indexOf("my-") === 0 ? customGoal(id.slice(3)) : GOALS.find((z) => z.id === id));
+  const goal = (id) => (id === "coach" ? coachGoal() : typeof id === "string" && id.indexOf("my-") === 0 ? customGoal(id.slice(3)) : GOALS.find((z) => z.id === id));
   const lengthLocked = (g, l) => planId() === "free" && !g.custom && !g.dev && l.id !== "short";
   const length = (gid, lid) => { const g = goal(gid); return g && g.lengths.find((l) => l.id === lid); };
   function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.sets : []; }
@@ -1626,7 +1650,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function aiCard() {
     const a = document.createElement("a");
     a.className = "goal g-ki"; a.href = "#ai";
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span><span class="pro" style="margin-left:0">✦ Pro</span> <span class="soon" style="margin-left:6px">Coming Soon</span></span><span class="gt">AI Training</span><span class="gd">A routine built just for you.</span></span>`;
+    const ready = !!coachGoal();
+    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span><span class="new" style="margin:0">New</span> <span class="tiny" style="margin-left:6px">Standard &amp; Pro</span></span><span class="gt">Coach</span><span class="gd">${ready ? "Your routine for today is ready." : "Write what you want to train. It builds your routine."}</span></span>`;
     return a;
   }
   function buildHome() {
@@ -1719,7 +1744,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const thumbOf = (u) => String(u).replace(/\.webp$/, "-s.webp");
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
-    const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.custom ? "goal" : "length"; bk.textContent = z.custom ? "Routines" : "Length";
+    const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.coach ? "ai" : z.custom ? "goal" : "length"; bk.textContent = z.coach ? "Coach" : z.custom ? "Routines" : "Length";
     const swt = switchTotalSec(bl.length);
     $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
     $("plan-start").innerHTML = signedIn() ? "Start training" : `<svg aria-hidden="true" style="width:20px;height:20px;margin-right:10px;vertical-align:-4px"><use href="#i-discord"/></svg>Sign in to start`;
@@ -1760,7 +1785,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const swLeft = () => Math.max(0, (S.swEnd || 0) - Date.now());
   function switchTotalSec(n) { return n > 1 ? (n - 1) * switchSec() : 0; }
   const fmtSwitch = (sec) => sec < 60 ? sec + " s" : Math.floor(sec / 60) + " min" + (sec % 60 ? " " + (sec % 60) + " s" : "");
-  function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.live = {}; S.checks = {}; S.active = false; }
+  function resetRun() { S.b = 0; S.status = "bereit"; S.before = 0; S.done = {}; S.kills = {}; S.live = {}; S.checks = {}; S.active = false; delete S.run; delete S.game; }
   function setSound(v) { settings.sound = v; saveSettings(); $("snd").setAttribute("aria-pressed", v ? "true" : "false"); }
   setSound(settings.sound);
   $("snd").addEventListener("click", () => setSound(!settings.sound));
@@ -2304,6 +2329,338 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   document.querySelectorAll("[data-ar]").forEach((b) => b.addEventListener("click", () => { aimRange = b.dataset.ar; buildAim(); }));
 
+  /* ---------- Coach: the player writes what they want, the coach builds the routine ----------
+     Runs on the player's device (no server, no cost). The owner's knowledge lives in COACH.md. */
+  const COACH = (function (APP_SETS) {
+    const META = {
+      kovaaks:  { name: "KovaaK's · Tjino Tracking", area: "aim",   tags: ["tracking", "aim"], kovaaks: true, img: "thumb-kovaaks" },
+      tjUpd:    { name: "KovaaK's · Tjino Updated",  area: "aim",   tags: ["flicks", "aim"], kovaaks: true, img: "thumb-kovaaks2" },
+      v5Flick:  { name: "V5 Aim · Reaction flick",   area: "aim",   tags: ["flicks", "aim"], img: "map-v5" },
+      v5Bounce: { name: "V5 Aim · Bounce tracking",  area: "aim",   tags: ["tracking", "aim"], img: "map-v5" },
+      editWall: { name: "Edit wall",                 area: "mech",  tags: ["edits"], img: "map-v5" },
+      slow:     { name: "Freebuild · 90%",           area: "mech",  tags: ["building", "edits"], img: "art-build" },
+      fast:     { name: "Freebuild · fast",      area: "mech",  tags: ["building", "speed"], img: "art-build" },
+      piece:    { name: "Piece control",             area: "fight", tags: ["piece", "boxfights"], img: "map-v5" },
+      box:      { name: "1v1 Build Fights",          area: "fight", tags: ["buildfights", "fights"], img: "map-buildfights" },
+      turtle:   { name: "Turtle Fights",             area: "fight", tags: ["boxfights", "fights"], img: "map-turtle" },
+      real:     { name: "Pro Realistics",            area: "fight", tags: ["realistics", "endgame", "fights"], img: "map-realistics" },
+      clutch:   { name: "Clutch Realistics",         area: "fight", tags: ["clutch", "endgame", "realistics"], img: "map-clutch" },
+      ranked:   { name: "Ranked · one focus",        area: "live",  tags: ["ranked", "live"], img: "art-ranked" },
+      scrims:   { name: "Scrims",                    area: "live",  tags: ["scrims", "endgame", "live"], img: "thumb-scrims" },
+      vod:      { name: "VOD review",                area: "review", tags: ["review"], img: "thumb-vod" },
+      fixDrill: { name: "Fix drill",                 area: "review", tags: ["review", "edits"], img: "map-v5" },
+      prep:     { name: "Cup check",                 area: "prep",  tags: ["cup"], img: "thumb-prep" },
+      brk:      { name: "Break",                     area: "rest",  tags: [], img: "thumb-brk" }
+    };
+    // What players write → what they mean (German + English, slang, typos). Each entry: [regex, focus].
+    const WORDS = [
+      [/\b(aim|aimen|zielen|crosshair|treff\w*|accuracy|acc)\b/, "aim"],
+      [/\b(track\w*|smooth)\b/, "tracking"],
+      [/\b(flick\w*|reaction|reaktion|click\w*|klick\w*)\b/, "flicks"],
+      [/\b(edit\w*|editier\w*|editen|reset\w*)\b/, "edits"],
+      [/\b(bau\w*|build\w*|mech\w*|90s|ramp\w*|retake\w*|high ?ground|hg)\b/, "building"],
+      [/\b(speed|schnell\w*|faster|tempo)\b/, "speed"],
+      [/\b(piece ?control|pc|walls?|wände?|wand ?nehm\w*|take walls?)\b/, "piece"],
+      [/\b(box ?fight\w*|boxfight\w*|boxen|turtl\w*|box)\b/, "boxfights"],
+      [/\b(1v1|1 ?gegen ?1|build ?fight\w*|buildfight\w*|zone ?wars?)\b/, "buildfights"],
+      [/\b(fight\w*|kämpf\w*|kaempf\w*|kampf|gefecht\w*)\b/, "fights"],
+      [/\b(end ?game\w*|endgame\w*|moving zone|zone|surge|late ?game|lategame)\b/, "endgame"],
+      [/\b(clutch\w*|1v2|1v3|2v3|unterzahl|outnumbered|third ?party\w*)\b/, "clutch"],
+      [/\b(realistic\w*|real fights?)\b/, "realistics"],
+      [/\b(ranked|rank|arena)\b/, "ranked"],
+      [/\b(scrim\w*|praccs?)\b/, "scrims"],
+      [/\b(vod|replay\w*|review|fehler|mistakes?|analys\w*)\b/, "review"],
+      [/\b(nervös|nervoes|nervous|nerv\w*|chok\w*|tilt\w*|panik|panic|druck|pressure|konstan\w*|consisten\w*|aufgeregt)\b/, "nerves"]
+    ];
+    const BAD = /\b(schlecht\w*|mies|trash|bad|terrible|awful|scheiße|scheisse|kacke|schwach|weak|struggl\w*|sterbe|sterb\w*|die|dying|verlier\w*|lose|losing|probleme?|problem|kann (kein|nicht)\w*|cant|can't)\b/;
+    function parseTime(t) {
+      let m;
+      if ((m = /(\d+(?:[.,]\d+)?)\s*(h|std|stunden?|hours?|hrs?)\b/.exec(t))) return Math.round(parseFloat(m[1].replace(",", ".")) * 60);
+      if ((m = /(\d+)\s*(m|min|mins|minuten|minutes?)\b/.exec(t))) return +m[1];
+      if (/\b(anderthalb|eineinhalb|1 ?1\/2)\s*(std|stunden?)/.test(t)) return 90;
+      if (/\b(halbe stunde|half an hour|halbe std)\b/.test(t)) return 30;
+      if (/\b(dreiviertel|drei ?viertel) ?(std|stunde)\b/.test(t)) return 45;
+      if (/\b(viertel ?stunde|quarter)\b/.test(t)) return 15;
+      if (/\b(ne|eine|1|an|one) (stunde|std|hour)\b/.test(t)) return 60;
+      if (/\b(zwei|two) (stunden|hours)\b/.test(t)) return 120;
+      if (/\b(drei|three) (stunden|hours)\b/.test(t)) return 180;
+      if (/\b(ganzen tag|all day|whole day|den ganzen)\b/.test(t)) return 300;
+      return null;
+    }
+    function understand(text, prof) {
+      let t = " " + text.toLowerCase().replace(/(\d)[,.](\d)/g, "$1.$2").replace(/[!?;:()]|,(?!\d)|\.(?!\d)/g, " ").replace(/\s+/g, " ") + " ";
+      const u = { min: parseTime(t), focus: {}, exclude: {}, cup: null, tired: false, warm: false, notes: [] };
+      // "kein ranked", "ohne kovaaks", "no scrims": exclude the next words and take them out of the text
+      t = t.replace(/\b(kein|keine|keinen|ohne|no|not|nicht|skip)\s+(\w+(?:\s\w+)?)/g, (all, n, w) => { let hit = false; WORDS.forEach(([re, f]) => { if (re.test(w)) { u.exclude[f] = 1; hit = true; } }); if (/kovaak/.test(w)) { u.exclude.kovaaks = 1; hit = true; } return hit ? " " : all; });
+      // split into small phrases so "aim is fine but edits are trash" puts the weight on edits
+      t.split(/\b(aber|but|und|and|außerdem|also|sonst|dann)\b|[\/]/).forEach((ph) => {
+        if (!ph || ph.length < 2) return;
+        const bad = BAD.test(ph), ok = /\b(ok|okay|gut|good|fine|passt)\b/.test(ph) && !bad;
+        WORDS.forEach(([re, f]) => { if (re.test(ph) && !ok) u.focus[f] = Math.max(u.focus[f] || 0, bad ? 2 : 1); });
+      });
+      if (/\b(cup|turnier\w*|tournament|fncs|qualifier|quali)\b/.test(t)) u.cup = /\b(morgen|tomorrow)\b/.test(t) ? "tomorrow" : "today";
+      if (/\b(müde|muede|tired|fertig|kaputt|wenig energie|ausgelaugt|krank|sick)\b/.test(t)) u.tired = true;
+      if (/\b(aufwärm\w*|aufwaerm\w*|warm ?up|einspielen)\b/.test(t)) u.warm = true;
+      if (u.exclude.ranked) u.notes.push("no ranked");
+      return u;
+    }
+    // v0 assumptions: share of time per area by session length (owner will replace these)
+    function baseSplit(min, prof) {
+      // owner: 1 hour without a wish = evenly split (15 aim, 15 mechanics, 15 fights, 15 ranked)
+      if (min <= 35) return { aim: .34, mech: .33, fight: .33, live: 0, review: 0 };
+      if (min <= 75) return { aim: .25, mech: .25, fight: .25, live: .25, review: 0 };
+      if (min <= 150) return { aim: .2, mech: .2, fight: .25, live: .25, review: .1 };
+      return { aim: .15, mech: .15, fight: .25, live: .35, review: .1 };
+    }
+    // Owner's knowledge: which sets help with which weakness (in order of importance)
+    const HELPS = {
+      edits: ["editWall", "slow"],
+      boxfights: ["turtle", "piece", "editWall"],
+      endgame: ["turtle"],
+      aim: ["kovaaks", "tjUpd", "v5Flick", "box"],
+      piece: ["piece", "turtle", "fast"],
+      building: ["fast", "slow", "box"],
+      speed: ["fast", "slow", "box"],
+      nerves: ["ranked", "clutch"]
+    };
+    const REAL_TIP = "Make it realistic: pick a worse subregion (higher ping) or cap your FPS lower.";
+    const AREA_OF = { aim: "aim", tracking: "aim", flicks: "aim", edits: "mech", building: "mech", speed: "mech", piece: "fight", boxfights: "fight", buildfights: "fight", fights: "fight", endgame: "fight", clutch: "fight", realistics: "fight", ranked: "live", scrims: "live", review: "review", nerves: "live" };
+    const NICE = { aim: "aim", tracking: "tracking", flicks: "flicks", edits: "edits", building: "building", speed: "build speed", piece: "piece control", boxfights: "box fights", buildfights: "build fights", fights: "fights", endgame: "endgames", clutch: "clutch fights", realistics: "realistics", ranked: "ranked", scrims: "scrims", review: "replay review", nerves: "nerves under pressure" };
+    const r5 = (m) => Math.max(5, Math.round(m / 5) * 5);
+    let FEED = null; // answers after the last routine: { level: "easy"|"ok"|"hard", died: focus }
+    function build(text, prof) {
+      const u = understand(text, prof);
+      if (FEED && FEED.died && !u.focus[FEED.died]) { u.focus[FEED.died] = 1; u.fromLast = FEED.died; }
+      if (FEED && FEED.level) u.feel = FEED.level;
+      let min = u.min || prof.time;
+      min = Math.max(15, Math.min(480, min));
+      const why = {};
+      const usable = (k) => !!APP_SETS[k] && !(k === "scrims" && prof.level === "learn") && !(META[k].kovaaks && (prof.platform === "console" || !prof.kovaaks || u.exclude.kovaaks)) && !Object.keys(u.exclude).some((f) => META[k].tags.indexOf(f) >= 0 || (f === "ranked" && k === "ranked") || (f === "scrims" && k === "scrims"));
+      // ----- cup day: warm-up only, nothing new
+      if (u.cup === "today") {
+        const total = Math.min(min, 60), out = [];
+        const pick = [["kovaaks", "v5Flick"], ["editWall"], ["fast"], ["piece"], ["box"], ["prep"]];
+        const share = [.17, .17, .17, .17, .17, .15];
+        pick.forEach((c, i) => { const k = c.find(usable) || c.find((x) => APP_SETS[x]); if (!k) return; out.push({ k, min: r5(total * share[i]), why: i === 5 ? "Settings, start time and first rotation checked. Nothing new before a cup." : "Warm hands for the cup. Only things you know, no new drills." }); });
+        if (out.length) out[Math.min(4, out.length - 1)].min += total - out.reduce((a, s) => a + s.min, 0);
+        out.forEach((s2) => { if (s2.k === "fast") s2.label = "Freebuild · 110%"; });
+        return { u, min: total, sets: out, title: "Cup warm-up", note: min > 60 ? `Cup today: I kept it to ${total} min so you're fresh, not tired.` : "Cup today: warm-up only." };
+      }
+      // owner: one easy day a week after 7+ days in a row
+      if (+prof.streak >= 7 && !u.cup && !u.min) { min = Math.min(min, 45); u.easyDay = true; }
+      if (+prof.streak >= 7 && !u.cup) u.easyDay = true;
+      const split = baseSplit(min, prof);
+      if (u.easyDay) { split.live *= .4; }
+      if (prof.goal === "cups") { split.live += .05; split.review += .05; split.aim -= .05; split.mech -= .05; }
+      if (prof.goal === "aim") { split.aim += .1; split.live = Math.max(0, split.live - .1); }
+      if (prof.goal === "mech") { split.mech += .1; split.live = Math.max(0, split.live - .1); }
+      if (prof.level === "learn") { split.mech += .08; split.live = Math.max(0, split.live - .08); }
+      if (prof.level === "earner" && split.live) { split.live += .05; split.aim -= .05; }
+      if (u.exclude.ranked && u.exclude.scrims) { split.fight += split.live; split.live = 0; }
+      if (u.cup === "tomorrow") { split.review = Math.max(split.review, .1); }
+      // weight areas the player asked for
+      const want = {};
+      Object.entries(u.focus).forEach(([f, w]) => { const a = AREA_OF[f]; want[a] = Math.max(want[a] || 0, w); (HELPS[f] || []).forEach((k) => { const a2 = META[k].area; want[a2] = Math.max(want[a2] || 0, w - 1 || .5); }); });
+      Object.entries(want).forEach(([a, w]) => { if (split[a] == null) return; split[a] = (split[a] || .1) * (w >= 2 ? 3 : w >= 1 ? 2.2 : 1.4) + (split[a] ? 0 : .15); });
+      if (Object.keys(want).length && Object.keys(want).length <= 2) Object.keys(split).forEach((a) => { if (!want[a]) split[a] *= .7; });
+      if (u.tired) { split.live *= .5; }
+      if (u.feel === "hard") { split.live *= .6; split.mech *= 1.2; }
+      if (u.feel === "easy") { split.live *= 1.25; split.fight *= 1.15; }
+      const sum = Object.values(split).reduce((a, b) => a + b, 0);
+      const nBreaks = min > 60 ? Math.floor((min - 1) / 65) : 0;  // owner: a 5 min break after every hour
+      const avail = min - nBreaks * 5 - (u.cup === "tomorrow" ? 5 : 0);
+      const areaMin = {}; Object.keys(split).forEach((a) => areaMin[a] = split[a] / sum * avail);
+      if (min >= 30 && areaMin.aim < 5) { const take = 5 - areaMin.aim; areaMin.aim = 5; const big = Object.keys(areaMin).sort((x, y) => areaMin[y] - areaMin[x])[0]; areaMin[big] -= take; }
+      // pick sets per area by what the player said
+      const CAND = { aim: ["kovaaks", "tjUpd", "v5Flick", "v5Bounce"], mech: ["editWall", "slow", "fast"], fight: ["piece", "box", "turtle", "real", "clutch"], live: ["ranked", "scrims"], review: ["vod", "fixDrill"] };
+      const score = (k) => { let s = 0; META[k].tags.forEach((tg) => { if (u.focus[tg] && !HELPS[tg]) s += u.focus[tg] * 3; }); Object.entries(HELPS).forEach(([f, list]) => { const i = list.indexOf(k); if (u.focus[f] && i >= 0) s += u.focus[f] * (4 - i * .5); }); if (prof.goal === "cups" && (k === "scrims" || k === "clutch" || k === "real")) s += 1.5; const wk = +prof.weeks || 1; // owner: harder instead of longer over the weeks
+        if (wk >= 3) { if (k === "fast") s += .8; if (k === "turtle") s += .6; } if (wk >= 5) { if (k === "fast") s += .8; if (k === "clutch") s += 1.2; if (k === "piece") s -= .6; } if (u.easyDay && (k === "slow" || k === "piece" || k === "kovaaks")) s += 1;
+        if (u.feel === "easy" && (k === "fast" || k === "clutch")) s += 1.5; if (u.feel === "hard" && (k === "slow" || k === "piece")) s += 1.5; if (k === "scrims") s += { unreal: .5, cups: 1.5, earner: 2.5 }[prof.level] || 0; if (k === "clutch" && prof.level === "earner") s += 1; if (k === "ranked") s += .5; return s; };
+      const out = [];
+      ["aim", "mech", "fight", "live", "review"].forEach((a) => {
+        let m = areaMin[a]; if (m < 4) return;
+        let c = CAND[a].filter(usable); if (!c.length) return;
+        if (a === "review") { const v = r5(Math.max(5, m * .55)); out.push({ k: "vod", min: v }); if (m - v >= 4 && usable("fixDrill")) out.push({ k: "fixDrill", min: r5(m - v) }); return; }
+        const maxSet = a === "live" ? 90 : 15;  // owner: drills at most 15 min
+        c = c.map((k, i) => [k, score(k) - i * .1]).sort((x, y) => y[1] - x[1]).map((x) => x[0]);
+        const n = Math.max(1, Math.min(c.length, Math.ceil(m / maxSet), a === "live" ? 2 : 3));
+        let picked = c.slice(0, n);
+        // owner: Freebuild 90% belongs in every routine, for every level (crosshair placement + clean edits)
+        if (a === "mech" && usable("slow") && picked.indexOf("slow") < 0) picked = (picked.length >= 2 ? picked.slice(0, picked.length - 1) : picked).concat("slow");
+        const w = picked.map((k) => 1 + Math.max(0, score(k)) * .4), ws = w.reduce((x, y) => x + y, 0);
+        picked.forEach((k, i) => { const v = r5(m * w[i] / ws); out.push({ k, min: a === "live" ? v : Math.min(15, v), over: a === "live" ? 0 : Math.max(0, v - 15) }); });
+      });
+      // reasons
+      out.forEach((s) => {
+        const hit = Object.keys(HELPS).filter((f) => u.focus[f] && HELPS[f].indexOf(s.k) >= 0).concat(META[s.k].tags.filter((tg) => u.focus[tg] && !HELPS[tg]));
+        if (s.k === "turtle" && u.focus.endgame) s.why = `Endgame practice. ${REAL_TIP}`;
+        else if (u.focus.nerves && s.k === "ranked") s.why = "Lots of real games, so pressure starts to feel normal. One focus per game.";
+        else if (u.focus.nerves && s.k === "clutch") s.why = "Outnumbered on purpose: stay calm, take one fight at a time.";
+        else if (hit.length && hit[0] === u.fromLast) s.why = `You died to ${NICE[u.fromLast]} most last time, so this gets extra time.`;
+        else if (hit.length) s.why = (s.k === "box" && hit[0] === "aim" ? "Build fights train your aim on real moving players." : u.focus[hit[0]] === 2 ? `You said your ${NICE[hit[0]]} ${/s$/.test(NICE[hit[0]]) ? "need" : "needs"} work, so this gets extra time.` : `You asked for ${NICE[hit[0]]}.`);
+        else if (s.k === "slow" && !hit.length) s.why = "Every routine, every level: slow speed, perfect crosshair placement, clean edits.";
+        else if (u.fromLast && META[s.k].tags.indexOf(u.fromLast) >= 0) s.why = `You died to ${NICE[u.fromLast]} most last time.`;
+        else if (s.k === "vod") s.why = "Watch one fight you lost. The next set drills exactly that mistake.";
+        else if (s.k === "fixDrill") s.why = "Drill the mechanic that killed you in the replay.";
+        else if (s.k === "ranked") s.why = u.focus && Object.keys(u.focus).length ? `Use what you just trained: one focus per game (${NICE[Object.keys(u.focus)[0]]}).` : "Real games with one focus per game.";
+        else if (META[s.k].area === "aim") s.why = "Aim first, while your hands warm up.";
+        else if (META[s.k].area === "mech") s.why = "Keeps your building and edits sharp.";
+        else if (s.k === "scrims") s.why = "Real games against strong players: contested drops, rotations, endgames.";
+        else s.why = "Real fights to use the warm-up under pressure.";
+      });
+      if (u.cup === "tomorrow") out.push({ k: "prep", min: 5, why: "Cup tomorrow: settings, start time and drop planned tonight." });
+      // fit to the exact time: adjust the biggest set
+      const ORDER = { aim: 0, mech: 1, fight: 2, live: 4, review: 5, prep: 7 };
+      out.sort((a, b) => (ORDER[META[a.k].area] - ORDER[META[b.k].area]) || (a.k === "fixDrill") - (b.k === "fixDrill"));
+      const speed = { 1: "110%", 3: "120%", 5: "130%" }[prof.weeks] || "110%";
+      out.forEach((s2) => { if (s2.k === "fast") s2.label = `Freebuild · ${speed}`; });
+      // fit to the exact time: live sets can grow freely, drills only up to 15 min (otherwise a second drill of the same area)
+      let diff = min - nBreaks * 5 - out.reduce((a, s) => a + s.min, 0);
+      const grow = (s) => META[s.k].area === "live" || (s.k !== "prep" && s.min < 15);
+      for (let i = 0; diff !== 0 && i < 80; i++) {
+        const pool = out.filter((s) => diff > 0 ? grow(s) : s.k !== "prep" && s.min > 5).sort((a, b) => (META[b.k].area === "live") - (META[a.k].area === "live") || b.min - a.min);
+        if (!pool.length) { const area = out.length ? META[out[out.length - 1].k].area : "fight"; const extra = CAND.fight.filter(usable).find((k) => !out.some((s) => s.k === k)) || "box"; out.push({ k: extra, min: Math.min(15, diff) }); diff -= Math.min(15, diff); continue; }
+        const s2 = pool[i % pool.length], step = diff > 0 ? Math.min(5, diff, META[s2.k].area === "live" ? 99 : 15 - s2.min) : Math.max(-5, diff); s2.min += step; diff -= step;
+      }
+      out.sort((a, b) => (ORDER[META[a.k].area] - ORDER[META[b.k].area]) || (a.k === "fixDrill") - (b.k === "fixDrill"));
+      // a break after every full hour of training
+      for (let b = 1, cum = 0, i = 0; b <= nBreaks && i < out.length; i++) { cum += out[i].min; if (cum >= 60 * b && i < out.length - 1) { out.splice(i + 1, 0, { k: "brk", min: 5, why: "Stand up, water, eyes off the screen." }); i++; b++; } }
+      const left = min - out.reduce((x, y) => x + y.min, 0);
+      if (left) { const t2 = out.filter((x) => META[x.k].area === "live").sort((x, y) => y.min - x.min)[0] || out.filter((x) => x.k !== "brk" && x.k !== "prep").sort((x, y) => y.min - x.min)[0]; if (t2) t2.min += left; }
+      const note = [u.easyDay ? "7 days in a row: today is your easy day. Shorter, calmer, fewer live games." : "", +prof.weeks >= 3 && !u.easyDay ? `You've trained with the coach for a while: harder versions of your drills, fast freebuild now at ${speed}.` : "", u.feel === "easy" ? "Last time was too easy: harder drills and more live games." : u.feel === "hard" ? "Last time was too hard: calmer drills, fewer live games." : "", u.tired ? "You sound tired: fewer live games, more calm drills." : "", u.exclude.ranked ? "No ranked, like you said." : "", !prof.kovaaks && prof.platform !== "console" && Object.keys(u.focus).some((f) => AREA_OF[f] === "aim") ? "No KovaaK's on your profile: aim on Fortnite maps only." : ""].filter(Boolean).join(" ");
+      return { u, min, sets: out, title: "Your routine", note };
+    }
+    return { build, understand, NICE, META, setFeed: (f) => { FEED = f; } };
+  })(SETS);
+  const COACH_KEY = "rl.coach", COACH_FEED = "rl.coachFeed", COACH_FIRST = "rl.coachFirst";
+  const coachProf = () => Object.assign({ platform: "pc", kovaaks: true, level: "unreal", goal: "all" }, settings.coach || {});
+  const coachLimit = () => ({ free: 0, standard: 1, pro: 3 })[planId()];
+  let coachLeft = null, coachBusy = false, coachText = "";
+  // Today's coach routine as a normal routine, so plan, training, overlay and the server check all work as usual.
+  function coachGoal() {
+    const c = store.get(COACH_KEY, null);
+    if (!c || c.day !== today() || !Array.isArray(c.sets)) return null;
+    const sets = c.sets.filter((x) => SETS[x.k]).map((x) => [x.k, x.min, Object.assign(x.label ? { name: x.label } : {}, { tip: x.why + (SETS[x.k].tip ? " " + SETS[x.k].tip : "") })]);
+    if (!sets.length) return null;
+    return { id: "coach", name: c.title === "Cup warm-up" ? "Coach · Cup warm-up" : "Coach routine", text: "Built for you today.", icon: "i-ki", custom: true, coach: true, lengths: [L("today", "Today", sets)] };
+  }
+  function coachWeeks() { const f = store.get(COACH_FIRST, null); if (!f) return "1"; const d = Math.floor((Date.now() - Date.parse(f + "T12:00")) / 864e5); return d >= 21 ? "5" : d >= 7 ? "3" : "1"; }
+  async function coachStatus() {
+    if (!signedIn()) return null;
+    if (sb && cloudUser) { try { const { data } = await sb.rpc("coach_use", { client_day: today(), take: false }); if (data && data.ok) return data.limit - data.used; } catch (e) {} return null; }
+    const u = store.get("rl.coachUses", {}); return coachLimit() - (u.day === today() ? u.n : 0);
+  }
+  async function coachTake() {
+    if (sb && cloudUser) { const { data, error } = await sb.rpc("coach_use", { client_day: today(), take: true }); if (error || !data) return { error: true }; return data.ok ? { left: data.limit - data.used } : { none: true }; }
+    const u = store.get("rl.coachUses", {}), n = u.day === today() ? u.n : 0; if (n >= coachLimit()) return { none: true };
+    store.set("rl.coachUses", { day: today(), n: n + 1 }); return { left: coachLimit() - n - 1 };
+  }
+  // Tips while typing: what makes a better routine, ticked off as the player writes it.
+  function coachTips(text) {
+    const u = COACH.understand(text || "", coachProf());
+    const tips = [
+      [u.min != null, "How much time you have", "e.g. 45 min, 1 hour, 2h"],
+      [Object.keys(u.focus).length > 0, "What feels weak or what you want to train", "e.g. edits, box fights, endgame, aim"],
+      [!!u.cup || u.tired, "Anything special today", "e.g. cup tomorrow, tired, nervous (optional)"]
+    ];
+    return `<ul class="co-tips">${tips.map(([ok, t, ex]) => `<li class="${ok ? "ok" : ""}"><i aria-hidden="true">${ok ? "✓" : ""}</i><span><b>${t}</b><span class="tiny">${ex}</span></span></li>`).join("")}</ul>`;
+  }
+  function coachResultHTML(c) {
+    const fmt = (m) => fmtMin(m), tot = c.sets.reduce((a, x) => a + x.min, 0);
+    return `<div class="row"><span class="tiny">What the coach understood</span><div class="co-got">${(c.got || []).map((g) => `<span class="${g[1] || ""}">${esc(g[0])}</span>`).join("")}</div></div>
+      <div class="co-head"><b>${esc(c.title)}</b><span class="tiny">${c.sets.length} sets · ${fmt(tot)}</span></div>
+      <div class="sbar" aria-hidden="true">${c.sets.map((x) => SETS[x.k] ? `<i style="flex:${x.min};background:${tcol(SETS[x.k])}"></i>` : "").join("")}</div>
+      ${c.note ? `<p class="small" style="margin:0;color:var(--c1)">${esc(c.note)}</p>` : ""}
+      <ol class="co-sets">${c.sets.filter((x) => SETS[x.k]).map((x, i) => `<li>${SETS[x.k].img ? `<img src="${esc(thumbOf(SETS[x.k].img))}" alt="" loading="lazy" decoding="async">` : `<span class="co-ph" style="background:${tcol(SETS[x.k])}"></span>`}<span style="min-width:0"><b>${i + 1} · ${esc(x.label || SETS[x.k].name)}</b><span class="small">${esc(x.why || "")}</span></span><span class="co-m">${x.min} min</span></li>`).join("")}</ol>
+      <div class="hero-cta" style="margin:0"><button class="pill big" type="button" id="co-start">Start this routine</button><button class="pill big out" type="button" id="co-new">Write a new one</button></div>`;
+  }
+  async function buildCoach() {
+    const body = $("coach-body");
+    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to use the coach", "ai"); bindLock(body); return; }
+    const lim = coachLimit(), prof = coachProf(), cur = store.get(COACH_KEY, null), have = cur && cur.day === today() && coachGoal();
+    if (!lim) {
+      body.innerHTML = `<div class="teaser-card co-lock"><b>The coach comes with Standard and Pro.</b><span class="small">Write what you want to train, like “45 min, my edits are bad, cup tomorrow”, and the coach builds your routine from the Repline sets. Standard: 1 routine a day. Pro: 3 a day.</span><button class="pill sm" type="button" id="co-plans" style="justify-self:start">See plans</button></div>`;
+      $("co-plans").addEventListener("click", () => go("plans")); return;
+    }
+    const seg = (k, opts) => `<div class="seg co-seg" role="group" data-ck="${k}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${String(prof[k]) === String(v)}">${t}</button>`).join("")}</div>`;
+    const LVL = { learn: "Ranked below Unreal, no tournaments yet.", unreal: "Unreal in Ranked, first cups.", cups: "Cash and Div cups every week, no earnings yet.", earner: "Earns in cups or plays FNCS semis and finals." };
+    body.innerHTML = `<div class="co-grid">
+      <section class="c-card co-in" aria-label="About you and today">
+        <div class="row"><span class="tiny">Platform</span>${seg("platform", [["pc", "PC"], ["console", "Console"]])}</div>
+        ${prof.platform === "pc" ? `<div class="row"><span class="tiny">KovaaK's</span>${seg("kovaaks", [[true, "I have it"], [false, "No"]])}</div>` : ""}
+        <div class="row"><span class="tiny">Where are you?</span>${seg("level", [["learn", "Not Unreal yet"], ["unreal", "Unreal"], ["cups", "Cup grinder"], ["earner", "Earner"]])}<span class="tiny">${LVL[prof.level] || ""}</span></div>
+        <div class="row"><span class="tiny">Main goal</span>${seg("goal", [["all", "All-round"], ["cups", "Cups"], ["aim", "Aim"], ["mech", "Mechanics"]])}</div>
+        <div class="row"><label class="tiny" for="co-msg">What do you want to train today?</label>
+          <textarea id="co-msg" class="co-msg" maxlength="400" placeholder="e.g. 45 min, my box fights are bad and I die when I edit. Cup tomorrow.">${esc(coachText)}</textarea></div>
+        <div id="co-tips">${coachTips(coachText)}</div>
+        <div class="co-go"><button class="pill big" type="button" id="co-build">Build my routine</button><span class="tiny" id="co-left">${coachLeft != null ? coachLeftTxt(coachLeft, lim) : ""}</span></div>
+      </section>
+      <section class="c-card co-out" id="co-out" aria-live="polite">${have ? coachResultHTML(cur) : `<div class="co-empty"><svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><b>Your routine appears here.</b><span class="small">Tell the coach how much time you have and what you want to work on. It picks the sets, the order and the time for each one, and tells you why.</span></div>`}</section>
+    </div>`;
+    body.querySelectorAll("[data-ck]").forEach((g) => g.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+      const k = g.dataset.ck; settings.coach = Object.assign(coachProf(), { [k]: b.dataset.v === "true" ? true : b.dataset.v === "false" ? false : b.dataset.v }); saveSettings(); coachText = $("co-msg").value; buildCoach();
+    })));
+    const msg = $("co-msg");
+    msg.addEventListener("input", () => { coachText = msg.value; $("co-tips").innerHTML = coachTips(msg.value); });
+    msg.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) coachRun(); });
+    $("co-build").addEventListener("click", coachRun);
+    bindCoachOut();
+    if (coachLeft == null) coachStatus().then((n) => { if (n == null) return; coachLeft = n; const el = $("co-left"); if (el) el.textContent = coachLeftTxt(n, lim); });
+  }
+  const coachLeftTxt = (n, lim) => n > 0 ? `${n} of ${lim} left today` : "No routines left today. New ones tomorrow.";
+  function bindCoachOut() {
+    const st = $("co-start"); if (st) st.addEventListener("click", () => {
+      if (!coachGoal()) { toast("Build a routine first"); return; }
+      if (S.goal !== "coach" || S.len !== "today") { S.goal = "coach"; S.len = "today"; resetRun(); }
+      save(); go("plan");
+    });
+    const nw = $("co-new"); if (nw) nw.addEventListener("click", () => { const m = $("co-msg"); if (m) { m.focus(); m.select(); } });
+  }
+  async function coachRun() {
+    if (coachBusy) return;
+    const text = ($("co-msg").value || "").trim(); coachText = text;
+    const u0 = COACH.understand(text, coachProf());
+    if (!text || (u0.min == null && !Object.keys(u0.focus).length && !u0.cup)) { toast("Add how much time you have and what you want to train"); $("co-msg").focus(); return; }
+    if (S.active && S.goal === "coach" && S.b > 0) { toast("Finish or end your current coach routine first"); return; }
+    coachBusy = true; $("co-build").disabled = true;
+    try {
+      const t = await coachTake();
+      if (t.error) { toast("Couldn't reach the server. Please try again."); return; }
+      if (t.none) { coachLeft = 0; $("co-left").textContent = coachLeftTxt(0, coachLimit()); toast("No coach routines left today"); return; }
+      coachLeft = t.left;
+      if (!store.get(COACH_FIRST, null)) store.set(COACH_FIRST, today());
+      const feed = store.get(COACH_FEED, null); COACH.setFeed(feed && feed.day !== today() ? feed : (feed && feed.day === today() ? feed : null));
+      const prof = Object.assign(coachProf(), { time: 60, weeks: coachWeeks(), streak: String(streak()) });
+      const r = COACH.build(text, prof), u = r.u, N = COACH.NICE, got = [[fmtMin(r.min) + (u.min ? "" : " (default)")]];
+      const specific = ["piece", "boxfights", "buildfights", "endgame", "clutch", "realistics"].some((f) => u.focus[f]);
+      Object.entries(u.focus).filter(([f]) => !(f === "fights" && specific) && f !== u.fromLast).forEach(([f, w]) => got.push([(w === 2 ? "weak: " : "") + (N[f] || f), w === 2 ? "bad" : ""]));
+      Object.keys(u.exclude).forEach((f) => got.push([N[f] || f, "no"]));
+      if (u.fromLast) got.push(["last time: died to " + (N[u.fromLast] || u.fromLast)]);
+      if (u.feel) got.push(["last time: too " + u.feel]);
+      if (u.cup) got.push(["cup " + u.cup, "ok"]); if (u.tired) got.push(["tired"]);
+      const c = { day: today(), title: r.title, note: r.note, got, text, sets: r.sets.map((x) => ({ k: x.k, min: x.min, label: x.label || null, why: x.why || "" })) };
+      store.set(COACH_KEY, c); store.del(COACH_FEED); COACH.setFeed(null);
+      $("co-out").innerHTML = coachResultHTML(c); bindCoachOut();
+      $("co-left").textContent = coachLeftTxt(coachLeft, coachLimit());
+      if (innerWidth < 900) $("co-out").scrollIntoView({ behavior: anim() ? "smooth" : "auto", block: "start" });
+    } finally { coachBusy = false; const b = $("co-build"); if (b) b.disabled = false; }
+  }
+  // After a coach routine: two quick questions that shape the next one.
+  function coachDone(on) {
+    const el = $("done-coach"); if (!el) return;
+    if (!on) { el.innerHTML = ""; return; }
+    const fb = { level: "", died: "" };
+    el.innerHTML = `<div class="vcheck co-fb"><b>Two quick questions for your coach</b>
+      <div class="row"><span class="small">How was it?</span><div class="seg co-seg" data-fb="level"><button type="button" data-v="easy">Too easy</button><button type="button" data-v="ok">Just right</button><button type="button" data-v="hard">Too hard</button></div></div>
+      <div class="row"><span class="small">What killed you most today?</span><div class="seg co-seg" data-fb="died"><button type="button" data-v="aim">Aim</button><button type="button" data-v="edits">Edits</button><button type="button" data-v="piece">Piece control</button><button type="button" data-v="boxfights">Box fights</button><button type="button" data-v="endgame">Endgame</button><button type="button" data-v="none">Nothing</button></div></div>
+      <span class="tiny" id="co-fb-ok">Your next coach routine uses this.</span></div>`;
+    el.querySelectorAll("[data-fb]").forEach((g) => g.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+      fb[g.dataset.fb] = b.dataset.v; g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      store.set(COACH_FEED, { day: today(), level: fb.level === "ok" ? "" : fb.level, died: fb.died === "none" ? "" : fb.died });
+      $("co-fb-ok").textContent = "Saved. Your next coach routine uses this.";
+    })));
+  }
+
   /* ---------- Done & streak ---------- */
   function finish() {
     const days = store.get(DAYS, []); const t = today();
@@ -2312,6 +2669,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     store.set(FIN, store.get(FIN, []).concat([{ t: Date.now(), g: S.goal }]).slice(-300));
     afterFinish();
     const run = S.run, game = S.game;
+    coachDone(S.goal === "coach");
     $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag wait">Checking</span><b>Checking your routine…</b></div>`;
     $("done-spin").innerHTML = "";
     const z = goal(S.goal), l = length(S.goal, S.len);
@@ -4451,6 +4809,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "board") buildBoard();
     if (id === "stats") buildStats();
     if (id === "aim") buildAim();
+    if (id === "ai") buildCoach();
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "drops") buildDrops();
