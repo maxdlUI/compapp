@@ -1,7 +1,8 @@
 // Repline for Windows: the main app window plus an optional in-game overlay.
-const { app, BrowserWindow, shell, Menu, ipcMain, screen, globalShortcut, Notification } = require("electron");
+const { app, BrowserWindow, shell, Menu, ipcMain, screen, globalShortcut, Notification, dialog } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const { execFile } = require("child_process");
 
 if (!app.requestSingleInstanceLock()) app.quit();
 
@@ -321,6 +322,110 @@ function remTick() {
 }
 ipcMain.on("reminder:set", (_e, v) => { remCfg = v && typeof v === "object" ? v : null; remTick(); });
 
+
+/* ---------- Game detection (anti-cheat safe) ----------
+   Only reads the Windows process list (the same list Task Manager and Discord show), every 10 seconds while a
+   routine runs. Never opens the game, its memory, files or network. */
+const GAMES = { fortnite: /^"fortniteclient-win64-shipping/m, kovaaks: /^"fpsaimtrainer/m };
+let gameOn = false, gameTimer = 0, gameState = { fortnite: false, kovaaks: false, at: 0, ok: process.platform === "win32" };
+function pollGames() {
+  if (process.platform !== "win32") return;
+  execFile("tasklist", ["/FO", "CSV", "/NH"], { windowsHide: true, timeout: 8000, maxBuffer: 8 * 1024 * 1024 }, (err, out) => {
+    if (err) { gameState = { ...gameState, at: Date.now(), ok: false }; }
+    else {
+      const t = String(out).toLowerCase();
+      gameState = { fortnite: GAMES.fortnite.test(t), kovaaks: GAMES.kovaaks.test(t), at: Date.now(), ok: true };
+    }
+    if (win) win.webContents.send("game:state", gameState);
+  });
+}
+ipcMain.handle("game:watch", (_e, on) => {
+  gameOn = !!on;
+  clearInterval(gameTimer);
+  if (gameOn) { pollGames(); gameTimer = setInterval(pollGames, 10000); }
+  return gameState;
+});
+ipcMain.handle("game:get", () => gameState);
+
+/* ---------- KovaaK's results ----------
+   KovaaK's saves one small CSV per played scenario in its "stats" folder. We only read those files (never the game),
+   and only when the player has KovaaK's tracking on in Repline. Parsed results are cached in kovaaks.json. */
+let kvFile = null, kv = { folder: "", files: {} };
+function kvLoad() { kvFile = path.join(app.getPath("userData"), "kovaaks.json"); try { kv = Object.assign({ folder: "", files: {} }, JSON.parse(fs.readFileSync(kvFile, "utf8"))); } catch (e) {} }
+function kvSave() { try { fs.writeFileSync(kvFile, JSON.stringify(kv)); } catch (e) {} }
+function steamLibraries() {
+  const roots = new Set();
+  const pf86 = process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", pf = process.env.ProgramFiles || "C:\\Program Files";
+  [path.join(pf86, "Steam"), path.join(pf, "Steam")].forEach((r) => roots.add(r));
+  for (const r of Array.from(roots)) {
+    try {
+      const vdf = fs.readFileSync(path.join(r, "steamapps", "libraryfolders.vdf"), "utf8");
+      for (const m of vdf.matchAll(/"path"\s+"([^"]+)"/g)) roots.add(m[1].replace(/\\\\/g, "\\"));
+    } catch (e) {}
+  }
+  for (const d of "CDEFGH") { roots.add(`${d}:\\SteamLibrary`); roots.add(`${d}:\\Steam`); }
+  return Array.from(roots);
+}
+function kvFind() {
+  if (kv.folder && fs.existsSync(kv.folder)) return kv.folder;
+  for (const r of steamLibraries()) {
+    const p = path.join(r, "steamapps", "common", "FPSAimTrainer", "FPSAimTrainer", "stats");
+    try { if (fs.statSync(p).isDirectory()) return p; } catch (e) {}
+  }
+  return "";
+}
+const KV_DATE = /(\d{4})\.(\d{2})\.(\d{2})-(\d{2})\.(\d{2})\.(\d{2})\s*Stats\.csv$/i;
+// One file → { s: scenario, t: ISO time, sc: score, acc: accuracy %, sens: "30 cm/360" } or null
+function kvParse(name, text) {
+  const m = KV_DATE.exec(name); if (!m) return null;
+  let s = name.slice(0, m.index).replace(/\s*-\s*$/, "").replace(/\s+-\s+(Challenge|Challenge Start|Free Play|Freeplay|Practice)$/i, "").trim();
+  const t = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+  if (isNaN(t)) return null;
+  const lines = String(text).split(/\r?\n/), kvv = {};
+  let shots = 0, hits = 0, inW = false;
+  for (const ln of lines) {
+    const c = ln.split(",");
+    if (/^Weapon,Shots,Hits/i.test(ln)) { inW = true; continue; }
+    if (inW) { if (!ln.trim() || /:$/.test(c[0])) inW = false; else { shots += +c[1] || 0; hits += +c[2] || 0; continue; } }
+    if (c.length >= 2 && /:$/.test(c[0])) kvv[c[0].slice(0, -1).trim().toLowerCase()] = c.slice(1).join(",").trim();
+  }
+  const sc = parseFloat(kvv.score);
+  if (!isFinite(sc)) return null;
+  if (kvv.scenario) s = kvv.scenario;
+  if (!s) return null;
+  const hs = parseFloat(kvv["horiz sens"]);
+  const sens = isFinite(hs) ? `${+hs.toFixed(3)}${kvv["sens scale"] ? " " + kvv["sens scale"] : ""}`.slice(0, 40) : "";
+  return { s: s.slice(0, 120), t: t.toISOString(), sc: Math.round(sc * 100) / 100, acc: shots > 0 ? Math.round(hits / shots * 1000) / 10 : null, sens };
+}
+function kvScan() {
+  const folder = kvFind();
+  if (!folder) return { found: false, folder: "", rows: [] };
+  let names = [];
+  try { names = fs.readdirSync(folder).filter((n) => /\.csv$/i.test(n)); } catch (e) { return { found: false, folder, rows: [] }; }
+  if (kv.folder !== folder) { kv = { folder, files: {} }; }
+  let changed = false;
+  for (const n of names.slice(-30000)) {
+    if (n in kv.files) continue;
+    let rec = null;
+    try { const st = fs.statSync(path.join(folder, n)); if (st.size < 2000000) rec = kvParse(n, fs.readFileSync(path.join(folder, n), "utf8")); } catch (e) {}
+    kv.files[n] = rec; changed = true;
+  }
+  if (changed) kvSave();
+  const rows = Object.values(kv.files).filter(Boolean).sort((a, b) => (a.t < b.t ? -1 : 1));
+  return { found: true, folder, rows };
+}
+ipcMain.handle("kovaaks:scan", () => { try { return kvScan(); } catch (e) { ulog("kovaaks scan failed", e); return { found: false, folder: "", rows: [] }; } });
+ipcMain.handle("kovaaks:pick", async () => {
+  const r = await dialog.showOpenDialog(win, { title: "Choose KovaaK's stats folder", properties: ["openDirectory"], message: "Pick the folder FPSAimTrainer\\stats inside your KovaaK's install." });
+  if (r.canceled || !r.filePaths[0]) return null;
+  let p = r.filePaths[0];
+  const inner = path.join(p, "FPSAimTrainer", "stats"), inner2 = path.join(p, "stats");
+  if (fs.existsSync(inner)) p = inner; else if (fs.existsSync(inner2)) p = inner2;
+  kv = { folder: p, files: {} }; kvSave();
+  return kvScan();
+});
+ipcMain.handle("kovaaks:forget", () => { kv = { folder: "", files: {} }; try { fs.unlinkSync(kvFile); } catch (e) {} return true; });
+
 /* ---------- App ---------- */
 app.on("second-instance", () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
 app.whenReady().then(() => {
@@ -328,11 +433,12 @@ app.whenReady().then(() => {
   loadSettings();
   app.setAppUserModelId("gg.repline.app");
   remLoad(); setInterval(remTick, 30000);
+  kvLoad();
   try { setupUpdates(); } catch (e) { ulog("update setup failed", e); }
   createMain();
   try { if (overlaySettings.enabled) createOverlay(); } catch (e) { ulog("overlay failed", e); }
   try { registerHotkeys(); } catch (e) {}
   screen.on("display-metrics-changed", applyOverlayLook);
 });
-app.on("will-quit", () => { globalShortcut.unregisterAll(); try { if (rpc && rpcReady) rpc.destroy(); } catch (e) {} });
+app.on("will-quit", () => { clearInterval(gameTimer); globalShortcut.unregisterAll(); try { if (rpc && rpcReady) rpc.destroy(); } catch (e) {} });
 app.on("window-all-closed", () => app.quit());

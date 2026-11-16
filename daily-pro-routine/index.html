@@ -624,6 +624,56 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 .teaser-card b { font-family: var(--display); font-size: 21px; font-weight: 600; }
 
 /* Overlay teaser on the home screen (website only) */
+/* 1.8 · verified routines + aim progress */
+.round-ph { width: 56px; height: 56px; }
+.gstat { display: inline-flex; align-items: center; gap: 8px; justify-self: center; font-size: 14px; color: var(--ash); background: rgba(66,66,69,.45); padding: 7px 14px; border-radius: 99px; }
+.gstat i { width: 8px; height: 8px; border-radius: 50%; background: #ffb340; box-shadow: 0 0 0 3px rgba(255,179,64,.18); }
+.gstat.on { color: var(--porcelain); }
+.gstat.on i { background: var(--pos); box-shadow: 0 0 0 3px rgba(94,211,154,.2); }
+.vcheck { display: grid; gap: 8px; background: var(--carbon); border-radius: 22px; padding: 20px 22px; min-width: min(420px, 100%); max-width: 520px; justify-items: start; }
+.vcheck > b { font-size: 21px; letter-spacing: -.3px; }
+.vcheck.ver { box-shadow: inset 0 0 0 1px rgba(56,224,255,.35); }
+.vc-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,105,97,.14); color: #ff8f88; }
+.vc-tag.ok { background: rgba(94,211,154,.14); color: var(--pos); }
+.vcheck.ver .vc-tag.ok { background: rgba(56,224,255,.14); color: var(--c1); }
+.vc-tag.wait { background: rgba(134,134,139,.16); color: var(--ash); }
+.vc-tag .vmark { width: 15px; height: 15px; }
+.vc-row { display: flex; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; color: var(--ash); border-top: 1px solid var(--keyline); padding-top: 8px; }
+.vc-row b { color: var(--porcelain); font-weight: 600; }
+.vc-gain { font-size: 15px; font-weight: 600; color: var(--c1); }
+.vmark { width: 15px; height: 15px; color: var(--c1); vertical-align: -2px; margin-left: 5px; flex: none; }
+.aimt { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 860px) { .aimt { grid-template-columns: minmax(0, 1fr); } }
+.aimt-txt { display: grid; gap: 16px; justify-items: start; }
+.aimt-stage { margin: 0; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)), url(img/tile-kovaaks.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); padding: clamp(18px, 4vw, 40px); }
+.aimt-card { background: rgba(22,22,24,.86); border-radius: 22px; padding: 20px; display: grid; gap: 10px; backdrop-filter: blur(12px); }
+.aimt-card svg { width: 100%; height: auto; display: block; }
+.up-b { color: var(--pos); }
+#aim-body .st-tiles b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 520px) { #aim-body .st-tiles b { font-size: 24px; } #aim-body .st-tiles b[style] { font-size: 16px !important; white-space: normal; } }
+.aim-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px; margin-top: 16px; }
+@media (max-width: 860px) { .aim-grid { grid-template-columns: minmax(0, 1fr); } }
+.aim-grid > .c-card, #aim-body > .c-card, #aim-body > .teaser-card { margin-bottom: 0; }
+#aim-body { display: grid; gap: 16px; }
+#aim-body .st-tiles { margin-bottom: 0; }
+.aim-rows { display: grid; gap: 2px; max-height: 420px; overflow: auto; margin: 0 -10px; }
+.aim-row { display: grid; grid-template-columns: minmax(0, 1fr) auto 76px; gap: 12px; align-items: center; text-align: left; background: none; border: 0; border-radius: 12px; padding: 10px; cursor: pointer; color: var(--porcelain); }
+.aim-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.aim-row > span:last-child { text-align: right; font-size: 14px; }
+.aim-row:hover { background: rgba(255,255,255,.04); }
+.aim-row[aria-pressed="true"] { background: rgba(56,224,255,.1); }
+.aim-coach p b { color: var(--porcelain); }
+.aim-empty, .aim-promo { max-width: 640px; }
+.chart { position: relative; }
+.chart svg { width: 100%; height: 220px; display: block; touch-action: pan-y; cursor: crosshair; }
+.ch-line { fill: none; stroke: var(--c1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ch-zero { stroke: var(--dim); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.ch-sens { stroke: var(--ash); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.ch-dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--c1); box-shadow: 0 0 0 2px var(--carbon); pointer-events: none; }
+.ch-x { position: absolute; top: 0; width: 1px; background: rgba(255,255,255,.14); pointer-events: none; }
+.ch-tip { position: absolute; transform: translate(-50%, -100%); background: #2c2c2e; border-radius: 10px; padding: 7px 10px; display: grid; gap: 1px; font-size: 13px; color: var(--ash); white-space: nowrap; pointer-events: none; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+.ch-tip b { color: var(--porcelain); font-size: 15px; }
+.ch-axis { display: flex; justify-content: space-between; margin-top: 6px; }
 .ovt { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
 @media (max-width: 860px) { .ovt { grid-template-columns: minmax(0, 1fr); } }
 .ovt-txt { display: grid; gap: 16px; justify-items: start; }
@@ -1013,11 +1063,28 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       <div class="ovt-txt">
         <span class="new rv">Windows app</span>
         <h2 id="h-ov" class="d-l rv d1">Your routine.<br>Over your game.</h2>
-        <p class="lead rv d2">An in-game overlay shows your set, time left and a finish alert. Hotkeys start, pause and skip without leaving the game.</p>
-        <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li><li>Overlay with <b>Standard</b> or <b>Pro</b></li></ul>
+        <p class="lead rv d2">An in-game overlay shows your set, time left and a finish alert. Hotkeys start and pause without leaving the game.</p>
+        <ul class="ovt-list rv d3"><li><b>7</b> sounds</li><li><b>7</b> finish animations</li><li><b>8</b> positions, or drag it anywhere</li><li>Size, opacity and hotkeys</li><li>Your own sound <span class="pro">✦ Pro</span></li><li>KovaaK's progress tracking</li><li>Verified routines: 2 Golden Tickets per spin</li><li>Overlay with <b>Standard</b> or <b>Pro</b></li></ul>
         <span class="rv d4" data-download="lg"></span>
       </div>
       <figure class="ovt-stage rv d1"><div class="slot"><div class="ov" id="tz"><div class="ovc"><div class="ring"><svg viewBox="0 0 64 64" id="tz-ring" aria-hidden="true"></svg><b id="tz-pos">2<small>/4</small></b></div><div class="meta"><span class="chip" id="tz-chip"><i></i>Mechanics</span><span class="name" id="tz-name">Freebuild · 110–120%</span><span class="next" id="tz-next">Next · Freebuild · 90%</span></div><div class="time"><b id="tz-clock">0:03</b><span id="tz-sub">left</span></div><div class="bar" id="tz-bar"></div></div><div class="fx" id="tz-fx"></div></div></div><figcaption class="tiny" id="tz-cap">Finish animation: Wave</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="aim-teaser" aria-labelledby="h-aimt" style="padding-top:0">
+    <div class="aimt">
+      <div class="aimt-txt">
+        <span class="new rv">Windows app · new</span>
+        <h2 id="h-aimt" class="d-l rv d1">See your aim<br>get better.</h2>
+        <p class="lead rv d2">The Windows app reads the results KovaaK's saves after every scenario. You get a curve for every scenario and one for your aim overall, from your very first run.</p>
+        <ul class="ovt-list rv d3"><li><b>Best 3 runs</b> per day, per scenario</li><li>Your whole history, right after install</li><li>Sens changes marked on the curve</li><li>Coach notes on what's stalling <span class="pro">✦ Pro</span></li><li>Only reads KovaaK's result files. Turn it off anytime.</li></ul>
+        <span class="rv d4" data-download="lg"></span><a class="pill big out rv d4" href="#aim" id="aimt-open" hidden>Open your progress</a>
+      </div>
+      <figure class="aimt-stage rv d1" aria-label="Example: aim progress curve"><div class="aimt-card">
+        <div class="kv"><span class="tiny">Example · VT Pasu Rasp Intermediate</span><span class="up">+14.2 %</span></div>
+        <svg viewBox="0 0 320 150" aria-hidden="true"><path d="M0 130 C40 124 60 118 90 112 S140 96 170 90 S220 70 250 58 S300 40 320 34" fill="none" stroke="var(--c1)" stroke-width="2.5" stroke-linecap="round"/><path d="M0 130 C40 124 60 118 90 112 S140 96 170 90 S220 70 250 58 S300 40 320 34 V150 H0Z" fill="url(#aimt-g)"/><defs><linearGradient id="aimt-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38e0ff" stop-opacity=".22"/><stop offset="1" stop-color="#38e0ff" stop-opacity="0"/></linearGradient></defs><line x1="170" y1="14" x2="170" y2="150" stroke="#86868b" stroke-dasharray="3 4"/><text x="176" y="24" fill="#86868b" font-size="11">sens change</text></svg>
+        <div class="kv tiny"><span>3 weeks ago</span><span>today</span></div>
+      </div></figure>
     </div>
   </section>
 
@@ -1049,6 +1116,8 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
     <div class="qa rv d1">
       <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order, built from how pros practise. Every set has one focus.</p></details>
       <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
+      <details><summary>When does a routine count?<i></i></summary><p>When you really trained it. Sets can't be skipped, and our server checks that the real time has passed. In the Windows app, Fortnite or KovaaK's also has to run during the game sets: then your routine is <b>Verified</b> and its spin gives 2 Golden Tickets. A routine that doesn't count keeps your streak, but gives no spin and no points.</p></details>
+      <details><summary>Can the Windows app get me banned?<i></i></summary><p>No. Repline never touches Fortnite: no memory, no game files, no network. It only looks at the list of running programs, like Task Manager or Discord does. For KovaaK's it reads the result files KovaaK's saves itself. Both can be turned off in Settings.</p></details>
       <details><summary>Do I need an account?<i></i></summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
       <details><summary>Do I stay signed in?<i></i></summary><p>Yes, on this device until you sign out. On iPhone, add Repline to your Home Screen: Safari clears website data after 7 days without a visit.</p></details>
       <details><summary>Where do I get the Windows app?<i></i></summary><p>Right here: Download for Windows, free, for Windows 10 and 11. Run the installer once, after that Repline updates itself. If Windows warns you, click More info, then Run anyway.</p></details>
@@ -1112,9 +1181,10 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       <div class="controls">
         <button class="round" type="button" id="b-restart" aria-label="Restart set (R)"><svg><use href="#i-restart"/></svg></button>
         <button class="pill big" type="button" id="b-main">Start</button>
-        <button class="round" type="button" id="b-next" aria-label="Next set (N)"><svg><use href="#i-next"/></svg></button>
+        <span class="round-ph" aria-hidden="true"></span>
       </div>
-      <div class="keys tiny"><span><kbd>Space</kbd> Start/Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>N</kbd> Next</span><span><kbd>F</kbd> Full screen</span></div>
+      <div class="gstat" id="tr-game" role="status" hidden></div>
+      <div class="keys tiny"><span><kbd>Space</kbd> Start/Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>N</kbd> Next set when done</span><span><kbd>F</kbd> Full screen</span></div>
     </section>
     <div class="info">
       <section class="card" aria-labelledby="tr-name">
@@ -1140,6 +1210,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
     <div style="display:grid;gap:16px;justify-items:start">
       <h1 class="d-xl burst">Done.</h1>
       <p class="lead" id="done-sum"></p>
+      <div id="done-check"></div>
       <div id="done-spin"></div>
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
@@ -1246,6 +1317,13 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div id="drops-body"></div>
 </main>
 
+<main class="view wrap flowv" data-view="aim" id="v-aim" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Aim progress.</h1><p class="lead" id="aim-lead">Your KovaaK's results, as curves.</p></div>
+    <div class="seg" role="tablist" aria-label="Range" id="aim-tabs"><button type="button" role="tab" data-ar="7">7 days</button><button type="button" role="tab" data-ar="30">30 days</button><button type="button" role="tab" data-ar="all">All time</button></div></div>
+  <div id="aim-body"></div>
+</main>
+
 <main class="view wrap flowv" data-view="studio" id="v-studio" hidden>
   <button class="back" type="button" data-go="">Home</button>
   <div class="vhead"><div><h1 class="d-l">Routine Studio.</h1><p class="lead">Edit the public routines and blocks. Dev accounts only.</p></div></div>
@@ -1287,7 +1365,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.7.2", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.8.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1809,6 +1887,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     main.disabled = kill && S.status !== "fertig" && !swm;
     rb.disabled = swm ? false : kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
+    gameUI();
     document.title = swm ? `Get ready ${$("tr-clock").textContent} · Repline` : S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
     pushOverlay();
   }
@@ -1850,15 +1929,19 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     }
     if (S.status !== "laeuft") return;
     const b = cur();
-    if (Date.now() - lastCount > 30000) { lastCount = Date.now(); countTime(); if (sb && cloudUser) cloudPush(); }
+    gameTick();
+    if (Date.now() - lastCount > 30000) { lastCount = Date.now(); countTime(); store.set(KEY, S); if (sb && cloudUser) cloudPush(); }
     if (b.min != null) { const left = Math.ceil((b.min * 60000 - elapsed()) / 1000); if (left <= 3 && left >= 1 && left !== lastTick) { lastTick = left; tickSound(); } if (left > 3) lastTick = null; }
     if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; countTime(); S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
-  function play(at) { if (isKill(cur()) || S.status === "fertig") return; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
+  function play(at) { if (isKill(cur()) || S.status === "fertig") return; startRun(); S.gAt = 0; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
   function pause() { countTime(); S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
   function restart() { if (S.status === "wechsel") { addSwitch(15); return; } countTime(); if (S.counted) S.counted[S.b] = 0; clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
+  // No skipping: the next set only starts once this one is done (timer over, all targets ticked).
+  const canNext = () => S.status === "fertig" || (!isKill(cur()) && cur().min == null && elapsed() > 0);
   function nextBlock() {
+    if (!canNext()) { toast("Finish this set first. Sets can't be skipped."); return; }
     countTime(); clearInterval(raf); keepAwake(false);
     S.done[S.b] = true;
     if (S.b >= list().length - 1) { finish(); return; }
@@ -1881,13 +1964,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   $("b-main").addEventListener("click", mainAction);
   $("b-restart").addEventListener("click", restart);
-  $("b-next").addEventListener("click", nextBlock);
   addEventListener("keydown", (e) => {
     if (e.key === "Escape" && drawerOpen) { closeDrawer(); return; }
     if (view !== "training" || drawerOpen || !$("modal").hidden || e.target.closest('textarea, input:not([type="checkbox"])') || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.code === "Space") { e.preventDefault(); if (!$("b-main").disabled) mainAction(); }
     else if (e.key === "r" || e.key === "R") restart();
-    else if (e.key === "n" || e.key === "N") nextBlock();
+    else if (e.key === "n" || e.key === "N") { if (canNext()) nextBlock(); }
     else if (e.key === "f" || e.key === "F") toggleFull();
   });
   addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.status === "laeuft") keepAwake(true); save(); });
@@ -1921,7 +2003,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       if (typeof gateOn !== "undefined" && gateOn) return;
       if (!(S.active && length(S.goal, S.len) && signedIn())) return;
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
-      else if (name === "next") nextBlock();
+      else if (name === "next") { if (canNext()) nextBlock(); else toast("Finish this set first"); }
       else if (name === "restart") restart();
       else if (name === "end") askEnd();
       pushOverlay(true);
@@ -1929,22 +2011,322 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     setInterval(() => pushOverlay(true), 5000);
   }
 
+  /* ---------- 1.8 · routines that really count ----------
+     The server notes the start of a routine and checks the real time at the end. In the Windows app the game also has
+     to run during the game sets (process list only: Repline never touches Fortnite's memory, files or network). */
+  const VMARK = '<svg class="vmark" viewBox="0 0 16 16" role="img" aria-label="Verified"><title>Verified: trained with the game running</title><path d="M8 1l1.8 1.3 2.2-.1.7 2.1 1.8 1.3-.7 2.1.7 2.1-1.8 1.3-.7 2.1-2.2-.1L8 15l-1.8-1.3-2.2.1-.7-2.1-1.8-1.3.7-2.1-.7-2.1 1.8-1.3.7-2.1 2.2.1z" fill="currentColor"/><path d="M5.3 8.2l1.8 1.8 3.6-3.7" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  let gameState = { fortnite: false, kovaaks: false, at: 0, ok: true }, gameWatching = false, runBusy = false;
+  const detectOn = () => !!(DESK && DESK.game && settings.gameDetect !== false && gameState.ok !== false);
+  const GAME_NAME = { fortnite: "Fortnite", kovaaks: "KovaaK's" };
+  // Which game a set needs: KovaaK's sets need KovaaK's, other play sets need Fortnite, review/prep/breaks need none.
+  const gameFor = (b) => !b || ["review", "prep", "rest"].indexOf(b.type) >= 0 ? null : (/kovaak/i.test(`${b.where || ""} ${b.name || ""}`) ? "kovaaks" : "fortnite");
+  const gameRunning = (g) => !!(g && gameState[g] && Date.now() - gameState.at < 25000);
+  function watchGames() {
+    if (!(DESK && DESK.game)) return;
+    const want = detectOn() && signedIn() && !!S.active && !!S.goal;
+    if (want === gameWatching) return;
+    gameWatching = want;
+    DESK.game.watch(want).then((g) => { if (g) gameState = g; gameUI(); }).catch(() => {});
+  }
+  if (DESK && DESK.game) {
+    DESK.game.onState((g) => { gameState = g || gameState; gameUI(); });
+    setInterval(watchGames, 4000);
+  }
+  function gameTick() {
+    const now = Date.now(), dt = S.gAt ? Math.min(5000, now - S.gAt) : 0; S.gAt = now;
+    if (!dt || !detectOn()) return;
+    const need = gameFor(cur()); if (!need) return;
+    S.game = S.game || { need: 0, got: 0 };
+    S.game.need += dt;
+    if (gameRunning(need)) S.game.got += dt;
+  }
+  function gameUI() {
+    const el = $("tr-game"); if (!el) return;
+    const need = view === "training" && S.active && S.goal && detectOn() ? gameFor(cur()) : null;
+    el.hidden = !need;
+    if (!need) return;
+    const on = gameRunning(need);
+    el.className = "gstat" + (on ? " on" : "");
+    el.innerHTML = on ? `<i></i>${GAME_NAME[need]} detected · this set counts` : `<i></i>Waiting for ${GAME_NAME[need]} … start it so this set counts`;
+  }
+  // Minutes still to train from the current set on (what the server expects to pass).
+  function plannedLeft() { return Math.max(0, Math.round(list().slice(S.b).reduce((a, b) => a + (b.min || 0), 0) - elapsed() / 60000)); }
+  async function startRun() {
+    if (!S.goal || !length(S.goal, S.len)) return;
+    if (!S.run) { S.run = { at: Date.now(), id: null, planned: plannedLeft() }; S.game = { need: 0, got: 0 }; store.set(KEY, S); }
+    if (S.run.id || runBusy || !(sb && cloudUser)) return;
+    runBusy = true;
+    try {
+      const { data, error } = await sb.rpc("run_start", { client_day: S.day || today(), goal_id: String(S.goal).slice(0, 80), len_id: String(S.len || "").slice(0, 40), planned: S.run.planned, src: DESK ? "win" : "web" });
+      if (!error && data && S.run) { S.run.id = data; store.set(KEY, S); }
+    } catch (e) {}
+    runBusy = false;
+  }
+  async function judgeRun(run, game) {
+    const g = game || { need: 0, got: 0 }, detect = detectOn();
+    if (sb && cloudUser) {
+      if (!run || !run.id) return { error: true };
+      try {
+        const { data, error } = await sb.rpc("run_finish", { run_id: run.id, detect_on: detect, game_s: Math.round(g.got / 1000), need_s: Math.round(g.need / 1000) });
+        if (!error && data && !data.error) return data;
+      } catch (e) {}
+      return { error: true };
+    }
+    // Demo account (no server): the same rules, checked on this device.
+    if (!run) return { error: true };
+    const real = Math.round((Date.now() - run.at) / 1000), plan = run.planned * 60, n = Math.min(Math.round(g.need / 1000), plan, real), gs = Math.min(Math.round(g.got / 1000), n);
+    const tOk = real >= plan * 0.95 - 30, gOk = !DESK || !detect || n === 0 || gs >= n * 0.8, ok = tOk && gOk;
+    return { counted: ok, verified: ok && !!DESK && detect && n > 0, reason: !tOk ? "too_fast" : !gOk ? "no_game" : null, real_sec: real, planned_sec: plan, game_sec: gs, need_sec: n, demo: true };
+  }
+  const fmtDur = (sec) => { const m = Math.round(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`; };
+  function doneCheckHTML(v) {
+    if (v.error) return `<div class="vcheck"><span class="vc-tag wait">Not checked</span><b>We couldn't reach the server.</b><span class="small">Your routine counts for your streak. Spins and points need the check, so stay online while you train.</span></div>`;
+    const timeLine = `<span class="vc-row"><span>Real time</span><b>${fmtDur(v.real_sec)} of ${fmtDur(v.planned_sec)}</b></span>`;
+    const gameLine = v.need_sec > 0 ? `<span class="vc-row"><span>Game running</span><b>${fmtDur(v.game_sec)} of ${fmtDur(v.need_sec)}</b></span>` : "";
+    if (v.counted) {
+      const tag = v.verified ? `<span class="vc-tag ok">${VMARK}Verified</span>` : `<span class="vc-tag ok">Counted</span>`;
+      const gain = v.verified ? "+1 spin · 2 Golden Tickets" : "+1 spin · 1 Golden Ticket";
+      const tip = !v.verified && !DESK ? `<span class="tiny">Train in the Windows app with the game running and your routine is Verified: 2 Golden Tickets and a mark on the leaderboard.</span>` : !v.verified && DESK && settings.gameDetect === false ? `<span class="tiny">Game detection is off, so this routine isn't Verified. Turn it on in Settings.</span>` : "";
+      return `<div class="vcheck${v.verified ? " ver" : ""}">${tag}<b>Routine counted</b>${timeLine}${gameLine}<span class="vc-gain">${gain}</span>${tip}</div>`;
+    }
+    const why = v.reason === "no_game" ? "The game didn't run" : "Trained too short";
+    const help = v.reason === "no_game" ? `Start ${v.need_sec ? "Fortnite or KovaaK's" : "the game"} before the set, then it counts. On the website only the time is checked.` : "The server measures the real time from start to finish. Pausing is fine, rushing isn't.";
+    return `<div class="vcheck no"><span class="vc-tag">Not counted</span><b>${why}</b>${timeLine}${gameLine}<span class="small">Your routine is saved and your streak stays. It gives no spin and no points. ${help}</span></div>`;
+  }
+
+  /* ---------- 1.8 · KovaaK's aim progress ----------
+     The Windows app reads KovaaK's own result files (only with "KovaaK's tracking" on) and saves them to the account,
+     so the website shows the same curves. */
+  const kvOn = () => settings.kovaaks !== false;
+  let aimRows = null, aimInfo = { found: null, folder: "" }, aimRange = "30", aimLoading = null, aimSel = null;
+  const aimKey = (r) => r.s + "|" + r.t;
+  function aimMerge(rows) {
+    const m = new Map((aimRows || []).map((r) => [aimKey(r), r]));
+    rows.forEach((r) => { if (r && r.s && r.t && isFinite(r.sc)) m.set(aimKey(r), r); });
+    aimRows = Array.from(m.values()).sort((a, b) => (a.t < b.t ? -1 : 1));
+  }
+  async function aimScanDesk() {
+    if (!(DESK && DESK.kovaaks) || !kvOn()) return null;
+    try { const r = await DESK.kovaaks.scan(); aimInfo = { found: !!r.found, folder: r.folder || "" }; aimMerge(r.rows || []); aimUpload(r.rows || []); return r; } catch (e) { return null; }
+  }
+  async function aimUpload(rows) {
+    if (!(sb && cloudUser) || !kvOn() || !rows.length) return;
+    const since = settings.aimSynced || "", fresh = rows.filter((r) => r.t > since);
+    if (!fresh.length) return;
+    for (let i = 0; i < fresh.length; i += 500) {
+      const part = fresh.slice(i, i + 500).map((r) => ({ user_id: cloudUser.id, scenario: r.s, played_at: r.t, score: r.sc, acc: r.acc == null ? null : Math.max(0, Math.min(100, r.acc)), sens: r.sens || null }));
+      const { error } = await sb.from("aim_scores").upsert(part, { onConflict: "user_id,scenario,played_at", ignoreDuplicates: true });
+      if (error) return;
+      settings.aimSynced = part[part.length - 1].played_at; saveSettings();
+    }
+  }
+  async function aimLoadCloud() {
+    if (!(sb && cloudUser)) return;
+    const out = [];
+    for (let p = 0; p < 30; p++) {
+      const { data, error } = await sb.from("aim_scores").select("scenario, played_at, score, acc, sens").order("played_at").range(p * 1000, p * 1000 + 999);
+      if (error || !data) break;
+      data.forEach((r) => out.push({ s: r.scenario, t: new Date(r.played_at).toISOString(), sc: r.score, acc: r.acc, sens: r.sens || "" }));
+      if (data.length < 1000) break;
+    }
+    aimMerge(out);
+  }
+  function aimLoad(force) {
+    if (aimLoading && !force) return aimLoading;
+    aimLoading = (async () => { await aimScanDesk(); if (!aimRows || !aimRows.length || !DESK) await aimLoadCloud(); if (!aimRows) aimRows = []; })();
+    return aimLoading;
+  }
+  if (DESK && DESK.kovaaks) setInterval(() => { if (kvOn() && signedIn()) aimScanDesk(); }, 120000);
+  // After a routine: how many KovaaK's scenarios were played during it (shown on the done page).
+  async function aimAfterRun(from) {
+    if (!(DESK && DESK.kovaaks) || !kvOn()) return;
+    const r = await aimScanDesk(); if (!r || !r.found) return;
+    const t0 = new Date(from).toISOString(), got = (r.rows || []).filter((x) => x.t >= t0);
+    if (!got.length || !$("done-check")) return;
+    const names = Array.from(new Set(got.map((x) => x.s)));
+    const box = $("done-check").querySelector(".vcheck");
+    if (box) box.insertAdjacentHTML("beforeend", `<span class="vc-row"><span>KovaaK's</span><b>${got.length} run${got.length === 1 ? "" : "s"} in ${names.length} scenario${names.length === 1 ? "" : "s"}</b></span><a class="tiny" href="#aim">See your aim progress ›</a>`);
+  }
+  // Per scenario: one value per day = average of the best 3 scores that day.
+  function aimAnalyze(rows, days) {
+    const cut = days ? Date.now() - days * 864e5 : 0, by = new Map();
+    rows.forEach((r) => {
+      const ts = Date.parse(r.t); if (ts < cut) return;
+      const d = today(new Date(ts));
+      if (!by.has(r.s)) by.set(r.s, new Map());
+      const m = by.get(r.s); if (!m.has(d)) m.set(d, { sc: [], acc: [], sens: {} });
+      const e = m.get(d); e.sc.push(+r.sc); if (r.acc != null) e.acc.push(+r.acc); if (r.sens) e.sens[r.sens] = (e.sens[r.sens] || 0) + 1;
+    });
+    const mean = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+    const list2 = [];
+    by.forEach((m, s) => {
+      const dd = Array.from(m.keys()).sort().map((d) => {
+        const e = m.get(d), top = e.sc.slice().sort((a, b) => b - a).slice(0, 3);
+        const sens = Object.keys(e.sens).sort((a, b) => e.sens[b] - e.sens[a])[0] || "";
+        return { d, v: mean(top), acc: e.acc.length ? mean(e.acc) : null, n: e.sc.length, sens };
+      });
+      dd.forEach((x, i) => { x.sensChange = i > 0 && x.sens && dd[i - 1].sens && x.sens !== dd[i - 1].sens; });
+      const plays = dd.reduce((a, x) => a + x.n, 0), k = Math.max(1, Math.min(3, Math.floor(dd.length / 2)));
+      const base = mean(dd.slice(0, k).map((x) => x.v)), now = mean(dd.slice(-k).map((x) => x.v));
+      const pct = dd.length >= 2 && base > 0 ? (now / base - 1) * 100 : null;
+      list2.push({ s, days: dd, plays, best: Math.max(...dd.map((x) => x.v)), pct, base: dd[0].v });
+    });
+    list2.sort((a, b) => b.plays - a.plays);
+    // Overall: for each day, the average % above each scenario's first day (only scenarios played on 2+ days).
+    const day = new Map();
+    list2.filter((x) => x.days.length >= 2 && x.base > 0).forEach((x) => x.days.forEach((p) => { if (!day.has(p.d)) day.set(p.d, []); day.get(p.d).push((p.v / x.base - 1) * 100); }));
+    const overall = Array.from(day.keys()).sort().map((d) => ({ d, v: mean(day.get(d)) }));
+    const withPct = list2.filter((x) => x.pct != null), wsum = withPct.reduce((a, x) => a + x.plays, 0);
+    const total = wsum ? withPct.reduce((a, x) => a + x.pct * x.plays, 0) / wsum : null;
+    return { list: list2, overall, total, runs: rows.filter((r) => Date.parse(r.t) >= cut).length };
+  }
+  const pctTxt = (p) => p == null ? "–" : `${p >= 0 ? "+" : "−"}${Math.abs(p).toFixed(1)} %`;
+  const fmtScore = (v) => v >= 1000 ? Math.round(v).toLocaleString("en-GB") : (Math.round(v * 10) / 10).toLocaleString("en-GB");
+  const dLabel = (d) => new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  // Single-series line chart with a hover tooltip. pts: [{d, v, sensChange?}]
+  function lineChart(pts, opt) {
+    const W = 640, H = opt.h || 220, P = { l: 8, r: 8, t: 14, b: 26 };
+    if (pts.length < 2) return `<p class="small" style="margin:0">${pts.length ? "One day so far. Play again tomorrow and your curve starts." : "No runs in this range."}</p>`;
+    const t0 = Date.parse(pts[0].d + "T12:00"), t1 = Date.parse(pts[pts.length - 1].d + "T12:00");
+    let lo = Math.min(...pts.map((p) => p.v)), hi = Math.max(...pts.map((p) => p.v));
+    if (opt.zero) { lo = Math.min(lo, 0); hi = Math.max(hi, 0); }
+    const pad = (hi - lo) * 0.12 || Math.abs(hi) * 0.05 || 1; lo -= pad; hi += pad;
+    const X = (d) => P.l + (t1 === t0 ? 0.5 : (Date.parse(d + "T12:00") - t0) / (t1 - t0)) * (W - P.l - P.r);
+    const Y = (v) => P.t + (1 - (v - lo) / (hi - lo)) * (H - P.t - P.b);
+    const path = pts.map((p, i) => `${i ? "L" : "M"}${X(p.d).toFixed(1)} ${Y(p.v).toFixed(1)}`).join("");
+    const area = `${path}L${X(pts[pts.length - 1].d).toFixed(1)} ${H - P.b}L${X(pts[0].d).toFixed(1)} ${H - P.b}Z`;
+    const zero = opt.zero && lo < 0 && hi > 0 ? `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" class="ch-zero"/>` : "";
+    const sens = pts.filter((p) => p.sensChange).map((p) => `<line x1="${X(p.d).toFixed(1)}" x2="${X(p.d).toFixed(1)}" y1="${P.t}" y2="${H - P.b}" class="ch-sens"><title>Sens changed to ${esc(p.sens)}</title></line>`).join("");
+    const gid = "g" + Math.random().toString(36).slice(2, 8);
+    const data = esc(JSON.stringify(pts.map((p) => [X(p.d) / W, Y(p.v) / H, dLabel(p.d), opt.fmt(p.v), p.n || 0, p.sensChange ? p.sens : ""])));
+    return `<div class="chart" data-pts="${data}" data-unit="${esc(opt.unit || "")}">
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(opt.label)}"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38e0ff" stop-opacity=".2"/><stop offset="1" stop-color="#38e0ff" stop-opacity="0"/></linearGradient></defs>
+        ${zero}${sens}<path d="${area}" fill="url(#${gid})"/><path d="${path}" class="ch-line" vector-effect="non-scaling-stroke"/></svg>
+      <span class="ch-dot" hidden></span><span class="ch-x" hidden></span><div class="ch-tip" hidden></div>
+      <div class="ch-axis tiny"><span>${dLabel(pts[0].d)}</span><span>${dLabel(pts[pts.length - 1].d)}</span></div></div>`;
+  }
+  function bindCharts(rootEl) {
+    rootEl.querySelectorAll(".chart").forEach((c) => {
+      const pts = JSON.parse(c.dataset.pts || "[]"), unit = c.dataset.unit, dot = c.querySelector(".ch-dot"), tip = c.querySelector(".ch-tip"), xl = c.querySelector(".ch-x"), svg = c.querySelector("svg");
+      const show = (cx) => {
+        const r = svg.getBoundingClientRect(), fx = (cx - r.left) / r.width;
+        let best = 0; pts.forEach((p, i) => { if (Math.abs(p[0] - fx) < Math.abs(pts[best][0] - fx)) best = i; });
+        const p = pts[best], x = p[0] * r.width, y = p[1] * r.height;
+        dot.hidden = xl.hidden = tip.hidden = false;
+        dot.style.left = x + "px"; dot.style.top = y + "px"; xl.style.left = x + "px"; xl.style.height = r.height + "px";
+        tip.innerHTML = `<b>${esc(p[3])}${unit}</b><span>${esc(p[2])}${p[4] ? ` · ${p[4]} run${p[4] === 1 ? "" : "s"}` : ""}</span>${p[5] ? `<span>Sens changed to ${esc(p[5])}</span>` : ""}`;
+        tip.style.left = Math.max(70, Math.min(r.width - 70, x)) + "px"; tip.style.top = Math.max(0, y - 12) + "px";
+      };
+      const hide = () => { dot.hidden = xl.hidden = tip.hidden = true; };
+      svg.addEventListener("pointermove", (e) => show(e.clientX));
+      svg.addEventListener("pointerdown", (e) => show(e.clientX));
+      svg.addEventListener("pointerleave", hide);
+    });
+  }
+  function aimInsights(all) {
+    const out = [], L = all.list.filter((x) => x.days.length >= 4);
+    const best = L.filter((x) => x.pct != null).sort((a, b) => b.pct - a.pct)[0];
+    if (best && best.pct > 1) out.push(`<b>${esc(best.s)}</b> is your biggest gain: ${pctTxt(best.pct)} since ${dLabel(best.days[0].d)}.`);
+    const now = Date.now();
+    L.forEach((x) => {
+      const recent = x.days.filter((p) => now - Date.parse(p.d + "T12:00") < 7 * 864e5), prev = x.days.filter((p) => { const a = now - Date.parse(p.d + "T12:00"); return a >= 7 * 864e5 && a < 21 * 864e5; });
+      if (recent.length >= 2 && prev.length >= 2) {
+        const m = (a) => a.reduce((s, p) => s + p.v, 0) / a.length, ch = (m(recent) / m(prev) - 1) * 100;
+        if (Math.abs(ch) < 1.5 && out.length < 4) out.push(`<b>${esc(x.s)}</b> is stalling: ${pctTxt(ch)} this week. Change one thing: play it slower and cleaner for 3 days, then push the score again.`);
+      }
+      const sc = x.days.slice(-10).find((p) => p.sensChange);
+      if (sc && out.length < 4) out.push(`You changed your sens in <b>${esc(x.s)}</b> on ${dLabel(sc.d)}. Scores often dip for a few days after a change, so give it a week before you judge it.`);
+    });
+    const acc = all.list.filter((x) => x.days.length >= 3 && x.days[x.days.length - 1].acc != null && x.days[0].acc != null).map((x) => ({ s: x.s, d: x.days[x.days.length - 1].acc - x.days[0].acc })).sort((a, b) => a.d - b.d)[0];
+    if (acc && acc.d < -3 && out.length < 4) out.push(`Your accuracy in <b>${esc(acc.s)}</b> dropped ${Math.abs(acc.d).toFixed(1)} points. Slow down until it's back up: speed comes after clean hits.`);
+    return out;
+  }
+  async function buildAim() {
+    const body = $("aim-body");
+    document.querySelectorAll("[data-ar]").forEach((b) => { const on = b.dataset.ar === aimRange; b.setAttribute("aria-pressed", on); b.setAttribute("aria-selected", on); });
+    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to see your aim progress", "aim"); bindLock(body); return; }
+    const pro = planId() === "pro";
+    if (aimRows == null) body.innerHTML = '<p class="small">Loading your KovaaK\'s results…</p>';
+    await aimLoad();
+    if (view !== "aim") return;
+    const rows = aimRows || [];
+    $("aim-tabs").hidden = !rows.length || (DESK && !kvOn());
+    if (DESK && !kvOn()) {
+      body.innerHTML = `<div class="c-card aim-empty"><b style="font-size:24px">KovaaK's tracking is off.</b><span class="small">Turn it on and Repline reads the results KovaaK's saves after every scenario. Nothing else on your PC is read.</span><button class="pill" type="button" id="aim-on" style="justify-self:start">Turn on</button></div>`;
+      $("aim-on").addEventListener("click", () => { settings.kovaaks = true; saveSettings(); aimLoading = null; buildAim(); });
+      return;
+    }
+    if (!rows.length) {
+      if (DESK) {
+        body.innerHTML = aimInfo.found
+          ? `<div class="c-card aim-empty"><b style="font-size:24px">No KovaaK's runs yet.</b><span class="small">Play any scenario in KovaaK's. Your result shows up here a minute later.</span><span class="tiny">Folder: ${esc(aimInfo.folder)}</span></div>`
+          : `<div class="c-card aim-empty"><b style="font-size:24px">We couldn't find KovaaK's.</b><span class="small">Repline looks in your Steam libraries. If KovaaK's is somewhere else, pick its <b>FPSAimTrainer\\stats</b> folder.</span><button class="pill" type="button" id="aim-pick" style="justify-self:start">Choose folder</button></div>`;
+        const pk = $("aim-pick"); if (pk) pk.addEventListener("click", async () => { const r = await DESK.kovaaks.pick(); if (r) { aimRows = null; aimLoading = null; buildAim(); if (!r.found) toast("No KovaaK's results in that folder"); } });
+      } else {
+        body.innerHTML = `<div class="aim-promo c-card"><div style="display:grid;gap:12px"><span class="new">Windows app</span><b style="font-size:28px;line-height:1.15">Track your KovaaK's progress.</b>
+          <span class="small">The Windows app reads the results KovaaK's saves after every scenario and turns them into curves: one per scenario and one for your aim overall. Your whole KovaaK's history shows up right after install, here and in the app.</span>
+          <span class="tiny">Repline only reads KovaaK's result files, never the game. You can turn it off anytime.</span>
+          <span data-download="lg"></span></div></div>`;
+        fillDownloads(body);
+      }
+      return;
+    }
+    const days = aimRange === "all" ? null : +aimRange, limited = !pro && (days == null || days > 7);
+    const all = aimAnalyze(rows, limited ? 7 : days);
+    $("aim-lead").textContent = `${all.runs.toLocaleString("en-GB")} runs in ${all.list.length} scenario${all.list.length === 1 ? "" : "s"}${limited ? " · last 7 days" : ""}.`;
+    if (!aimSel || !all.list.find((x) => x.s === aimSel)) aimSel = all.list[0] ? all.list[0].s : null;
+    const sel = all.list.find((x) => x.s === aimSel);
+    const ins = pro ? aimInsights(all) : [];
+    const lock = limited ? `<div class="teaser-card"><b>See your whole history <span class="pro">✦ Pro</span></b><span class="small">Free shows your last 7 days. Pro shows every run since your first one, plus coach notes on what's improving and what's stalling.</span><button class="pill sm" type="button" data-go-plans style="justify-self:start">See plans</button></div>` : "";
+    body.innerHTML = `<div class="st-tiles">
+        <div class="c-card"><span class="tiny">Aim overall</span><b class="${all.total != null && all.total >= 0 ? "up-b" : ""}">${pctTxt(all.total)}</b><span class="tiny">Average of your scenarios</span></div>
+        <div class="c-card"><span class="tiny">Runs</span><b>${all.runs.toLocaleString("en-GB")}</b><span class="tiny">${limited || days ? "In this range" : "All time"}</span></div>
+        <div class="c-card"><span class="tiny">Scenarios</span><b>${all.list.length}</b><span class="tiny">Played in this range</span></div>
+        <div class="c-card"><span class="tiny">Most played</span><b style="font-size:20px;line-height:1.2">${esc(all.list[0] ? all.list[0].s : "–")}</b><span class="tiny">${all.list[0] ? all.list[0].plays + " runs" : ""}</span></div>
+      </div>
+      ${lock}
+      ${ins.length ? `<div class="c-card aim-coach"><div class="kv"><b style="font-size:20px">Coach notes</b><span class="pro">✦ Pro</span></div>${ins.map((t) => `<p class="small" style="margin:0">${t}</p>`).join("")}</div>` : ""}
+      <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Aim overall</b><span class="tiny">% above each scenario's first day, averaged</span></div>
+        ${lineChart(all.overall, { label: "Aim overall, percent above the first day", fmt: (v) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1), unit: " %", zero: true })}</div>
+      <div class="aim-grid">
+        <div class="c-card aim-list"><b style="font-size:20px">Scenarios</b><div class="aim-rows" role="list">${all.list.map((x) => `<button type="button" role="listitem" class="aim-row" data-sc="${esc(x.s)}" aria-pressed="${x.s === aimSel}"><span class="nm">${esc(x.s)}</span><span class="tiny">${x.plays} run${x.plays === 1 ? "" : "s"}</span><span class="${x.pct != null && x.pct >= 0 ? "up" : "tiny"}">${pctTxt(x.pct)}</span></button>`).join("")}</div></div>
+        <div class="c-card">${sel ? `<div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">${esc(sel.s)}</b><span class="${sel.pct != null && sel.pct >= 0 ? "up" : "tiny"}">${pctTxt(sel.pct)}</span></div>
+          <span class="tiny">Average of your best 3 runs per day · best day ${fmtScore(sel.best)}${sel.days.some((p) => p.sensChange) ? " · dashed line = sens change" : ""}</span>
+          ${lineChart(sel.days, { label: `${sel.s}, score per day`, fmt: fmtScore, unit: "" })}
+          ${sel.days[sel.days.length - 1].acc != null ? `<span class="tiny">Accuracy last day: ${sel.days[sel.days.length - 1].acc.toFixed(1)} %${sel.days[0].acc != null && sel.days.length > 1 ? ` · first day: ${sel.days[0].acc.toFixed(1)} %` : ""}</span>` : ""}` : ""}</div>
+      </div>
+      <p class="tiny" style="margin-top:18px">${DESK ? `Read from ${esc(aimInfo.folder || "KovaaK's")} · ` : "Synced from the Windows app · "}Repline only reads the result files KovaaK's saves. Turn it off in Settings.</p>`;
+    bindCharts(body);
+    body.querySelectorAll("[data-sc]").forEach((b) => b.addEventListener("click", () => { aimSel = b.dataset.sc; buildAim(); }));
+    const gp = body.querySelector("[data-go-plans]"); if (gp) gp.addEventListener("click", () => go("plans"));
+  }
+  document.querySelectorAll("[data-ar]").forEach((b) => b.addEventListener("click", () => { aimRange = b.dataset.ar; buildAim(); }));
+
   /* ---------- Done & streak ---------- */
   function finish() {
     const days = store.get(DAYS, []); const t = today();
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
     store.set(DONE, store.get(DONE, 0) + 1);
-    const rt = store.get(ROUT, {}); rt[t] = (rt[t] || 0) + 1; store.set(ROUT, rt);
     store.set(FIN, store.get(FIN, []).concat([{ t: Date.now(), g: S.goal }]).slice(-300));
     afterFinish();
-    doneSpinCTA();
+    const run = S.run, game = S.game;
+    $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag wait">Checking</span><b>Checking your routine…</b></div>`;
+    $("done-spin").innerHTML = "";
     const z = goal(S.goal), l = length(S.goal, S.len);
     $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
-    pushOverlay(true);
-    cloudDay(); cloudPush();
+    pushOverlay(true); watchGames();
+    cloudPush();
     go("done");
+    judgeRun(run, game).then((v) => {
+      const rt = store.get(ROUT, {});
+      rt[t] = (rt[t] || 0) + (v.counted || v.error ? 1 : 0); store.set(ROUT, rt);
+      cloudDay();
+      if ($("done-check")) $("done-check").innerHTML = doneCheckHTML(v);
+      doneSpinCTA();
+      if (run) aimAfterRun(run.at);
+    });
   }
   function streak() {
     const set = new Set(store.get(DAYS, []).concat(store.get("rl.frozen", []))); let n = 0; const d = new Date();
@@ -2103,7 +2485,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="drops">Drops</button><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
+      h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="drops">Drops</button><button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="aim">Aim progress</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
       h += myCodeHTML();
     }
@@ -2134,6 +2516,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
         ${SITE.contactEmail ? `<div class="row"><span>Contact</span><span class="val">${esc(SITE.contactEmail)}</span></div>` : ""}
         ${linkRow("Terms of service", SITE.termsUrl)}${linkRow("Privacy policy", SITE.privacyUrl)}${linkRow("Imprint", SITE.imprintUrl)}
       </div></section>`;
+      if (DESK && DESK.game) h += `<section class="dr-sec"><h3>Tracking</h3><div class="group">${sw("trk-game", "Game detection", settings.gameDetect !== false)}${sw("trk-kv", "KovaaK's tracking", kvOn())}
+          ${kvOn() && DESK.kovaaks ? `<div class="row"><span>KovaaK's folder<br><span class="tiny" style="word-break:break-all">${aimInfo.folder ? esc(aimInfo.folder) : aimInfo.found === false ? "Not found yet" : "Found automatically"}</span></span><button class="pill sm out" type="button" id="trk-pick">Choose</button></div>` : ""}
+          ${!kvOn() && sb && cloudUser ? `<div class="row"><span>Saved KovaaK's results</span><button class="pill sm out" type="button" id="trk-del">Delete</button></div>` : ""}
+        </div><p class="dr-foot">Game detection only looks at the list of running programs, like Task Manager. It never touches Fortnite's memory, files or network, so there's no ban risk. With it on, routines with the game running are Verified. KovaaK's tracking only reads the result files KovaaK's saves in its stats folder and adds them to your account.</p></section>`;
       if (DESK && DESK.updates) {
         const u = upd || {}, st = u.state || "idle";
         const txt = { checking: "Checking for updates…", downloading: `Downloading ${esc(u.version || "")} · ${u.progress || 0} %`, ready: `Version ${esc(u.version || "")} is ready`, latest: "Up to date", error: "Couldn't check. Try again later." }[st] || (u.enabled === false ? "Updates work in the installed app" : "Automatic");
@@ -2166,7 +2552,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
             <span class="small">The in-game overlay comes with Standard and Pro: set, time left, finish alerts, 8 positions, size and opacity.</span>
             <button class="pill sm" type="button" id="ov-plans" style="justify-self:start">See plans</button></div>
             <div class="group" style="margin-top:12px">${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}</div>
-            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+E end routine." : "Hotkeys are off."}</p></section>`;
+            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine." : "Hotkeys are off."}</p></section>`;
         } else if (ov) {
           const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
           h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
@@ -2177,7 +2563,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
             <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
             <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
             ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
-          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
     }
       } else {
         h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
@@ -2268,6 +2654,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       document.querySelectorAll("[data-size]").forEach((b) => b.addEventListener("click", () => setOv({ size: b.dataset.size })));
       on("ov-move", "click", () => { ovMoving = !ovMoving; DESK.overlay.move(ovMoving).then(() => { if (!ovMoving) DESK.overlay.get().then((n) => { ov = n; renderDrawer(); toast("Position saved"); }); else { renderDrawer(); toast("Drag the overlay where you want it"); } }); });
     }
+    on("trk-game", "change", (e) => { settings.gameDetect = e.target.checked; saveSettings(); watchGames(); toast(e.target.checked ? "Game detection on" : "Game detection off"); });
+    on("trk-kv", "change", (e) => { settings.kovaaks = e.target.checked; saveSettings(); aimRows = null; aimLoading = null; if (e.target.checked) aimScanDesk().then(() => renderDrawer()); else renderDrawer(); toast(e.target.checked ? "KovaaK's tracking on" : "KovaaK's tracking off"); });
+    on("trk-pick", "click", () => DESK.kovaaks.pick().then((r) => { if (!r) return; aimInfo = { found: !!r.found, folder: r.folder || "" }; aimRows = null; aimLoading = null; renderDrawer(); toast(r.rows && r.rows.length ? `${r.rows.length} KovaaK's runs found` : "No KovaaK's results in that folder"); }));
+    on("trk-del", "click", async () => { if (!(sb && cloudUser)) return; const { error } = await sb.from("aim_scores").delete().eq("user_id", cloudUser.id); if (error) { toast("Couldn't delete. Please try again."); return; } settings.aimSynced = ""; saveSettings(); aimRows = null; aimLoading = null; DESK.kovaaks.forget(); renderDrawer(); toast("Your KovaaK's results were deleted"); });
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
     on("reset-today", "click", () => { confirmReset = confirmReset === "today" ? null : "today"; renderDrawer(); });
@@ -2369,7 +2759,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   async function cloudDay() {
     if (!sb || !cloudUser) return;
     const t = today();
-    await sb.from("training_days").upsert(Object.assign({ user_id: cloudUser.id, day: t, routines: (store.get(ROUT, {})[t] || 1) }, dayPayload(t)));
+    await sb.from("training_days").upsert(Object.assign({ user_id: cloudUser.id, day: t, routines: routinesOn(t) }, dayPayload(t)));
   }
   async function cloudLoad(user) {
     cloudUser = user; cloudBusy = true;
@@ -2601,6 +2991,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function fillDownloads(rootEl) { (rootEl || document).querySelectorAll("[data-download]").forEach((el) => { el.innerHTML = downloadHTML(el.dataset.download); }); }
   if (!DESK) fillDownloads(); else document.querySelectorAll("[data-download]").forEach((el) => { el.hidden = true; });
+  if (DESK && $("aimt-open")) $("aimt-open").hidden = false;
 
   /* ---------- Windows app: automatic updates ---------- */
   var upd = null;
@@ -2691,7 +3082,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const dayMin = (d, g) => { const m = store.get(MINS, {})[d] || {}; return Math.round((g ? (m[g] || 0) : Object.values(m).reduce((a, v) => a + v, 0)) / 60000); };
   const totalMinutes = (g) => Object.keys(store.get(MINS, {})).reduce((a, d) => a + dayMin(d, g), 0);
   const trainedToday = () => store.get(DAYS, []).indexOf(today()) >= 0;
-  const routinesOn = (d) => store.get(ROUT, {})[d] || (store.get(DAYS, []).indexOf(d) >= 0 ? 1 : 0);
+  const routinesOn = (d) => { const r = store.get(ROUT, {}); return d in r ? r[d] : (store.get(DAYS, []).indexOf(d) >= 0 ? 1 : 0); };
   const bestStreak = () => Math.max(settings.best || 0, streak());
   const freezeMax = () => (planId() === "pro" ? 3 : 2);
   const dayPoints = (d, s) => { const m = dayMin(d), r = routinesOn(d); return (m <= 0 && r <= 0) ? 0 : Math.min(180, m + (r > 0 ? 25 : 0) + Math.min(40, 2 * (s || 0))); };
@@ -2943,7 +3334,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const me = rows.find((r) => r.is_me);
     let pod = "";
     if (top.length >= 3 && !fo) {
-      pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b${nameStyle(r)}>${esc(r.username)}</b>${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}<span class="tiny">${val(r)}${st ? "" : " points"}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
+      pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b${nameStyle(r)}>${esc(r.username)}${r.verified ? VMARK : ""}</b>${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}<span class="tiny">${val(r)}${st ? "" : " points"}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
     }
     const shown = rows.filter((r) => !(pod && r.rank <= 3)).filter((r) => r.rank <= 50 || r.is_me);
     let h = `<div class="lb head"><span>Rank</span><span></span><span>Player</span><span>${st ? "Streak" : "Points"}</span><span>${st ? "" : "Streak"}</span></div>`;
@@ -2951,7 +3342,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     shown.forEach((r) => {
       if (r.rank > lastRank + 1 && r.is_me) h += `<div class="tiny" style="text-align:center;padding:4px">· · ·</div>`;
       lastRank = r.rank;
-      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}<span${nameStyle(r)}>${esc(r.username)}</span>${r.training_now ? '<span class="live">Training now</span>' : ""}${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
+      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}<span${nameStyle(r)}>${esc(r.username)}</span>${r.verified ? VMARK : ""}${r.training_now ? '<span class="live">Training now</span>' : ""}${r.title ? `<span class="lb-title">${esc(r.title)}</span>` : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
     });
     const others = rows.filter((r) => !r.is_me && (st ? r.streak > 0 : r.points > 0)).length;
     let note = "";
@@ -3303,7 +3694,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       <section style="display:grid;gap:16px"><h2 class="d-m">Your collection.</h2><div class="wh-col" id="wh-collection"></div></section>
       <section style="display:grid;gap:16px"><h2 class="d-m">What you can win.</h2>
         <div class="wh-odds">${odds.map((o) => `<div class="wh-odd" style="--tc:${o[2]}"><b>${o[0]}</b><span class="pct">${o[1]}</span></div>`).join("")}</div>
-        <p class="small">Every spin is drawn on the server and is also one Golden Ticket for the monthly draw: one ticket wins a year of Pro on the 1st. Spins can't be bought, and Pro doesn't get more of them. New items and better are posted in #drops on our Discord.</p>
+        <p class="small">Every spin is drawn on the server and is also a Golden Ticket for the monthly draw: one ticket wins a year of Pro on the 1st. A spin from a Verified routine (Windows app, game running) counts as 2 tickets. Spins can't be bought, and Pro doesn't get more of them. New items and better are posted in #drops on our Discord.</p>
       </section>
     </div>`;
     wheelInit();
@@ -4021,7 +4412,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "badges", "friends", "drops", "studio"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -4057,6 +4448,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (id === "builder") buildBuilder();
     if (id === "board") buildBoard();
     if (id === "stats") buildStats();
+    if (id === "aim") buildAim();
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "drops") buildDrops();
