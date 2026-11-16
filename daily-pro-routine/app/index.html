@@ -491,6 +491,21 @@ html.anim .ki-demo .blk:nth-child(3) { animation-delay: .25s; } html.anim .ki-de
 .goal .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; letter-spacing: -0.12px; color: rgba(245, 245, 247, .6); }
 .goal .arr { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .12); display: grid; place-items: center; font-size: 17px; color: var(--porcelain); transition: background .3s, transform .4s var(--ease); flex: none; }
 .goal:hover .arr { background: rgba(255, 255, 255, .22); transform: translateX(2px); }
+/* timer rings (Drops items) */
+html.ring-bold #tr-dial circle { stroke-width: 14px; }
+html.ring-thin #tr-dial circle { stroke-width: 4px; stroke-linecap: round; }
+html.ring-neon #tr-dial .seg-a { filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor); }
+html.ring-pulse #tr-dial .seg-a.cur-glow { animation: ringPulse 1.6s ease-in-out infinite; }
+@keyframes ringPulse { 0%, 100% { filter: drop-shadow(0 0 4px currentColor); } 50% { filter: drop-shadow(0 0 18px currentColor) drop-shadow(0 0 4px currentColor); } }
+.sw-pulse { animation: swPulse 1.6s ease-in-out infinite; }
+@keyframes swPulse { 50% { opacity: .55; } }
+/* overlay skins on the in-app overlay previews */
+html.skin-neon .ov .ovc { background: rgba(6, 18, 24, .92); box-shadow: inset 0 0 0 2px #38e0ff, 0 0 18px -2px rgba(56,224,255,.7); }
+html.skin-carbon .ov .ovc { background: rgba(4, 4, 4, .96); border-radius: 2.4cqw; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+html.skin-glass .ov .ovc { background: rgba(120, 130, 150, .38); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45), inset 0 1px 0 rgba(255,255,255,.4); backdrop-filter: blur(10px); }
+html.skin-gold .ov .ovc { background: rgba(26, 20, 8, .94); box-shadow: inset 0 0 0 2px #ffcf4a, 0 0 18px -4px rgba(255,207,74,.7); }
+html.skin-gold .ov .time b { color: #ffcf4a; }
+@media (prefers-reduced-motion: reduce) { html.ring-pulse #tr-dial .seg-a.cur-glow, .sw-pulse { animation: none; } }
 .dial .tick { stroke: rgba(245, 245, 247, .16); stroke-width: .6; }
 .dial .tick.major { stroke: rgba(245, 245, 247, .38); stroke-width: .9; }
 .sbar { display: flex; height: 6px; border-radius: 99px; overflow: hidden; gap: 2px; margin-bottom: 14px; }
@@ -1416,7 +1431,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.9.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.10.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1495,6 +1510,7 @@ const GOALS = [
 ];
 /* Test routine: every set lasts 3 seconds and the routine runs on its own. Switch it on in Account → Data. */
 /* Set alerts: the sound and animation when a set is done (Account → Set alerts) */
+const PACK_SOUNDS = { coin: "Coin", victory: "Victory", synth: "Synth", horn: "Air horn" };
 const ALERT_SOUNDS = [["chime", "Chime"], ["bell", "Bell"], ["marimba", "Marimba"], ["arcade", "Arcade"], ["ping", "Ping"], ["fanfare", "Fanfare"], ["off", "No sound"]];
 const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], ["glow", "Glow"], ["confetti", "Confetti"], ["slide", "Slide"], ["minimal", "Minimal"]];
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
@@ -1848,6 +1864,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     arcade: () => [523.25, 659.25, 784, 1046.5, 1318.5].forEach((f, i) => tn(f, i * 0.06, 0.09, 0.07, "square", 0.003)),
     ping: () => [0, 0.17, 0.34].forEach((t, i) => tn(1567.98, t, 0.4, 0.22 / (i * 1.8 + 1), "sine", 0.003)),
     fanfare: () => { brassT(392, 0, 0.14, 0.11); brassT(523.25, 0.14, 0.14, 0.11); brassT(659.25, 0.28, 0.5, 0.12); },
+    coin: () => { tn(987.77, 0, 0.09, 0.2, "square", 0.002); tn(1318.5, 0.08, 0.45, 0.2, "square", 0.002); },
+    victory: () => { brassT(523.25, 0, 0.12, 0.1); brassT(523.25, 0.13, 0.12, 0.1); brassT(523.25, 0.26, 0.12, 0.1); brassT(698.46, 0.4, 0.6, 0.12); },
+    synth: () => [440, 554.37, 659.25, 880].forEach((f, i) => { tn(f, i * 0.07, 0.5, 0.09, "sawtooth", 0.01); tn(f / 2, i * 0.07, 0.5, 0.06, "triangle", 0.01); }),
+    horn: () => [0, 0.22, 0.44].forEach((t, i) => { brassT(466.16, t, i === 2 ? 0.55 : 0.18, 0.13); brassT(587.33, t, i === 2 ? 0.55 : 0.18, 0.09); }),
     custom: () => { const c = store.get(CUSTOM, null); if (c && c.data) { try { const a = new Audio(c.data); a.volume = 0.9; a.play().catch(() => {}); } catch (e) {} } else SOUND_FX.chime(); },
     off: () => {}
   };
@@ -2033,7 +2053,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   let ovSent = 0;
   function overlayState() {
     const l = S.goal && length(S.goal, S.len);
-    if (!S.active || !l || !signedIn() || !overlayAllowed()) return { active: false };
+    if (!S.active || !l || !signedIn() || !overlayAllowed()) return { active: false, skin: skinNow(), ring: ringNow() };
     const bl = list(), b = cur(), kill = isKill(b);
     return {
       active: true, routine: `${goal(S.goal).name} · ${l.name}`, idx: S.b, count: bl.length,
@@ -2041,7 +2061,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       segs: bl.map((x) => ({ w: x.min || 1, color: tcol(x) })), done: bl.map((_, i) => !!S.done[i]),
       status: S.status, kind: kill ? "kills" : (b.min != null ? "timer" : "watch"),
       kills: kill ? [killsDone(S.b), b.kills.length] : null, total: b.min != null ? b.min * 60000 : null,
-      elapsed: elapsed(), at: Date.now(), switchEnd: S.status === "wechsel" ? S.swEnd : null, sound: !!settings.sound, auto: !!l.auto, alertSound: settings.alertSound, alertAnim: settings.alertAnim
+      elapsed: elapsed(), at: Date.now(), switchEnd: S.status === "wechsel" ? S.swEnd : null, sound: !!settings.sound, auto: !!l.auto, alertSound: settings.alertSound, alertAnim: settings.alertAnim, skin: skinNow(), ring: ringNow()
     };
   }
   function pushOverlay(force) {
@@ -2927,7 +2947,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
               ${unlocked ? `${cs ? `<button class="play-s" type="button" data-al-play="custom" aria-label="Play custom sound"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>` : ""}<button class="pill sm out" type="button" id="cs-up">${cs ? "Replace" : "Upload"}</button>` : `<button class="pill sm out" type="button" id="cs-info">Unlock</button>`}</div>
             ${unlocked ? `<div class="row"><span class="tiny">${cs ? esc(cs.name) : "MP3, WAV or OGG · up to 5 seconds · max 1 MB"}</span>${devMode() && (account.items || []).indexOf("custom_sound") < 0 ? '<span class="tiny">Unlocked for devs</span>' : ""}</div>` : ""}
             ${!unlocked && csInfo ? `<div class="confirm"><span class="small"><b style="color:var(--porcelain)">Custom sound · included in Pro.</b> Play your own sound when a set is done.</span><div><button class="pill sm" type="button" id="cs-plans">See plans</button></div></div>` : ""}
-            ${ALERT_SOUNDS.map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}
+            ${ALERT_SOUNDS.slice(0, -1).concat(Object.keys(PACK_SOUNDS).filter((k) => ownedItems().has("sound_" + k)).map((k) => [k, PACK_SOUNDS[k] + " ✦"]), ALERT_SOUNDS.slice(-1)).map(([id, nm]) => `<div class="row"><label class="snd" for="al-${id}"><input type="radio" name="al-s" id="al-${id}" value="${id}" ${settings.alertSound === id ? "checked" : ""}>${nm}</label>${id === "off" ? "" : `<button class="play-s" type="button" data-al-play="${id}" aria-label="Play ${nm}"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>`}</div>`).join("")}
           </div>
           <input type="file" id="cs-file" accept="audio/*" hidden>
           <div class="anim-grid" role="group" aria-label="Finish animation">${ALERT_ANIMS.map(([id, nm]) => `<button type="button" data-al-anim="${id}" aria-pressed="${settings.alertAnim === id}">${nm}</button>`).join("")}</div>
@@ -3970,8 +3990,23 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     { id: "color_violet", kind: "color", name: "Violet name", value: "#c084fc" },
     { id: "color_pink", kind: "color", name: "Pink name", value: "#ff4fa3" },
     { id: "color_mint", kind: "color", name: "Mint name", value: "#2ee6a6" },
-    { id: "color_gold", kind: "color", name: "Gold name", value: "#ffcf4a", ex: true }
+    { id: "color_gold", kind: "color", name: "Gold name", value: "#ffcf4a", ex: true },
+    { id: "skin_neon", kind: "skin", name: "Neon overlay", value: "neon", sw: "#07141a", edge: "#38e0ff" },
+    { id: "skin_carbon", kind: "skin", name: "Carbon overlay", value: "carbon", sw: "#050505", edge: "rgba(255,255,255,.35)" },
+    { id: "skin_glass", kind: "skin", name: "Glass overlay", value: "glass", sw: "rgba(120,130,150,.55)", edge: "rgba(255,255,255,.5)" },
+    { id: "skin_gold", kind: "skin", name: "Gold overlay", value: "gold", sw: "#1a1408", edge: "#ffcf4a", ex: true },
+    { id: "ring_neon", kind: "ring", name: "Neon timer ring", value: "neon" },
+    { id: "ring_bold", kind: "ring", name: "Bold timer ring", value: "bold" },
+    { id: "ring_thin", kind: "ring", name: "Thin timer ring", value: "thin" },
+    { id: "ring_pulse", kind: "ring", name: "Pulse timer ring", value: "pulse" },
+    { id: "sound_coin", kind: "sound", name: "Coin sound pack", value: "coin" },
+    { id: "sound_victory", kind: "sound", name: "Victory sound pack", value: "victory" },
+    { id: "sound_synth", kind: "sound", name: "Synth sound pack", value: "synth" },
+    { id: "sound_horn", kind: "sound", name: "Air horn sound pack", value: "horn" }
   ];
+  const ownedOf = (kind, id) => { const it = id ? itemById(id) : null; return it && it.kind === kind && signedIn() && ownedItems().has(id) ? it : null; };
+  const skinNow = () => { const it = ownedOf("skin", settings.skin); return it ? it.value : ""; };
+  const ringNow = () => { const it = ownedOf("ring", settings.ring); return it ? it.value : ""; };
   const itemById = (id) => ITEM_LIST.find((i) => i.id === id) || null;
   const WSEG = [["pts10", 40], ["freeze", 34], ["item", 30], ["pts15", 40], ["pts50", 34], ["pro3d", 18], ["pts25", 40], ["item", 30], ["freeze", 34], ["pro1m", 12], ["pts10", 40], ["prolife", 8]];
   const DROPC = "rl.drop", DEMOD = "rl.demodrop";
@@ -3988,6 +4023,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     ["aurora", "grid", "stars", "sunset"].forEach((b) => root.classList.remove("bg-" + b));
     const bg = on && settings.bg && owned.has(settings.bg) ? itemById(settings.bg) : null;
     if (bg) root.classList.add("bg-" + bg.value);
+    ["neon", "bold", "thin", "pulse"].forEach((r) => root.classList.remove("ring-" + r));
+    if (ringNow()) root.classList.add("ring-" + ringNow());
+    ["neon", "carbon", "glass", "gold"].forEach((k) => root.classList.remove("skin-" + k));
+    if (skinNow()) root.classList.add("skin-" + skinNow());
+    // a pack sound that isn't owned (anymore) falls back to the chime
+    if (PACK_SOUNDS[settings.alertSound] && !ownedItems().has("sound_" + settings.alertSound)) settings.alertSound = "chime";
   }
   function cacheDrop() {
     if (!drop) return;
@@ -4112,28 +4153,38 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   function renderCollection() {
     const el = $("wh-collection"); if (!el || !drop) return;
     const owned = new Set(drop.items || []);
-    const groups = [["theme", "Themes", "Changes the accent color of Repline."], ["bg", "Backgrounds", "Sits behind every page."], ["title", "Titles", "Shown under your name on leaderboards."], ["color", "Name colors", "Your name on leaderboards."]];
+    const groups = [["theme", "Themes", "Changes the accent color of Repline."], ["bg", "Backgrounds", "Sits behind every page."], ["title", "Titles", "Shown under your name on leaderboards."], ["color", "Name colors", "Your name on leaderboards."], ["skin", "Overlay skins", "Your in-game overlay in the Windows app."], ["ring", "Timer rings", "The ring around your timer."], ["sound", "Sound packs", "A new sound when a set is done."]];
     el.innerHTML = groups.map(([kind, title, note]) => {
-      const cur = kind === "theme" ? settings.theme || "" : kind === "bg" ? settings.bg || "" : kind === "title" ? (ITEM_LIST.find((i) => i.kind === "title" && i.value === drop.title) || {}).id || "" : (ITEM_LIST.find((i) => i.kind === "color" && i.value === drop.name_color) || {}).id || "";
-      const def = { theme: ["Default", "linear-gradient(135deg,#0071e3,#2997ff)"], bg: ["None", "#000"], title: ["No title", "#000"], color: ["Default", "#000"] }[kind];
+      const cur = kind === "theme" ? settings.theme || "" : kind === "bg" ? settings.bg || "" : kind === "skin" ? settings.skin || "" : kind === "ring" ? settings.ring || "" : kind === "sound" ? (PACK_SOUNDS[settings.alertSound] ? "sound_" + settings.alertSound : "") : kind === "title" ? (ITEM_LIST.find((i) => i.kind === "title" && i.value === drop.title) || {}).id || "" : (ITEM_LIST.find((i) => i.kind === "color" && i.value === drop.name_color) || {}).id || "";
+      const def = { theme: ["Default", "linear-gradient(135deg,#0071e3,#2997ff)"], bg: ["None", "#000"], title: ["No title", "#000"], color: ["Default", "#000"], skin: ["Default", "rgba(16,16,18,.88)"], ring: ["Default", "#000"], sound: ["Your sound", "#000"] }[kind];
       let h = `<button class="wh-item" type="button" data-eq="${kind}" data-id="" aria-pressed="${cur === "" ? "true" : "false"}"><span class="sw" style="background:${def[1]};box-shadow:inset 0 0 0 1px var(--steel)">${kind === "color" ? '<b style="color:var(--porcelain)">Aa</b>' : ""}</span><b style="font-size:14px">${def[0]}</b><span>${cur === "" ? "Equipped" : "Use"}</span></button>`;
       ITEM_LIST.filter((i) => i.kind === kind).forEach((i) => {
         const has = owned.has(i.id), on = has && cur === i.id;
-        const sw = kind === "theme" ? `background:linear-gradient(135deg,${i.value},${i.value}99)` : kind === "bg" ? `background:${i.sw}` : kind === "color" ? "background:#000" : "background:#000";
-        const inner = !has ? "?" : kind === "color" ? `<b style="color:${i.value};text-shadow:0 0 12px ${i.value}">Aa</b>` : kind === "title" ? `<b style="font-size:12px;color:var(--porcelain);padding:0 6px;text-align:center">${esc(i.value)}</b>` : "";
+        const sw = kind === "theme" ? `background:linear-gradient(135deg,${i.value},${i.value}99)` : kind === "bg" ? `background:${i.sw}` : kind === "skin" ? `background:#000` : "background:#000";
+        const inner = !has ? "?" : kind === "skin" ? `<i style="display:block;width:76%;height:34%;border-radius:99px;background:${i.sw};box-shadow:inset 0 0 0 2px ${i.edge}${i.value === "neon" || i.value === "gold" ? `,0 0 12px ${i.edge}` : ""}"></i>` : kind === "ring" ? ringSwatch(i.value) : kind === "sound" ? `<svg viewBox="0 0 24 24" style="width:40%;height:40%;fill:var(--porcelain)"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="var(--porcelain)" stroke-width="1.8" stroke-linecap="round"/></svg>` : kind === "color" ? `<b style="color:${i.value};text-shadow:0 0 12px ${i.value}">Aa</b>` : kind === "title" ? `<b style="font-size:12px;color:var(--porcelain);padding:0 6px;text-align:center">${esc(i.value)}</b>` : "";
         h += `<button class="wh-item${has ? "" : " locked"}" type="button" data-eq="${kind}" data-id="${i.id}" aria-pressed="${on ? "true" : "false"}" ${has ? "" : 'aria-disabled="true"'}><span class="sw" style="${sw}">${inner}</span><b style="font-size:14px">${has ? esc(i.name.replace(/^Title: /, "")) : i.ex ? "Pro forever only" : "Not found yet"}</b><span>${has ? (on ? "Equipped" : "Use") : "Win it on the wheel"}</span></button>`;
       });
       return `<div class="wh-group"><h3>${title}</h3><span class="small">${note}</span><div class="wh-items">${h}</div></div>`;
     }).join("");
     el.querySelectorAll("[data-eq]").forEach((b) => b.addEventListener("click", () => equip(b.dataset.eq, b.dataset.id)));
   }
+  function ringSwatch(v) {
+    const w = { neon: 3, bold: 6, thin: 1.6, pulse: 3 }[v] || 3, glow = v === "neon" || v === "pulse" ? 'style="filter:drop-shadow(0 0 3px #38e0ff)"' : "";
+    return `<svg viewBox="0 0 40 40" style="width:58%;height:58%;transform:rotate(-90deg)" ${glow}><circle cx="20" cy="20" r="15" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="${w}"/><circle cx="20" cy="20" r="15" fill="none" stroke="#38e0ff" stroke-width="${w}" stroke-dasharray="66 95" stroke-linecap="${v === "thin" ? "round" : "butt"}"${v === "pulse" ? ' class="sw-pulse"' : ""}/></svg>`;
+  }
 
   async function equip(kind, id) {
     const it = id ? itemById(id) : null;
     if (id && !(drop.items || []).includes(id)) return;
-    if (kind === "theme" || kind === "bg") {
-      settings[kind] = id || ""; saveSettings(); applyCosmetics(); renderCollection();
-      toast(id ? `${it.name} on` : kind === "theme" ? "Default theme on" : "Background off");
+    if (kind === "theme" || kind === "bg" || kind === "skin" || kind === "ring") {
+      settings[kind] = id || ""; saveSettings(); applyCosmetics(); renderCollection(); pushOverlay(true);
+      if (kind === "skin" && DESK && DESK.overlay.preview && overlayAllowed()) DESK.overlay.preview({ sound: "off", anim: "wave" });
+      toast(id ? `${it.name} on` : { theme: "Default theme on", bg: "Background off", skin: "Default overlay on", ring: "Default timer ring on" }[kind]);
+      return;
+    }
+    if (kind === "sound") {
+      settings.alertSound = it ? it.value : "chime"; settings.sound = true; saveSettings(); pushOverlay(true); renderCollection(); playAlert(settings.alertSound);
+      toast(it ? `${PACK_SOUNDS[it.value]} sound on` : "Chime sound on");
       return;
     }
     if (sb && cloudUser) {

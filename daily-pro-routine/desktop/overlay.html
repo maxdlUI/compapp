@@ -83,6 +83,19 @@ body.a-slide .wave { animation: sweep .9s var(--ease); }
 .dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; left: 42px; top: 50%; animation: burst 1.1s cubic-bezier(.1, .7, .3, 1) forwards; }
 @keyframes burst { from { transform: translate(-50%, -50%) scale(1); opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4); opacity: 0; } }
 
+/* Overlay skins and timer rings (won on the Drops wheel) */
+body.sk-neon .card { --bg: rgba(6, 18, 24, .92); box-shadow: inset 0 0 0 2px #38e0ff, 0 0 14px -2px rgba(56,224,255,.75); }
+body.sk-carbon .card { --bg: rgba(4, 4, 4, .96); border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+body.sk-carbon .wave, body.sk-carbon .hint { border-radius: 10px; }
+body.sk-glass .card { --bg: rgba(120, 130, 150, .42); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45), inset 0 1px 0 rgba(255,255,255,.4); }
+body.sk-gold .card { --bg: rgba(26, 20, 8, .94); box-shadow: inset 0 0 0 2px #ffcf4a, 0 0 14px -3px rgba(255,207,74,.75); }
+body.sk-gold .time b { color: #ffcf4a; }
+body.rg-bold .ring circle { stroke-width: 8px; }
+body.rg-thin .ring circle { stroke-width: 2.5px; stroke-linecap: round; }
+body.rg-neon .ring .fil { filter: drop-shadow(0 0 3px currentColor) drop-shadow(0 0 7px currentColor); }
+body.rg-pulse .ring .cur { animation: rgPulse 1.6s ease-in-out infinite; }
+@keyframes rgPulse { 0%, 100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 9px currentColor); } }
+
 /* Move mode */
 body.moving .card { -webkit-app-region: drag; cursor: move; box-shadow: inset 0 0 0 2px var(--blue); opacity: 1; }
 .hint { position: absolute; inset: 8px; border-radius: 26px; display: none; place-items: center; background: rgba(8, 28, 56, .94); box-shadow: inset 0 0 0 2px var(--blue); font-size: 14px; font-weight: 600; pointer-events: none; }
@@ -145,6 +158,10 @@ body.moving .hint { display: grid; }
     arcade: () => [523.25, 659.25, 784, 1046.5, 1318.5].forEach((f, i) => toneT(f, i * 0.06, 0.09, 0.07, "square", 0.003)),
     ping: () => [0, 0.17, 0.34].forEach((t, i) => toneT(1567.98, t, 0.4, 0.22 / (i * 1.8 + 1), "sine", 0.003)),
     fanfare: () => { brass(392, 0, 0.14, 0.11); brass(523.25, 0.14, 0.14, 0.11); brass(659.25, 0.28, 0.5, 0.12); },
+    coin: () => { toneT(987.77, 0, 0.09, 0.2, "square", 0.002); toneT(1318.5, 0.08, 0.45, 0.2, "square", 0.002); },
+    victory: () => { brass(523.25, 0, 0.12, 0.1); brass(523.25, 0.13, 0.12, 0.1); brass(523.25, 0.26, 0.12, 0.1); brass(698.46, 0.4, 0.6, 0.12); },
+    synth: () => [440, 554.37, 659.25, 880].forEach((f, i) => { toneT(f, i * 0.07, 0.5, 0.09, "sawtooth", 0.01); toneT(f / 2, i * 0.07, 0.5, 0.06, "triangle", 0.01); }),
+    horn: () => [0, 0.22, 0.44].forEach((t, i) => { brass(466.16, t, i === 2 ? 0.55 : 0.18, 0.13); brass(587.33, t, i === 2 ? 0.55 : 0.18, 0.09); }),
     custom: () => { if (customUrl) { try { const a = new Audio(customUrl); a.volume = 0.9; a.play().catch(() => {}); } catch (e) {} } else SOUND_FX.chime(); },
     off: () => {}
   };
@@ -196,6 +213,8 @@ body.moving .hint { display: grid; }
     const s = st.active ? st : (st.moving ? DEMO : null);
     document.body.classList.toggle("hidden", !s);
     document.body.classList.toggle("moving", !!st.moving);
+    ["neon", "carbon", "glass", "gold"].forEach((k) => document.body.classList.toggle("sk-" + k, st.skin === k));
+    ["neon", "bold", "thin", "pulse"].forEach((k) => document.body.classList.toggle("rg-" + k, st.ring === k));
     if (!s) return;
     const key = `${s.routine}|${s.idx}|${s.count}|${s.segs.map((x) => x.w + x.color).join()}`;
     if (key !== lastKey) {
@@ -258,7 +277,7 @@ body.moving .hint { display: grid; }
   function preview(p) {
     clearTimeout(previewT);
     const was = st;
-    st = Object.assign({}, DEMO, { status: "fertig", at: Date.now(), done: [true, true, false, false], alertSound: p.sound, alertAnim: p.anim, sound: p.sound !== "off", demo: false, routine: "Preview" });
+    st = Object.assign({}, DEMO, { status: "fertig", at: Date.now(), done: [true, true, false, false], alertSound: p.sound, alertAnim: p.anim, sound: p.sound !== "off", demo: false, routine: "Preview", skin: (was || {}).skin, ring: (was || {}).ring });
     doneKey = ""; tick();
     previewT = setTimeout(() => { st = was && was.routine !== "Preview" ? was : { active: false }; doneKey = ""; lastKey = ""; tick(); }, 2600);
   }
