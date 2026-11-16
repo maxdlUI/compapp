@@ -57,7 +57,7 @@ Public routines and blocks are stored in the database table `routine_catalog` (n
 
 ## Open right now (13 Nov 2026)
 
-- **Coach (AI Training), in planning:** players write what they want to train, the coach builds the routine from the catalog. Runs on the player's device (owner's knowledge as rules + a small language model in the browser later), so it costs nothing. Draft: https://claude.ai/artifact/Sqqk2w4naZMPceeExTG8cC (rules are still assumptions until the owner answers the knowledge questions). Limits decided by the owner: Free no coach, **Standard 1 routine a day, Pro 3 a day** (counted on the server). During the launch month everyone signed in counts as Pro.
+- **Coach (AI Training), in planning:** players write what they want to train, the coach builds the routine from the catalog. Runs on the player's device (owner's knowledge as rules + a small language model in the browser later), so it costs nothing. Draft: https://claude.ai/artifact/Sqqk2w4naZMPceeExTG8cC (the owner's knowledge is in `daily-pro-routine/COACH.md`). Limits decided by the owner: Free no coach, **Standard 1 routine a day, Pro 3 a day** (counted on the server). During the launch month everyone signed in counts as Pro.
 
 - **Drops is live** (website + Windows app 1.6.8, `008_drops.sql` applied, `remind` edge function v7 deployed: wins post in #drops).
 - Drop points are +10/+15/+25/+50 (confirmed by the owner) so spins don't outweigh training on the leaderboard.
