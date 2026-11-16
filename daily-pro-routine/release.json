@@ -1,10 +1,10 @@
 {
-  "version": "1.7.1",
+  "version": "1.7.2",
   "windows": {
-    "key": "win/Repline-Setup-1.7.1.exe",
-    "filename": "Repline-Setup-1.7.1.exe",
-    "bytes": 84220450
+    "key": "win/Repline-Setup-1.7.2.exe",
+    "filename": "Repline-Setup-1.7.2.exe",
+    "bytes": 84220839
   },
-  "previous": "win/Repline-Setup-1.7.0.exe",
-  "latestYml": "version: 1.7.1\nfiles:\n  - url: Repline-Setup-1.7.1.exe\n    sha512: O7bOHXt6lzMbv++rTcwoXoVvqddxtY6UnzA3ybfIfv0yKRJ+5c2MEeXkcUkTcNgYR5LS14q5c7lysSD9qCseDQ==\n    size: 84220450\npath: Repline-Setup-1.7.1.exe\nsha512: O7bOHXt6lzMbv++rTcwoXoVvqddxtY6UnzA3ybfIfv0yKRJ+5c2MEeXkcUkTcNgYR5LS14q5c7lysSD9qCseDQ==\nreleaseDate: '2026-11-14T11:45:53.014Z'\n"
+  "previous": "win/Repline-Setup-1.7.1.exe",
+  "latestYml": "version: 1.7.2\nfiles:\n  - url: Repline-Setup-1.7.2.exe\n    sha512: J/6RhvZ+MZQVr+m8ahgdkbJlaxYwnAcSzD4dorIQCZPQr1w6sbE+WPBP14eW9zRD4F6MmP4bjZVPG4ecz8msRw==\n    size: 84220839\npath: Repline-Setup-1.7.2.exe\nsha512: J/6RhvZ+MZQVr+m8ahgdkbJlaxYwnAcSzD4dorIQCZPQr1w6sbE+WPBP14eW9zRD4F6MmP4bjZVPG4ecz8msRw==\nreleaseDate: '2026-11-16T19:11:21.207Z'\n"
 }
