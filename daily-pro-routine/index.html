@@ -1365,7 +1365,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.8.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.8.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -1976,6 +1976,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
 
   /* ---------- Windows app: in-game overlay + hotkeys ---------- */
   const DESK = window.replineDesktop || null;
+  // Windows app: a picture that isn't in the installed app yet (new catalog image) loads from the website instead.
+  if (DESK) document.addEventListener("error", (e) => { const im = e.target; if (!im || im.tagName !== "IMG" || im.dataset.web) return; const m = /\/(img\/[^?#]+)$/.exec(im.src || ""); if (m && /^file:/.test(im.src)) { im.dataset.web = "1"; im.src = "https://repline.pages.dev/" + m[1]; } }, true);
   let ovSent = 0;
   function overlayState() {
     const l = S.goal && length(S.goal, S.len);
