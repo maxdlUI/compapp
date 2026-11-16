@@ -1,0 +1,153 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap">
+<style>
+html,body{margin:0;background:transparent;width:1080px;height:1920px;overflow:hidden;font-family:Inter,-apple-system,Arial,sans-serif;color:#f5f5f7;letter-spacing:-.5px}
+.abs{position:absolute;left:0;top:0;will-change:transform,opacity}
+#dim{inset:0;width:1080px;height:1920px;background:#000}
+#flash{inset:0;width:1080px;height:1920px;background:#fff}
+#vig{width:1080px;height:1920px;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 45%,rgba(0,0,0,.55) 100%)}
+.center{left:0;width:1080px;text-align:center}
+.hook{font-weight:900;font-size:168px;line-height:1;letter-spacing:-6px;text-shadow:0 8px 40px rgba(0,0,0,.6)}
+.card{background:rgba(29,29,31,.94);border-radius:44px;box-shadow:0 30px 90px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.08);padding:40px;box-sizing:border-box}
+.tiny{font-size:28px;color:#86868b;font-weight:600;letter-spacing:0}
+.h{font-size:56px;font-weight:800;letter-spacing:-1.6px}
+.input{background:#0e0e10;border:2px solid #333336;border-radius:28px;padding:30px 32px;font-size:44px;font-weight:600;min-height:150px;line-height:1.3;margin-top:22px}
+.caret{display:inline-block;width:4px;height:48px;background:#38e0ff;vertical-align:-8px;margin-left:3px}
+.tip{display:flex;align-items:center;gap:18px;font-size:32px;font-weight:600;color:#86868b;margin-top:20px}
+.tip i{width:40px;height:40px;border-radius:50%;border:3px solid #424245;display:grid;place-items:center;font-style:normal;font-size:24px;font-weight:900;color:#000;box-sizing:border-box}
+.tip.ok{color:#f5f5f7}.tip.ok i{background:#5ed39a;border-color:#5ed39a}
+.btn{background:#0071e3;border-radius:99px;font-size:38px;font-weight:700;padding:26px 44px;display:inline-block;margin-top:30px}
+.setrow{display:grid;grid-template-columns:150px 1fr auto;gap:24px;align-items:center;padding:14px;border-radius:24px;margin-top:8px}
+.setrow img{width:150px;height:84px;object-fit:cover;border-radius:14px;display:block}
+.setrow b{font-size:36px;font-weight:700;letter-spacing:-.8px}
+.setrow span{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:14px;background:rgba(29,29,31,.95);border-radius:99px;padding:20px 34px;font-size:40px;font-weight:700;box-shadow:0 16px 50px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.1)}
+.cy{color:#38e0ff}
+.ov{width:640px;height:190px;background:rgba(22,22,24,.92);border-radius:40px;box-shadow:0 20px 60px rgba(0,0,0,.55),inset 0 0 0 2px rgba(255,255,255,.1);display:grid;grid-template-columns:130px 1fr auto;gap:24px;align-items:center;padding:0 34px;box-sizing:border-box;overflow:hidden}
+.ov .bar{position:absolute;left:0;bottom:0;height:8px;background:#3f8dff}
+#cap{top:1290px;font-weight:900;font-size:84px;line-height:1.08;letter-spacing:-2.5px;text-transform:uppercase;padding:0 70px;box-sizing:border-box;-webkit-text-stroke:14px #000;paint-order:stroke fill;text-shadow:0 10px 30px rgba(0,0,0,.7)}
+#cap .on{color:#38e0ff}
+.brand{left:60px;top:150px;font-size:40px;font-weight:800;letter-spacing:-1px;background:rgba(14,14,14,.8);padding:14px 28px;border-radius:99px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.logo{font-size:190px;font-weight:900;letter-spacing:-8px;line-height:1}
+.free{font-size:50px;font-weight:800;letter-spacing:-1.2px;line-height:1.2}
+.tag{display:inline-block;font-size:30px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:10px 22px;border-radius:99px;background:linear-gradient(90deg,#a855f7,#3f8dff);margin-bottom:18px}
+</style></head><body>
+<div class="abs" id="dim"></div><div class="abs" id="vig"></div>
+<div class="abs brand" id="brand">Repline</div>
+
+<div class="abs center hook" id="h1" style="top:560px">STOP</div>
+<div class="abs center hook" id="h2" style="top:740px">TRAINING</div>
+<div class="abs center hook" id="h3" style="top:920px;color:#ff453a">RANDOMLY<div id="strike" style="position:absolute;left:150px;top:86px;height:18px;background:#fff;border-radius:9px;width:0"></div></div>
+
+<div class="abs card" id="coach" style="left:70px;top:420px;width:940px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><span class="h">Coach.</span><span class="tiny" style="background:#2c2c2e;padding:10px 20px;border-radius:99px;color:#f5f5f7">3 of 3 left today</span></div>
+  <div class="tiny" style="margin-top:22px">What do you want to train today?</div>
+  <div class="input"><span id="typed"></span><span class="caret" id="caret"></span></div>
+  <div class="tip" id="tp1"><i></i>How much time you have</div>
+  <div class="tip" id="tp2"><i></i>What feels weak</div>
+  <div class="btn" id="btn">Build my routine</div>
+</div>
+
+<div class="abs center" id="boom" style="top:330px;font-weight:900;font-size:230px;letter-spacing:-8px;color:#38e0ff;text-shadow:0 0 80px rgba(56,224,255,.6)">BOOM.</div>
+<div class="abs card" id="routine" style="left:70px;top:470px;width:940px;padding:34px">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 14px 10px"><span class="h">Your routine</span><span class="tiny">5 sets · 45 min</span></div>
+  <div id="rows"></div>
+</div>
+
+<div class="abs" id="timer" style="left:290px;top:520px;width:500px;height:500px"><svg viewBox="0 0 200 200" width="500" height="500"><circle cx="100" cy="100" r="86" fill="rgba(14,14,14,.9)" stroke="#2c2c2e" stroke-width="12"/><circle id="tarc" cx="100" cy="100" r="86" fill="none" stroke="#38e0ff" stroke-width="12" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/><text x="100" y="92" text-anchor="middle" fill="#86868b" font-size="13" font-weight="600" font-family="Inter">left</text><text id="tnum" x="100" y="128" text-anchor="middle" fill="#f5f5f7" font-size="46" font-weight="800" font-family="Inter" letter-spacing="-2">9:59</text></svg></div>
+<div class="abs center" id="code" style="top:1110px"><span class="pill" style="font-size:50px;padding:26px 40px"><span class="tiny" style="color:#86868b">Map code</span><span style="font-family:ui-monospace,Menlo,monospace;letter-spacing:1px">1513-6690-9481</span><span class="cy" id="copied">Copy</span></span></div>
+
+<div class="abs ov" id="ov" style="left:60px;top:250px">
+  <svg viewBox="0 0 64 64" width="130" height="130"><circle cx="32" cy="32" r="26" fill="none" stroke="#333336" stroke-width="6"/><circle id="oarc" cx="32" cy="32" r="26" fill="none" stroke="#3f8dff" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4" transform="rotate(-90 32 32)"/><text x="32" y="39" text-anchor="middle" fill="#f5f5f7" font-size="19" font-weight="800" font-family="Inter">2<tspan fill="#86868b" font-size="11">/5</tspan></text></svg>
+  <div><div style="font-size:24px;font-weight:700;color:#3f8dff;letter-spacing:0">● Mechanics</div><div style="font-size:42px;font-weight:800;letter-spacing:-1px;margin-top:2px">Edit wall</div><div style="font-size:24px;color:#86868b;font-weight:600;letter-spacing:0;margin-top:2px">Next · Freebuild 90%</div></div>
+  <div style="text-align:right"><div id="otime" style="font-size:54px;font-weight:800;letter-spacing:-2px;font-variant-numeric:tabular-nums">4:12</div><div style="font-size:24px;color:#86868b;font-weight:600;letter-spacing:0">left</div></div>
+  <div class="bar" id="obar"></div>
+</div>
+<div class="abs center" id="ovlab" style="top:470px"><span class="pill" style="font-size:34px;padding:14px 26px"><span class="cy">↑</span> Live over your game</span></div>
+
+<div class="abs card" id="aim" style="left:90px;top:520px;width:900px">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="tiny">KovaaK's · Tjino Tracking</span><span style="font-size:60px;font-weight:900;color:#5ed39a;letter-spacing:-2px" id="pct">+0.0 %</span></div>
+  <svg viewBox="0 0 820 330" width="820" height="330" style="margin-top:16px"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38e0ff" stop-opacity=".3"/><stop offset="1" stop-color="#38e0ff" stop-opacity="0"/></linearGradient><clipPath id="cl"><rect id="clr" x="0" y="0" width="0" height="330"/></clipPath></defs><g clip-path="url(#cl)"><path d="M0 290 C80 280 120 262 190 250 S300 232 360 206 S470 190 540 140 S690 96 820 40 V330 H0Z" fill="url(#g)"/><path d="M0 290 C80 280 120 262 190 250 S300 232 360 206 S470 190 540 140 S690 96 820 40" fill="none" stroke="#38e0ff" stroke-width="7" stroke-linecap="round"/></g></svg>
+  <div style="display:flex;justify-content:space-between" class="tiny"><span>3 weeks ago</span><span>today</span></div>
+</div>
+
+<div class="abs card" id="ver" style="left:140px;top:560px;width:800px;text-align:center;box-shadow:0 30px 90px rgba(0,0,0,.6),inset 0 0 0 3px rgba(56,224,255,.5)">
+  <svg viewBox="0 0 16 16" width="210" height="210" style="color:#38e0ff"><path d="M8 1l1.8 1.3 2.2-.1.7 2.1 1.8 1.3-.7 2.1.7 2.1-1.8 1.3-.7 2.1-2.2-.1L8 15l-1.8-1.3-2.2.1-.7-2.1-1.8-1.3.7-2.1-.7-2.1 1.8-1.3.7-2.1 2.2.1z" fill="currentColor"/><path id="vchk" d="M5.3 8.2l1.8 1.8 3.6-3.7" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9" stroke-dashoffset="9"/></svg>
+  <div class="h" style="font-size:76px;margin-top:6px">Verified</div>
+  <div style="font-size:36px;font-weight:600;color:#86868b;letter-spacing:0;margin-top:10px">Routine counted · <span style="color:#ffcf4a">2 Golden Tickets</span></div>
+</div>
+
+<div class="abs" id="wheel" style="left:190px;top:420px;width:700px;height:700px"><canvas id="wc" width="700" height="700"></canvas><svg viewBox="0 0 34 54" width="70" height="110" style="position:absolute;left:315px;top:-40px"><circle cx="17" cy="12" r="11" fill="#1c2029" stroke="#3a4150" stroke-width="2"/><path d="M6 14 L17 52 L28 14 Z" fill="#eef2f7"/><circle cx="17" cy="12" r="5" fill="#38e0ff"/></svg></div>
+<div class="abs center" id="win" style="top:1140px"><span class="pill" style="font-size:52px;padding:22px 44px;box-shadow:0 0 70px rgba(255,79,163,.5),inset 0 0 0 3px #ff4fa3">1 MONTH <span style="color:#ff4fa3">PRO</span></span></div>
+
+<div class="abs center" id="end" style="top:470px"><div class="logo" id="logo">Repline</div><div style="font-size:46px;font-weight:600;color:#86868b;letter-spacing:-.8px;margin-top:14px">Train like a pro. Every day.</div></div>
+<div class="abs center" id="free" style="top:850px"><span class="tag">Launch month</span><div class="free">Every Pro feature <span class="cy">FREE</span><br>until December 12</div></div>
+<div class="abs center" id="bio" style="top:1130px"><span class="pill" style="background:#0071e3;font-size:48px;padding:24px 50px;box-shadow:0 20px 60px rgba(0,113,227,.5)">Link in bio</span></div>
+
+<div class="abs center" id="cta" style="top:1300px;font-size:54px;font-weight:800;letter-spacing:-1.2px;text-shadow:0 6px 24px rgba(0,0,0,.8)">Comment your <span class="cy">biggest weakness</span> <span style="display:inline-block" id="arr">↓</span></div>
+<div class="abs center" id="cap"></div>
+<div class="abs" id="flash"></div>
+<script>
+const $=(i)=>document.getElementById(i), cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=(p)=>1-Math.pow(1-cl(p),3), back=(p)=>{p=cl(p);const c=1.70158*1.3;return 1+(c+1)*Math.pow(p-1,3)+c*Math.pow(p-1,2);};
+const IMG="/home/user/compapp/daily-pro-routine/img/";
+const ROWS=[["thumb-kovaaks-s.webp","KovaaK's · Tracking","5 min","#38e0ff"],["map-v5-s.webp","Edit wall","10 min","#3f8dff"],["art-build-s.webp","Freebuild · 90%","10 min","#3f8dff"],["map-turtle-s.webp","Turtle Fights","15 min","#a855f7"],["map-v5-s.webp","Piece control","5 min","#a855f7"]];
+$("rows").innerHTML=ROWS.map((r,i)=>`<div class="setrow" id="r${i}"><img src="${IMG+r[0]}"><b><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${r[3]};margin-right:14px;vertical-align:4px"></span>${r[1]}</b><span>${r[2]}</span></div>`).join("");
+// pop: opacity + scale/translate between tin and tout
+function pop(el,t,tin,tout,o={}){const d=o.d||.28,a=cl((t-tin)/d),z=cl((tout-t)/.16);const vis=t>=tin&&t<tout;el.style.opacity=vis?Math.min(eo(a*1.6),z):0;if(!vis){return;}
+  const s=o.scale===false?1:(o.from||.82)+(1-(o.from||.82))*back(a);const y=(o.y||0)*(1-eo(a))-(1-z)*30;el.style.transform=`translateY(${y}px) scale(${s})${o.rot?` rotate(${o.rot*(1-eo(a))}deg)`:""}`;}
+const CUTS=[1.65,6.02,7.72,9.85,12.0,13.08,14.03,15.18];
+const DIM=[[0,.38],[1.65,.62],[6.02,.5],[7.72,.55],[10.25,.12],[12.0,.6],[13.08,.6],[14.03,.6],[15.18,.8]];
+// captions: [start,end,words]
+const CAPS=[[.09,1.52,"Stop training randomly"],[1.79,3.05,"Just tell the coach what you've got"],[3.35,4.31,"45 minutes"],[4.52,5.83,"box fights are trash"],[6.13,6.6,"Boom"],[6.71,7.44,"Your routine"],[7.9,8.62,"Set by set"],[8.76,9.5,"with timers"],[9.5,10.3,"map codes"],[10.3,11.7,"and an overlay right in your game"],[12.18,12.84,"Track your aim"],[13.16,13.93,"Get verified"],[14.13,14.95,"Spin for Pro"],[15.26,15.76,"Repline"],[16.06,16.8,"Link in bio"]];
+function caption(t){const el=$("cap");const c=CAPS.find((c)=>t>=c[0]-.04&&t<c[1]+.18);if(!c||c===CAPS[0]||(t>=6.1&&t<6.62)||t>=15.2){el.style.opacity=0;return;}
+  const words=c[2].split(" "),tot=words.reduce((a,w)=>a+w.length+1,0);let acc=0,cur=0;const p=cl((t-c[0])/(c[1]-c[0]));words.forEach((w,i)=>{if(p*tot>=acc)cur=i;acc+=w.length+1;});
+  // show chunks of max 3 words
+  const ch=Math.floor(cur/3)*3,part=words.slice(ch,ch+3);el.innerHTML=part.map((w,i)=>`<span class="${ch+i===cur?"on":""}">${w}</span>`).join(" ");
+  const a=cl((t-(c[0]-.04))/.1);el.style.opacity=1;el.style.transform=`scale(${.9+.1*back(a)})`;}
+// wheel
+const WSEG=[["+25","#8fa3b8"],["FREEZE","#38e0ff"],["ITEM","#3f8dff"],["3D PRO","#a855f7"],["+50","#8fa3b8"],["1M PRO","#ff4fa3"],["+10","#8fa3b8"],["ITEM","#3f8dff"]];
+function wheel(rot){const c=$("wc"),x=c.getContext("2d"),R=330;x.clearRect(0,0,700,700);x.save();x.translate(350,350);x.rotate(rot);WSEG.forEach(([l,col],i)=>{const a0=i*Math.PI/4,a1=a0+Math.PI/4;x.beginPath();x.moveTo(0,0);x.arc(0,0,R,a0,a1);x.closePath();x.fillStyle=col;x.fill();x.strokeStyle="#0e0e10";x.lineWidth=6;x.stroke();x.save();x.rotate(a0+Math.PI/8);x.fillStyle="#0b0b0c";x.font="900 44px Inter";x.textAlign="right";x.textBaseline="middle";x.fillText(l,R-30,0);x.restore();});x.restore();
+  x.beginPath();x.arc(350,350,R+8,0,7);x.strokeStyle="#eef2f7";x.lineWidth=14;x.stroke();x.beginPath();x.arc(350,350,62,0,7);x.fillStyle="#1c2029";x.fill();x.strokeStyle="#eef2f7";x.lineWidth=8;x.stroke();}
+window.render=function(t){
+  let dim=DIM[0][1];for(let i=0;i<DIM.length;i++){if(t>=DIM[i][0]){const prev=i?DIM[i-1][1]:DIM[i][1];dim=prev+(DIM[i][1]-prev)*cl((t-DIM[i][0])/.25);}}
+  $("dim").style.opacity=dim;
+  let fl=0;CUTS.forEach((c)=>{if(t>=c&&t<c+.14)fl=Math.max(fl,.32*(1-(t-c)/.14));});if(t>=6.13&&t<6.3)fl=Math.max(fl,.85*(1-(t-6.13)/.17));$("flash").style.opacity=fl;
+  $("brand").style.opacity=t>1.7&&t<15.1?1:0;
+  // hook
+  pop($("h1"),t,.06,1.62,{from:1.6,d:.16});pop($("h2"),t,.42,1.62,{from:1.6,d:.16});pop($("h3"),t,.82,1.62,{from:1.6,d:.16});
+  $("strike").style.width=(780*eo((t-1.12)/.2))+"px";
+  if(t>=.82&&t<1.62){const sh=Math.sin(t*90)*6*cl(1-(t-.82)/.4);$("h3").style.transform+=` translateX(${sh}px)`;}
+  // coach
+  pop($("coach"),t,1.7,6.0,{y:120,from:.94});
+  const full="45 min, my box fights are trash",T0=3.3,T1=5.75;let n=0;
+  if(t>=T0){const p=cl((t-T0)/(T1-T0));n=Math.round(full.length*p);}
+  $("typed").textContent=full.slice(0,n);$("caret").style.opacity=(Math.floor(t*3)%2||t>=T0&&t<T1)?1:0;
+  $("tp1").className="tip"+(n>=6?" ok":"");$("tp1").firstChild.textContent=n>=6?"✓":"";
+  $("tp2").className="tip"+(n>=full.length?" ok":"");$("tp2").firstChild.textContent=n>=full.length?"✓":"";
+  const bp=t>=5.8&&t<6.0?1-.08*Math.sin((t-5.8)/.2*Math.PI):1;$("btn").style.transform=`scale(${bp})`;$("btn").style.filter=t>=5.8?"brightness(1.3)":"";
+  // boom + routine
+  pop($("boom"),t,6.13,6.75,{from:2.2,d:.14});
+  pop($("routine"),t,6.62,9.0,{y:160,from:.9});
+  ROWS.forEach((_,i)=>{const e=$("r"+i),a=cl((t-(6.8+i*.11))/.22);e.style.opacity=eo(a);e.style.transform=`translateX(${(1-back(a))*-90}px)`;const hi=t>=7.9+i*.14&&t<7.9+i*.14+.2;e.style.background=hi?"rgba(56,224,255,.16)":(i%2?"transparent":"rgba(255,255,255,.03)");});
+  // timer + code
+  pop($("timer"),t,8.78,10.3,{from:.6});const left=599-(t-8.78)*14;$("tnum").textContent=`${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,"0")}`;$("tarc").setAttribute("stroke-dashoffset",540.4*cl((t-8.78)/6));
+  pop($("code"),t,9.5,10.3,{y:60,from:.8});$("copied").textContent=t>=9.95?"Copied ✓":"Copy";
+  // overlay
+  pop($("ov"),t,10.3,12.0,{y:-140,from:.9});const ol=252-(t-10.3)*1;$("otime").textContent=`${Math.floor(ol/60)}:${String(Math.floor(ol%60)).padStart(2,"0")}`;$("oarc").setAttribute("stroke-dashoffset",163.4*.42);$("obar").style.width=(58+(t-10.3)*1.5)+"%";
+  pop($("ovlab"),t,10.75,12.0,{y:-30,from:.8});
+  // aim
+  pop($("aim"),t,12.02,13.08,{y:100,from:.9});const ap=eo((t-12.15)/.6);$("clr").setAttribute("width",820*ap);$("pct").textContent=`+${(14.2*ap).toFixed(1)} %`;
+  // verified
+  pop($("ver"),t,13.1,14.03,{from:.6});$("vchk").setAttribute("stroke-dashoffset",9*(1-eo((t-13.3)/.25)));
+  // wheel: lands on 1M PRO (index 5): pointer at top (-90deg). segment center angle = 5*45+22.5 = 247.5deg → rot so that it sits at 270: rot = 22.5deg + turns
+  pop($("wheel"),t,14.05,15.18,{from:.7});const wp=eo((t-14.08)/.72);wheel((22.5+360*2)*Math.PI/180*wp+( -360*2*Math.PI/180)*0);
+  pop($("win"),t,14.72,15.18,{from:.5,d:.18});
+  // end
+  pop($("end"),t,15.24,17.5,{from:1.4,d:.2});pop($("free"),t,15.62,17.5,{y:60,from:.85});pop($("bio"),t,16.04,17.5,{from:.5,d:.2});
+  if(t>=16.3){$("bio").style.transform+=` scale(${1+.035*Math.sin((t-16.3)*9)})`;}
+  pop($("cta"),t,16.25,17.5,{y:40,from:.85});$("arr").style.transform=`translateY(${6*Math.sin(t*10)}px)`;
+  caption(t);
+};
+render(0);
+</script></body></html>
