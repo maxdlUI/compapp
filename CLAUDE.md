@@ -11,6 +11,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 - **Show a preview first** (an Artifact) before building a bigger new feature into the app; build it after the owner approves.
 - **Never ask for tokens or secrets in chat.** Use the credential form or the environment settings.
 - Keep the owner's email and personal details private.
+- **Announce every update in Discord** (#announcements, ping the Updates role `1570387326834581535`): a short English post with what is new, after the release is live.
 - Commit and push on branch `claude/nifty-cannon-p4pndg`. No pull requests unless asked. No model names in commits.
 
 ## Repline at a glance
@@ -35,6 +36,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 2. Windows app (only when app code changed): raise `version` in `desktop/package.json` and `SITE.download.version` in `index.html`; build the NSIS installer on Linux with wine (`npx electron-builder --win nsis --x64 --publish never` in a copy of `desktop/`), then `python3 tools/publish_windows.py <dist folder>`.
 3. `bash daily-pro-routine/tools/deploy.sh preview` then `bash daily-pro-routine/tools/deploy.sh production`.
 4. Commit and push.
+5. Post the update in Discord #announcements (see above).
 
 The Cloudflare token and the Discord bot token are saved on this cloud environment (network secrets), so `deploy.sh` and Discord API calls work without asking.
 
