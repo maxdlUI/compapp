@@ -123,7 +123,7 @@ html.anim .hero-copy > :nth-child(2) { animation-delay: .12s; } html.anim .hero-
 
 /* Goal tiles */
 .goals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.goals.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.goals.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 980px) { .goals.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .goals, .goals.four { grid-template-columns: minmax(0, 1fr); } }
 .goal { position: relative; overflow: hidden; border: 0; text-align: left; cursor: pointer; border-radius: 28px; min-height: 260px; padding: 28px; display: grid; align-content: space-between; gap: 32px; color: var(--porcelain); background: var(--obsidian); box-shadow: inset 0 0 0 1px var(--keyline); transition: transform .5s var(--ease), box-shadow .3s; text-decoration: none; }
@@ -1525,7 +1525,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   /* ---------- Home ---------- */
   /* the sets inside a routine as a strip of pictures (Normal length, or the only one) */
   function goalStrip(z) {
-    const ls = z.lengths || [], l = ls[1] || ls[0];
+    let ls = z.lengths || [], l = ls[1] || ls[0];
+    if (z.quick) { const a = goal("aim"), m = goal("mechanics"); l = { sets: [].concat(a && a.lengths[0] ? a.lengths[0].sets : [], m && m.lengths[0] ? m.lengths[0].sets : []) }; }
     if (!l || !l.sets) return "";
     const seen = new Set(), imgs = [];
     l.sets.forEach((b) => { if (b && b.img && !seen.has(b.img) && imgs.length < 4) { seen.add(b.img); imgs.push(b.img); } });
@@ -3382,6 +3383,8 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       wheelInit.raf = requestAnimationFrame(loop);
     };
     wheelInit.raf = requestAnimationFrame(loop);
+    wheelSize();
+    if (!wheelInit.rs) { wheelInit.rs = true; addEventListener("resize", () => { if (W) { W.k = 0; wheelSize(); wheelDraw(); } }); }
     const btn = $("wh-spin");
     let charging = false, power = 0, c0 = 0, craf = 0;
     const charge = (now) => { if (!charging) return; power = Math.min(1, (now - c0) / 900); btn.style.setProperty("--pw", (0.15 + power * 0.85).toFixed(3)); craf = requestAnimationFrame(charge); };
@@ -3394,40 +3397,58 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const SZ = 760, CX = 380, R_RIM = 376, R_BULB = 352, R_WHEEL = 326, BULBS = 32;
   function wheelSegAt(rot) { const at = ((360 - (rot % 360)) % 360 + 360) % 360; const s = W.segs; for (let i = 0; i < s.length; i++) if (at >= s[i].start && at < s[i].start + s[i].size) return i; return 0; }
   function wheelFace(r, alpha) {
-    const x = W.ctx;
+    const x = W.ctx, slow = Math.abs(W.speed) < 2.5;
     x.save(); x.translate(CX, CX); x.rotate(r * Math.PI / 180); x.globalAlpha = alpha;
+    // flat segments with a soft sheen, thin dark dividers
     W.segs.forEach((s, i) => {
       const a = (s.start - 90) * Math.PI / 180, b = (s.start + s.size - 90) * Math.PI / 180;
       x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, R_WHEEL, a, b); x.closePath();
-      const g = x.createRadialGradient(0, 0, 40, 0, 0, R_WHEEL); g.addColorStop(0, "#07080b"); g.addColorStop(0.55, s.p.c); g.addColorStop(1, s.p.c);
-      x.fillStyle = g; x.fill();
-      if (i % 2) { x.fillStyle = "rgba(0,0,0,.14)"; x.fill(); }
-      x.strokeStyle = "rgba(4,5,7,.9)"; x.lineWidth = 3; x.stroke();
+      x.fillStyle = s.p.c; x.fill();
+      if (i % 2) { x.fillStyle = "rgba(0,0,0,.07)"; x.fill(); }
     });
-    const sh = x.createLinearGradient(-R_WHEEL, -R_WHEEL, R_WHEEL, R_WHEEL); sh.addColorStop(0, "rgba(255,255,255,.10)"); sh.addColorStop(0.5, "rgba(255,255,255,0)");
-    x.beginPath(); x.arc(0, 0, R_WHEEL, 0, Math.PI * 2); x.fillStyle = sh; x.fill();
+    const shade = x.createRadialGradient(0, 0, 70, 0, 0, R_WHEEL);
+    shade.addColorStop(0, "rgba(0,0,0,.55)"); shade.addColorStop(0.42, "rgba(0,0,0,.12)"); shade.addColorStop(0.8, "rgba(0,0,0,0)"); shade.addColorStop(1, "rgba(0,0,0,.18)");
+    x.beginPath(); x.arc(0, 0, R_WHEEL, 0, Math.PI * 2); x.fillStyle = shade; x.fill();
+    x.lineWidth = 2.5; x.strokeStyle = "rgba(6,8,11,.85)";
+    W.segs.forEach((s) => { const a = (s.start - 90) * Math.PI / 180; x.beginPath(); x.moveTo(0, 0); x.lineTo(Math.cos(a) * R_WHEEL, Math.sin(a) * R_WHEEL); x.stroke(); });
+    // labels: along the radius, always readable left to right once the wheel slows down
+    const outer = R_WHEEL - 26, inner = 112, room = outer - inner;
     W.segs.forEach((s) => {
-      x.save(); x.rotate((s.start + s.size / 2 - 90) * Math.PI / 180);
+      const ang = (s.start + s.size / 2 - 90) * Math.PI / 180;
+      const flip = slow && Math.cos(ang + r * Math.PI / 180) < 0;
       const dark = s.p.tier === 0 || s.k === "prolife";
-      x.fillStyle = dark ? "#06080b" : "#ffffff";
-      const fs = s.size <= 12 ? 19 : s.size <= 18 ? 21 : 23;
-      x.font = `800 ${fs}px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Inter, Arial, sans-serif`;
-      x.textAlign = "right"; x.textBaseline = "middle";
-      if (!dark) { x.shadowColor = "rgba(0,0,0,.45)"; x.shadowBlur = 6; }
-      x.fillText(s.p.label, R_WHEEL - 22, 1);
+      let fs = s.size <= 12 ? 20 : s.size <= 18 ? 22 : 25;
+      x.font = `700 ${fs}px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, Arial, sans-serif`;
+      while (fs > 14 && x.measureText(s.p.label).width > room) { fs -= 1; x.font = `700 ${fs}px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, Arial, sans-serif`; }
+      x.save(); x.rotate(ang);
+      x.fillStyle = dark ? "rgba(6,8,11,.92)" : "#ffffff";
+      x.textBaseline = "middle";
+      if (!dark && slow) { x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 4; x.shadowOffsetY = 1; }
+      if (flip) { x.rotate(Math.PI); x.textAlign = "left"; x.fillText(s.p.label, -outer, 1); }
+      else { x.textAlign = "right"; x.fillText(s.p.label, outer, 1); }
       x.restore();
     });
+    // pegs on the rim
     W.segs.forEach((s) => {
-      const a = (s.start - 90) * Math.PI / 180;
-      x.beginPath(); x.arc(Math.cos(a) * (R_WHEEL - 8), Math.sin(a) * (R_WHEEL - 8), 7, 0, Math.PI * 2);
-      x.fillStyle = "#e8edf5"; x.fill(); x.strokeStyle = "#0a0c10"; x.lineWidth = 2; x.stroke();
+      const a = (s.start - 90) * Math.PI / 180, px = Math.cos(a) * (R_WHEEL - 9), py = Math.sin(a) * (R_WHEEL - 9);
+      x.beginPath(); x.arc(px, py + 1.5, 6.5, 0, Math.PI * 2); x.fillStyle = "rgba(0,0,0,.45)"; x.fill();
+      x.beginPath(); x.arc(px, py, 6.5, 0, Math.PI * 2); x.fillStyle = "#f2f5fa"; x.fill();
     });
     x.restore();
   }
+  function wheelSize() {
+    if (!W) return;
+    const css = W.cv.getBoundingClientRect().width || 440, dpr = window.devicePixelRatio || 1;
+    const k = Math.min(2.5, Math.max(1, (css * dpr) / SZ));
+    const px = Math.round(SZ * k);
+    if (W.cv.width !== px) { W.cv.width = px; W.cv.height = px; }
+    W.k = px / SZ;
+  }
   function wheelDraw() {
     if (!W) return;
-    const x = W.ctx; x.clearRect(0, 0, SZ, SZ);
-    const rg = x.createRadialGradient(CX, CX, R_WHEEL, CX, CX, R_RIM); rg.addColorStop(0, "#0a0c10"); rg.addColorStop(0.5, "#1d222c"); rg.addColorStop(1, "#090a0d");
+    if (!W.k) wheelSize();
+    const x = W.ctx; x.setTransform(W.k, 0, 0, W.k, 0, 0); x.clearRect(0, 0, SZ, SZ);
+    const rg = x.createRadialGradient(CX, CX, R_WHEEL, CX, CX, R_RIM); rg.addColorStop(0, "#0b0d11"); rg.addColorStop(0.45, "#1c2028"); rg.addColorStop(1, "#0a0b0e");
     x.beginPath(); x.arc(CX, CX, R_RIM, 0, Math.PI * 2); x.fillStyle = rg; x.fill();
     for (let i = 0; i < BULBS; i++) {
       const a = i / BULBS * Math.PI * 2, bx = CX + Math.cos(a) * R_BULB, by = CX + Math.sin(a) * R_BULB;
@@ -3436,14 +3457,15 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
       else if (W.mode === "spin") on = (i + Math.floor(W.t / 45)) % 3 === 0;
       else if (W.mode === "focus") on = (i + Math.floor(W.t / 110)) % 2 === 0;
       else { on = Math.floor(W.t / 140) % 2 === 0 ? i % 2 === 0 : i % 2 === 1; c = W.win; }
-      x.beginPath(); x.arc(bx, by, 7.5, 0, Math.PI * 2);
-      if (on) { x.shadowColor = c; x.shadowBlur = 18; x.fillStyle = c; } else { x.shadowBlur = 0; x.fillStyle = "#2a2f3a"; }
+      x.beginPath(); x.arc(bx, by, 6.5, 0, Math.PI * 2);
+      if (on) { x.shadowColor = c; x.shadowBlur = 14; x.fillStyle = c; } else { x.shadowBlur = 0; x.fillStyle = "#262a33"; }
       x.fill(); x.shadowBlur = 0;
     }
-    if (anim() && W.speed > 6) { wheelFace(W.rot - W.speed * 0.6, 0.35); wheelFace(W.rot - W.speed * 0.3, 0.5); }
+    if (anim() && W.speed > 6) { wheelFace(W.rot - W.speed * 0.6, 0.3); wheelFace(W.rot - W.speed * 0.3, 0.45); }
     wheelFace(W.rot, 1);
-    x.beginPath(); x.arc(CX, CX, R_WHEEL + 2, 0, Math.PI * 2); x.strokeStyle = "rgba(255,255,255,.08)"; x.lineWidth = 3; x.stroke();
+    x.beginPath(); x.arc(CX, CX, R_WHEEL + 1.5, 0, Math.PI * 2); x.strokeStyle = "rgba(255,255,255,.10)"; x.lineWidth = 2; x.stroke();
   }
+
 
   /* ---------- sound ---------- */
   let AC = null;
