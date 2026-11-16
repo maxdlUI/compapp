@@ -48,6 +48,13 @@ Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app i
 
 Public routines and blocks are stored in the database table `routine_catalog` (newest row is live, `009_routine_studio.sql`). The app applies the cached catalog on load (`applyCatalog`, localStorage `rl.catalog`) and refreshes it from the database; the routines in `index.html` are only the fallback. Devs edit them on `#studio` and publish; pictures go to the storage bucket `set-images`. To change routines, prefer the studio (or publish a new catalog version) over editing `index.html`.
 
+## Verified routines and aim progress (1.8, live 16 Nov 2026)
+
+- `010_verified_runs.sql`: `routine_runs` + `run_start` / `run_finish` (server checks real time ≥ 95 % of planned; Windows app with game detection needs the game in ≥ 80 % of game sets). A trigger clamps `training_days.routines/minutes` to counted runs from `runs_since()` (= 2026-11-17). Spins come from counted runs; a Verified run's spin = 2 Golden Tickets (`drops.tickets`). Leaderboard returns `verified`.
+- No skipping: the next set starts only when the set is done.
+- Windows app: game detection reads only the process list (`tasklist`), never Fortnite itself. KovaaK's tracking reads KovaaK's own `stats/*.csv` files (`desktop/main.js`), syncs to `aim_scores`. Both have switches in Settings → Tracking. Page `#aim` (Free: 7 days, Pro: all + coach notes).
+- Fortnite stats were dropped on purpose (owner's decision).
+
 ## Open right now (13 Nov 2026)
 
 - **Drops is live** (website + Windows app 1.6.8, `008_drops.sql` applied, `remind` edge function v7 deployed: wins post in #drops).
