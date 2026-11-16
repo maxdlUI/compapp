@@ -49,7 +49,8 @@ Everything below comes from the owner's answers (16 Nov 2026). Where it says "as
 
 ## Over time
 
-- Harder instead of longer: the same time, harder versions (Freebuild 90% → 110–120%, Piece control → Turtle → Clutch).
+- Harder instead of longer: the same time, harder versions. Fast freebuild speed grows over the weeks: 110 % → 120 % → 130 %. Piece control → Turtle → Clutch.
+- **Freebuild 90 % is in every routine, for every level.** At 90 % the player focuses only on perfect crosshair placement and clean edits, which always improves edits. It is never replaced by the faster version, the two go together.
 - After every routine the coach asks 2 questions: "Too easy / just right / too hard?" and "What killed you most today?". The next routine uses both (too hard: calmer drills and fewer live games; too easy: harder drills and more live; the cause of death gets extra time).
 
 ## Still open
