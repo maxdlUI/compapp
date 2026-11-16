@@ -670,7 +670,7 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 .aimt { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
 @media (max-width: 860px) { .aimt { grid-template-columns: minmax(0, 1fr); } }
 .aimt-txt { display: grid; gap: 16px; justify-items: start; }
-.aimt-stage { margin: 0; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)), url(img/tile-kovaaks.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); padding: clamp(18px, 4vw, 40px); }
+.aimt-stage { margin: 0; border-radius: 28px; overflow: hidden; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)), url(img/thumb-kovaaks.webp) center / cover; box-shadow: 0 0 0 1px var(--keyline); padding: clamp(18px, 4vw, 40px); }
 .aimt-card { background: rgba(22,22,24,.86); border-radius: 22px; padding: 20px; display: grid; gap: 10px; backdrop-filter: blur(12px); }
 .aimt-card svg { width: 100%; height: auto; display: block; }
 .up-b { color: var(--pos); }
@@ -1423,8 +1423,8 @@ const TYPES = {
 const V5 = { name: "Map code", by: "Raider464", value: "2424-4344-7824" };
 const REAL_TIP = "More realistic: pick another EU subregion (higher ping) and cap your FPS lower.";
 const SETS = {
-  kovaaks: { img: "img/tile-kovaaks.webp", name: "KovaaK's · Tjino Tracking", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Smooth tracking, don't chase scores.", codes: [{ name: "Playlist share code", value: "KovaaKsNamedroppingRoyalpurpleCamper" }] },
-  tjUpd: { img: "img/tile-kovaaks2.webp", name: "KovaaK's · Tjino Updated", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Clean hits first, then speed.", codes: [{ name: "Playlist share code", value: "KovaaKsBackflippingCeruleanNuns" }] },
+  kovaaks: { img: "img/thumb-kovaaks.webp", name: "KovaaK's · Tjino Tracking", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Smooth tracking, don't chase scores.", codes: [{ name: "Playlist share code", value: "KovaaKsNamedroppingRoyalpurpleCamper" }] },
+  tjUpd: { img: "img/thumb-kovaaks2.webp", name: "KovaaK's · Tjino Updated", type: "aim", where: "KovaaK's · Playlists → Import", hint: "Play the whole playlist. Clean hits first, then speed.", codes: [{ name: "Playlist share code", value: "KovaaKsBackflippingCeruleanNuns" }] },
   v5Flick: { img: "img/map-v5.webp", name: "V5 Aim · Reaction flick", type: "aim", hint: "Shoot the reaction flick scenario. React, flick, stop on the target.", codes: [V5] },
   v5Bounce: { img: "img/map-v5.webp", name: "V5 Aim · Bounce tracking", type: "aim", hint: "Bounce tracking scenario. Stay on the target through every bounce.", codes: [V5] },
   editWall: { img: "img/map-v5.webp", name: "Edit wall", type: "mech", hint: "Edits on the wall. Clean first, then fast.", tip: REAL_TIP, codes: [V5] },
@@ -1436,11 +1436,11 @@ const SETS = {
   real: { img: "img/map-realistics.webp", name: "Pro Realistics", type: "fight", hint: "Real terrain and loot. High ground, then pressure.", codes: [{ name: "Map code", by: "chap", value: "9520-0654-8075" }] },
   clutch: { img: "img/map-clutch.webp", name: "Clutch Realistics", type: "fight", hint: "Outnumbered on purpose: 2v3 and worse. Take one fight at a time, reset, then the next.", tip: REAL_TIP, codes: [{ name: "Map code", value: "6791-7475-7946" }] },
   ranked: { img: "img/art-ranked.webp", name: "Ranked · one focus", type: "live", where: "Fortnite · Ranked", hint: "Pick one focus for every game: only your new mechanic, only crosshair placement, only piece control in fights, or only high-ground retakes." },
-  scrims: { img: "img/tile-scrims.webp", name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
-  vod: { img: "img/tile-vod.webp", name: "VOD review", type: "review", where: "Career → Replays", hint: "Watch one fight you lost. What killed you: crosshair, movement or the enemy?" },
+  scrims: { img: "img/thumb-scrims.webp", name: "Scrims", type: "live", where: "Discord scrim server", hint: "Contested drops, rotations, endgames." },
+  vod: { img: "img/thumb-vod.webp", name: "VOD review", type: "review", where: "Career → Replays", hint: "Watch one fight you lost. What killed you: crosshair, movement or the enemy?" },
   fixDrill: { img: "img/map-v5.webp", name: "Fix drill", type: "mech", where: "Raider's Mechanics V5 or a map that fits", hint: "Drill the exact mechanic that killed you in the replay.", codes: [V5] },
-  prep: { img: "img/tile-prep.webp", name: "Cup check", type: "prep", hint: "Settings unchanged, rules and start time checked, drop and first rotation planned, water ready. Nothing new before a cup." },
-  brk: { img: "img/tile-brk.webp", name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
+  prep: { img: "img/thumb-prep.webp", name: "Cup check", type: "prep", hint: "Settings unchanged, rules and start time checked, drop and first rotation planned, water ready. Nothing new before a cup." },
+  brk: { img: "img/thumb-brk.webp", name: "Break", type: "rest", hint: "Stand up. Water. Eyes off the screen." }
 };
 /* Older sets from saved or shared routines map to the closest new set */
 const SET_ALIAS = { mech: "editWall", v5aim: "v5Flick", skaavok: "v5Flick", clixAim: "v5Flick", edit: "editWall", warmCourse: "fast", zone: "real", focusDrill: "fixDrill", realGame: "ranked" };
