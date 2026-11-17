@@ -293,7 +293,10 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 html.anim .ug-box { animation: updrise .5s var(--ease); }
 .ug-box h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.8px; }
 .ug-bar { width: 100%; height: 8px; border-radius: 4px; background: var(--steel); overflow: hidden; }
-.ug-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c4)); border-radius: 4px; transition: width .4s var(--ease); }
+.ug-bar i { display: block; height: 100%; background: var(--porcelain); border-radius: 4px; transition: width .4s var(--ease); }
+.ug-ver { width: 104px; height: 104px; border-radius: 26px; background: var(--steel); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); display: grid; place-content: center; text-align: center; gap: 2px; }
+.ug-ver span { font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--ash); }
+.ug-ver b { font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; font-variant-numeric: tabular-nums; }
 .launch-wrap { padding: 10px var(--gut-r) 0 var(--gut-l); }
 .launch-wrap[hidden] { display: none; }
 .launch { max-width: 1024px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: 20px; background: linear-gradient(90deg, #2a1d4d 0%, #0b2a5c 100%); box-shadow: inset 0 0 0 1px rgba(168, 85, 247, .45); font-size: 14px; }
@@ -665,6 +668,15 @@ html.anim .pro-row { animation: proShine 5s linear infinite; }
 
 /* Overlay teaser on the home screen (website only) */
 /* 1.9 · coach */
+/* Personal Plan card: band on top, cyan edge, ring tile */
+.goal.pp-card { padding-top: 0; box-shadow: inset 0 0 0 1px rgba(56,224,255,.45); align-content: start; }
+.pp-band { margin: 0 -28px; padding: 10px 28px; background: var(--c1); color: #000; font-size: 13px; font-weight: 700; letter-spacing: .2px; }
+.pp-ring { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 12px; background: #0b0b0c; }
+.goal .gstrip .pp-ring { background: #0b0b0c; color: var(--porcelain); }
+.pp-ring svg { width: 78%; transform: rotate(-90deg); }
+.pp-ring b { position: absolute; font-size: 11px; font-weight: 800; letter-spacing: .5px; }
+.pp-pers { justify-self: start; font-size: 12px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: #000; background: var(--c1); padding: 4px 10px; border-radius: 99px; }
+
 .co-grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 900px) { .co-grid { grid-template-columns: minmax(0, 1fr); } }
 .co-in .row, .co-out .row, .co-fb .row { display: grid; gap: 8px; }
@@ -1085,7 +1097,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Coach</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1346,7 +1358,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <!-- Coach -->
 <main class="view wrap flowv" data-view="ai" id="v-ai" hidden>
   <button class="back" type="button" data-go="">Home</button>
-  <div class="vhead"><div><h1 class="d-l">Coach.</h1><p class="lead">Write what you want to train. It builds your routine from the Repline sets.</p></div></div>
+  <div class="vhead"><div><h1 class="d-l">Personal Plan.</h1><p class="lead">Write what you want to train. You get a routine made only for you, from the Repline sets.</p></div></div>
   <div id="coach-body"></div>
 </main>
 
@@ -1516,8 +1528,8 @@ const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], [
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
 const PLANS = [
   { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
-  { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "Coach: 1 routine a day, made for you", "In-game overlay (Windows app)", "Everything in Free"] },
-  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "Coach: 3 routines a day", "Everything in Standard"], soon: ["Pro routines"] }
+  { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "Personal Plan: 1 routine a day, made for you", "In-game overlay (Windows app)", "Everything in Free"] },
+  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "Personal Plan: 3 routines a day", "Everything in Standard"], soon: ["Pro routines"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
@@ -1690,11 +1702,20 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
+  // Personal Plan (the coach): stands out with a band on top, a ring in the player's set colours and their own sets.
   function aiCard() {
     const a = document.createElement("a");
-    a.className = "goal g-ki"; a.href = "#ai";
-    const ready = !!coachGoal();
-    a.innerHTML = `<svg class="gi" aria-hidden="true"><use href="#i-ki"/></svg><span style="display:grid;gap:8px"><span><span class="new" style="margin:0">New</span> <span class="tiny" style="margin-left:6px">Standard &amp; Pro</span></span><span class="gt">Coach</span><span class="gd">${ready ? "Your routine for today is ready." : "Write what you want to train. It builds your routine."}</span></span>`;
+    a.className = "goal g-ki pp-card"; a.href = "#ai";
+    const z = coachGoal(), sets = z ? z.lengths[0].sets : null;
+    const cols = sets ? Array.from(new Set(sets.map((b) => tcol(b)))).slice(0, 4) : ["#38e0ff", "#3f8dff", "#a855f7"];
+    const C = 88, n = cols.length, seg = C / n;
+    const ring = `<span class="pp-ring"><svg viewBox="0 0 40 40" aria-hidden="true">${cols.map((c, i) => `<circle cx="20" cy="20" r="14" fill="none" stroke="${c}" stroke-width="5" stroke-dasharray="${seg - 3} ${C - seg + 3}" stroke-dashoffset="${-i * seg}"/>`).join("")}</svg><b>YOU</b></span>`;
+    const pool = sets || ["editWall", "slow", "turtle"].map((k) => SETS[k]).filter(Boolean);
+    const seen = new Set(), imgs = [];
+    pool.forEach((b) => { if (b && b.img && !seen.has(b.img) && imgs.length < 3) { seen.add(b.img); imgs.push(b.img); } });
+    const rest = sets ? Math.max(0, sets.length - imgs.length) : 2;
+    const tot = sets ? totalMin(sets) : null;
+    a.innerHTML = `<span class="pp-band">Made for you · new every day</span><span class="gstrip" aria-hidden="true">${ring}${imgs.map((u) => `<img src="${esc(thumbOf(u))}" alt="" loading="lazy" decoding="async">`).join("")}${rest > 0 ? `<span>+${rest}</span>` : ""}</span><span style="display:grid;gap:8px"><span class="pp-pers">Personal</span><span class="gt">Personal Plan</span><span class="gd">${z ? "Your routine for today is ready." : "A routine made for you. New every day."}</span><span class="meta"><span>${z && tot ? "Built today · " + fmtMin(tot) : "Standard &amp; Pro · 15 min – 8 h"}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
     return a;
   }
   function buildHome() {
@@ -1787,7 +1808,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   const thumbOf = (u) => String(u).replace(/\.webp$/, "-s.webp");
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
-    const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.coach ? "ai" : z.custom ? "goal" : "length"; bk.textContent = z.coach ? "Coach" : z.custom ? "Routines" : "Length";
+    const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.coach ? "ai" : z.custom ? "goal" : "length"; bk.textContent = z.coach ? "Personal Plan" : z.custom ? "Routines" : "Length";
     const swt = switchTotalSec(bl.length);
     $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
     $("plan-start").innerHTML = signedIn() ? "Start training" : `<svg aria-hidden="true" style="width:20px;height:20px;margin-right:10px;vertical-align:-4px"><use href="#i-discord"/></svg>Sign in to start`;
@@ -2589,7 +2610,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (!c || c.day !== today() || !Array.isArray(c.sets)) return null;
     const sets = c.sets.filter((x) => SETS[x.k]).map((x) => [x.k, x.min, Object.assign(x.label ? { name: x.label } : {}, { tip: x.why + (SETS[x.k].tip ? " " + SETS[x.k].tip : "") })]);
     if (!sets.length) return null;
-    return { id: "coach", name: c.title === "Cup warm-up" ? "Coach · Cup warm-up" : "Coach routine", text: "Built for you today.", icon: "i-ki", custom: true, coach: true, lengths: [L("today", "Today", sets)] };
+    return { id: "coach", name: c.title === "Cup warm-up" ? "Personal Plan · Cup warm-up" : "Personal Plan", text: "Made for you today.", icon: "i-ki", custom: true, coach: true, lengths: [L("today", "Today", sets)] };
   }
   function coachWeeks() { const f = store.get(COACH_FIRST, null); if (!f) return "1"; const d = Math.floor((Date.now() - Date.parse(f + "T12:00")) / 864e5); return d >= 21 ? "5" : d >= 7 ? "3" : "1"; }
   async function coachStatus() {
@@ -2614,7 +2635,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   function coachResultHTML(c) {
     const fmt = (m) => fmtMin(m), tot = c.sets.reduce((a, x) => a + x.min, 0);
-    return `<div class="row"><span class="tiny">What the coach understood</span><div class="co-got">${(c.got || []).map((g) => `<span class="${g[1] || ""}">${esc(g[0])}</span>`).join("")}</div></div>
+    return `<div class="row"><span class="tiny">What I understood</span><div class="co-got">${(c.got || []).map((g) => `<span class="${g[1] || ""}">${esc(g[0])}</span>`).join("")}</div></div>
       <div class="co-head"><b>${esc(c.title)}</b><span class="tiny">${c.sets.length} sets · ${fmt(tot)}</span></div>
       <div class="sbar" aria-hidden="true">${c.sets.map((x) => SETS[x.k] ? `<i style="flex:${x.min};background:${tcol(SETS[x.k])}"></i>` : "").join("")}</div>
       ${c.note ? `<p class="small" style="margin:0;color:var(--c1)">${esc(c.note)}</p>` : ""}
@@ -2623,10 +2644,10 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
   }
   async function buildCoach() {
     const body = $("coach-body");
-    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to use the coach", "ai"); bindLock(body); return; }
+    if (!signedIn()) { body.innerHTML = lockHTML("Sign in to get your Personal Plan", "ai"); bindLock(body); return; }
     const lim = coachLimit(), prof = coachProf(), cur = store.get(COACH_KEY, null), have = cur && cur.day === today() && coachGoal();
     if (!lim) {
-      body.innerHTML = `<div class="teaser-card co-lock"><b>The coach comes with Standard and Pro.</b><span class="small">Write what you want to train, like “45 min, my edits are bad, cup tomorrow”, and the coach builds your routine from the Repline sets. Standard: 1 routine a day. Pro: 3 a day.</span><button class="pill sm" type="button" id="co-plans" style="justify-self:start">See plans</button></div>`;
+      body.innerHTML = `<div class="teaser-card co-lock"><b>Personal Plan comes with Standard and Pro.</b><span class="small">Write what you want to train, like “45 min, my edits are bad, cup tomorrow”, and the coach builds your routine from the Repline sets. Standard: 1 routine a day. Pro: 3 a day.</span><button class="pill sm" type="button" id="co-plans" style="justify-self:start">See plans</button></div>`;
       $("co-plans").addEventListener("click", () => go("plans")); return;
     }
     const seg = (k, opts) => `<div class="seg co-seg" role="group" data-ck="${k}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${String(prof[k]) === String(v)}">${t}</button>`).join("")}</div>`;
@@ -2668,12 +2689,12 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const text = ($("co-msg").value || "").trim(); coachText = text;
     const u0 = COACH.understand(text, coachProf());
     if (!text || (u0.min == null && !Object.keys(u0.focus).length && !u0.cup)) { toast("Add how much time you have and what you want to train"); $("co-msg").focus(); return; }
-    if (S.active && S.goal === "coach" && S.b > 0) { toast("Finish or end your current coach routine first"); return; }
+    if (S.active && S.goal === "coach" && S.b > 0) { toast("Finish or end your current Personal Plan first"); return; }
     coachBusy = true; $("co-build").disabled = true;
     try {
       const t = await coachTake();
       if (t.error) { toast("Couldn't reach the server. Please try again."); return; }
-      if (t.none) { coachLeft = 0; $("co-left").textContent = coachLeftTxt(0, coachLimit()); toast("No coach routines left today"); return; }
+      if (t.none) { coachLeft = 0; $("co-left").textContent = coachLeftTxt(0, coachLimit()); toast("No Personal Plans left today"); return; }
       coachLeft = t.left;
       if (!store.get(COACH_FIRST, null)) store.set(COACH_FIRST, today());
       const feed = store.get(COACH_FEED, null); COACH.setFeed(feed && feed.day !== today() ? feed : (feed && feed.day === today() ? feed : null));
@@ -2697,14 +2718,14 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     const el = $("done-coach"); if (!el) return;
     if (!on) { el.innerHTML = ""; return; }
     const fb = { level: "", died: "" };
-    el.innerHTML = `<div class="vcheck co-fb"><b>Two quick questions for your coach</b>
+    el.innerHTML = `<div class="vcheck co-fb"><b>Two quick questions for your Personal Plan</b>
       <div class="row"><span class="small">How was it?</span><div class="seg co-seg" data-fb="level"><button type="button" data-v="easy">Too easy</button><button type="button" data-v="ok">Just right</button><button type="button" data-v="hard">Too hard</button></div></div>
       <div class="row"><span class="small">What killed you most today?</span><div class="seg co-seg" data-fb="died"><button type="button" data-v="aim">Aim</button><button type="button" data-v="edits">Edits</button><button type="button" data-v="piece">Piece control</button><button type="button" data-v="boxfights">Box fights</button><button type="button" data-v="endgame">Endgame</button><button type="button" data-v="none">Nothing</button></div></div>
-      <span class="tiny" id="co-fb-ok">Your next coach routine uses this.</span></div>`;
+      <span class="tiny" id="co-fb-ok">Your next Personal Plan uses this.</span></div>`;
     el.querySelectorAll("[data-fb]").forEach((g) => g.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
       fb[g.dataset.fb] = b.dataset.v; g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
       store.set(COACH_FEED, { day: today(), level: fb.level === "ok" ? "" : fb.level, died: fb.died === "none" ? "" : fb.died });
-      $("co-fb-ok").textContent = "Saved. Your next coach routine uses this.";
+      $("co-fb-ok").textContent = "Saved. Your next Personal Plan uses this.";
     })));
   }
 
@@ -3435,7 +3456,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (u.state === "ready") body = `<p class="small">Repline ${v} is downloaded. It installs in a few seconds and opens again by itself.</p><button class="pill big" type="button" id="ug-go">Update now</button>`;
     else if (u.state === "error") body = `<p class="small">The update didn't download. Check your internet and try again.</p><div class="hero-cta" style="margin:0"><button class="pill big" type="button" id="ug-retry">Try again</button><a class="pill big out" href="https://repline.pages.dev/download/windows" target="_blank" rel="noopener">Download from the website</a></div>`;
     else body = `<p class="small">Downloading Repline ${v}… ${pct} %</p><div class="ug-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
-    g.innerHTML = `<div class="ug-box"><div class="gift-ico">${svgI("star")}</div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
+    g.innerHTML = `<div class="ug-box"><div class="ug-ver" aria-hidden="true"><span>Version</span><b>${esc(String(u.version || "").replace(/\.0$/, ""))}</b></div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
     const go = $("ug-go"); if (go) go.addEventListener("click", installUpdate);
     const rt = $("ug-retry"); if (rt) rt.addEventListener("click", () => { DESK.updates.check(); upd = Object.assign({}, upd, { state: "downloading", progress: 0 }); renderUpdGate(); });
   }
