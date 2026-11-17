@@ -167,11 +167,47 @@ async function poll() {
   return { messages: msgs.length, answered };
 }
 
+// ---------- welcome DMs for new players (017_welcome.sql) ----------
+const linkBtn = (label: string, url: string) => ({ type: 2, style: 5, label, url });
+async function welcomeDms() {
+  const now = Date.now(), iso = (ms: number) => new Date(ms).toISOString();
+  let sent = 0;
+  const { data: fresh } = await db.from("profiles").select("id, discord_id, username").is("welcome_dm_at", null)
+    .not("discord_id", "is", null).gt("created_at", iso(now - 2 * 864e5)).limit(10);
+  for (const p of fresh || []) {
+    await db.from("profiles").update({ welcome_dm_at: iso(now) }).eq("id", p.id).is("welcome_dm_at", null);
+    await dm(String(p.discord_id), {
+      embeds: [{ color: 0x38e0ff, title: `Welcome to Repline${p.username ? ", " + clip(p.username, 40) : ""}!`,
+        description: "Your first routine takes 30 minutes. Pick one and go, or let us build one just for you: your **Personal Plan** is free once.\n\nFinish your first routine and you get a **bonus spin** on the Drops wheel." }],
+      components: [{ type: 1, components: [linkBtn("Start my first routine", `${SITE}/#goal`), linkBtn("Build my Personal Plan", `${SITE}/#ai`)] }],
+    });
+    sent++;
+  }
+  const { data: waiting } = await db.from("profiles").select("id, discord_id").not("welcome_dm_at", "is", null).is("nudge_dm_at", null)
+    .not("discord_id", "is", null).lt("created_at", iso(now - 864e5)).gt("created_at", iso(now - 4 * 864e5)).limit(10);
+  for (const p of waiting || []) {
+    const { count: runs } = await db.from("routine_runs").select("id", { count: "exact", head: true }).eq("user_id", p.id).eq("counted", true);
+    const { count: days } = await db.from("training_days").select("day", { count: "exact", head: true }).eq("user_id", p.id).gt("routines", 0);
+    await db.from("profiles").update({ nudge_dm_at: iso(now) }).eq("id", p.id).is("nudge_dm_at", null);
+    if ((runs || 0) + (days || 0) > 0) continue;
+    await dm(String(p.discord_id), {
+      content: "Your bonus spin is still waiting. One routine, 30 minutes, and it's yours. Want a quick one?",
+      components: [{ type: 1, components: [linkBtn("Start Quick: Aim", `${SITE}/#goal`), linkBtn("Open Repline", SITE)] }],
+    });
+    sent++;
+  }
+  return sent;
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("ok");
   let b: any = {}; try { b = await req.json(); } catch { /* ignore */ }
   if (b && b.test) return new Response(JSON.stringify(match(String(b.test)).map((f) => f.id)), { headers: { "Content-Type": "application/json" } });
   if (!b || !b.poll) return new Response("{}", { status: 400 });
-  try { return new Response(JSON.stringify(await poll()), { headers: { "Content-Type": "application/json" } }); }
+  try {
+    const out: any = await poll();
+    try { out.welcome = await welcomeDms(); } catch (e) { console.log("welcome", e); }
+    return new Response(JSON.stringify(out), { headers: { "Content-Type": "application/json" } });
+  }
   catch (e) { console.log("poll", e); return new Response(JSON.stringify({ error: String(e) }), { status: 500 }); }
 });

@@ -422,6 +422,22 @@ html.anim .sheet { animation: updrise .4s var(--ease); }
 .sheet .acts { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 .sheet ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
 .sheet ol li { display: flex; justify-content: space-between; gap: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sheet.wl { width: min(560px, 100%); gap: 14px; }
+.wl-hi { font-size: 13px; font-weight: 600; color: var(--c1); }
+.wl-pp { border-radius: 18px; padding: 16px; display: grid; gap: 10px; background: linear-gradient(180deg, rgba(56,224,255,.10), rgba(56,224,255,.03)); box-shadow: inset 0 0 0 1.5px var(--c1); }
+.wl-pp .wl-top { display: flex; align-items: center; gap: 8px; } .wl-pp .wl-top b { font-size: 17px; }
+.wl-tag { margin-left: auto; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #000; background: var(--c1); padding: 4px 9px; border-radius: 980px; }
+.wl-pp .wl-go { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .wl-pp .wl-go .pill { margin-left: auto; }
+.wl-or { display: flex; align-items: center; gap: 12px; color: var(--ash); font-size: 13px; } .wl-or::before, .wl-or::after { content: ""; flex: 1; height: 1px; background: var(--steel); }
+.wl-list { display: grid; gap: 8px; }
+.wl-r { display: flex; align-items: center; gap: 12px; padding: 7px; border-radius: 14px; background: rgba(255,255,255,.04); }
+.wl-r img, .wl-r .wl-ph { width: 76px; height: 44px; object-fit: cover; border-radius: 9px; flex: none; background: var(--steel); }
+.wl-r span { display: grid; gap: 1px; min-width: 0; } .wl-r .pill { margin-left: auto; }
+.wl-bonus { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: 14px; background: rgba(168,85,247,.12); box-shadow: inset 0 0 0 1px rgba(168,85,247,.35); font-size: 14px; line-height: 1.35; }
+.wl-bonus svg { flex: none; }
+.wl-later { justify-self: center; border: 0; background: none; color: var(--ash); font: inherit; font-size: 14px; padding: 8px 12px; cursor: pointer; border-radius: 980px; } .wl-later:hover { color: var(--porcelain); }
+@media (max-width: 560px) { .modal:has(.sheet.wl) { place-items: end center; padding: 0; } .sheet.wl { border-radius: 26px 26px 0 0; padding: 22px 18px 26px; max-height: 92vh; } .wl-pp .wl-go .pill { margin-left: 0; width: 100%; } .wl-r .pill { min-height: 44px; } }
 .code-box { background: #000; border-radius: 20px; padding: 22px; display: grid; gap: 12px; justify-items: center; box-shadow: inset 0 0 0 1px var(--steel); }
 .code-box b { font-size: clamp(22px, 6vw, 32px); }
 .gift-ico { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--c1), var(--c4)); justify-self: center; }
@@ -1443,7 +1459,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.10.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.11.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -2622,7 +2638,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   })(SETS);
   const COACH_KEY = "rl.coach", COACH_FEED = "rl.coachFeed", COACH_FIRST = "rl.coachFirst";
   const coachProf = () => Object.assign({ platform: "pc", kovaaks: true, level: "unreal", goal: "all" }, settings.coach || {});
-  const coachLimit = () => ({ free: 0, standard: 1, pro: 3 })[planId()];
+  const coachLimit = () => Math.max(({ free: 0, standard: 1, pro: 3 })[planId()], account && account.welcomePlan ? 1 : 0);
   let coachLeft = null, coachBusy = false, coachText = "";
   // Today's coach routine as a normal routine, so plan, training, overlay and the server check all work as usual.
   function coachGoal() {
@@ -2639,7 +2655,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const u = store.get("rl.coachUses", {}); return coachLimit() - (u.day === today() ? u.n : 0);
   }
   async function coachTake() {
-    if (sb && cloudUser) { const { data, error } = await sb.rpc("coach_use", { client_day: today(), take: true }); if (error || !data) return { error: true }; return data.ok ? { left: data.limit - data.used } : { none: true }; }
+    if (sb && cloudUser) { const { data, error } = await sb.rpc("coach_use", { client_day: today(), take: true }); if (error || !data) return { error: true }; if (data.ok && data.once && account) { account.welcomePlan = false; store.set(ACC, account); } return data.ok ? { left: data.limit - data.used } : { none: true }; }
     const u = store.get("rl.coachUses", {}), n = u.day === today() ? u.n : 0; if (n >= coachLimit()) return { none: true };
     store.set("rl.coachUses", { day: today(), n: n + 1 }); return { left: coachLimit() - n - 1 };
   }
@@ -2695,7 +2711,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     bindCoachOut();
     if (coachLeft == null) coachStatus().then((n) => { if (n == null) return; coachLeft = n; const el = $("co-left"); if (el) el.textContent = coachLeftTxt(n, lim); });
   }
-  const coachLeftTxt = (n, lim) => n > 0 ? `${n} of ${lim} left today` : "No routines left today. New ones tomorrow.";
+  const coachLeftTxt = (n, lim) => n > 0 && planId() === "free" ? "Your free Personal Plan (once)" : n > 0 ? `${n} of ${lim} left today` : "No routines left today. New ones tomorrow.";
   function bindCoachOut() {
     const st = $("co-start"); if (st) st.addEventListener("click", () => {
       if (!coachGoal()) { toast("Build a routine first"); return; }
@@ -3276,6 +3292,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     applyFreezes(); checkBadges(true); syncDeskReminder();
     refreshView();
     cloudNotices();
+    welcomeCheck();
   }
   // Referral links: repline.pages.dev/r/abc123 (or ?ref=abc123)
   (function () {
@@ -3671,6 +3688,59 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const rows = (data || []).map((r) => `<div class="row"><span style="min-width:0">${r.kind === "idea" ? "💡" : "🐞"} <b>#${r.id}</b> · ${esc(String(r.what).slice(0, 70))}${r.kind === "idea" && r.votes ? ` <span class="tiny">· ${r.votes} 👍</span>` : ""}</span><span class="tiny" style="white-space:nowrap;color:${r.status === "fixed" ? "var(--pos)" : "var(--ash)"}">${(r.kind === "idea" ? sti : st)[r.status] || r.status}</span></div>`).join("");
     openModal(`<h2 id="sheet-t">Your reports and ideas</h2>${rows ? `<div class="group">${rows}</div>` : '<p class="small" style="margin:0">Nothing yet. Thanks for keeping an eye out!</p>'}<div class="acts"><button class="pill" type="button" data-close>Done</button></div>`);
   }
+  /* ---------- Welcome for new players: start a routine or build a Personal Plan (free once), bonus spin for the first routine ---------- */
+  async function welcomeCheck() {
+    if (!(sb && cloudUser)) return;
+    try {
+      const { data } = await sb.rpc("welcome_state");
+      if (!data) return;
+      account.welcomePlan = !!data.free_plan; store.set(ACC, account);
+      if (data.show && !store.get("rl.welcomed", false) && !(S.active && S.b > 0)) setTimeout(openWelcome, 900);
+    } catch (e) {}
+  }
+  function openWelcome() {
+    const name = account && account.name ? account.name : "";
+    const pick = ["aim", "mechanics", "better"].map((id) => GOALS.find((g) => g.id === id)).filter(Boolean).map((g) => {
+      const l = g.lengths[0], min = l.sets.reduce((a, x) => a + x.min, 0), img = (l.sets.find((x) => x.img) || {}).img;
+      return { id: g.id, len: l.id, name: g.name, min, img, text: g.text };
+    });
+    const freeTag = planId() === "free" ? "Free once" : "Made for you";
+    let started = false;
+    openModal(`<h2 id="sheet-t" class="sr-only">Welcome to Repline</h2>
+      <span class="wl-hi">Welcome to Repline${name ? ", " + esc(name) : ""}</span>
+      <b style="font-size:28px;line-height:1.12;letter-spacing:-.5px">Let's start your first routine.</b>
+      <div class="wl-pp">
+        <div class="wl-top"><svg class="gi" aria-hidden="true" style="width:22px;height:22px;color:var(--c1)"><use href="#i-ki"/></svg><b>Your Personal Plan</b><span class="wl-tag">${freeTag}</span></div>
+        <label class="small" for="wl-msg" style="color:#c7c7cc;margin:0">Tell us what you want to work on. We build today's routine just for you.</label>
+        <textarea id="wl-msg" class="co-msg" maxlength="400" rows="2" placeholder="e.g. 45 min, my edits are slow, cup on Friday" style="min-height:64px"></textarea>
+        <div class="wl-go"><span class="tiny">Tip: add your time, weak spot and cup date.</span><button class="pill" type="button" id="wl-build">Build my routine</button></div>
+      </div>
+      <div class="wl-or">or pick one and go</div>
+      <div class="wl-list">${pick.map((r) => `<div class="wl-r">${r.img ? `<img src="${esc(thumbOf(r.img))}" alt="" loading="lazy" decoding="async">` : `<i class="wl-ph"></i>`}<span><b style="font-size:15px">${esc(r.name)}</b><span class="tiny">${fmtMin(r.min)} · ${esc(r.text)}</span></span><button class="pill sm" type="button" data-wl="${r.id}" data-len="${r.len}">Start</button></div>`).join("")}</div>
+      <div class="wl-bonus"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#c084fc" stroke-width="1.8"/><path d="M12 2.5v19M2.5 12h19M5.3 5.3l13.4 13.4M18.7 5.3L5.3 18.7" stroke="#c084fc" stroke-width="1.2"/><circle cx="12" cy="12" r="2.4" fill="#c084fc"/></svg><span><b>Bonus spin.</b> <span style="color:#c7c7cc">Finish your first routine and you get a free extra spin on the Drops wheel.</span></span></div>
+      <button class="wl-later" type="button" data-close>Maybe later</button>`,
+      (sh, close) => {
+        sh.classList.add("wl");
+        sh.querySelectorAll("[data-wl]").forEach((b) => b.addEventListener("click", () => {
+          started = true; close();
+          S.goal = b.dataset.wl; S.len = b.dataset.len; resetRun(); save(); go("plan");
+        }));
+        sh.querySelector("#wl-build").addEventListener("click", () => {
+          const t = sh.querySelector("#wl-msg").value.trim();
+          const u = COACH.understand(t, coachProf());
+          if (!t || (u.min == null && !Object.keys(u.focus).length && !u.cup)) { toast("Add how much time you have and what you want to train"); sh.querySelector("#wl-msg").focus(); return; }
+          started = true; coachText = t; close(); go("ai");
+          setTimeout(() => { const m = $("co-msg"); if (m) { m.value = t; coachRun(); } }, 350);
+        });
+      },
+      () => {
+        sh0().classList.remove("wl");
+        store.set("rl.welcomed", true);
+        if (sb && cloudUser) sb.rpc("welcome_seen").then(() => {}, () => {});
+        if (!started) toast("You can start any routine from Home");
+      });
+  }
+  const sh0 = () => $("sheet");
   function openModal(html, bind, onClose) {
     const m = $("modal"), sh = $("sheet");
     sh.innerHTML = html; m.hidden = false; root.classList.add("no-scroll");
