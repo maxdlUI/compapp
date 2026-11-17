@@ -51,7 +51,7 @@ Diesen Server legst du in deinem Discord-Konto an. Alle Texte unten sind auf Eng
 - `#my-routines`: eigene Routinen aus dem Baukasten teilen
 
 **HELP**
-- `#ask-a-question` (früher #support, id 1570387437023264768): Forum für Fragen, Tags *Website*, *Windows app*, *Account*, *Plans*, *Training*, *Solved*. Der Frage-Bot (Edge Function `ask`, `015_questions_bot.sql`) liest jede Minute neue Beiträge, antwortet mit Erwähnung des Spielers aus seinem FAQ, setzt bei „danke“ ✅ und *Solved*, und schickt den Devs eine DM, wenn er keine sichere Antwort hat. Schreibt ein Dev im Beitrag, hält der Bot sich raus.
+- `#ask-a-question` (Textkanal, id 1572188220970635324, ersetzt das alte Forum #support): Spieler schreiben ihre Frage einfach in den Kanal. Der Frage-Bot (Edge Function `ask`, `015`/`016_questions_*.sql`) liest jede Minute neue Nachrichten, antwortet als Reply mit Erwähnung aus seinem FAQ, setzt bei „danke“ ✅, wiederholt sich pro Spieler höchstens einmal pro Stunde und schickt den Devs eine DM mit Link, wenn er keine sichere Antwort hat. Nachrichten von Devs und Antworten an Devs ignoriert er. Slowmode 5 s, fixierte Erklärung oben.
 - `#report-a-bug` (`1572181354353926165`): Bug-Bot-Kanal (seit 17.11.2026, ersetzt das alte Forum #bug-reports). Mitglieder können nicht schreiben, nur den Knopf „Report a bug“ nutzen oder `/bug`. Jede Meldung bekommt einen Thread (Slowmode 10 s, schließt sich nach 3 Tagen). Fixierte Bot-Nachricht mit „Report a bug“ und „My reports“.
 - `#suggest-a-feature` (`1572183657177940049`): Ideen-Bot-Kanal (seit 17.11.2026, ersetzt das alte Forum #ideas). Knopf „Suggest a feature“ oder `/idea`; jede Idee bekommt einen Thread mit „👍 Upvote“-Knopf (eine Stimme pro Person). Steht auch im Willkommensbildschirm.
 

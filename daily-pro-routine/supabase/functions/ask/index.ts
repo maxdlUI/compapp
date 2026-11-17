@@ -1,7 +1,7 @@
-// Repline question bot for the #ask-a-question forum.
-// The database calls this every minute ({"poll": true}, 015_questions_bot.sql). It reads new posts in the forum,
-// answers the question right in the post with the player mentioned, answers follow-ups from the same player,
-// and DMs the devs when it has no sure answer. Once a dev writes in the post, the bot stays quiet there.
+// Repline question bot for the #ask-a-question channel (a normal text channel).
+// The database calls this every minute ({"poll": true}, 015/016_questions_bot.sql). It reads new messages in the channel,
+// replies to each question with the player mentioned, and DMs the devs when it has no sure answer.
+// It never answers devs, replies to a dev's message, or the same topic twice in an hour for the same player.
 // The answers come from the FAQ below (no paid AI, nothing costs money).
 //
 // Secrets: DISCORD_BOT_TOKEN. Deploy with verify_jwt = false (the call carries nothing to trust; it only reads Discord).
@@ -10,7 +10,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const GUILD = "1570385914096783381";
-const FORUM = "1570387437023264768"; // #ask-a-question
+const CHANNEL = "1572188220970635324"; // #ask-a-question
 const BUG_CH = "1572181354353926165", IDEA_CH = "1572183657177940049", PARTNER_CH = "1570387452609433690";
 const API = "https://discord.com/api/v10";
 const H = { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" };
@@ -104,83 +104,66 @@ function match(text: string, skip: string[] = []) {
 const THANKS = /^\s*(thx|thanks|thank you|ty|danke|dankeschön|merci|ok(ay)?|perfect|perfekt|works|klappt|geht jetzt|solved|gelöst|nice|top|👍|🙏|❤️)[\s!.,]*\S{0,20}$/i;
 
 // ---------- the poll ----------
-async function answer(threadId: string, owner: string, replyTo: string, faqs: Faq[], first: boolean) {
-  const lead = first ? `Hey <@${owner}>! 👋 ` : `<@${owner}> `;
-  const body = faqs.map((f) => f.a).join("\n\n");
-  const tail = first ? "\n\n-# I'm the Repline bot. Not what you meant? Just write more here and a dev will join if I can't help." : "";
-  await api(`/channels/${threadId}/messages`, "POST", {
-    content: clip(lead + body + tail, 1990),
-    allowed_mentions: { users: [owner] },
-    message_reference: { message_id: replyTo, fail_if_not_exists: false },
+const QUESTION = /\?|^\s*(how|what|why|when|where|which|who|can|could|is|are|do|does|did|will|wie|was|warum|wieso|wann|wo|welche[rsn]?|kann|könnt|gibt|ist|sind|hat|habe|muss)\b|\bhelp\b|hilfe|problem/i;
+const jump = (id: string) => `https://discord.com/channels/${GUILD}/${CHANNEL}/${id}`;
+
+async function reply(m: any, content: string) {
+  await api(`/channels/${CHANNEL}/messages`, "POST", {
+    content: clip(content, 1990),
+    allowed_mentions: { users: [m.author.id] },
+    message_reference: { message_id: m.id, fail_if_not_exists: false },
   });
 }
-async function askDevs(threadId: string, owner: string, title: string, text: string) {
-  await api(`/channels/${threadId}/messages`, "POST", {
-    content: `Thanks <@${owner}>! I don't have a sure answer for this one, so I've asked the team. Someone will reply right here. ⏳`,
-    allowed_mentions: { users: [owner] },
-  });
-  const link = `https://discord.com/channels/${GUILD}/${threadId}`;
-  for (const d of await devIds()) {
-    await dm(d, { content: `❓ **New question the bot couldn't answer**\n**${clip(title, 120)}**\n> ${clip(text, 600).replace(/\n/g, "\n> ")}\n${link}`, allowed_mentions: { parse: [] } });
-  }
-}
-async function tagSolved(thread: any) {
-  const forum = await api(`/channels/${FORUM}`);
-  const solved = (forum?.available_tags || []).find((t: any) => /solved/i.test(t.name));
-  if (!solved) return;
-  const tags = Array.from(new Set([...(thread.applied_tags || []), solved.id])).slice(0, 5);
-  await api(`/channels/${thread.id}`, "PATCH", { applied_tags: tags });
+async function recent(user: string, minutes: number) {
+  const { data } = await db.from("ask_answers").select("faq").eq("user_id", user).gt("at", new Date(Date.now() - minutes * 60000).toISOString());
+  return (data || []).map((r: any) => String(r.faq));
 }
 
 async function poll() {
-  const act = await api(`/guilds/${GUILD}/threads/active`);
-  const threads = (act?.threads || []).filter((t: any) => t.parent_id === FORUM);
-  if (!threads.length) return { threads: 0 };
-  const { data: rows } = await db.from("ask_threads").select("*").in("thread_id", threads.map((t: any) => t.id));
-  const known = new Map((rows || []).map((r: any) => [r.thread_id, r]));
+  let { data: cur } = await db.from("ask_threads").select("*").eq("thread_id", CHANNEL).maybeSingle();
+  if (!cur) {
+    await db.from("ask_threads").upsert({ thread_id: CHANNEL, title: "#ask-a-question", last_seen: CHANNEL }, { onConflict: "thread_id", ignoreDuplicates: true });
+    ({ data: cur } = await db.from("ask_threads").select("*").eq("thread_id", CHANNEL).maybeSingle());
+  }
+  if (!cur) return { error: "no cursor" };
+  const msgs = ((await api(`/channels/${CHANNEL}/messages?after=${cur.last_seen}&limit=50`)) || [])
+    .sort((a: any, b: any) => (big(a.id) < big(b.id) ? -1 : 1));
+  if (!msgs.length) return { messages: 0 };
+  // claim these messages (conditional update: only one run wins)
+  const { data: claimed } = await db.from("ask_threads").update({ last_seen: msgs[msgs.length - 1].id, updated_at: new Date().toISOString() })
+    .eq("thread_id", CHANNEL).eq("last_seen", cur.last_seen).select();
+  if (!claimed || !claimed.length) return { skipped: true };
   const devs = new Set(await devIds());
-  let done = 0;
-  for (const t of threads) {
-    let row: any = known.get(t.id);
-    if (row && row.human) continue;
-    if (row && t.last_message_id && big(t.last_message_id) <= big(row.last_seen)) continue;
-    if (!row) {
-      // brand-new post: claim it so a second run can't answer it twice
-      const { data } = await db.from("ask_threads").upsert({ thread_id: t.id, owner_id: t.owner_id, title: clip(t.name, 200), last_seen: "0" }, { onConflict: "thread_id", ignoreDuplicates: true }).select();
-      if (!data || !data.length) continue;
-      row = data[0];
-    }
-    const msgs = ((await api(`/channels/${t.id}/messages?after=${row.last_seen}&limit=50`)) || [])
-      .sort((a: any, b: any) => (big(a.id) < big(b.id) ? -1 : 1));
-    if (!msgs.length) continue;
-    const newest = msgs[msgs.length - 1].id;
-    // claim these messages (conditional update: only one run wins)
-    const { data: claimed } = await db.from("ask_threads").update({ last_seen: newest, updated_at: new Date().toISOString() })
-      .eq("thread_id", t.id).eq("last_seen", row.last_seen).select();
-    if (!claimed || !claimed.length) continue;
-    const humanNow = msgs.some((m: any) => !m.author?.bot && m.author?.id !== row.owner_id && devs.has(m.author?.id));
-    if (humanNow) { await db.from("ask_threads").update({ human: true }).eq("thread_id", t.id); continue; }
-    const fromOwner = msgs.filter((m: any) => !m.author?.bot && m.author?.id === row.owner_id);
-    if (!fromOwner.length) continue;
-    const first = row.last_seen === "0";
-    const text = (first ? t.name + "\n" : "") + fromOwner.map((m: any) => m.content || "").join("\n");
-    const lastMsg = fromOwner[fromOwner.length - 1];
-    if (!first && THANKS.test(fromOwner.map((m: any) => m.content || "").join(" "))) {
-      await api(`/channels/${t.id}/messages/${lastMsg.id}/reactions/${encodeURIComponent("✅")}/@me`, "PUT");
-      await tagSolved(t);
+  let answered = 0;
+  for (const m of msgs) {
+    if (!m.author || m.author.bot || ![0, 19].includes(m.type)) continue;
+    const uid = String(m.author.id);
+    if (devs.has(uid)) continue;
+    const ref = m.referenced_message;
+    if (ref && ref.author && devs.has(String(ref.author.id))) continue; // talking with a dev
+    const text = String(m.content || "");
+    const given = await recent(uid, 60);
+    if (THANKS.test(text)) {
+      if (given.length) await api(`/channels/${CHANNEL}/messages/${m.id}/reactions/${encodeURIComponent("✅")}/@me`, "PUT");
       continue;
     }
-    const faqs = match(text, first ? [] : row.answered);
+    const faqs = match(text, given);
     if (faqs.length) {
-      await answer(t.id, row.owner_id, lastMsg.id, faqs, first);
-      await db.from("ask_threads").update({ answered: [...row.answered, ...faqs.map((f) => f.id)] }).eq("thread_id", t.id);
-    } else if (!row.devs_pinged) {
-      await askDevs(t.id, row.owner_id, t.name, text);
-      await db.from("ask_threads").update({ devs_pinged: true }).eq("thread_id", t.id);
+      const first = !given.length;
+      await reply(m, `${first ? "Hey " : ""}<@${uid}>${first ? "! 👋" : ""} ` + faqs.map((f) => f.a).join("\n\n") +
+        (first ? "\n-# I'm the Repline bot. Not what you meant? Ask again in other words, or the team will help." : ""));
+      await db.from("ask_answers").insert(faqs.map((f) => ({ user_id: uid, faq: f.id })));
+      answered++;
+    } else if (QUESTION.test(text) && text.trim().length >= 8 && !given.includes("devs")) {
+      await reply(m, `<@${uid}> Good question! I don't have a sure answer, so I've asked the team. Someone will reply here soon. ⏳`);
+      for (const d of devs) {
+        await dm(d, { content: `❓ **Question in #ask-a-question the bot couldn't answer**\nFrom **${clip(m.author.global_name || m.author.username, 40)}**\n> ${clip(text, 600).replace(/\n/g, "\n> ")}\n${jump(m.id)}`, allowed_mentions: { parse: [] } });
+      }
+      await db.from("ask_answers").insert({ user_id: uid, faq: "devs" });
+      answered++;
     }
-    done++;
   }
-  return { threads: threads.length, handled: done };
+  return { messages: msgs.length, answered };
 }
 
 Deno.serve(async (req) => {
