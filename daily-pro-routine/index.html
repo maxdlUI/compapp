@@ -268,7 +268,10 @@ html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-o
 html.anim .ug-box { animation: updrise .5s var(--ease); }
 .ug-box h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.8px; }
 .ug-bar { width: 100%; height: 8px; border-radius: 4px; background: var(--steel); overflow: hidden; }
-.ug-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c4)); border-radius: 4px; transition: width .4s var(--ease); }
+.ug-bar i { display: block; height: 100%; background: var(--porcelain); border-radius: 4px; transition: width .4s var(--ease); }
+.ug-ver { width: 104px; height: 104px; border-radius: 26px; background: var(--steel); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); display: grid; place-content: center; text-align: center; gap: 2px; }
+.ug-ver span { font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--ash); }
+.ug-ver b { font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; font-variant-numeric: tabular-nums; }
 .launch-wrap { padding: 10px var(--gut-r) 0 var(--gut-l); }
 .launch-wrap[hidden] { display: none; }
 .launch { max-width: 1024px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: 20px; background: linear-gradient(90deg, #2a1d4d 0%, #0b2a5c 100%); box-shadow: inset 0 0 0 1px rgba(168, 85, 247, .45); font-size: 14px; }
@@ -3408,7 +3411,7 @@ const COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff", "#5cc6ff"
     if (u.state === "ready") body = `<p class="small">Repline ${v} is downloaded. It installs in a few seconds and opens again by itself.</p><button class="pill big" type="button" id="ug-go">Update now</button>`;
     else if (u.state === "error") body = `<p class="small">The update didn't download. Check your internet and try again.</p><div class="hero-cta" style="margin:0"><button class="pill big" type="button" id="ug-retry">Try again</button><a class="pill big out" href="https://repline.pages.dev/download/windows" target="_blank" rel="noopener">Download from the website</a></div>`;
     else body = `<p class="small">Downloading Repline ${v}… ${pct} %</p><div class="ug-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
-    g.innerHTML = `<div class="ug-box"><div class="gift-ico">${svgI("star")}</div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
+    g.innerHTML = `<div class="ug-box"><div class="ug-ver" aria-hidden="true"><span>Version</span><b>${esc(String(u.version || "").replace(/\.0$/, ""))}</b></div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
     const go = $("ug-go"); if (go) go.addEventListener("click", installUpdate);
     const rt = $("ug-retry"); if (rt) rt.addEventListener("click", () => { DESK.updates.check(); upd = Object.assign({}, upd, { state: "downloading", progress: 0 }); renderUpdGate(); });
   }
