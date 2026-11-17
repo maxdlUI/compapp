@@ -53,7 +53,7 @@ Diesen Server legst du in deinem Discord-Konto an. Alle Texte unten sind auf Eng
 **HELP**
 - `#support`: Forum-Kanal mit den Tags *Website*, *Windows app*, *Account*, *Sign-in*
 - `#report-a-bug` (`1572181354353926165`): Bug-Bot-Kanal (seit 17.11.2026, ersetzt das alte Forum #bug-reports). Mitglieder können nicht schreiben, nur den Knopf „Report a bug“ nutzen oder `/bug`. Jede Meldung bekommt einen Thread (Slowmode 10 s, schließt sich nach 3 Tagen). Fixierte Bot-Nachricht mit „Report a bug“ und „My reports“.
-- `#ideas`: Forum-Kanal, Reaktionen 👍 erlaubt
+- `#suggest-a-feature` (`1572183657177940049`): Ideen-Bot-Kanal (seit 17.11.2026, ersetzt das alte Forum #ideas). Knopf „Suggest a feature“ oder `/idea`; jede Idee bekommt einen Thread mit „👍 Upvote“-Knopf (eine Stimme pro Person). Steht auch im Willkommensbildschirm.
 
 **PARTNERS**
 - `#partners-info`: nur lesen. Was Partner bekommen (Coming soon).

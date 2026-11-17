@@ -2970,8 +2970,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         </div><p class="dr-foot">Game detection only looks at the list of running programs, like Task Manager. It never touches Fortnite's memory, files or network, so there's no ban risk. With it on, routines with the game running are Verified. KovaaK's tracking only reads the result files KovaaK's saves in its stats folder and adds them to your account.</p></section>`;
       h += `<section class="dr-sec"><h3>Help</h3><div class="group">
           <div class="row"><span>Found a bug?<br><span class="tiny">Your version and device are added for you.</span></span><button class="pill sm" type="button" id="bug-open">Report a bug</button></div>
-          <div class="row"><span>Your reports</span><button class="pill sm out" type="button" id="bug-mine">Show</button></div>
-        </div><p class="dr-foot">You can also report bugs in our Discord in #report-a-bug. We DM you when your bug is fixed.</p></section>`;
+          <div class="row"><span>Got an idea?<br><span class="tiny">Tell us what Repline should do next.</span></span><button class="pill sm" type="button" id="idea-open">Suggest a feature</button></div>
+          <div class="row"><span>Your reports and ideas</span><button class="pill sm out" type="button" id="bug-mine">Show</button></div>
+        </div><p class="dr-foot">You can also use #report-a-bug and #suggest-a-feature in our Discord. We DM you when your bug is fixed or your idea goes live.</p></section>`;
       if (DESK && DESK.updates) {
         const u = upd || {}, st = u.state || "idle";
         const txt = { checking: "Checking for updates…", downloading: `Downloading ${esc(u.version || "")} · ${u.progress || 0} %`, ready: `Version ${esc(u.version || "")} is ready`, latest: "Up to date", error: "Couldn't check. Try again later." }[st] || (u.enabled === false ? "Updates work in the installed app" : "Automatic");
@@ -3059,6 +3060,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     on("rpc-on", "change", (e) => { settings.rpc = e.target.checked; saveSettings(); pushRpc(); });
     on("rpc-name", "change", (e) => { settings.rpcName = e.target.checked; saveSettings(); pushRpc(); });
     on("bug-open", "click", () => { closeDrawer(); setTimeout(openBugReport, 120); });
+    on("idea-open", "click", () => { closeDrawer(); setTimeout(openIdea, 120); });
     on("bug-mine", "click", () => { closeDrawer(); setTimeout(showMyBugs, 120); });
     on("upd-check", "click", () => { DESK.updates.check(); upd = { ...(upd || {}), state: "checking" }; renderDrawer(); });
     on("upd-now", "click", installUpdate);
@@ -3643,12 +3645,31 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         } catch (e) { btn.disabled = false; toast("Couldn't send it. Please try again."); }
       }));
   }
+  function openIdea() {
+    if (!signedIn()) { askSignIn("goal"); return; }
+    openModal(`<h2 id="sheet-t">Suggest a feature</h2><p class="small" style="margin:0">What should Repline do? Every idea gets its own thread in our Discord, where players can upvote it.</p>
+      <label class="tiny" for="idea-what">Your idea</label><textarea id="idea-what" class="co-msg" maxlength="1500" placeholder="e.g. A routine just for edit courses" style="min-height:96px"></textarea>
+      <label class="tiny" for="idea-why">How would it help you? (optional)</label><textarea id="idea-why" class="co-msg" maxlength="1000" style="min-height:64px"></textarea>
+      <div class="acts"><button class="pill out" type="button" data-close>Cancel</button><button class="pill" type="button" id="idea-send">Send idea</button></div>`,
+      (sh, close) => sh.querySelector("#idea-send").addEventListener("click", async () => {
+        const what = sh.querySelector("#idea-what").value.trim(), why = sh.querySelector("#idea-why").value.trim();
+        if (what.length < 3) { toast("Tell us your idea"); sh.querySelector("#idea-what").focus(); return; }
+        const btn = sh.querySelector("#idea-send"); btn.disabled = true;
+        if (!(sb && cloudUser)) { close(); toast("Idea sent (demo)"); return; }
+        try {
+          const i = appInfo();
+          const { data, error } = await sb.rpc("suggest_feature", { idea_text: what, why_text: why || null, app_platform: i.platform, app_version: DESK ? i.ver : null });
+          if (error || !data || data.error) { btn.disabled = false; toast(data && data.error === "too_many" ? "You've sent 5 ideas today. Thanks a lot!" : "Couldn't send it. Please try again."); return; }
+          close(); toast(`Thanks! Idea #${data.id} is in. 💡`);
+        } catch (e) { btn.disabled = false; toast("Couldn't send it. Please try again."); }
+      }));
+  }
   async function showMyBugs() {
     if (!(sb && cloudUser)) { toast("Sign in to see your reports"); return; }
-    const { data } = await sb.from("bug_reports").select("id, what, status, created_at").order("id", { ascending: false }).limit(10);
-    const st = { new: "New", working: "Working on it", fixed: "Fixed ✓", notabug: "Closed" };
-    const rows = (data || []).map((r) => `<div class="row"><span style="min-width:0"><b>#${r.id}</b> · ${esc(String(r.what).slice(0, 70))}</span><span class="tiny" style="white-space:nowrap;color:${r.status === "fixed" ? "var(--pos)" : "var(--ash)"}">${st[r.status] || r.status}</span></div>`).join("");
-    openModal(`<h2 id="sheet-t">Your reports</h2>${rows ? `<div class="group">${rows}</div>` : '<p class="small" style="margin:0">You haven\'t reported a bug yet. Thanks for keeping an eye out!</p>'}<div class="acts"><button class="pill" type="button" data-close>Done</button></div>`);
+    const { data } = await sb.from("bug_reports").select("id, kind, what, status, votes, created_at").order("id", { ascending: false }).limit(15);
+    const st = { new: "New", working: "Working on it", fixed: "Fixed ✓", notabug: "Closed" }, sti = { new: "New", working: "Planned", fixed: "Live ✓", notabug: "Not now" };
+    const rows = (data || []).map((r) => `<div class="row"><span style="min-width:0">${r.kind === "idea" ? "💡" : "🐞"} <b>#${r.id}</b> · ${esc(String(r.what).slice(0, 70))}${r.kind === "idea" && r.votes ? ` <span class="tiny">· ${r.votes} 👍</span>` : ""}</span><span class="tiny" style="white-space:nowrap;color:${r.status === "fixed" ? "var(--pos)" : "var(--ash)"}">${(r.kind === "idea" ? sti : st)[r.status] || r.status}</span></div>`).join("");
+    openModal(`<h2 id="sheet-t">Your reports and ideas</h2>${rows ? `<div class="group">${rows}</div>` : '<p class="small" style="margin:0">Nothing yet. Thanks for keeping an eye out!</p>'}<div class="acts"><button class="pill" type="button" data-close>Done</button></div>`);
   }
   function openModal(html, bind, onClose) {
     const m = $("modal"), sh = $("sheet");
@@ -3754,6 +3775,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const x = list[0], rest = list.slice(1);
     let t = "", b = "", ic = "gift";
     if (x.kind === "gift") { t = `A gift from ${x.from || "Repline"}`; b = `You got <b>${planWord(x.plan)} for ${monthsWord(+x.months || 1)}</b>. ${x.note ? esc(x.note) : "Thanks for helping make Repline better."}`; }
+    else if (x.kind === "idea") { ic = x.status === "fixed" ? "star" : "check"; t = x.status === "fixed" ? "Your idea is live" : x.status === "working" ? "Your idea is planned" : "Thanks for your idea"; b = x.status === "fixed" ? `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) is now in Repline. <b>Thank you</b> for suggesting it!` : x.status === "working" ? `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) is planned. We'll let you know when it's live.` : `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) isn't planned right now, but we keep every idea in mind. Thanks!`; }
     else if (x.kind === "bug") { ic = "check"; t = x.status === "fixed" ? "Your bug is fixed" : "Thanks for your report"; b = x.status === "fixed" ? `Bug #${esc(String(x.id))} (“${esc(x.what || "")}”) is fixed. <b>Thank you</b> for reporting it, you helped make Repline better!` : `We checked bug #${esc(String(x.id))} (“${esc(x.what || "")}”): it works as intended. Thanks for taking the time to report it!`; }
     else if (x.kind === "invite") { t = "Invite reward"; b = "3 friends trained with Repline. <b>1 month Standard</b> is yours. Thanks for spreading the word."; ic = "share"; }
     else if (x.kind === "monthly") { ic = x.rank === 1 ? "star" : x.rank <= 10 ? "crown" : "medal"; t = `#${x.rank} last month`; b = x.rank === 1 ? "You won the month. <b>3 months Pro</b> and the Champion badge are yours." : x.rank <= 3 ? "You made the podium. <b>1 month Pro</b> and the Podium badge are yours." : x.rank <= 10 ? "Top 10. <b>1 month Standard</b> and the Top 10 badge are yours." : "Top 50. The Top 50 badge is yours."; }

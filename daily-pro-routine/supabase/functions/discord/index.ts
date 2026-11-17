@@ -1,5 +1,6 @@
 // Repline bug bot. Discord sends button presses, /bug and form submits here (Interactions Endpoint URL);
 // the database pings it with {"bugs": true} when a report comes from the app (013_bug_reports.sql).
+// Feature ideas (kind = 'idea') run through the same flow in #suggest-a-feature, with an upvote button.
 // It sorts each report, opens a thread in #report-a-bug, asks the reporter follow-up questions by DM,
 // DMs the devs with status buttons, and thanks the reporter when a dev marks the bug fixed.
 //
@@ -11,6 +12,7 @@ const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const PUBLIC_KEY = "29c4bd3d09ce957a1f4c81e242ecb2f97f3b303494a87292362eed99791d3440";
 const CHANNEL = "1572181354353926165"; // #report-a-bug
+const IDEA_CHANNEL = "1572183657177940049"; // #suggest-a-feature
 const API = "https://discord.com/api/v10";
 const H = { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" };
 const EPH = 64;
@@ -72,13 +74,26 @@ function prioOf(t: string) {
 const words = (t: string) => new Set(String(t).toLowerCase().replace(/[^a-z0-9äöüß ]/g, " ").split(/\s+/).filter((w) => w.length > 3));
 async function similarCount(r: Report) {
   const since = new Date(Date.now() - 7 * 864e5).toISOString();
-  const { data } = await db.from("bug_reports").select("id, what, area").neq("id", r.id).gte("created_at", since).eq("area", r.area).limit(200);
+  const { data } = await db.from("bug_reports").select("id, what, area").neq("id", r.id).gte("created_at", since).eq("area", r.area).eq("kind", r.kind || "bug").limit(200);
   const w = words(r.what);
   return (data || []).filter((x: any) => { let n = 0; words(x.what).forEach((k) => { if (w.has(k)) n++; }); return n >= 2; }).length;
 }
 
 // ---------- messages ----------
+function ideaEmbed(r: Report, title?: string) {
+  const fields = [
+    { name: "Idea", value: clip(r.what, 1000) || "–" },
+    ...(r.before ? [{ name: "Why it helps", value: clip(r.before, 600) }] : []),
+    ...(r.extra ? [{ name: "More from the player", value: clip(r.extra, 800) }] : []),
+    { name: "Area", value: r.area || "Other", inline: true },
+    { name: "Votes", value: String(r.votes || 0), inline: true },
+    ...(r.similar_count ? [{ name: "Similar", value: `${r.similar_count} similar idea${r.similar_count === 1 ? "" : "s"} this week`, inline: true }] : [])
+  ];
+  return { title: title || `💡 Idea #${r.id}`, color: 0xffcf4a, fields, footer: { text: `${r.source === "app" ? "Sent from the app" : "Sent in Discord"}${r.discord_name ? " · " + r.discord_name : ""}` }, timestamp: r.created_at };
+}
+const voteRow = (id: number, n: number) => [{ type: 1, components: [{ type: 2, style: 2, label: `Upvote · ${n}`, emoji: { name: "👍" }, custom_id: `iv:${id}` }] }];
 function reportEmbed(r: Report, title?: string) {
+  if (r.kind === "idea") return ideaEmbed(r, title);
   const fields = [
     { name: "What happened", value: clip(r.what, 1000) || "–" },
     ...(r.before ? [{ name: "Right before", value: clip(r.before, 600) }] : []),
@@ -109,11 +124,12 @@ function questions(r: Report) {
   }
   return { msg, rows };
 }
-function devButtons(id: number, status: string) {
+function devButtons(id: number, status: string, kind = "bug") {
+  const L = kind === "idea" ? ["Planned", "Done", "Not now"] : ["Working on it", "Fixed", "Not a bug"];
   return [{ type: 1, components: [
-    { type: 2, style: status === "working" ? 1 : 2, label: "Working on it", custom_id: `bs:${id}:working`, disabled: status !== "new" },
-    { type: 2, style: 3, label: "Fixed", custom_id: `bs:${id}:fixed`, disabled: status === "fixed" || status === "notabug" },
-    { type: 2, style: 2, label: "Not a bug", custom_id: `bs:${id}:notabug`, disabled: status === "fixed" || status === "notabug" }
+    { type: 2, style: status === "working" ? 1 : 2, label: L[0], custom_id: `bs:${id}:working`, disabled: status !== "new" },
+    { type: 2, style: 3, label: L[1], custom_id: `bs:${id}:fixed`, disabled: status === "fixed" || status === "notabug" },
+    { type: 2, style: 2, label: L[2], custom_id: `bs:${id}:notabug`, disabled: status === "fixed" || status === "notabug" }
   ] }];
 }
 
@@ -125,6 +141,7 @@ async function processPending() {
     const { data: claimed } = await db.from("bug_reports").update({ posted_at: new Date().toISOString() }).eq("id", r.id).is("posted_at", null).select("id");
     if (!claimed || !claimed.length) continue;
     const text = `${r.what} ${r.before || ""} ${r.where_ || ""}`;
+    if (r.kind === "idea") { await postIdea(r, text); continue; }
     r.area = areaOf(text); r.priority = prioOf(text); r.similar_count = await similarCount(r);
     const th = await api(`/channels/${CHANNEL}/threads`, "POST", { name: clip(`#${r.id} · ${r.what.replace(/\s+/g, " ")}`, 90), type: 11, auto_archive_duration: 4320, rate_limit_per_user: 10 });
     r.thread_id = th && th.id ? th.id : null;
@@ -147,6 +164,26 @@ async function processPending() {
   }
 }
 
+async function postIdea(r: Report, text: string) {
+  r.area = areaOf(text); r.priority = "medium"; r.similar_count = await similarCount(r); r.votes = 0;
+  const th = await api(`/channels/${IDEA_CHANNEL}/threads`, "POST", { name: clip(`💡 #${r.id} · ${r.what.replace(/\s+/g, " ")}`, 90), type: 11, auto_archive_duration: 10080, rate_limit_per_user: 10 });
+  r.thread_id = th && th.id ? th.id : null;
+  let voteMsg: string | null = null;
+  if (r.thread_id) {
+    const m = await api(`/channels/${r.thread_id}/messages`, "POST", {
+      content: `${r.discord_id ? `<@${r.discord_id}> ` : ""}Thanks for the idea! Everyone can upvote it below, and we read every one. Add pictures or examples right here.`,
+      embeds: [ideaEmbed(r)], components: voteRow(r.id, 0), allowed_mentions: { users: r.discord_id ? [r.discord_id] : [] }
+    });
+    voteMsg = m && m.id ? m.id : null;
+  }
+  await db.from("bug_reports").update({ area: r.area, similar_count: r.similar_count, thread_id: r.thread_id, vote_msg: voteMsg, updated_at: new Date().toISOString() }).eq("id", r.id);
+  if (r.discord_id && (!r.before || String(r.what).length < 40)) {
+    await dm(r.discord_id, { content: `Hey! Thanks for your idea #${r.id} (“${clip(r.what, 80)}”). 💡\nCan you tell us a bit more: how would you use it, and what would it help you with?`, components: [{ type: 1, components: [{ type: 2, style: 1, label: "Add details", custom_id: `bq:${r.id}:more` }] }] });
+  }
+  const link = r.thread_id ? `https://discord.com/channels/1570385914096783381/${r.thread_id}` : "";
+  for (const d of await devIds()) await dm(d, { content: `💡 New idea #${r.id}${link ? ` · ${link}` : ""}`, embeds: [ideaEmbed(r)], components: devButtons(r.id, "new", "idea") });
+}
+
 // ---------- the reporter answers / a dev sets a status ----------
 async function getReport(id: number) { const { data } = await db.from("bug_reports").select("*").eq("id", id).maybeSingle(); return data as Report | null; }
 async function noteToDevs(r: Report, line: string) {
@@ -159,13 +196,18 @@ async function setStatus(r: Report, status: string) {
     fixed: [`✅ Bug #${r.id} is fixed. Thank you for reporting it, you helped make Repline better!`, `✅ Your bug #${r.id} (“${clip(r.what, 80)}”) is fixed! Thank you so much for reporting it, you helped make Repline better for everyone. 🙏`],
     notabug: [`Bug #${r.id} was checked: it works as intended, so we're closing it. Thanks for taking the time to report it!`, `Thanks for reporting #${r.id} (“${clip(r.what, 80)}”)! We checked it and it works as intended, so we're closing it. If something still feels wrong, just report it again with a bit more detail.`]
   };
+  if (r.kind === "idea") {
+    texts.working = [`🗓️ Idea #${r.id} is planned! Thanks for suggesting it.`, `Great news: your idea #${r.id} (“${clip(r.what, 80)}”) is planned for Repline! We'll message you when it's live. 🙌`];
+    texts.fixed = [`🎉 Idea #${r.id} is live in Repline! Thank you for suggesting it.`, `🎉 Your idea #${r.id} (“${clip(r.what, 80)}”) is now live in Repline! Thank you so much for suggesting it, you helped shape Repline. 🙏`];
+    texts.notabug = [`Idea #${r.id} isn't planned right now. Thanks a lot for suggesting it, we keep every idea in mind!`, `Thanks for your idea #${r.id} (“${clip(r.what, 80)}”)! We looked at it and it isn't planned right now, but we keep every idea in mind. Keep them coming!`];
+  }
   const [thread, dmText] = texts[status] || ["", ""];
   if (r.thread_id && thread) {
     await api(`/channels/${r.thread_id}/messages`, "POST", { content: thread });
     if (status !== "working") await api(`/channels/${r.thread_id}`, "PATCH", { archived: true });
   }
   if (r.discord_id && dmText) await dm(r.discord_id, { content: dmText });
-  if (r.user_id && status !== "working") await db.from("notices").insert({ user_id: r.user_id, kind: "bug", payload: { id: r.id, status, what: clip(r.what, 120) } });
+  if (r.user_id && (status !== "working" || r.kind === "idea")) await db.from("notices").insert({ user_id: r.user_id, kind: r.kind === "idea" ? "idea" : "bug", payload: { id: r.id, status, what: clip(r.what, 120) } });
 }
 
 function modal(customId: string, title: string, inputs: any[]) { return { type: 9, data: { custom_id: customId, title, components: inputs.map((c) => ({ type: 1, components: [c] })) } }; }
@@ -175,6 +217,11 @@ const reportModal = () => modal("bug_modal", "Report a bug", [
   { type: 4, custom_id: "before", label: "What did you do right before?", style: 2, required: false, max_length: 1000 },
   { type: 4, custom_id: "version", label: "Version (if you know it)", style: 1, required: false, max_length: 40, placeholder: "e.g. 1.10.0" }
 ]);
+const ideaModal = () => modal("idea_modal", "Suggest a feature", [
+  { type: 4, custom_id: "what", label: "What should Repline do?", style: 2, required: true, min_length: 3, max_length: 1500, placeholder: "e.g. A routine just for edit courses" },
+  { type: 4, custom_id: "before", label: "How would it help you?", style: 2, required: false, max_length: 1000 },
+  { type: 4, custom_id: "where", label: "Where? (optional)", style: 1, required: false, max_length: 100, placeholder: "Website, Windows app, overlay, Discord…" }
+]);
 const field = (it: any, id: string) => { for (const row of it.data.components || []) for (const c of row.components || []) if (c.custom_id === id) return String(c.value || "").trim(); return ""; };
 
 async function handle(it: any, wait: (p: Promise<unknown>) => void) {
@@ -182,19 +229,33 @@ async function handle(it: any, wait: (p: Promise<unknown>) => void) {
   const uid = user ? String(user.id) : "";
   if (it.type === 1) return json({ type: 1 });
   if (it.type === 2 && it.data && it.data.name === "bug") return json(reportModal());
+  if (it.type === 2 && it.data && it.data.name === "idea") return json(ideaModal());
   if (it.type === 3) {
     const id: string = it.data.custom_id || "";
     if (id === "bug_open") return json(reportModal());
-    if (id === "bug_mine") {
-      const { data } = await db.from("bug_reports").select("id, what, status").eq("discord_id", uid).order("id", { ascending: false }).limit(10);
-      const st: Record<string, string> = { new: "🆕 New", working: "🛠️ Working on it", fixed: "✅ Fixed", notabug: "☑️ Closed" };
+    if (id === "idea_open") return json(ideaModal());
+    if (id === "bug_mine" || id === "idea_mine") {
+      const idea = id === "idea_mine";
+      const { data } = await db.from("bug_reports").select("id, what, status, votes").eq("discord_id", uid).eq("kind", idea ? "idea" : "bug").order("id", { ascending: false }).limit(10);
+      const st: Record<string, string> = idea ? { new: "🆕 New", working: "🗓️ Planned", fixed: "🎉 Live", notabug: "💤 Not now" } : { new: "🆕 New", working: "🛠️ Working on it", fixed: "✅ Fixed", notabug: "☑️ Closed" };
       const lines = (data || []).map((r: any) => `**#${r.id}** · ${st[r.status] || r.status} · ${clip(r.what, 60)}`);
-      return json({ type: 4, data: { flags: EPH, content: lines.length ? lines.join("\n") : "You haven't reported a bug yet. Thanks for keeping an eye out!" } });
+      return json({ type: 4, data: { flags: EPH, content: lines.length ? lines.join("\n") : idea ? "You haven't suggested a feature yet. We'd love to hear your ideas!" : "You haven't reported a bug yet. Thanks for keeping an eye out!" } });
+    }
+    const v = /^iv:(\d+)$/.exec(id);
+    if (v) {
+      const rid = +v[1];
+      const { error } = await db.from("idea_votes").insert({ report_id: rid, voter: uid });
+      if (error) return json({ type: 4, data: { flags: EPH, content: "You already upvoted this idea. Thanks! 👍" } });
+      const { count } = await db.from("idea_votes").select("voter", { count: "exact", head: true }).eq("report_id", rid);
+      const n = count || 0;
+      await db.from("bug_reports").update({ votes: n }).eq("id", rid);
+      const embeds = (it.message.embeds || []).map((e: any) => ({ ...e, fields: (e.fields || []).map((f: any) => f.name === "Votes" ? { ...f, value: String(n) } : f) }));
+      return json({ type: 7, data: { embeds, components: voteRow(rid, n) } });
     }
     let m = /^bq:(\d+):(ver|freq):(.+)$/.exec(id);
     if (m) {
       const r = await getReport(+m[1]);
-      if (!r || r.discord_id !== uid) return json({ type: 4, data: { flags: EPH, content: "This question is for the person who reported the bug." } });
+      if (!r || r.discord_id !== uid) return json({ type: 4, data: { flags: EPH, content: "This question is for the person who sent it." } });
       const patch: Record<string, string> = m[2] === "ver" ? { version: ({ latest: "newest app", older: "older app", website: "website", unsure: "not sure" } as Record<string, string>)[m[3]] || m[3] } : { freq: { every: "Every time", sometimes: "Sometimes", once: "Only once" }[m[3]] || m[3] };
       await db.from("bug_reports").update({ ...patch, updated_at: new Date().toISOString() }).eq("id", r.id);
       wait((async () => {
@@ -205,7 +266,7 @@ async function handle(it: any, wait: (p: Promise<unknown>) => void) {
       return json({ type: 4, data: { flags: EPH, content: "Got it, thanks! 🙏" } });
     }
     m = /^bq:(\d+):more$/.exec(id);
-    if (m) return json(modal(`bm:${m[1]}`, `More about bug #${m[1]}`, [{ type: 4, custom_id: "extra", label: "What did you click, what did you expect?", style: 2, required: true, max_length: 1500 }]));
+    if (m) return json(modal(`bm:${m[1]}`, `Tell us more about #${m[1]}`, [{ type: 4, custom_id: "extra", label: "Add the details here", style: 2, required: true, max_length: 1500 }]));
     m = /^bs:(\d+):(working|fixed|notabug)$/.exec(id);
     if (m) {
       if (!(await devIds()).includes(uid)) return json({ type: 4, data: { flags: EPH, content: "Only the Repline team can change this." } });
@@ -213,8 +274,8 @@ async function handle(it: any, wait: (p: Promise<unknown>) => void) {
       if (!r) return json({ type: 4, data: { flags: EPH, content: "Bug not found." } });
       const status = m[2];
       wait(setStatus(r, status));
-      const label = { working: "🛠️ Working on it", fixed: "✅ Fixed, the reporter was thanked", notabug: "☑️ Closed as not a bug" }[status];
-      return json({ type: 7, data: { content: `${it.message.content}\n**Status:** ${label}`, embeds: it.message.embeds, components: devButtons(r.id, status) } });
+      const label = r.kind === "idea" ? { working: "🗓️ Planned, the player was told", fixed: "🎉 Live, the player was thanked", notabug: "💤 Not now, the player was thanked" }[status] : { working: "🛠️ Working on it", fixed: "✅ Fixed, the reporter was thanked", notabug: "☑️ Closed as not a bug" }[status];
+      return json({ type: 7, data: { content: `${it.message.content}\n**Status:** ${label}`, embeds: it.message.embeds, components: devButtons(r.id, status, r.kind) } });
     }
     return json({ type: 4, data: { flags: EPH, content: "This button is no longer active." } });
   }
@@ -234,10 +295,24 @@ async function handle(it: any, wait: (p: Promise<unknown>) => void) {
       wait(processPending());
       return json({ type: 4, data: { flags: EPH, content: `Thanks! Your report is **#${data.id}**. You'll find your own thread in <#${CHANNEL}> in a moment, and we may DM you a quick question.` } });
     }
+    if (id === "idea_modal") {
+      const what = field(it, "what");
+      if (what.length < 3) return json({ type: 4, data: { flags: EPH, content: "Please tell us your idea." } });
+      const { count } = await db.from("bug_reports").select("id", { count: "exact", head: true }).eq("discord_id", uid).eq("kind", "idea").gte("created_at", new Date(Date.now() - 864e5).toISOString());
+      if ((count || 0) >= 5) return json({ type: 4, data: { flags: EPH, content: "You've sent 5 ideas today. Thanks a lot! Add more to your existing threads." } });
+      const { data: prof } = await db.from("profiles").select("id").eq("discord_id", uid).maybeSingle();
+      const { data, error } = await db.from("bug_reports").insert({
+        kind: "idea", source: "discord", discord_id: uid, discord_name: user ? (user.global_name || user.username) : null, user_id: prof ? prof.id : null,
+        where_: field(it, "where").slice(0, 100) || null, what: what.slice(0, 1500), before: field(it, "before").slice(0, 1000) || null
+      }).select("id").single();
+      if (error || !data) return json({ type: 4, data: { flags: EPH, content: "Couldn't save your idea. Please try again in a minute." } });
+      wait(processPending());
+      return json({ type: 4, data: { flags: EPH, content: `Thanks! Your idea is **#${data.id}**. You'll find it in <#${IDEA_CHANNEL}> in a moment, where everyone can upvote it. 💡` } });
+    }
     const m = /^bm:(\d+)$/.exec(id);
     if (m) {
       const r = await getReport(+m[1]);
-      if (!r || r.discord_id !== uid) return json({ type: 4, data: { flags: EPH, content: "This is for the person who reported the bug." } });
+      if (!r || r.discord_id !== uid) return json({ type: 4, data: { flags: EPH, content: "This is for the person who sent it." } });
       const extra = field(it, "extra").slice(0, 1500);
       await db.from("bug_reports").update({ extra: [r.extra, extra].filter(Boolean).join("\n").slice(0, 1500), updated_at: new Date().toISOString() }).eq("id", r.id);
       wait((async () => {

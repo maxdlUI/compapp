@@ -42,7 +42,7 @@ The Cloudflare token and the Discord bot token are saved on this cloud environme
 
 ## Discord
 
-Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app id `1570194691465420870`. Channel #drops `1570793070125908108` (only the bot posts there), #announcements `1570387421269467186`, #ideas `1570387442668671079`, #download `1570387423895224410`.
+Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app id `1570194691465420870`. Channel #drops `1570793070125908108` (only the bot posts there), #announcements `1570387421269467186`, #report-a-bug `1572181354353926165`, #suggest-a-feature `1572183657177940049`, #download `1570387423895224410`.
 
 ## Routine Studio (dev only)
 
@@ -62,6 +62,6 @@ Public routines and blocks are stored in the database table `routine_catalog` (n
 - **Drops is live** (website + Windows app 1.6.8, `008_drops.sql` applied, `remind` edge function v7 deployed: wins post in #drops).
 - Drop points are +10/+15/+25/+50 (confirmed by the owner) so spins don't outweigh training on the leaderboard.
 - Drops items since 1.10.0 (`012_more_items.sql`): overlay skins (neon, carbon, glass, gold = Pro forever), timer rings (neon, bold, thin, pulse), sound packs (coin, victory, synth, air horn). Skins/rings/sounds are equipped in settings (`settings.skin`, `settings.ring`, `settings.alertSound`) and reach the Windows overlay through the overlay state.
-- **Bug bot (17 Nov 2026):** `013_bug_reports.sql` + edge function `discord` (verify_jwt off, Discord Interactions Endpoint URL). Reports come from #report-a-bug (button, `/bug`) and from Repline (Settings → Help → Report a bug, adds version, device, last error). The bot sorts them (area, priority, similar), opens a thread, DMs the reporter follow-up questions with buttons, DMs devs with Working/Fixed/Not a bug buttons; Fixed thanks the reporter by DM, in the thread and as an in-app notice. A scheduled task (`trig_017XkBUkkCRqC5X7QgaBbwBm`, daily 20:42 Berlin) fires into this session: Claude analyses new reports in the code and DMs the devs a German summary.
+- **Bug and idea bot (17 Nov 2026):** `013_bug_reports.sql` + `014_feature_ideas.sql` (ideas are rows with kind = 'idea', upvotes in `idea_votes`, `/idea`, #suggest-a-feature, Settings → Suggest a feature; statuses for ideas: Planned / Done / Not now). + edge function `discord` (verify_jwt off, Discord Interactions Endpoint URL). Reports come from #report-a-bug (button, `/bug`) and from Repline (Settings → Help → Report a bug, adds version, device, last error). The bot sorts them (area, priority, similar), opens a thread, DMs the reporter follow-up questions with buttons, DMs devs with Working/Fixed/Not a bug buttons; Fixed thanks the reporter by DM, in the thread and as an in-app notice. A scheduled task (`trig_017XkBUkkCRqC5X7QgaBbwBm`, daily 20:42 Berlin) fires into this session: Claude analyses new reports in the code and DMs the devs a German summary.
 - Partners: per-partner commission (50 % for 3 months, then 40 %) and vanity creator codes, once a partner agrees.
 - TikTok: posts go through the vidIQ connector (TikTok account "Repline" connected). Every post needs the owner's OK on the draft.
