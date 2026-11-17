@@ -1,7 +1,7 @@
 // Repline question bot for the #ask-a-question channel (a normal text channel).
 // The database calls this every minute ({"poll": true}, 015/016_questions_bot.sql). It reads new messages in the channel,
 // replies to each question with the player mentioned, and DMs the devs when it has no sure answer.
-// It never answers devs, replies to a dev's message, or the same topic twice in an hour for the same player.
+// It stays out when a dev helps someone or a player replies to a dev, and never repeats a topic to the same player within an hour.
 // The answers come from the FAQ below (no paid AI, nothing costs money).
 //
 // Secrets: DISCORD_BOT_TOKEN. Deploy with verify_jwt = false (the call carries nothing to trust; it only reads Discord).
@@ -138,9 +138,10 @@ async function poll() {
   for (const m of msgs) {
     if (!m.author || m.author.bot || ![0, 19].includes(m.type)) continue;
     const uid = String(m.author.id);
-    if (devs.has(uid)) continue;
     const ref = m.referenced_message;
-    if (ref && ref.author && devs.has(String(ref.author.id))) continue; // talking with a dev
+    // a dev helping someone (reply to or mention of another player): stay out of it; a dev's own question gets an answer
+    if (devs.has(uid) && ((ref && ref.author && !ref.author.bot && String(ref.author.id) !== uid) || (m.mentions || []).some((u: any) => !u.bot && String(u.id) !== uid))) continue;
+    if (ref && ref.author && String(ref.author.id) !== uid && devs.has(String(ref.author.id))) continue; // talking with a dev
     const text = String(m.content || "");
     const given = await recent(uid, 60);
     if (THANKS.test(text)) {
