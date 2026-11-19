@@ -100,6 +100,16 @@ body.rg-pulse .ring .cur { animation: rgPulse 1.6s ease-in-out infinite; }
 body.moving .card { -webkit-app-region: drag; cursor: move; box-shadow: inset 0 0 0 2px var(--blue); opacity: 1; }
 .hint { position: absolute; inset: 8px; border-radius: 26px; display: none; place-items: center; background: rgba(8, 28, 56, .94); box-shadow: inset 0 0 0 2px var(--blue); font-size: 14px; font-weight: 600; pointer-events: none; }
 body.moving .hint { display: grid; }
+/* Breathing guide (Ctrl+Shift+B) */
+.breath { position: absolute; inset: 8px; border-radius: 26px; display: none; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 0 22px; background: rgba(29, 29, 31, .94); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+body.breathing .breath { display: grid; }
+body.breathing .card, body.breathing .wave { display: none; }
+.breath .orb { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; }
+.breath .orb i { display: block; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #a1a1a6 70%, #f5f5f7); transform: scale(.45); box-shadow: 0 0 0 2px rgba(245,245,247,.8); }
+.breath .orb i.out { box-shadow: 0 0 0 2px #ffb36b; background: radial-gradient(circle at 35% 30%, #fff, #a1a1a6 70%, #ffb36b); }
+.breath b { display: block; font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+.breath span { font-size: 13px; color: #86868b; }
+.breath .n { font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; color: #f5f5f7; }
 @media (prefers-reduced-motion: reduce) { .card, .swap, .bar i::after, .ring .fil, .ring, .wave { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -116,6 +126,7 @@ body.moving .hint { display: grid; }
   </div>
   <div class="wave" aria-hidden="true"></div>
   <div class="hint">Drag to place · then click Done in Repline</div>
+  <div class="breath" id="breath" aria-live="polite"><div class="orb"><i id="borb"></i></div><div><b id="bphase">Breathe in</b><span id="bround">Box breathing · round 1 of 4</span></div><div class="n" id="bnum">4</div></div>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -211,7 +222,7 @@ body.moving .hint { display: grid; }
   }
   function tick() {
     const s = st.active ? st : (st.moving ? DEMO : null);
-    document.body.classList.toggle("hidden", !s);
+    document.body.classList.toggle("hidden", !s && !breath);
     document.body.classList.toggle("moving", !!st.moving);
     ["neon", "carbon", "glass", "gold"].forEach((k) => document.body.classList.toggle("sk-" + k, st.skin === k));
     ["neon", "bold", "thin", "pulse"].forEach((k) => document.body.classList.toggle("rg-" + k, st.ring === k));
@@ -281,10 +292,26 @@ body.moving .hint { display: grid; }
     doneKey = ""; tick();
     previewT = setTimeout(() => { st = was && was.routine !== "Preview" ? was : { active: false }; doneKey = ""; lastKey = ""; tick(); }, 2600);
   }
+  /* Breathing guide: box breathing 4-4-4-4, 4 rounds */
+  let breath = null;
+  const BPH = [["Breathe in", "in"], ["Hold", "hold"], ["Breathe out", "out"], ["Hold", "holdOut"]];
+  function breathFrame() {
+    if (!breath) { document.body.classList.remove("breathing"); return; }
+    const s = (Date.now() - breath.at) / 1000;
+    if (s >= breath.seconds) { breath = null; document.body.classList.remove("breathing"); return; }
+    document.body.classList.add("breathing"); document.body.classList.remove("hidden");
+    const r = s % 16, i = Math.floor(r / 4), p = (r % 4) / 4, e = .5 - .5 * Math.cos(Math.PI * p);
+    const k = BPH[i][1], scale = k === "in" ? .45 + .55 * e : k === "hold" ? 1 : k === "out" ? 1 - .55 * e : .45;
+    const orb = $("borb"); orb.style.transform = `scale(${scale.toFixed(3)})`; orb.classList.toggle("out", k === "out");
+    $("bphase").textContent = BPH[i][0]; $("bnum").textContent = String(4 - Math.floor(r % 4));
+    $("bround").textContent = `Box breathing · round ${Math.floor(s / 16) + 1} of ${Math.round(breath.seconds / 16)}`;
+    requestAnimationFrame(breathFrame);
+  }
   if (window.overlayBridge) {
     if (overlayBridge.onPreview) overlayBridge.onPreview(preview);
     if (overlayBridge.onCustom) overlayBridge.onCustom((d) => { customUrl = typeof d === "string" ? d : ""; });
     overlayBridge.onState((s) => { st = s || { active: false }; tick(); });
+    if (overlayBridge.onBreath) overlayBridge.onBreath((b) => { breath = b && b.on ? { at: b.at || Date.now(), seconds: b.seconds || 64 } : null; if (breath) requestAnimationFrame(breathFrame); else { document.body.classList.remove("breathing"); tick(); } });
     overlayBridge.onLook((l) => { document.documentElement.style.setProperty("--op", l.opacity); hotkeys = !!l.hotkeys; tick(); });
   }
   setInterval(tick, 250);

@@ -154,9 +154,20 @@ function applyOverlayLook() {
   overlay.webContents.send("overlay:look", { opacity: overlaySettings.opacity, hotkeys: overlaySettings.hotkeys });
 }
 function sendOverlay() { if (overlay) overlay.webContents.send("overlay:state", { ...lastState, moving }); }
+/* Breathing guide in the overlay (Ctrl+Shift+B): box breathing, 4 rounds, works between games without a routine running */
+let breathUntil = 0, breathT = null;
+function toggleBreath() {
+  if (!overlay) createOverlay();
+  const on = Date.now() >= breathUntil;
+  breathUntil = on ? Date.now() + 64000 : 0;
+  clearTimeout(breathT);
+  if (on) breathT = setTimeout(() => { breathUntil = 0; if (overlay) overlay.webContents.send("overlay:breath", { on: false }); updateOverlayVisibility(); }, 64500);
+  overlay.webContents.send("overlay:breath", { on, at: Date.now(), seconds: 64 });
+  updateOverlayVisibility();
+}
 function updateOverlayVisibility() {
   if (!overlay) return;
-  const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil;
+  const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil || Date.now() < breathUntil;
   if (show && !overlay.isVisible()) overlay.showInactive();
   if (!show && overlay.isVisible()) overlay.hide();
 }
@@ -171,13 +182,14 @@ function setMoving(on) {
 }
 
 /* ---------- Hotkeys that work while the game is in front ---------- */
-const HOTKEYS = { "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay", "CommandOrControl+Shift+E": "end" };
+const HOTKEYS = { "CommandOrControl+Shift+B": "breath", "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay", "CommandOrControl+Shift+E": "end" };
 function registerHotkeys() {
   globalShortcut.unregisterAll();
   if (!overlaySettings.hotkeys) return;
   for (const [accel, name] of Object.entries(HOTKEYS)) {
     try {
       globalShortcut.register(accel, () => {
+        if (name === "breath") { toggleBreath(); return; }
         if (name === "overlay") { overlaySettings.enabled = !overlaySettings.enabled; saveSettings(); updateOverlayVisibility(); if (win) win.webContents.send("overlay:settings", overlaySettings); return; }
         if (name === "end" && win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
         if (win) win.webContents.send("hotkey", name);

@@ -1053,6 +1053,81 @@ html.bg-grid body { background: linear-gradient(rgba(63,141,255,.07) 1px, transp
 html.bg-stars body { background: radial-gradient(1.5px 1.5px at 20% 30%, #fff8, transparent), radial-gradient(1px 1px at 70% 20%, #fff7, transparent), radial-gradient(1.5px 1.5px at 40% 80%, #fff6, transparent), radial-gradient(1px 1px at 85% 65%, #fff8, transparent), radial-gradient(1px 1px at 10% 90%, #fff6, transparent), radial-gradient(1.2px 1.2px at 55% 50%, #fff5, transparent) 0 0 / 320px 320px, var(--obsidian); background-attachment: fixed; }
 html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,106,43,.22), transparent 70%), radial-gradient(60% 40% at 80% 100%, rgba(255,79,163,.18), transparent 70%), var(--obsidian); background-attachment: fixed; }
 @media (prefers-reduced-motion: reduce) { .quake { animation: none; } }
+/* ---------- Mind (breathing + focus games) ---------- */
+#v-mind .mi-wrap{display:grid;gap:22px}
+#v-mind .mi-card{border-radius:28px;padding:22px;display:grid;gap:14px;min-width:0}
+#v-mind .mi-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+#v-mind h2{margin:0;font-size:28px;font-weight:700;letter-spacing:-.025em;text-wrap:balance}
+#v-mind .tc{font-variant-numeric:tabular-nums}
+#v-mind .m-sec{display:grid;gap:4px;margin-top:8px}
+#v-mind .m-ex .tiny{display:block}
+#v-mind button:focus-visible{outline:2px solid #f5f5f7;outline-offset:2px}
+.mi-home{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:12px;margin-top:16px}
+.mi-hcard{display:flex;gap:14px;align-items:center;background:var(--carbon);border-radius:24px;padding:16px 18px;color:var(--porcelain);text-decoration:none}
+.mi-hcard:hover{text-decoration:none;box-shadow:inset 0 0 0 1px var(--steel)}
+.mi-hcard .t{display:grid;gap:2px;min-width:0}.mi-hcard b{font-size:17px}.mi-hcard span.s{font-size:13px;color:var(--ash)}
+.mi-orb{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#a1a1a6 70%,#ffb36b);flex:none}
+.mi-lock{font-size:11px;font-weight:700;color:#fff;background:linear-gradient(100deg,#3f8dff,#a855f7);padding:3px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.gicon{display:block;width:48px;height:48px}
+.gstage{position:relative;width:min(380px,100%);aspect-ratio:1/1;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.gstage canvas{width:100%;height:100%;display:block;cursor:pointer}
+.ggrid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.ggrid button{font:inherit;font-size:22px;font-weight:800;border:0;border-radius:12px;background:var(--m-bg2);color:var(--fg);cursor:pointer;font-variant-numeric:tabular-nums}
+.ggrid button.done{background:#000;color:#3a3a3e}
+.ggrid button.bad,.gmemo button.bad{background:var(--m-out);color:#000}
+.gmemo{position:absolute;inset:8%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gmemo button{border:0;border-radius:18px;background:var(--m-bg2);cursor:pointer;transition:background .12s}
+.gmemo button.lit{background:var(--m-in)}
+.garrows{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,48px);gap:8px;justify-content:center}
+.garrows button{font:inherit;font-size:20px;font-weight:800;border:0;border-radius:12px;background:var(--m-bg2);color:var(--fg);cursor:pointer}
+.garrows [data-d=up]{grid-column:2}.garrows [data-d=left]{grid-column:1;grid-row:2}.garrows [data-d=down]{grid-column:2;grid-row:2}.garrows [data-d=right]{grid-column:3;grid-row:2}
+.gres{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;max-width:560px;margin:0 auto;width:100%}
+.gres div{background:var(--m-bg2);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.gres span{font-size:12px;color:var(--m-mute)}.gres b{font-size:20px}
+/* Mind: the website's greys, white as the main colour, one warm accent for the exhale */
+#v-mind .mind{--m-bg:#1d1d1f;--m-bg2:#2a2a2d;--m-line:#3a3a3e;--m-in:#f5f5f7;--m-hold:#a1a1a6;--m-out:#ffb36b;--m-mute:#86868b}
+#v-mind .mi-card{background:var(--m-bg)}
+.m-eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m-mute)}
+.mplayer{gap:16px}
+.mp-head{display:flex;gap:16px;justify-content:space-between;align-items:flex-start}
+.m-len{font-size:13px;font-weight:700;color:var(--fg);background:var(--m-bg2);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.mp-stage{position:relative;width:min(340px,100%);aspect-ratio:1/1;margin:0 auto}
+.mp-stage canvas{width:100%;height:100%;display:block}
+.mp-center{display:grid;justify-items:center;text-align:center;gap:4px}
+.mp-phase{font-size:30px;font-weight:800;letter-spacing:-.02em;min-height:38px}
+.mp-count{font-size:15px;color:var(--m-mute);font-variant-numeric:tabular-nums;min-height:20px}
+.mp-steps{display:grid;gap:8px;max-width:560px;margin:0 auto;width:100%}
+.mp-steps div{background:var(--m-bg2);border-radius:14px;padding:12px 14px;color:var(--m-mute);font-weight:600;display:flex;gap:10px;align-items:baseline}
+.mp-steps div b{color:var(--fg);min-width:22px}
+.mp-steps div.on{background:var(--m-in);color:#000}.mp-steps div.on b{color:#000}
+.mp-steps div.done{opacity:.45}
+.mp-bar{height:4px;border-radius:4px;background:var(--m-bg2);overflow:hidden;max-width:560px;margin:0 auto;width:100%}
+.mp-bar i{display:block;height:100%;width:0;background:var(--m-in)}
+.mbtn{font:inherit;cursor:pointer;border:0;background:var(--m-bg2);color:var(--fg);padding:12px 20px;border-radius:999px;font-weight:600}
+.mbtn:hover{background:#333337}
+.mbtn.pri{background:var(--m-in);color:#000}
+.mbtn.pri:hover{background:#fff}
+.mbtn[aria-pressed="true"]{background:var(--m-in);color:#000}
+.m-src{font-size:12px;color:var(--m-mute);flex-basis:100%;text-align:center}
+.m-filters{gap:8px}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.m-ex{text-align:left;background:var(--m-bg);color:var(--fg);border-radius:20px;padding:16px;display:grid;gap:8px;align-content:start;border:0;cursor:pointer;font:inherit;box-shadow:inset 0 0 0 1px transparent}
+.m-ex:hover{box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-ex[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--m-in)}
+.m-ex canvas{width:56px;height:56px}
+.m-ex b{font-size:17px}
+.m-ex .tiny{color:var(--m-mute)}
+.m-ex .m-tags{display:flex;gap:6px;flex-wrap:wrap}
+.m-ex .m-tags span{font-size:11px;font-weight:700;color:var(--m-hold);background:var(--m-bg2);padding:3px 8px;border-radius:999px}
+.m-card{align-content:start}
+.mind .dots button{background:var(--m-bg2);box-shadow:none}
+.mind .dots button[aria-pressed="true"]{background:var(--m-in);color:#000}
+.mind .check input[type=range]{accent-color:var(--m-in)}
+.mind .insc{background:var(--m-bg2)}
+.mind .bars span{background:var(--m-hold)}
+.mind .bars div:nth-child(3) span,.mind .bars div:nth-child(4) span{background:var(--m-in)}
+.mind .bars div:nth-child(1) span{background:var(--m-out)}
+
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1086,7 +1161,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1291,6 +1366,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       <div id="done-check"></div>
       <div id="done-coach"></div>
       <div id="done-spin"></div>
+      <div id="done-mind"></div>
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
     <div style="display:grid;gap:20px">
@@ -1349,6 +1425,51 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <button class="back" type="button" data-go="">Home</button>
   <div class="vhead"><div><h1 class="d-l">Personal Plan.</h1><p class="lead">Write what you want to train. You get a routine made only for you, from the Repline sets.</p></div></div>
   <div id="coach-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="mind" id="v-mind" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Mind.</h1><p class="lead">Breathing and focus games for your head. Before a cup, between games or after a bad one.</p></div></div>
+  <div class="mind mi-wrap">
+  <div id="players">
+  <div class="mi-card mplayer" id="mplayer">
+    <div class="mp-head">
+      <div style="display:grid;gap:4px;min-width:0"><span class="m-eyebrow" id="mp-for"></span><h2 id="mp-name">Box breathing</h2><p class="small" id="mp-desc" style="margin:0"></p></div>
+      <span class="m-len" id="mp-len"></span>
+    </div>
+    <div class="mp-stage"><canvas id="mcv" width="720" height="720" aria-hidden="true"></canvas></div>
+    <div class="mp-center"><div class="mp-phase" id="mp-phase" aria-live="polite">Ready</div><div class="mp-count" id="mp-count"></div></div>
+    <div class="mp-steps" id="mp-steps" hidden></div>
+    <div class="mp-bar" aria-hidden="true"><i id="mp-prog"></i></div>
+    <div class="mi-row" style="justify-content:center"><button class="mbtn pri" id="mp-go">Start</button><button class="mbtn" id="mp-reset">Reset</button><span class="m-src" id="mp-src"></span></div>
+  </div>
+
+  <div class="mi-card mplayer" id="gplayer" hidden>
+    <div class="mp-head">
+      <div style="display:grid;gap:4px;min-width:0"><span class="m-eyebrow" id="gp-for"></span><h2 id="gp-name"></h2><p class="small" id="gp-desc" style="margin:0"></p></div>
+      <span class="m-len" id="gp-len"></span>
+    </div>
+    <div class="gstage" id="gstage">
+      <canvas id="gcv" width="720" height="720" aria-label="Game area"></canvas>
+      <div class="ggrid" id="ggrid" hidden></div>
+      <div class="gmemo" id="gmemo" hidden></div>
+    </div>
+    <div class="garrows" id="garrows" hidden><button data-d="up" aria-label="Up">↑</button><button data-d="left" aria-label="Left">←</button><button data-d="down" aria-label="Down">↓</button><button data-d="right" aria-label="Right">→</button></div>
+    <div class="mp-center"><div class="mp-phase" id="gp-phase" aria-live="polite">Ready</div><div class="mp-count" id="gp-count"></div></div>
+    <div class="gres" id="gp-res" hidden></div>
+    <div class="mp-bar" aria-hidden="true"><i id="gp-prog"></i></div>
+    <div class="mi-row" style="justify-content:center"><button class="mbtn pri" id="gp-go">Start</button><button class="mbtn" id="gp-reset">Reset</button><span class="m-src" id="gp-src"></span></div>
+  </div>
+  </div>
+
+  <div class="m-sec"><h2>Breathing</h2><p class="small" style="margin:0">Calm down, wake up or lock in. 30 to 76 seconds.</p></div>
+  <div class="mi-row m-filters" id="m-filters" role="group" aria-label="Filter breathing exercises"></div>
+  <div class="m-grid" id="m-grid"></div>
+
+  <div class="m-sec"><h2>Focus games</h2><p class="small" style="margin:0">Short games that train your head: focus, reaction control, tracking and awareness. Your best score is saved on this device.</p></div>
+  <div class="m-grid" id="g-grid"></div>
+
+  </div>
 </main>
 
 <main class="view wrap flowv" data-view="board" id="v-board" hidden>
@@ -1424,6 +1545,392 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="vendor/supabase.js"></script>
+<script>
+/* Mind: breathing exercises and focus games (page #mind) */
+(function () {
+
+const $ = (id) => document.getElementById(id);
+/* ---------- MIND ---------- */
+const C_IN = "#f5f5f7", C_HOLD = "#a1a1a6", C_OUT = "#ffb36b", C_TRACK = "#3a3a3e";
+const B = (k, s, label) => ({ k, s, label: label || { in: "Breathe in", in2: "One more sip in", hold: "Hold", out: "Breathe out", holdOut: "Hold" }[k] });
+const EX = [
+  { id: "sigh", name: "Cyclic sighing", vis: "sigh", tags: ["After a loss", "Between games"], desc: "Two breaths in through the nose, the second one short, then a long, slow breath out through the mouth.",
+    src: "Stanford study 2023: 5 minutes a day lowered anxiety more than mindfulness meditation.", cycles: 7, phases: [B("in", 2, "Deep breath in"), B("in2", 1), B("out", 6, "Long breath out")] },
+  { id: "box", name: "Box breathing", vis: "square", tags: ["Before a cup", "Focus"], desc: "In for 4, hold 4, out for 4, hold 4. Follow the dot around the square.",
+    src: "Used by Navy SEALs to stay calm under pressure.", cycles: 4, phases: [B("in", 4), B("hold", 4), B("out", 4), B("holdOut", 4)] },
+  { id: "478", name: "4-7-8 breathing", vis: "orb", tags: ["Sleep"], desc: "In through the nose for 4, hold 7, out through the mouth for 8.",
+    src: "Popularised by Dr. Andrew Weil. Slows you down, good after late games.", cycles: 4, phases: [B("in", 4), B("hold", 7), B("out", 8)] },
+  { id: "res", name: "Resonance breathing", vis: "orb", tags: ["Focus", "Before a cup"], desc: "Slow and even: 5.5 seconds in, 5.5 seconds out. About 6 breaths a minute.",
+    src: "Around 6 breaths a minute raises heart rate variability, a marker of calm focus.", cycles: 6, phases: [B("in", 5.5), B("out", 5.5)] },
+  { id: "long", name: "Long exhale", vis: "orb", tags: ["Between games"], desc: "In for 4, out for 6. A longer exhale tells your body to calm down.",
+    src: "A longer exhale than inhale slows the heart rate.", cycles: 6, phases: [B("in", 4), B("out", 6)] },
+  { id: "tri", name: "Triangle breathing", vis: "triangle", tags: ["Before a cup"], desc: "In for 4, hold 4, out for 4. Simple and easy to keep up.",
+    src: "A lighter version of box breathing for beginners.", cycles: 5, phases: [B("in", 4), B("hold", 4), B("out", 4)] },
+  { id: "wake", name: "Wake-up breathing", vis: "orb", tags: ["Wake up"], desc: "Quick, light breaths: 2 in, 2 out. Gets you awake before you play. Stop if you feel dizzy.",
+    src: "Short, active breathing raises alertness. Keep it light and short.", cycles: 8, phases: [B("in", 2), B("out", 2)] },
+  { id: "nos", name: "Alternate nostril", vis: "nostril", tags: ["Focus"], desc: "Close one nostril with your thumb. In left, out right, in right, out left.",
+    src: "A classic yoga technique to calm down and focus.", cycles: 4, phases: [Object.assign(B("in", 4, "In · left"), { side: "L" }), Object.assign(B("out", 4, "Out · right"), { side: "R" }), Object.assign(B("in", 4, "In · right"), { side: "R" }), Object.assign(B("out", 4, "Out · left"), { side: "L" })] },
+  { id: "ground", name: "5-4-3-2-1 grounding", vis: "steps", tags: ["After a loss"], desc: "Pull your head out of the last game and back into the room.",
+    src: "A common technique to stop spiralling thoughts.", steps: [["Name 5 things you can see", 10], ["4 things you can touch", 10], ["3 things you can hear", 10], ["2 things you can smell", 8], ["1 thing you'll do better next game", 10]] },
+  { id: "pmr", name: "Muscle release", vis: "steps", tags: ["Before a cup"], desc: "Tense, then let go. Takes the tension out of your hands and shoulders.",
+    src: "Progressive muscle relaxation, a short version.", steps: [["Make tight fists", 5], ["Let go, open your hands", 10], ["Shoulders up to your ears", 5], ["Drop them, let them hang", 10], ["Squeeze your face", 5], ["Relax your jaw and forehead", 10], ["Press your feet into the floor", 5], ["Let go", 10]] },
+  { id: "reset", name: "Death reset", vis: "steps", tags: ["After a loss", "Between games"], desc: "15 seconds after you die. Reset before you queue again.",
+    src: "Pros use a short reset ritual so one death doesn't ruin the next game.", steps: [["Long breath out", 4], ["Shoulders down, unclench your hands", 3], ["Say your cue word: Next.", 3], ["One thing to fix next fight", 5]] },
+  { id: "vis", name: "Pre-cup visualization", vis: "steps", tags: ["Before a cup"], desc: "Close your eyes and play the cup in your head first.",
+    src: "Mental rehearsal is used in every pro sport.", steps: [["See your drop and first loot path", 15], ["First fight: calm, layers first", 15], ["Rotate early, on the edge of the zone", 15], ["Endgame: farm before the zone moves", 15], ["You make top 10. Feel it.", 15], ["Open your eyes. Lock in.", 15]] },
+  { id: "nerves", name: "Nerves into energy", vis: "steps", tags: ["Before a cup", "LAN"], desc: "Don't try to calm down. Tell yourself the nerves mean you're ready.",
+    src: "Harvard study (Brooks 2014): saying \"I'm excited\" beat trying to calm down.", steps: [["Notice your heartbeat. That's energy, not fear.", 8], ["Say out loud: I'm excited.", 6], ["Name why: I trained for this.", 8], ["Shoulders back, slow breath out", 6]] },
+  { id: "endgame", name: "Endgame calm", vis: "steps", tags: ["Between games", "LAN"], desc: "A 20-second reset for the moment before moving zones and final fights.",
+    src: "Slowing down under pressure keeps decisions clean.", steps: [["Long breath out", 4], ["Say: slow is smooth", 4], ["Eyes on the next zone, not the kill feed", 6], ["One decision at a time", 6]] },
+  { id: "review", name: "Post-game review 3+1", vis: "steps", tags: ["After a loss", "Between games"], desc: "Right after a game: three things that went well, one thing to fix. Then let it go.",
+    src: "Ending on what worked keeps you confident. One fix keeps it simple.", steps: [["Good thing 1", 10], ["Good thing 2", 10], ["Good thing 3", 10], ["One thing to fix next game", 12], ["Done. Let this game go.", 4]] },
+  { id: "comms", name: "Duo comms reset", vis: "steps", tags: ["After a loss", "LAN"], desc: "Do this together with your duo or trio after a bad game.",
+    src: "Teams that reset together stop blaming each other.", steps: [["Both: one long breath out", 4], ["Each says one thing the other did well", 12], ["Agree on one call for next game", 10], ["Fist bump. Next.", 3]] },
+  { id: "lanvis", name: "LAN visualization", vis: "steps", tags: ["LAN", "Before a cup"], desc: "Picture the LAN before you're there, so nothing feels new on the day.",
+    src: "Imagining the real place, sounds and feelings makes it feel familiar.", steps: [["See the hall, the lights, your seat", 12], ["Hear the crowd and the casters", 12], ["Feel your mouse and headset, your settings loaded", 12], ["First game: you drop calm and play your game", 12], ["Something goes wrong: you breathe and reset", 12], ["You walk out proud of how you played", 12]] },
+  { id: "focus", name: "Focus dot", vis: "focus", tags: ["Focus"], desc: "Keep your eyes on the dot. Tap the circle the moment it turns orange.",
+    src: "Trains sustained attention, like waiting for a peek.", seconds: 60 },
+  { id: "conf", name: "Confidence list", vis: "steps", tags: ["After a loss"], desc: "Say each one out loud. Remind yourself what you do well.",
+    src: "Focusing on what went well brings your confidence back after a bad game.", steps: [["One fight you won today", 15], ["One mechanic that felt clean", 15], ["One thing you'll do the same next game", 15]] }
+];
+EX.splice(0, EX.length, ...EX.filter((e) => e.vis !== "steps"));
+const durOf = (e) => e.phases ? e.cycles * e.phases.reduce((a, p) => a + p.s, 0) : e.steps ? e.steps.reduce((a, s) => a + s[1], 0) : e.seconds;
+const fmtDur = (s) => s < 100 ? `${Math.round(s)} s` : s % 60 ? `${Math.floor(s / 60)} min ${Math.round(s % 60)} s` : `${s / 60} min`;
+const mcv = $("mcv"), mx = mcv.getContext("2d");
+let cur = EX[1], mRun = false, mT0 = 0, mOff = 0, mRaf = 0, mFilter = "All", focusS = null;
+
+// state at time s
+function stateAt(e, s) {
+  if (e.phases) {
+    const cyc = e.phases.reduce((a, p) => a + p.s, 0), c = Math.min(e.cycles - 1, Math.floor(s / cyc)); let r = s - c * cyc, i = 0;
+    while (i < e.phases.length - 1 && r >= e.phases[i].s) { r -= e.phases[i].s; i++; }
+    const ph = e.phases[i]; return { ph, i, p: Math.min(1, r / ph.s), left: Math.max(1, Math.ceil(ph.s - r - 1e-6)), cycle: c, cycp: (s - c * cyc) / cyc };
+  }
+  if (e.steps) { let r = s, i = 0; while (i < e.steps.length - 1 && r >= e.steps[i][1]) { r -= e.steps[i][1]; i++; } return { i, p: Math.min(1, r / e.steps[i][1]), left: Math.max(1, Math.ceil(e.steps[i][1] - r - 1e-6)) }; }
+  return { p: s / e.seconds, left: Math.max(0, Math.ceil(e.seconds - s)) };
+}
+// size of the breathing shape (0 small .. 1 full) for a phase and its progress
+const ease = (p) => .5 - .5 * Math.cos(Math.PI * p);
+function level(e, st) {
+  if (!st || !st.ph) return .35;
+  const k = st.ph.k, p = ease(st.p);
+  if (e.vis === "sigh") { if (k === "in") return .2 + .6 * p; if (k === "in2") return .8 + .2 * p; return 1 - .8 * p; }
+  if (k === "in" || k === "in2") return .2 + .8 * p; if (k === "hold") return 1; if (k === "out") return 1 - .8 * p; return .2;
+}
+const colOf = (k) => k === "out" ? C_OUT : k === "hold" || k === "holdOut" ? C_HOLD : C_IN;
+function shapePath(ctx, vis, W) {
+  const m = W * .16, L = W - 2 * m;
+  if (vis === "square") return [[m, m + L], [m, m], [m + L, m], [m + L, m + L], [m, m + L]];
+  const h = L * .866, top = (W - h) / 2;
+  return [[m, top + h], [W / 2, top], [m + L, top + h], [m, top + h]];
+}
+function pointOn(pts, side, p) { const a = pts[side], b = pts[side + 1]; return [a[0] + (b[0] - a[0]) * p, a[1] + (b[1] - a[1]) * p]; }
+function drawVis(ctx, W, e, st, mini) {
+  ctx.clearRect(0, 0, W, W);
+  const lw = mini ? 4 : 10;
+  if (e.vis === "square" || e.vis === "triangle") {
+    const pts = shapePath(ctx, e.vis, W), n = pts.length - 1;
+    ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.lineWidth = lw; ctx.strokeStyle = C_TRACK;
+    ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke();
+    const side = st && st.ph ? st.i : 0, p = st && st.ph ? st.p : 0;
+    // finished sides of this round
+    for (let k = 0; k < side; k++) { ctx.strokeStyle = colOf(e.phases[k].k); ctx.beginPath(); ctx.moveTo(pts[k][0], pts[k][1]); ctx.lineTo(pts[k + 1][0], pts[k + 1][1]); ctx.stroke(); }
+    const dot = pointOn(pts, Math.min(side, n - 1), p);
+    if (st && st.ph) { ctx.strokeStyle = colOf(st.ph.k); ctx.beginPath(); ctx.moveTo(pts[side][0], pts[side][1]); ctx.lineTo(dot[0], dot[1]); ctx.stroke(); }
+    // soft inner fill that breathes
+    const lv = level(e, st), cxp = W / 2, cyp = e.vis === "square" ? W / 2 : W * .58, r = (mini ? W * .12 : W * .1) + lv * W * (mini ? .1 : .14);
+    ctx.fillStyle = "rgba(245,245,247," + (0.05 + lv * .08) + ")"; ctx.beginPath(); ctx.arc(cxp, cyp, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.beginPath(); ctx.arc(dot[0], dot[1], lw * 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(dot[0], dot[1], lw * 1.5, 0, Math.PI * 2); ctx.fill();
+    return;
+  }
+  if (e.vis === "steps") {
+    const c = W / 2, R = W * .38;
+    ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.strokeStyle = C_TRACK; ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.stroke();
+    const total = e.steps.length, i = st ? st.i : 0, p = st ? st.p : 0, gap = .06;
+    for (let k = 0; k < total; k++) {
+      const a0 = -Math.PI / 2 + k / total * Math.PI * 2 + gap / 2, a1 = -Math.PI / 2 + (k + 1) / total * Math.PI * 2 - gap / 2;
+      const f = k < i ? 1 : k === i ? p : 0; if (f <= 0) continue;
+      ctx.strokeStyle = k === i ? C_IN : C_HOLD; ctx.beginPath(); ctx.arc(c, c, R, a0, a0 + (a1 - a0) * f); ctx.stroke();
+    }
+    if (mini) { ctx.fillStyle = C_IN; ctx.font = `800 ${W * .3}px Inter, Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(String(total), c, c + 2); }
+    return;
+  }
+  if (e.vis === "focus") {
+    const c = W / 2;
+    ctx.lineWidth = lw; ctx.strokeStyle = C_TRACK; ctx.beginPath(); ctx.arc(c, c, W * .38, 0, Math.PI * 2); ctx.stroke();
+    const pos = focusS ? focusS.pos : [c, c], on = focusS && focusS.lit;
+    ctx.fillStyle = on ? C_OUT : C_IN; ctx.beginPath(); ctx.arc(pos[0] * W / 720, pos[1] * W / 720, mini ? W * .08 : 16, 0, Math.PI * 2); ctx.fill();
+    if (st && !mini) { ctx.strokeStyle = C_IN; ctx.beginPath(); ctx.arc(c, c, W * .38, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, st.p)); ctx.stroke(); }
+    return;
+  }
+  // orb, sigh, nostril
+  const c = W / 2, lv = level(e, st), k = st && st.ph ? st.ph.k : "in";
+  const rMin = W * .14, rMax = W * .34, r = rMin + (rMax - rMin) * lv;
+  ctx.lineWidth = lw; ctx.strokeStyle = C_TRACK; ctx.beginPath(); ctx.arc(c, c, W * .44, 0, Math.PI * 2); ctx.stroke();
+  if (st && st.ph && !mini) { ctx.strokeStyle = C_HOLD; ctx.lineCap = "round"; ctx.beginPath(); ctx.arc(c, c, W * .44, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * st.cycp); ctx.stroke(); }
+  const g = ctx.createRadialGradient(c - r * .3, c - r * .35, r * .1, c, c, r);
+  const edge = k === "out" ? "rgba(255,179,107,.9)" : k === "hold" || k === "holdOut" ? "rgba(161,161,166,.9)" : "rgba(245,245,247,.95)";
+  g.addColorStop(0, "rgba(255,255,255,.95)"); g.addColorStop(.6, "rgba(200,200,205,.55)"); g.addColorStop(1, edge);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2); ctx.fill();
+  ctx.lineWidth = mini ? 2 : 4; ctx.strokeStyle = edge; ctx.stroke();
+  if (e.vis === "sigh" && !mini) { ctx.setLineDash([6, 10]); ctx.lineWidth = 2; ctx.strokeStyle = "rgba(245,245,247,.35)"; ctx.beginPath(); ctx.arc(c, c, rMin + (rMax - rMin) * .8, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); }
+  if (e.vis === "nostril") {
+    const side = st && st.ph ? st.ph.side : "L";
+    [["L", c - W * .44 - (mini ? 0 : 0), "L"], ["R", c + W * .44, "R"]].forEach(([s, x]) => {
+      const on = side === s; ctx.fillStyle = on ? (k === "out" ? C_OUT : C_IN) : C_TRACK;
+      ctx.beginPath(); ctx.arc(x, c, mini ? W * .07 : 26, 0, Math.PI * 2); ctx.fill();
+      if (!mini) { ctx.fillStyle = on ? "#000" : C_HOLD; ctx.font = "800 24px Inter, Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(s, x, c + 1); }
+    });
+  }
+}
+function selectEx(e) {
+  stopM(); if (window.showPlayer) window.showPlayer("breath"); cur = e; mOff = 0;
+  $("mp-name").textContent = e.name; $("mp-desc").textContent = e.desc; $("mp-src").textContent = e.src; $("mp-for").textContent = e.tags.join(" · ");
+  $("mp-len").textContent = fmtDur(durOf(e)); $("mp-phase").textContent = "Ready"; $("mp-count").textContent = e.vis === "focus" ? "Tap the circle when the dot turns orange" : e.phases ? `${e.cycles} rounds` : `${e.steps.length} steps`;
+  $("mp-prog").style.width = "0%"; $("mp-go").textContent = "Start";
+  const sw = $("mp-steps"); sw.hidden = !e.steps;
+  if (e.steps) sw.innerHTML = e.steps.map((s, i) => `<div data-i="${i}"><b>${i + 1}</b><span>${s[0]}</span><span style="margin-left:auto;white-space:nowrap" class="tc">${s[1]} s</span></div>`).join("");
+  focusS = e.vis === "focus" ? { pos: [360, 360], lit: false, hits: 0, miss: 0, next: 4, litAt: 0, ang: 0 } : null;
+  drawVis(mx, 720, e, null, false);
+  document.querySelectorAll(".m-ex").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === e.id));
+}
+function stopM() { mRun = false; cancelAnimationFrame(mRaf); }
+function frameM(now) {
+  if (!mRun) return;
+  const e = cur, total = durOf(e), s = mOff + (now - mT0) / 1000;
+  if (s >= total) { mRun = false; mOff = 0; drawVis(mx, 720, e, e.phases ? { ph: e.phases[e.phases.length - 1], i: e.phases.length - 1, p: 1, cycp: 1 } : e.steps ? { i: e.steps.length - 1, p: 1 } : { p: 1 }, false);
+    $("mp-prog").style.width = "100%"; $("mp-go").textContent = "Again";
+    $("mp-phase").textContent = "Done"; $("mp-count").textContent = e.vis === "focus" ? `${focusS.hits} caught · ${focusS.miss} missed` : "Nice. You're ready.";
+    if (e.steps) $("mp-steps").querySelectorAll("div").forEach((d) => { d.className = "done"; });
+    return; }
+  const st = stateAt(e, s);
+  if (e.phases) { $("mp-phase").textContent = st.ph.label; $("mp-count").textContent = `${st.left} · round ${st.cycle + 1} of ${e.cycles}`; }
+  else if (e.steps) { $("mp-phase").textContent = String(st.left); $("mp-count").textContent = `Step ${st.i + 1} of ${e.steps.length}`; $("mp-steps").querySelectorAll("div").forEach((d, k) => { d.className = k < st.i ? "done" : k === st.i ? "on" : ""; }); }
+  else { // focus dot: drifts slowly, lights up at random moments for 0.9 s
+    const f = focusS; f.ang += .006; const R = 150 + 60 * Math.sin(s * .7);
+    f.pos = [360 + Math.cos(f.ang * 3) * R * .9, 360 + Math.sin(f.ang * 2) * R * .9];
+    if (!f.lit && s >= f.next) { f.lit = true; f.litAt = s; }
+    if (f.lit && s - f.litAt > .9) { f.lit = false; f.miss++; f.next = s + 2.5 + ((f.hits * 7 + f.miss * 3) % 5); }
+    $("mp-phase").textContent = f.lit ? "Now!" : "Watch the dot"; $("mp-count").textContent = `${f.hits} caught · ${f.miss} missed · ${st.left} s`;
+  }
+  $("mp-prog").style.width = (s / total * 100) + "%";
+  drawVis(mx, 720, e, st, false);
+  mRaf = requestAnimationFrame(frameM);
+}
+$("mp-go").addEventListener("click", () => {
+  if (mRun) { mOff += (performance.now() - mT0) / 1000; stopM(); $("mp-go").textContent = "Resume"; $("mp-phase").textContent = "Paused"; return; }
+  if ($("mp-go").textContent === "Again") selectEx(cur);
+  mRun = true; mT0 = performance.now(); $("mp-go").textContent = "Pause"; mRaf = requestAnimationFrame(frameM);
+});
+$("mp-reset").addEventListener("click", () => selectEx(cur));
+document.querySelector(".mp-stage").addEventListener("pointerdown", () => {
+  if (!focusS || !mRun) return;
+  const s = mOff + (performance.now() - mT0) / 1000;
+  if (focusS.lit) { focusS.hits++; focusS.lit = false; focusS.next = s + 2 + ((focusS.hits * 5) % 4); }
+});
+const FREE = ["box", "sigh", "long", "focus", "trigger"];
+const isPro = () => { try { return window.replinePlanId ? window.replinePlanId() === "pro" : false; } catch (e) { return false; } };
+const locked = (id) => !isPro() && FREE.indexOf(id) < 0;
+const lockBadge = (id) => locked(id) ? '<span class="mi-lock">PRO</span>' : "";
+function goPlans() { location.hash = "plans"; }
+function renderGrid() {
+  const tags = ["All", "Before a cup", "After a loss", "Between games", "Focus", "Sleep", "Wake up"];
+  $("m-filters").innerHTML = tags.map((t) => `<button class="mbtn" data-f="${t}" aria-pressed="${t === mFilter}">${t}</button>`).join("");
+  $("m-filters").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { mFilter = b.dataset.f; renderGrid(); }));
+  const list = EX.filter((e) => e.vis !== "focus" && (mFilter === "All" || e.tags.includes(mFilter)));
+  $("m-grid").innerHTML = list.map((e) => `<button class="m-ex" data-id="${e.id}" aria-pressed="${e.id === cur.id}"><canvas width="112" height="112" aria-hidden="true"></canvas><b>${e.name}${lockBadge(e.id)}</b><span class="tiny">${fmtDur(durOf(e))} · ${e.desc}</span><span class="m-tags">${e.tags.map((t) => `<span>${t}</span>`).join("")}</span></button>`).join("");
+  $("m-grid").querySelectorAll(".m-ex").forEach((b) => {
+    const e = EX.find((x) => x.id === b.dataset.id), c = b.querySelector("canvas"), ctx = c.getContext("2d");
+    const st = e.phases ? { ph: e.phases[0], i: Math.min(1, e.phases.length - 1), p: .6, cycp: .3 } : e.steps ? { i: 1, p: .5 } : null;
+    drawVis(ctx, 112, e, st, true);
+    b.addEventListener("click", () => { if (locked(e.id)) { goPlans(); return; } selectEx(e); document.querySelector("#mplayer").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); });
+  });
+}
+renderGrid(); selectEx(cur);
+
+window.__mind = { EX, stateAt, durOf, level };
+/* ---------- FOCUS GAMES ---------- */
+const gcv = $("gcv"), gx = gcv.getContext("2d");
+let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+const GAMES = [
+  { id: "trigger", name: "Calm trigger", kind: "canvas", seconds: 30, tags: ["Reaction", "Control"], desc: "Tap the circle when it's white. When it's orange, don't. Fast, but not trigger-happy.", src: "A go/no-go test: trains reaction speed and impulse control, like not over-peeking." },
+  { id: "follow", name: "Smooth follow", kind: "canvas", seconds: 30, tags: ["Tracking"], desc: "Keep your mouse or finger on the moving orb. Smooth, no jerks.", src: "Calm, steady tracking, the same control you need for tracking aim." },
+  { id: "edge", name: "Edge vision", kind: "canvas", rounds: 20, tags: ["Awareness"], desc: "Keep your eyes on the cross. A dot flashes at the edge: tap where it was.", src: "Trains your peripheral vision, like noticing a player at the side of the screen." },
+];
+let G = null, gRun = false, gRaf = 0, gT0 = 0, gs = {}, ptr = null;
+const showStage = (kind) => { gcv.hidden = !(kind === "canvas"); $("ggrid").hidden = kind !== "grid"; $("gmemo").hidden = kind !== "memo"; $("garrows").hidden = G.id !== "edge"; };
+function selectGame(g) {
+  stopGame(); if (window.showPlayer) window.showPlayer("game"); G = g; seed = 7;
+  $("gp-name").textContent = g.name; $("gp-desc").textContent = g.desc; $("gp-src").textContent = g.src; $("gp-for").textContent = g.tags.join(" · ");
+  $("gp-len").textContent = g.seconds ? `${g.seconds} s` : g.rounds ? `${g.rounds} rounds` : g.id === "schulte" ? "~30 s" : "until you miss";
+  $("gp-phase").textContent = "Ready"; $("gp-count").textContent = best(g.id); $("gp-go").textContent = "Start"; $("gp-res").hidden = true; $("gp-prog").style.width = "0%";
+  showStage(g.kind); gs = {}; ptr = null;
+  if (g.kind === "canvas") drawIdle(); if (g.id === "schulte") buildGrid(false); if (g.id === "memory") buildMemo();
+  document.querySelectorAll(".m-ex").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === g.id));
+}
+const bestKey = (id) => "rl.labs.best." + id;
+function best(id) { try { const v = localStorage.getItem(bestKey(id)); return v ? `Your best: ${v}` : ""; } catch (e) { return ""; } }
+function saveBest(id, val, better, label) { try { const old = localStorage.getItem(bestKey(id) + ".n"); if (old == null || better(val, +old)) { localStorage.setItem(bestKey(id) + ".n", val); localStorage.setItem(bestKey(id), label); return true; } } catch (e) {} return false; }
+function stopGame() { gRun = false; cancelAnimationFrame(gRaf); }
+function drawIdle() { const W = 720; gx.clearRect(0, 0, W, W); gx.lineWidth = 10; gx.strokeStyle = C_TRACK; gx.beginPath(); gx.arc(360, 360, 300, 0, Math.PI * 2); gx.stroke();
+  if (G.id === "edge") cross(); else { gx.fillStyle = C_IN; gx.beginPath(); gx.arc(360, 360, 26, 0, Math.PI * 2); gx.fill(); } }
+function cross() { gx.strokeStyle = C_IN; gx.lineWidth = 6; gx.beginPath(); gx.moveTo(340, 360); gx.lineTo(380, 360); gx.moveTo(360, 340); gx.lineTo(360, 380); gx.stroke(); }
+function ring(p) { gx.lineWidth = 10; gx.lineCap = "round"; gx.strokeStyle = C_TRACK; gx.beginPath(); gx.arc(360, 360, 300, 0, Math.PI * 2); gx.stroke();
+  if (p > 0) { gx.strokeStyle = C_HOLD; gx.beginPath(); gx.arc(360, 360, 300, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, p)); gx.stroke(); } }
+function finish(lines, bestLine) { gRun = false; $("gp-go").textContent = "Again"; $("gp-phase").textContent = "Done"; $("gp-count").textContent = bestLine || ""; $("gp-res").hidden = false; $("gp-res").innerHTML = lines.map(([k, v]) => `<div><span>${k}</span><b class="tc">${v}</b></div>`).join(""); $("gp-prog").style.width = "100%"; }
+function startGame() {
+  if (gRun) return; seed = 7; gs = { hits: 0, miss: 0, false: 0, rts: [], on: 0, t: 0 }; $("gp-res").hidden = true; gRun = true; gT0 = performance.now(); $("gp-go").textContent = "Stop";
+  if (G.id === "trigger") { gs.next = 1.0; gs.cur = null; }
+  if (G.id === "edge") { gs.round = 0; gs.next = 1.0; gs.flash = null; gs.wait = false; gs.ok = 0; }
+  if (G.id === "rhythm") { gs.beats = []; let t = 1.0; while (t < G.seconds) { gs.beats.push(t); const bpm = 80 - 25 * (t / G.seconds); t += 60 / bpm; } gs.err = []; gs.lastBeat = -1; }
+  if (G.id === "schulte") { buildGrid(true); gs.target = 1; gs.wrong = 0; }
+  if (G.id === "memory") { gs.seq = [Math.floor(rnd() * 9)]; gs.inp = 0; memoShow(); }
+  if (G.kind === "canvas" || G.id === "schulte") gRaf = requestAnimationFrame(loopGame);
+}
+function loopGame(now) {
+  if (!gRun) return; const t = (now - gT0) / 1000, W = 720; gs.t = t;
+  if (G.id === "schulte") { $("gp-phase").textContent = `Find ${gs.target}`; $("gp-count").textContent = `${t.toFixed(1)} s`; $("gp-prog").style.width = ((gs.target - 1) / 25 * 100) + "%"; gRaf = requestAnimationFrame(loopGame); return; }
+  gx.clearRect(0, 0, W, W);
+  if (G.seconds && t >= G.seconds) return endTimed();
+  if (G.seconds) $("gp-prog").style.width = (t / G.seconds * 100) + "%";
+  if (G.id === "trigger") {
+    ring(t / G.seconds);
+    if (!gs.cur && t >= gs.next) gs.cur = { go: rnd() > .3, at: t, tapped: false };
+    if (gs.cur && t - gs.cur.at > .9) { if (gs.cur.go && !gs.cur.tapped) gs.miss++; gs.cur = null; gs.next = t + .5 + rnd() * .9; }
+    if (gs.cur) { gx.fillStyle = gs.cur.go ? C_IN : C_OUT; gx.beginPath(); gx.arc(360, 360, 120, 0, Math.PI * 2); gx.fill(); gx.fillStyle = "#000"; gx.font = "800 54px Inter, Arial"; gx.textAlign = "center"; gx.textBaseline = "middle"; gx.fillText(gs.cur.go ? "TAP" : "WAIT", 360, 362); }
+    $("gp-phase").textContent = gs.cur ? (gs.cur.go ? "Tap!" : "Don't tap") : "Get ready"; $("gp-count").textContent = `${gs.hits} hits · ${gs.false} wrong taps · ${Math.ceil(G.seconds - t)} s`;
+  }
+  if (G.id === "follow") {
+    ring(t / G.seconds);
+    const ox = 360 + 210 * Math.sin(t * .9) * Math.cos(t * .27), oy = 360 + 210 * Math.sin(t * .63 + 1.2);
+    const dt = gs.lastT == null ? 0 : t - gs.lastT; gs.lastT = t;
+    const inside = ptr && Math.hypot(ptr[0] - ox, ptr[1] - oy) < 60; if (inside) gs.on += dt;
+    gx.strokeStyle = inside ? C_IN : C_HOLD; gx.lineWidth = 4; gx.beginPath(); gx.arc(ox, oy, 60, 0, Math.PI * 2); gx.stroke();
+    gx.fillStyle = inside ? C_IN : C_HOLD; gx.beginPath(); gx.arc(ox, oy, 22, 0, Math.PI * 2); gx.fill();
+    if (ptr) { gx.strokeStyle = C_OUT; gx.lineWidth = 4; gx.beginPath(); gx.moveTo(ptr[0] - 14, ptr[1]); gx.lineTo(ptr[0] + 14, ptr[1]); gx.moveTo(ptr[0], ptr[1] - 14); gx.lineTo(ptr[0], ptr[1] + 14); gx.stroke(); }
+    $("gp-phase").textContent = inside ? "On target" : "Find the orb"; $("gp-count").textContent = `${Math.round(gs.on / Math.max(.001, t) * 100)} % on target · ${Math.ceil(G.seconds - t)} s`;
+  }
+  if (G.id === "edge") {
+    gx.lineWidth = 10; gx.strokeStyle = C_TRACK; gx.beginPath(); gx.arc(360, 360, 300, 0, Math.PI * 2); gx.stroke(); cross();
+    $("gp-prog").style.width = (gs.round / G.rounds * 100) + "%";
+    if (!gs.flash && !gs.wait && t >= gs.next) { const dirs = ["up", "right", "down", "left"]; gs.flash = { d: dirs[Math.floor(rnd() * 4)], at: t }; }
+    if (gs.flash && t - gs.flash.at < .18) { const p = { up: [360, 90], right: [630, 360], down: [360, 630], left: [90, 360] }[gs.flash.d]; gx.fillStyle = C_IN; gx.beginPath(); gx.arc(p[0], p[1], 26, 0, Math.PI * 2); gx.fill(); }
+    if (gs.flash && t - gs.flash.at >= .18) gs.wait = true;
+    $("gp-phase").textContent = gs.wait ? "Where was it?" : "Eyes on the cross"; $("gp-count").textContent = `Round ${Math.min(G.rounds, gs.round + 1)} of ${G.rounds} · ${gs.ok} right`;
+  }
+  if (G.id === "rhythm") {
+    ring(t / G.seconds);
+    let i = gs.beats.findIndex((b) => b > t) - 1; if (i < -1) i = gs.beats.length - 1;
+    const since = i >= 0 ? t - gs.beats[i] : 9, pulse = Math.max(0, 1 - since / .35);
+    const r = 70 + 90 * pulse; gx.fillStyle = `rgba(245,245,247,${.25 + .6 * pulse})`; gx.beginPath(); gx.arc(360, 360, r, 0, Math.PI * 2); gx.fill();
+    const bpm = Math.round(80 - 25 * (t / G.seconds));
+    $("gp-phase").textContent = `${bpm} per minute`; $("gp-count").textContent = gs.err.length ? `Off by ${Math.round(gs.err.reduce((a, b) => a + b, 0) / gs.err.length)} ms on average` : "Tap on every beat";
+  }
+  gRaf = requestAnimationFrame(loopGame);
+}
+function endTimed() {
+  if (G.id === "trigger") { const rt = gs.rts.length ? Math.round(gs.rts.reduce((a, b) => a + b, 0) / gs.rts.length) : 0, score = gs.hits * 10 - gs.false * 15 - gs.miss * 5;
+    const nb = saveBest("trigger", score, (a, b) => a > b, `${score} points`); finish([["Hits", gs.hits], ["Wrong taps", gs.false], ["Missed", gs.miss], ["Avg reaction", rt ? rt + " ms" : "–"], ["Score", score]], nb ? "New best!" : best("trigger")); }
+  if (G.id === "follow") { const pc = Math.round(gs.on / G.seconds * 100), nb = saveBest("follow", pc, (a, b) => a > b, `${pc} % on target`); finish([["On target", pc + " %"]], nb ? "New best!" : best("follow")); }
+  if (G.id === "rhythm") { const e = gs.err.length ? Math.round(gs.err.reduce((a, b) => a + b, 0) / gs.err.length) : 0, nb = gs.err.length >= 10 && saveBest("rhythm", e, (a, b) => a < b, `±${e} ms`); finish([["Beats hit", `${gs.err.length} of ${gs.beats.length}`], ["Average timing", gs.err.length ? `±${e} ms` : "–"], ["End tempo", "55 per minute"]], nb ? "New best!" : best("rhythm")); }
+}
+function tap() {
+  if (!gRun || !G) return; const t = (performance.now() - gT0) / 1000;
+  if (G.id === "trigger") { if (gs.cur && !gs.cur.tapped) { gs.cur.tapped = true; if (gs.cur.go) { gs.hits++; gs.rts.push((t - gs.cur.at) * 1000); gs.cur = null; gs.next = t + .5 + rnd() * .9; } else gs.false++; } else if (!gs.cur) gs.false++; }
+  if (G.id === "rhythm") { let best1 = 1e9; gs.beats.forEach((b) => { best1 = Math.min(best1, Math.abs(t - b)); }); if (best1 < .3) gs.err.push(Math.round(best1 * 1000)); }
+}
+function edgeAnswer(d) {
+  if (!gRun || G.id !== "edge" || !gs.flash) return; const t = (performance.now() - gT0) / 1000;
+  if (d === gs.flash.d) { gs.ok++; gs.rts.push((t - gs.flash.at) * 1000); } gs.round++; gs.flash = null; gs.wait = false; gs.next = t + .8 + rnd() * .8;
+  if (gs.round >= G.rounds) { const rt = gs.rts.length ? Math.round(gs.rts.reduce((a, b) => a + b, 0) / gs.rts.length) : 0, nb = saveBest("edge", gs.ok, (a, b) => a > b, `${gs.ok} of ${G.rounds}`); finish([["Right", `${gs.ok} of ${G.rounds}`], ["Avg answer", rt ? rt + " ms" : "–"]], nb ? "New best!" : best("edge")); }
+}
+// Number grid
+function buildGrid(shuffle) {
+  const nums = Array.from({ length: 25 }, (_, i) => i + 1); if (shuffle) for (let i = 24; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+  $("ggrid").innerHTML = nums.map((n) => `<button data-n="${n}" ${shuffle ? "" : "disabled"}>${shuffle ? n : ""}</button>`).join("");
+  $("ggrid").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    if (!gRun) return; const n = +b.dataset.n;
+    if (n === gs.target) { b.classList.add("done"); gs.target++; if (gs.target > 25) { const s = ((performance.now() - gT0) / 1000).toFixed(1), nb = saveBest("schulte", +s, (a, c) => a < c, `${s} s`); finish([["Time", s + " s"], ["Wrong taps", gs.wrong]], nb ? "New best!" : best("schulte")); } }
+    else { gs.wrong++; b.classList.add("bad"); setTimeout(() => b.classList.remove("bad"), 250); }
+  }));
+}
+// Zone memory
+function buildMemo() { $("gmemo").innerHTML = Array.from({ length: 9 }, (_, i) => `<button data-i="${i}" aria-label="Zone ${i + 1}"></button>`).join("");
+  $("gmemo").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => memoTap(+b.dataset.i, b))); }
+function memoShow() {
+  gs.showing = true; $("gp-phase").textContent = "Watch"; $("gp-count").textContent = `Round ${gs.seq.length}`;
+  const btns = $("gmemo").querySelectorAll("button"); let k = 0;
+  const step = () => { if (!gRun) return; if (k > 0) btns[gs.seq[k - 1]].classList.remove("lit"); if (k >= gs.seq.length) { gs.showing = false; gs.inp = 0; $("gp-phase").textContent = "Your turn"; return; }
+    setTimeout(() => { if (!gRun) return; btns[gs.seq[k]].classList.add("lit"); k++; setTimeout(step, 450); }, 200); };
+  setTimeout(step, 500);
+}
+function memoTap(i, b) {
+  if (!gRun || gs.showing || G.id !== "memory") return;
+  b.classList.add("lit"); setTimeout(() => b.classList.remove("lit"), 180);
+  if (i !== gs.seq[gs.inp]) { const n = gs.seq.length - 1, nb = saveBest("memory", n, (a, c) => a > c, `${n} zones`); b.classList.add("bad"); setTimeout(() => b.classList.remove("bad"), 400); finish([["Zones remembered", n]], nb ? "New best!" : best("memory")); return; }
+  gs.inp++; if (gs.inp >= gs.seq.length) { gs.seq.push(Math.floor(rnd() * 9)); $("gp-prog").style.width = Math.min(100, gs.seq.length * 8) + "%"; setTimeout(memoShow, 500); }
+}
+$("gp-go").addEventListener("click", () => { if (gRun) { stopGame(); $("gp-go").textContent = "Start"; $("gp-phase").textContent = "Stopped"; return; } if ($("gp-go").textContent === "Again") selectGame(G); startGame(); });
+$("gp-reset").addEventListener("click", () => selectGame(G));
+const gstage = $("gstage");
+const toCv = (e) => { const r = gcv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 720, (e.clientY - r.top) / r.height * 720]; };
+gstage.addEventListener("pointerdown", (e) => { if (G && G.kind === "canvas" && !e.target.closest("button")) { ptr = toCv(e); tap(); } });
+gstage.addEventListener("pointermove", (e) => { if (G && G.id === "follow") ptr = toCv(e); });
+document.querySelectorAll("#garrows button").forEach((b) => b.addEventListener("click", () => edgeAnswer(b.dataset.d)));
+addEventListener("keydown", (e) => {
+  if (!G || $("gplayer").hidden || $("v-mind").hidden) return;
+  const k = { ArrowUp: "up", ArrowRight: "right", ArrowDown: "down", ArrowLeft: "left" }[e.key];
+  if (k && G.id === "edge") { e.preventDefault(); edgeAnswer(k); }
+  if (e.key === " " && (G.id === "trigger" || G.id === "rhythm")) { e.preventDefault(); tap(); }
+});
+function renderGames() {
+  const focus = EX.find((e) => e.id === "focus");
+  const items = [{ id: "focus", name: focus.name, desc: focus.desc, tags: ["Attention"], len: "60 s" }].concat(GAMES.map((g) => ({ id: g.id, name: g.name, desc: g.desc, tags: g.tags, len: g.seconds ? g.seconds + " s" : g.rounds ? g.rounds + " rounds" : g.id === "schulte" ? "~30 s" : "endless" })));
+  $("g-grid").innerHTML = items.map((g) => `<button class="m-ex" data-id="${g.id}"><span class="gicon" aria-hidden="true">${ICON[g.id]}</span><b>${g.name}${lockBadge(g.id)}</b><span class="tiny">${g.len} · ${g.desc}</span><span class="m-tags">${g.tags.map((t) => `<span>${t}</span>`).join("")}</span></button>`).join("");
+  $("g-grid").querySelectorAll(".m-ex").forEach((b) => b.addEventListener("click", () => { if (locked(b.dataset.id)) { goPlans(); return; } if (b.dataset.id === "focus") selectEx(focus); else selectGame(GAMES.find((g) => g.id === b.dataset.id)); $("players").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }));
+}
+const SV = (inner) => `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="#f5f5f7" stroke-width="2.4" stroke-linecap="round">${inner}</svg>`;
+const ICON = {
+  focus: SV('<circle cx="24" cy="24" r="19" stroke="#3a3a3e"/><circle cx="30" cy="18" r="4" fill="#ffb36b" stroke="none"/>'),
+  trigger: SV('<circle cx="18" cy="24" r="9" fill="#f5f5f7" stroke="none"/><circle cx="34" cy="24" r="9" fill="#ffb36b" stroke="none"/>'),
+  follow: SV('<path d="M6 32c8-18 16 10 24-6s10-8 12-6" stroke="#a1a1a6"/><circle cx="30" cy="26" r="6"/>'),
+  schulte: SV('<rect x="7" y="7" width="34" height="34" rx="6" stroke="#3a3a3e"/><path d="M18 7v34M30 7v34M7 18h34M7 30h34" stroke="#3a3a3e"/><text x="24" y="28" fill="#f5f5f7" stroke="none" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter,Arial">7</text>'),
+  edge: SV('<circle cx="24" cy="24" r="19" stroke="#3a3a3e"/><path d="M20 24h8M24 20v8"/><circle cx="41" cy="24" r="3.5" fill="#f5f5f7" stroke="none"/>'),
+  rhythm: SV('<circle cx="24" cy="24" r="8" fill="#f5f5f7" stroke="none"/><circle cx="24" cy="24" r="15" stroke="#a1a1a6"/><circle cx="24" cy="24" r="21" stroke="#3a3a3e"/>'),
+  memory: SV('<rect x="7" y="7" width="9" height="9" rx="2" stroke="#3a3a3e"/><rect x="20" y="7" width="9" height="9" rx="2" fill="#f5f5f7" stroke="none"/><rect x="33" y="7" width="9" height="9" rx="2" stroke="#3a3a3e"/><rect x="7" y="20" width="9" height="9" rx="2" stroke="#3a3a3e"/><rect x="20" y="20" width="9" height="9" rx="2" stroke="#3a3a3e"/><rect x="33" y="20" width="9" height="9" rx="2" fill="#ffb36b" stroke="none"/><rect x="7" y="33" width="9" height="9" rx="2" fill="#a1a1a6" stroke="none"/><rect x="20" y="33" width="9" height="9" rx="2" stroke="#3a3a3e"/><rect x="33" y="33" width="9" height="9" rx="2" stroke="#3a3a3e"/>')
+};
+window.showPlayer = (which) => { $("mplayer").hidden = which !== "breath"; $("gplayer").hidden = which !== "game"; if (which === "breath" && G) stopGame(); if (which === "game") stopM(); };
+renderGames();
+
+function mindOpen() {
+  renderGrid(); renderGames();
+  let pick = null; try { pick = sessionStorage.getItem("rl.mindPick"); sessionStorage.removeItem("rl.mindPick"); } catch (e) {}
+  const e = pick && EX.find((x) => x.id === pick);
+  if (e && !locked(e.id)) selectEx(e); else if (!mRun && !gRun) selectEx(cur);
+}
+function mindClose() { stopM(); stopGame(); }
+const GAME_OF_DAY = () => { const d = new Date(); const n = (d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate()) % GAMES.length; return GAMES[n]; };
+function pickAndGo(id) { try { sessionStorage.setItem("rl.mindPick", id); } catch (e) {} location.hash = "mind"; }
+function homeHTML() {
+  const g = GAME_OF_DAY();
+  return `<a class="mi-hcard" href="#mind" data-mind="sigh"><span class="mi-orb" aria-hidden="true"></span><span class="t"><b>Breathe before you queue</b><span class="s">1 min · Cyclic sighing · Mind</span></span></a>
+    <a class="mi-hcard" href="#mind" data-mind-game="${g.id}"><span class="gicon" aria-hidden="true">${ICON[g.id]}</span><span class="t"><b>Today's focus game: ${g.name}</b><span class="s">${g.seconds ? g.seconds + " s" : g.rounds + " rounds"} · ${(best(g.id) || "Set your first score").replace("Your best: ", "Your best: ")}</span></span></a>`;
+}
+function bindHome(el) {
+  el.querySelectorAll("[data-mind]").forEach((a) => a.addEventListener("click", (ev) => { ev.preventDefault(); pickAndGo(a.dataset.mind); }));
+  el.querySelectorAll("[data-mind-game]").forEach((a) => a.addEventListener("click", (ev) => { ev.preventDefault(); const g = GAMES.find((x) => x.id === a.dataset.mindGame); location.hash = "mind"; setTimeout(() => { if (g && !locked(g.id)) selectGame(g); }, 60); }));
+}
+window.ReplineMind = {
+  open: mindOpen, close: mindClose,
+  renderHome(el) { if (!el) return; el.innerHTML = homeHTML(); bindHome(el); },
+  renderDone(el) { if (!el) return; el.innerHTML = `<a class="mi-hcard" href="#mind" data-mind="long" style="max-width:420px"><span class="mi-orb" aria-hidden="true"></span><span class="t"><b>Cool down?</b><span class="s">Long exhale · 1 min</span></span></a>`; bindHome(el); }
+};
+window.__games = { GAMES, selectGame, startGame, tap, edgeAnswer, get gs() { return gs; } };
+
+
+})();
+</script>
 <script>
 /* =====================================================================
    SITE — site-wide values. Optional values that are null are simply hidden.
@@ -1601,6 +2108,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const base = account.plan || "free", bonus = account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? account.bonusPlan : "free";
     return RANK[bonus] > RANK[base] ? bonus : base;
   }
+  window.replinePlanId = () => planId();
   const planName = () => (PLANS.find((p) => p.id === planId()) || PLANS[0]).name;
   const routineLimit = () => ({ free: 1, standard: 2, pro: Infinity })[planId()];
   const customCache = {};
@@ -1717,6 +2225,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     GOALS.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
     hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "When time is tight.", icon: "i-aim", range: "30 min – 3 h" }));
     hg.appendChild(aiCard());
+    let hm = $("home-mind"); if (!hm) { hm = document.createElement("div"); hm.id = "home-mind"; hm.className = "mi-home"; hg.after(hm); }
+    if (window.ReplineMind) ReplineMind.renderHome(hm);
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
     $("resume").hidden = !(S.active && length(S.goal, S.len));
     $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Set by set";
@@ -2994,7 +3504,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
             <span class="small">The in-game overlay comes with Standard and Pro: set, time left, finish alerts, 8 positions, size and opacity.</span>
             <button class="pill sm" type="button" id="ov-plans" style="justify-self:start">See plans</button></div>
             <div class="group" style="margin-top:12px">${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}</div>
-            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine." : "Hotkeys are off."}</p></section>`;
+            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing." : "Hotkeys are off."}</p></section>`;
         } else if (ov) {
           const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
           h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
@@ -3005,7 +3515,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
             <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
             <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
             ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
-          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing in the overlay · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
     }
       } else {
         h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
@@ -4997,7 +5507,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio", "mind"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -5035,6 +5545,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (id === "stats") buildStats();
     if (id === "aim") buildAim();
     if (id === "ai") buildCoach();
+    if (window.ReplineMind) { if (id === "mind") ReplineMind.open(); else ReplineMind.close(); }
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "drops") buildDrops();
@@ -5044,6 +5555,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (id === "plan") buildPlan();
     if (id === "training") buildTraining();
     pushOverlay(true);
+    if (id === "done" && window.ReplineMind) ReplineMind.renderDone($("done-mind"));
     if (id === "done") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine done."; }
     if (!first || id !== "home") scrollTo(0, 0);
     updateResume();
