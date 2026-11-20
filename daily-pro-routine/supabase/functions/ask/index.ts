@@ -49,7 +49,7 @@ const FAQ: Faq[] = [
   { id: "plans", keys: [[/price|preis|cost|kost|plan|abo|subscription|premium|\bpro\b|standard|pay|bezahl|kauf|buy|purchase|paypal|card|€|euro|free|kostenlos|gratis/, 2], [/how much|wie viel|when|wann|upgrade|get pro/, 2]],
     a: `**Plans:** Free · **Standard** €3.99 a month (€29.99 a year) · **Pro** €6.99 a month (€49.99 a year). Details: ${SITE}/#plans\n**Right now you don't need to pay anything:** it's launch month, and every Pro feature is free for everyone who is signed in until **12 December 2026**. Payments aren't open yet (“Coming soon”).` },
   { id: "count", keys: [[/count|zählt|zaehlt|verified|verifiziert|not counted|didn.?t count|no points|keine punkte|no spin|kein spin|minutes? missing|minuten fehlen/, 3], [/routine|training|set/, 1]],
-    a: "**A routine counts when you really trained it:** sets can't be skipped, and our server checks that the real time has passed.\n**Verified** (Windows app): Fortnite or KovaaK's also has to be running during the game sets. A Verified routine gives a spin with **2 Golden Tickets** and a mark on the leaderboard.\nA routine that doesn't count keeps your streak, but gives no spin and no points. Pausing a lot or skipping ahead with the clock is the usual reason." },
+    a: "**A routine counts when you really trained it:** sets can't be skipped, and our server checks that the real time has passed.\n**Verified** (Windows app): Fortnite or KovaaK's also has to be running during the game sets. A Verified routine gives a spin with **2 Golden Tickets** and a mark on the leaderboard.\n**Short on time?** End a routine after 15 minutes or more and you can **save** it: it counts for your streak and gives a spin.\nA routine that doesn't count gives no spin and no points. Pausing a lot or skipping ahead with the clock is the usual reason." },
   { id: "skip", keys: [[/skip|überspring|ueberspring|next set|nächste(n)? set|naechste(n)? set/, 3]],
     a: "Sets can't be skipped: the next set starts when the current one is done. That's how we keep the leaderboard fair.\nTo get to the next map faster, use the pause between sets (30 seconds by default, change it in **Settings**). Keys: **Space** start/pause · **R** restart · **F** full screen. In the Windows app the same works in game with **Ctrl+Shift+Space / R**." },
   { id: "board", keys: [[/leaderboard|rangliste|rank|platz|points|punkte|prize|preis(e)?|gewinn|\bwin\b|reward|belohnung|top ?\d+/, 2], [/how|wie|get|bekomm|month|monat|week|woche/, 1]],
@@ -67,7 +67,9 @@ const FAQ: Faq[] = [
   { id: "detect", keys: [[/game detect|not detected|nicht erkannt|erkennt|doesn.?t see|fortnite (isn.?t|not) (running|open)|no verified|nicht verifiziert/, 4]],
     a: "**Game detection** checks the list of running programs for Fortnite or KovaaK's during the game sets. Make sure **Settings → Tracking → Game detection** is on and the game is really running (not only the launcher) during at least most of the game sets. It only works in the Windows app, the website can't see your games." },
   { id: "coach", keys: [[/personal plan|coach|ai routine|ki routine|\bai\b|\bki\b|made for (me|you)|custom routine for me/, 3]],
-    a: `**Personal Plan** (${SITE}/#ai): write what you want to train, like “45 min, my edits are bad, cup in 3 days”, and you get a routine made for you. Standard: 1 a day, Pro: 3 a day (during launch month everyone signed in counts as Pro).\nThe more you say (time, weak spots, cup date, input), the better it fits.` },
+    a: `**Personal Plan** (${SITE}/#ai): pick how much time you have (15 min to 90 min) and write what you want to train, like “my edits are bad, cup in 3 days”, and you get a routine made for you. Standard: 1 a day, Pro: 3 a day (during launch month everyone signed in counts as Pro).\nThe more you say (weak spots, cup date, input), the better it fits.` },
+  { id: "short", keys: [[/short|quick|kurz|schnell|15 ?min|little time|wenig zeit|no time|keine zeit|too long|zu lang|first routine|erste routine|where (do i|to) start|wo anfangen|start here/, 3]],
+    a: `**Quick Start** is 15 minutes on one map: edits, building, piece control. Perfect for your first routine or a busy day: ${SITE}/#quick\nAnd if a longer routine runs late: end it after 15 minutes or more and **save** it. It still counts for your streak and gives a spin.` },
   { id: "own", keys: [[/own routine|eigene routine|create (a )?routine|make (a )?routine|builder|erstell|import code|share code|teilen|share (my|a) routine/, 3]],
     a: "**Your own routines:** Home → **My routines → New**, pick sets and times. Free: 1 own routine, Standard: 2, Pro: unlimited.\nTo **share** one, open it and copy its code. To use a friend's, click **Import code** and paste it." },
   { id: "creator", keys: [[/creator code|support.?a.?creator|code von|creator/, 3]],
@@ -89,7 +91,7 @@ const FAQ: Faq[] = [
   { id: "pause", keys: [[/pause|break|countdown|timer (between|zwischen)|zwischen den sets/, 2]],
     a: "Between sets there's a short break to open the next map: **30 seconds** by default, then the set starts on its own. Change it in **Settings**." },
   { id: "what", keys: [[/what is repline|was ist repline|how does (it|repline) work|wie funktioniert|what does repline/, 4]],
-    a: `**Repline** is daily Fortnite training like the pros do it: pick a routine, then train set by set with timers, map codes and KovaaK's playlists. Streaks, leaderboards with prizes, Drops and a Personal Plan made for you. Start here: ${SITE}` },
+    a: `**Repline** is daily Fortnite training like the pros do it: pick a routine, then train set by set with timers, map codes and KovaaK's playlists. Streaks, leaderboards with prizes, Drops and a Personal Plan made for you. New here? Start with the 15-min Quick Start: ${SITE}/#quick` },
 ];
 
 const norm = (t: string) => " " + String(t || "").toLowerCase().replace(/<@!?\d+>/g, " ").replace(/\s+/g, " ") + " ";
@@ -167,7 +169,7 @@ async function poll() {
   return { messages: msgs.length, answered };
 }
 
-// ---------- welcome DMs for new players (017_welcome.sql) ----------
+// ---------- welcome DMs for new players (017_welcome.sql, 018_short_starts.sql) ----------
 const linkBtn = (label: string, url: string) => ({ type: 2, style: 5, label, url });
 async function welcomeDms() {
   const now = Date.now(), iso = (ms: number) => new Date(ms).toISOString();
@@ -178,8 +180,8 @@ async function welcomeDms() {
     await db.from("profiles").update({ welcome_dm_at: iso(now) }).eq("id", p.id).is("welcome_dm_at", null);
     await dm(String(p.discord_id), {
       embeds: [{ color: 0x38e0ff, title: `Welcome to Repline${p.username ? ", " + clip(p.username, 40) : ""}!`,
-        description: "Your first routine takes 30 minutes. Pick one and go, or let us build one just for you: your **Personal Plan** is free once.\n\nFinish your first routine and you get a **bonus spin** on the Drops wheel." }],
-      components: [{ type: 1, components: [linkBtn("Start my first routine", `${SITE}/#goal`), linkBtn("Build my Personal Plan", `${SITE}/#ai`)] }],
+        description: "Start with **Quick Start**: 15 minutes, one map, three sets. Or let us build a routine just for you with your **Personal Plan**.\n\nFinish your first routine and you get a **bonus spin** on the Drops wheel." }],
+      components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Build my Personal Plan", `${SITE}/#ai`)] }],
     });
     sent++;
   }
@@ -191,8 +193,25 @@ async function welcomeDms() {
     await db.from("profiles").update({ nudge_dm_at: iso(now) }).eq("id", p.id).is("nudge_dm_at", null);
     if ((runs || 0) + (days || 0) > 0) continue;
     await dm(String(p.discord_id), {
-      content: "Your bonus spin is still waiting. One routine, 30 minutes, and it's yours. Want a quick one?",
-      components: [{ type: 1, components: [linkBtn("Start Quick: Aim", `${SITE}/#goal`), linkBtn("Open Repline", SITE)] }],
+      content: "Your bonus spin is still waiting. 15 minutes on one map and it's yours. 🎁",
+      components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Open Repline", SITE)] }],
+    });
+    sent++;
+  }
+  // day 3: one more reminder for players who haven't trained in the last 2 days (018_short_starts.sql)
+  const { data: day3 } = await db.from("profiles").select("id, discord_id").not("nudge_dm_at", "is", null).is("nudge2_dm_at", null)
+    .not("discord_id", "is", null).lt("created_at", iso(now - 2.5 * 864e5)).gt("created_at", iso(now - 7 * 864e5)).limit(10);
+  const since = new Date(now - 2 * 864e5).toISOString().slice(0, 10);
+  for (const p of day3 || []) {
+    await db.from("profiles").update({ nudge2_dm_at: iso(now) }).eq("id", p.id).is("nudge2_dm_at", null);
+    const { count: recent } = await db.from("routine_runs").select("id", { count: "exact", head: true }).eq("user_id", p.id).eq("counted", true).gte("day", since);
+    if ((recent || 0) > 0) continue;
+    const { count: ever } = await db.from("routine_runs").select("id", { count: "exact", head: true }).eq("user_id", p.id).eq("counted", true);
+    await dm(String(p.discord_id), {
+      content: (ever || 0) > 0
+        ? "Ready for round two? 15 minutes today keeps your streak going and gives you a spin. 🔥"
+        : "Quick one? 15 minutes, one map: edits, building, piece control. Your bonus spin is waiting. 🎁",
+      components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Open Repline", SITE)] }],
     });
     sent++;
   }

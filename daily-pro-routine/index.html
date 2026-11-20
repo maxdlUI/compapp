@@ -400,6 +400,10 @@ html.anim .sheet { animation: updrise .4s var(--ease); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .sheet.wl { width: min(560px, 100%); gap: 14px; }
 .wl-hi { font-size: 13px; font-weight: 600; color: var(--c1); }
+.wl-quick { border-radius: 18px; padding: 18px; display: grid; gap: 10px; background: linear-gradient(135deg, rgba(56,224,255,.22), rgba(63,141,255,.12) 55%, rgba(168,85,247,.14)); box-shadow: inset 0 0 0 1.5px rgba(56,224,255,.55), 0 18px 50px rgba(56,224,255,.12); }
+.wl-quick .wl-qt { display: flex; align-items: center; gap: 8px; } .wl-quick .wl-qt b { font-size: 20px; letter-spacing: -.3px; }
+.wl-quick .pill.big { width: 100%; justify-content: center; }
+.co-time { flex-wrap: wrap; }
 .wl-pp { border-radius: 18px; padding: 16px; display: grid; gap: 10px; background: linear-gradient(180deg, rgba(56,224,255,.10), rgba(56,224,255,.03)); box-shadow: inset 0 0 0 1.5px var(--c1); }
 .wl-pp .wl-top { display: flex; align-items: center; gap: 8px; } .wl-pp .wl-top b { font-size: 17px; }
 .wl-tag { margin-left: auto; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #000; background: var(--c1); padding: 4px 9px; border-radius: 980px; }
@@ -2121,7 +2125,11 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     customCache[rid] = { key, goal: g };
     return g;
   }
-  const goal = (id) => (id === "coach" ? coachGoal() : typeof id === "string" && id.indexOf("my-") === 0 ? customGoal(id.slice(3)) : GOALS.find((z) => z.id === id));
+  // Quick Start: 15 minutes, all on one map, so a new player finishes a routine on day one.
+  let quickCache = null;
+  const quickGoal = () => quickCache || (quickCache = { id: "quick", name: "Quick Start", text: "15 min on one map: edits, building, piece control.", icon: "i-mech", custom: true,
+    lengths: [L("15", "15 min", [["editWall", 5], ["fast", 5, { name: "Freebuild · 110%" }], ["piece", 5]].filter(([k]) => SETS[k]))] });
+  const goal = (id) => (id === "coach" ? coachGoal() : id === "quick" ? quickGoal() : typeof id === "string" && id.indexOf("my-") === 0 ? customGoal(id.slice(3)) : GOALS.find((z) => z.id === id));
   const lengthLocked = (g, l) => planId() === "free" && !g.custom && !g.dev && l.id !== "short";
   const length = (gid, lid) => { const g = goal(gid); return g && g.lengths.find((l) => l.id === lid); };
   function blocksFor(gid, lid) { const l = length(gid, lid); return l ? l.sets : []; }
@@ -2184,6 +2192,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   /* the sets inside a routine as a strip of pictures (Normal length, or the only one) */
   function goalStrip(z) {
     let ls = z.lengths || [], l = ls[1] || ls[0];
+    if (z.start) l = quickGoal().lengths[0];
     if (z.quick) { const a = goal("aim"), m = goal("mechanics"); l = { sets: [].concat(a && a.lengths[0] ? a.lengths[0].sets : [], m && m.lengths[0] ? m.lengths[0].sets : []) }; }
     if (!l || !l.sets) return "";
     const seen = new Set(), imgs = [];
@@ -2192,15 +2201,16 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const rest = l.sets.length - imgs.length;
     return `<span class="gstrip" aria-hidden="true">${imgs.map((u) => `<img src="${esc(thumbOf(u))}" alt="" loading="lazy" decoding="async">`).join("")}${rest > 0 ? `<span>+${rest}</span>` : ""}</span>`;
   }
+  const QUICK_CARD = { id: "quick", cls: "mechanics", start: true, name: "Quick Start", text: "15 min, one map: edits, building, piece control. Start here.", icon: "i-mech", range: "15 min" };
   function goalCard(z, mode) {
     const a = document.createElement(mode === "pick" ? "button" : "a");
-    a.className = `goal g-${z.id === "better" ? "besser" : z.id}${mode === "pick" && (z.id === "cup" || z.id === "better") ? " tall" : ""}`;
+    a.className = `goal g-${z.cls || (z.id === "better" ? "besser" : z.id)}${mode === "pick" && (z.id === "cup" || z.id === "better") ? " tall" : ""}`;
     if (mode === "pick") { a.type = "button"; a.setAttribute("aria-pressed", S.goal === z.id ? "true" : "false"); }
     else a.href = "#goal";
     const ts = (z.lengths || []).map((l) => totalMin(l.sets)).filter((x) => x != null);
     const range = ts.length ? (ts.length > 1 ? `${fmtMin(Math.min(...ts))} – ${fmtMin(Math.max(...ts))}` : fmtMin(ts[0])) : (z.range || "");
     a.innerHTML = `${goalStrip(z) || `<svg class="gi" aria-hidden="true"><use href="#${z.icon}"/></svg>`}<span style="display:grid;gap:8px">${z.dev ? '<span class="devtag">For devs only</span>' : ""}<span class="gt">${esc(z.name)}</span><span class="gd">${esc(z.text)}</span><span class="meta"><span>${esc(range)}</span><span class="arr" aria-hidden="true">›</span></span></span>`;
-    a.addEventListener("click", (e) => { e.preventDefault(); if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
+    a.addEventListener("click", (e) => { e.preventDefault(); if (z.start) { go("quick"); return; } if (z.quick) { go("goal"); return; } if (S.goal !== z.id) { S.goal = z.id; S.len = null; resetRun(); } save(); go("length"); });
     return a;
   }
   // Personal Plan (the coach): stands out with a band on top, a ring in the player's set colours and their own sets.
@@ -2223,7 +2233,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     buildHomeMe();
     const hg = $("home-goals"); hg.innerHTML = "";
     GOALS.slice(0, 2).forEach((z) => hg.appendChild(goalCard(z)));
-    hg.appendChild(goalCard({ id: "aim", quick: true, name: "Quick: Aim & Mechanics", text: "When time is tight.", icon: "i-aim", range: "30 min – 3 h" }));
+    hg.appendChild(goalCard(QUICK_CARD));
     hg.appendChild(aiCard());
     let hm = $("home-mind"); if (!hm) { hm = document.createElement("div"); hm.id = "home-mind"; hm.className = "mi-home"; hg.after(hm); }
     if (window.ReplineMind) ReplineMind.renderHome(hm);
@@ -2247,6 +2257,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   /* ---------- Steps ---------- */
   function buildPick() {
     const g = $("pick-goals"); g.innerHTML = "";
+    g.appendChild(goalCard(QUICK_CARD, "pick"));
     GOALS.forEach((z) => g.appendChild(goalCard(z, "pick")));
     const pr = document.createElement("div");
     pr.className = "goal g-ki pro-card-pick";
@@ -2660,12 +2671,12 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     } catch (e) {}
     runBusy = false;
   }
-  async function judgeRun(run, game) {
+  async function judgeRun(run, game, early) {
     const g = game || { need: 0, got: 0 }, detect = detectOn();
     if (sb && cloudUser) {
       if (!run || !run.id) return { error: true };
       try {
-        const { data, error } = await sb.rpc("run_finish", { run_id: run.id, detect_on: detect, game_s: Math.round(g.got / 1000), need_s: Math.round(g.need / 1000) });
+        const { data, error } = await sb.rpc(early ? "run_save" : "run_finish", { run_id: run.id, detect_on: detect, game_s: Math.round(g.got / 1000), need_s: Math.round(g.need / 1000) });
         if (!error && data && !data.error) return data;
       } catch (e) {}
       return { error: true };
@@ -2673,8 +2684,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     // Demo account (no server): the same rules, checked on this device.
     if (!run) return { error: true };
     const real = Math.round((Date.now() - run.at) / 1000), plan = run.planned * 60, n = Math.min(Math.round(g.need / 1000), plan, real), gs = Math.min(Math.round(g.got / 1000), n);
-    const tOk = real >= plan * 0.95 - 30, gOk = !DESK || !detect || n === 0 || gs >= n * 0.8, ok = tOk && gOk;
-    return { counted: ok, verified: ok && !!DESK && detect && n > 0, reason: !tOk ? "too_fast" : !gOk ? "no_game" : null, real_sec: real, planned_sec: plan, game_sec: gs, need_sec: n, demo: true };
+    const tOk = real >= (early ? Math.min(plan * 0.95 - 30, EARLY_SEC - 30) : plan * 0.95 - 30), gOk = !DESK || !detect || n === 0 || gs >= n * 0.8, ok = tOk && gOk;
+    return { counted: ok, verified: ok && !!DESK && detect && n > 0, early: !!early && ok && real < plan * 0.95 - 30, reason: !tOk ? "too_fast" : !gOk ? "no_game" : null, real_sec: real, planned_sec: plan, game_sec: gs, need_sec: n, demo: true };
   }
   const fmtDur = (sec) => { const m = Math.round(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`; };
   function doneCheckHTML(v) {
@@ -2682,10 +2693,10 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const timeLine = `<span class="vc-row"><span>Real time</span><b>${fmtDur(v.real_sec)} of ${fmtDur(v.planned_sec)}</b></span>`;
     const gameLine = v.need_sec > 0 ? `<span class="vc-row"><span>Game running</span><b>${fmtDur(v.game_sec)} of ${fmtDur(v.need_sec)}</b></span>` : "";
     if (v.counted) {
-      const tag = v.verified ? `<span class="vc-tag ok">${VMARK}Verified</span>` : `<span class="vc-tag ok">Counted</span>`;
+      const tag = v.verified ? `<span class="vc-tag ok">${VMARK}Verified</span>` : `<span class="vc-tag ok">${v.early ? "Saved" : "Counted"}</span>`;
       const gain = v.verified ? "+1 spin · 2 Golden Tickets" : "+1 spin · 1 Golden Ticket";
       const tip = !v.verified && !DESK ? `<span class="tiny">Train in the Windows app with the game running and your routine is Verified: 2 Golden Tickets and a mark on the leaderboard.</span>` : !v.verified && DESK && settings.gameDetect === false ? `<span class="tiny">Game detection is off, so this routine isn't Verified. Turn it on in Settings.</span>` : "";
-      return `<div class="vcheck${v.verified ? " ver" : ""}">${tag}<b>Routine counted</b>${timeLine}${gameLine}<span class="vc-gain">${gain}</span>${tip}</div>`;
+      return `<div class="vcheck${v.verified ? " ver" : ""}">${tag}<b>${v.early ? "Saved: counts for your streak" : "Routine counted"}</b>${timeLine}${gameLine}<span class="vc-gain">${gain}</span>${tip}</div>`;
     }
     const why = v.reason === "no_game" ? "The game didn't run" : "Trained too short";
     const help = v.reason === "no_game" ? `Start ${v.need_sec ? "Fortnite or KovaaK's" : "the game"} before the set, then it counts. On the website only the time is checked.` : "The server measures the real time from start to finish. Pausing is fine, rushing isn't.";
@@ -3020,6 +3031,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       if (FEED && FEED.level) u.feel = FEED.level;
       let min = u.min || prof.time;
       min = Math.max(15, Math.min(480, min));
+      // first routine ever: kept short so the player finishes it (most new players quit long first routines)
+      if (prof.cap && min > prof.cap) { u.capped = min; min = prof.cap; }
       const why = {};
       const usable = (k) => !!APP_SETS[k] && !(k === "scrims" && prof.level === "learn") && !(META[k].kovaaks && (prof.platform === "console" || !prof.kovaaks || u.exclude.kovaaks)) && !Object.keys(u.exclude).some((f) => META[k].tags.indexOf(f) >= 0 || (f === "ranked" && k === "ranked") || (f === "scrims" && k === "scrims"));
       // ----- cup day: warm-up only, nothing new
@@ -3122,7 +3135,19 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   const COACH_KEY = "rl.coach", COACH_FEED = "rl.coachFeed", COACH_FIRST = "rl.coachFirst";
   const coachProf = () => Object.assign({ platform: "pc", kovaaks: true, level: "unreal", goal: "all" }, settings.coach || {});
   const coachLimit = () => Math.max(({ free: 0, standard: 1, pro: 3 })[planId()], account && account.welcomePlan ? 1 : 0);
-  let coachLeft = null, coachBusy = false, coachText = "";
+  let coachLeft = null, coachBusy = false, coachText = "", coachMin = 0;
+  // Never finished a routine (server + this device): the first one is kept short.
+  const firstTimer = () => !(account && account.trained) && !store.get(DONE, 0) && !streak();
+  const COACH_TIMES = [15, 30, 45, 60, 90];
+  const timeChips = (id) => `<div class="seg co-seg co-time" role="group" aria-label="How much time do you have?" id="${id}">${COACH_TIMES.map((m) => `<button type="button" data-min="${m}" aria-pressed="${coachMin === m}">${m} min</button>`).join("")}</div>`;
+  function bindTimeChips(el, onPick) {
+    if (!el) return;
+    el.querySelectorAll("[data-min]").forEach((b) => b.addEventListener("click", () => {
+      const m = +b.dataset.min; coachMin = coachMin === m ? 0 : m;
+      el.querySelectorAll("[data-min]").forEach((x) => x.setAttribute("aria-pressed", String(+x.dataset.min === coachMin)));
+      if (onPick) onPick();
+    }));
+  }
   // Today's coach routine as a normal routine, so plan, training, overlay and the server check all work as usual.
   function coachGoal() {
     const c = store.get(COACH_KEY, null);
@@ -3146,7 +3171,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   function coachTips(text) {
     const u = COACH.understand(text || "", coachProf());
     const tips = [
-      [u.min != null, "How much time you have", "e.g. 45 min, 1 hour, 2h"],
+      [u.min != null || !!coachMin, "How much time you have", "pick it above or write it, e.g. 45 min"],
       [Object.keys(u.focus).length > 0, "What feels weak or what you want to train", "e.g. edits, box fights, endgame, aim"],
       [!!u.cup || u.tired, "Anything special today", "e.g. cup tomorrow, tired, nervous (optional)"]
     ];
@@ -3177,6 +3202,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         ${prof.platform === "pc" ? `<div class="row"><span class="tiny">KovaaK's</span>${seg("kovaaks", [[true, "I have it"], [false, "No"]])}</div>` : ""}
         <div class="row"><span class="tiny">Where are you?</span>${seg("level", [["learn", "Not Unreal yet"], ["unreal", "Unreal"], ["cups", "Cup grinder"], ["earner", "Earner"]])}<span class="tiny">${LVL[prof.level] || ""}</span></div>
         <div class="row"><span class="tiny">Main goal</span>${seg("goal", [["all", "All-round"], ["cups", "Cups"], ["aim", "Aim"], ["mech", "Mechanics"]])}</div>
+        <div class="row"><span class="tiny">How much time do you have?</span>${timeChips("co-time")}${firstTimer() ? `<span class="tiny" style="color:var(--c1)">Your first routine is kept to 20 min, so you finish it and get your bonus spin.</span>` : ""}</div>
         <div class="row"><label class="tiny" for="co-msg">What do you want to train today?</label>
           <textarea id="co-msg" class="co-msg" maxlength="400" placeholder="e.g. 45 min, my box fights are bad and I die when I edit. Cup tomorrow.">${esc(coachText)}</textarea></div>
         <div id="co-tips">${coachTips(coachText)}</div>
@@ -3189,6 +3215,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     })));
     const msg = $("co-msg");
     msg.addEventListener("input", () => { coachText = msg.value; $("co-tips").innerHTML = coachTips(msg.value); });
+    bindTimeChips($("co-time"), () => { $("co-tips").innerHTML = coachTips(msg.value); });
     msg.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) coachRun(); });
     $("co-build").addEventListener("click", coachRun);
     bindCoachOut();
@@ -3207,7 +3234,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (coachBusy) return;
     const text = ($("co-msg").value || "").trim(); coachText = text;
     const u0 = COACH.understand(text, coachProf());
-    if (!text || (u0.min == null && !Object.keys(u0.focus).length && !u0.cup)) { toast("Add how much time you have and what you want to train"); $("co-msg").focus(); return; }
+    if (!coachMin && (!text || (u0.min == null && !Object.keys(u0.focus).length && !u0.cup))) { toast("Pick your time or write what you want to train"); $("co-msg").focus(); return; }
     if (S.active && S.goal === "coach" && S.b > 0) { toast("Finish or end your current Personal Plan first"); return; }
     coachBusy = true; $("co-build").disabled = true;
     try {
@@ -3217,8 +3244,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       coachLeft = t.left;
       if (!store.get(COACH_FIRST, null)) store.set(COACH_FIRST, today());
       const feed = store.get(COACH_FEED, null); COACH.setFeed(feed && feed.day !== today() ? feed : (feed && feed.day === today() ? feed : null));
-      const prof = Object.assign(coachProf(), { time: 60, weeks: coachWeeks(), streak: String(streak()) });
-      const r = COACH.build(text, prof), u = r.u, N = COACH.NICE, got = [[fmtMin(r.min) + (u.min ? "" : " (default)")]];
+      const prof = Object.assign(coachProf(), { time: coachMin || 30, weeks: coachWeeks(), streak: String(streak()), cap: firstTimer() ? 20 : 0 });
+      const r = COACH.build(text, prof), u = r.u, N = COACH.NICE, got = [[fmtMin(r.min) + (u.capped ? " (first routine)" : u.min || coachMin ? "" : " (default)")]];
+      if (u.capped) r.note = `Your first routine is ${r.min} min on purpose: finish it and get your bonus spin. From tomorrow you get the full ${fmtMin(u.capped)}.` + (r.note ? " " + r.note : "");
       const specific = ["piece", "boxfights", "buildfights", "endgame", "clutch", "realistics"].some((f) => u.focus[f]);
       Object.entries(u.focus).filter(([f]) => !(f === "fights" && specific) && f !== u.fromLast).forEach(([f, w]) => got.push([(w === 2 ? "weak: " : "") + (N[f] || f), w === 2 ? "bad" : ""]));
       Object.keys(u.exclude).forEach((f) => got.push([N[f] || f, "no"]));
@@ -3249,7 +3277,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }
 
   /* ---------- Done & streak ---------- */
-  function finish() {
+  function finish(early) {
     const days = store.get(DAYS, []); const t = today();
     if (days.indexOf(t) < 0) { days.push(t); store.set(DAYS, days.slice(-400)); }
     store.set(DONE, store.get(DONE, 0) + 1);
@@ -3260,13 +3288,13 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag wait">Checking</span><b>Checking your routine…</b></div>`;
     $("done-spin").innerHTML = "";
     const z = goal(S.goal), l = length(S.goal, S.len);
-    $("done-sum").textContent = `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
+    $("done-sum").textContent = early ? `${z.name} · saved after ${Math.max(1, S.b)} of ${list().length} sets. Nice work.` : `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
     pushOverlay(true); watchGames();
     cloudPush();
     go("done");
-    judgeRun(run, game).then((v) => {
+    judgeRun(run, game, early).then((v) => {
       const rt = store.get(ROUT, {});
       rt[t] = (rt[t] || 0) + (v.counted || v.error ? 1 : 0); store.set(ROUT, rt);
       cloudDay();
@@ -4177,13 +4205,13 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     try {
       const { data } = await sb.rpc("welcome_state");
       if (!data) return;
-      account.welcomePlan = !!data.free_plan; store.set(ACC, account);
+      account.welcomePlan = !!data.free_plan; account.trained = !!data.trained; store.set(ACC, account);
       if (data.show && !store.get("rl.welcomed", false) && !(S.active && S.b > 0)) setTimeout(openWelcome, 900);
     } catch (e) {}
   }
   function openWelcome() {
     const name = account && account.name ? account.name : "";
-    const pick = ["aim", "mechanics", "better"].map((id) => GOALS.find((g) => g.id === id)).filter(Boolean).map((g) => {
+    const pick = ["aim", "mechanics"].map((id) => GOALS.find((g) => g.id === id)).filter(Boolean).map((g) => {
       const l = g.lengths[0], min = l.sets.reduce((a, x) => a + x.min, 0), img = (l.sets.find((x) => x.img) || {}).img;
       return { id: g.id, len: l.id, name: g.name, min, img, text: g.text };
     });
@@ -4192,13 +4220,19 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     openModal(`<h2 id="sheet-t" class="sr-only">Welcome to Repline</h2>
       <span class="wl-hi">Welcome to Repline${name ? ", " + esc(name) : ""}</span>
       <b style="font-size:28px;line-height:1.12;letter-spacing:-.5px">Let's start your first routine.</b>
+      <div class="wl-quick">
+        <span class="wl-qt"><b>Quick Start</b><span class="wl-tag">15 min</span></span>
+        <span class="small" style="color:#c7c7cc">One map, three sets: edits, building, piece control. The fastest way to your bonus spin.</span>
+        <button class="pill big" type="button" id="wl-quick">Start 15 min</button>
+      </div>
+      <div class="wl-or">or let us build it</div>
       <div class="wl-pp">
         <div class="wl-top"><svg class="gi" aria-hidden="true" style="width:22px;height:22px;color:var(--c1)"><use href="#i-ki"/></svg><b>Your Personal Plan</b><span class="wl-tag">${freeTag}</span></div>
         <label class="small" for="wl-msg" style="color:#c7c7cc;margin:0">Tell us what you want to work on. We build today's routine just for you.</label>
-        <textarea id="wl-msg" class="co-msg" maxlength="400" rows="2" placeholder="e.g. 45 min, my edits are slow, cup on Friday" style="min-height:64px"></textarea>
-        <div class="wl-go"><span class="tiny">Tip: add your time, weak spot and cup date.</span><button class="pill" type="button" id="wl-build">Build my routine</button></div>
+        <textarea id="wl-msg" class="co-msg" maxlength="400" rows="2" placeholder="e.g. my edits are slow, cup on Friday" style="min-height:64px"></textarea>
+        <div class="wl-go"><span class="tiny">Your first one is 20 min, so you finish it.</span><button class="pill" type="button" id="wl-build">Build my routine</button></div>
       </div>
-      <div class="wl-or">or pick one and go</div>
+      <div class="wl-or">or pick a 30-min routine</div>
       <div class="wl-list">${pick.map((r) => `<div class="wl-r">${r.img ? `<img src="${esc(thumbOf(r.img))}" alt="" loading="lazy" decoding="async">` : `<i class="wl-ph"></i>`}<span><b style="font-size:15px">${esc(r.name)}</b><span class="tiny">${fmtMin(r.min)} · ${esc(r.text)}</span></span><button class="pill sm" type="button" data-wl="${r.id}" data-len="${r.len}">Start</button></div>`).join("")}</div>
       <div class="wl-bonus"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#c084fc" stroke-width="1.8"/><path d="M12 2.5v19M2.5 12h19M5.3 5.3l13.4 13.4M18.7 5.3L5.3 18.7" stroke="#c084fc" stroke-width="1.2"/><circle cx="12" cy="12" r="2.4" fill="#c084fc"/></svg><span><b>Bonus spin.</b> <span style="color:#c7c7cc">Finish your first routine and you get a free extra spin on the Drops wheel.</span></span></div>
       <button class="wl-later" type="button" data-close>Maybe later</button>`,
@@ -4208,10 +4242,11 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
           started = true; close();
           S.goal = b.dataset.wl; S.len = b.dataset.len; resetRun(); save(); go("plan");
         }));
+        sh.querySelector("#wl-quick").addEventListener("click", () => { started = true; close(); go("quick"); });
         sh.querySelector("#wl-build").addEventListener("click", () => {
           const t = sh.querySelector("#wl-msg").value.trim();
           const u = COACH.understand(t, coachProf());
-          if (!t || (u.min == null && !Object.keys(u.focus).length && !u.cup)) { toast("Add how much time you have and what you want to train"); sh.querySelector("#wl-msg").focus(); return; }
+          if (!t || (u.min == null && !Object.keys(u.focus).length && !u.cup)) { toast("Write what you want to train, e.g. edits or aim"); sh.querySelector("#wl-msg").focus(); return; }
           started = true; coachText = t; close(); go("ai");
           setTimeout(() => { const m = $("co-msg"); if (m) { m.value = t; coachRun(); } }, 350);
         });
@@ -4237,10 +4272,20 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal").hidden) { const c = $("sheet").querySelector("[data-close]"); if (c) c.click(); } });
 
   /* ---------- 1.6 · end a routine ---------- */
+  // Ended early after 15+ real minutes: the player can save it. It counts for the streak and gives a spin.
+  const EARLY_SEC = 900;
+  const trainedSec = () => S.run && S.run.at ? Math.round((Date.now() - S.run.at) / 1000) : 0;
   function askEnd() {
     if (!(S.goal && S.active)) return;
-    openModal(`<h2 id="sheet-t">End this routine?</h2><p class="small">Your progress in it is lost. It doesn't count for your streak.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill red" type="button" id="end-yes">End routine</button></div>`,
-      (sh, close) => sh.querySelector("#end-yes").addEventListener("click", () => { close(); endRoutine(); }));
+    const sec = trainedSec(), canSave = sec >= EARLY_SEC && signedIn();
+    const left = Math.ceil((EARLY_SEC - sec) / 60);
+    openModal(canSave
+      ? `<h2 id="sheet-t">Done for today?</h2><p class="small">You trained <b>${fmtDur(sec)}</b>. Save it: it counts for your streak and gives you a spin on the Drops wheel.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill out" type="button" id="end-yes">Throw it away</button><button class="pill" type="button" id="end-save">Save ${fmtDur(sec)}</button></div>`
+      : `<h2 id="sheet-t">End this routine?</h2><p class="small">Your progress in it is lost. It doesn't count for your streak.${S.run && S.run.at && sec > 60 && sec < EARLY_SEC ? ` Train <b>${left} more min</b> and you can save it: it counts for your streak and gives you a spin.` : ""}</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill red" type="button" id="end-yes">End routine</button></div>`,
+      (sh, close) => {
+        sh.querySelector("#end-yes").addEventListener("click", () => { close(); endRoutine(); });
+        const sv = sh.querySelector("#end-save"); if (sv) sv.addEventListener("click", () => { close(); countTime(); clearInterval(raf); keepAwake(false); finish(true); });
+      });
   }
   function endRoutine() {
     countTime(); clearInterval(raf); keepAwake(false);
@@ -5521,6 +5566,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     let importCode = null;
     if (/^import=/.test(name)) { importCode = decodeURIComponent(name.slice(7)); name = "goal"; }
     const asked = name;
+    if (name === "quick") { if (!(S.active && S.b > 0)) { S.goal = "quick"; S.len = "15"; resetRun(); save(); } name = "plan"; }
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
     if (name === "length" && goal(S.goal) && goal(S.goal).custom) name = S.len ? "plan" : "goal";
