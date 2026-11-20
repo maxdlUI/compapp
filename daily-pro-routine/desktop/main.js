@@ -187,10 +187,60 @@ function createTunnel() {
   tunnel.loadFile(path.join(__dirname, "tunnel.html"));
   tunnel.on("closed", () => { tunnel = null; });
 }
+/* Pump Mode: the tunnel only shows while the pump slot is out. Repline listens for the pump key and the "off" keys
+   the way push-to-talk does (uiohook, never blocks a key, nothing is stored or sent). The hook only runs while Pump Mode is on. */
+let hook = null, pumpCfg = { on: false, pump: "", off: [], hold: 8 }, pumpActive = false, pumpT = null, capture = null;
+let KEYNAME = null;
+function keyName(id) {
+  if (id.startsWith("m")) return "Mouse " + id.slice(1);
+  if (!KEYNAME) { try { const { UiohookKey } = require("uiohook-napi"); KEYNAME = {}; for (const [n, c] of Object.entries(UiohookKey)) if (KEYNAME[c] == null) KEYNAME[c] = n; } catch (e) { KEYNAME = {}; } }
+  return KEYNAME[+id.slice(1)] || "Key " + id.slice(1);
+}
+function hookStart() {
+  if (hook) return true;
+  try {
+    const { uIOhook } = require("uiohook-napi");
+    uIOhook.on("keydown", (e) => onInput("k" + e.keycode));
+    uIOhook.on("mousedown", (e) => { if (+e.button >= 3) onInput("m" + e.button); });
+    uIOhook.start(); hook = uIOhook; return true;
+  } catch (e) { ulog("key hook failed", e); hook = null; return false; }
+}
+function hookStop() { if (!hook) return; try { hook.removeAllListeners(); hook.stop(); } catch (e) {} hook = null; }
+const needHook = () => !!capture || (pumpCfg.on && !!pumpCfg.pump && tunnelCfg.pump && tunnelCfg.on);
+function hookSync() { if (needHook()) hookStart(); else hookStop(); }
+function onInput(id) {
+  if (capture) { const cb = capture; capture = null; cb(id); hookSync(); return; }
+  if (!pumpCfg.on) return;
+  if (id === pumpCfg.pump) setPump(true);
+  else if (pumpCfg.off.includes(id)) setPump(false);
+}
+function setPump(on) {
+  clearTimeout(pumpT);
+  pumpActive = on;
+  if (on && pumpCfg.hold > 0) pumpT = setTimeout(() => setPump(false), pumpCfg.hold * 1000);
+  if (on) createTunnel();
+  applyTunnel();
+}
+ipcMain.on("pump:set", (_e, c) => {
+  c = c && typeof c === "object" ? c : {};
+  const ok = (x) => typeof x === "string" && /^[km]\d{1,6}$/.test(x);
+  pumpCfg = { on: !!c.on, pump: ok(c.pump) ? c.pump : "", off: Array.isArray(c.off) ? c.off.filter(ok).slice(0, 30) : [], hold: Math.max(0, Math.min(30, +c.hold || 0)) };
+  if (!pumpCfg.on) { pumpActive = false; clearTimeout(pumpT); }
+  hookSync(); applyTunnel();
+});
+ipcMain.handle("pump:capture", () => new Promise((resolve) => {
+  if (capture) { resolve(null); return; }
+  const t = setTimeout(() => { if (capture) { capture = null; hookSync(); } resolve(null); }, 10000);
+  capture = (id) => { clearTimeout(t); resolve({ id, name: keyName(id) }); };
+  if (!hookStart()) { capture = null; clearTimeout(t); resolve({ error: "hook" }); }
+}));
+// Fortnite's default slot keys 1 to 6 and edit (G): switching to them puts the pump away
+ipcMain.handle("pump:defaults", () => { try { const { UiohookKey } = require("uiohook-napi"); return ["1", "2", "3", "4", "5", "6", "G"].map((k) => ({ id: "k" + UiohookKey[k], name: k })); } catch (e) { return []; } });
 function applyTunnel() {
   if (!tunnel) return;
-  tunnelJS(`window.apply(${JSON.stringify(tunnelCfg)})`);
-  const show = tunnelCfg.on || Date.now() < edgeUntil;
+  const eff = { ...tunnelCfg, on: tunnelCfg.on && (!tunnelCfg.pump || pumpActive) };
+  tunnelJS(`window.apply(${JSON.stringify(eff)})`);
+  const show = eff.on || Date.now() < edgeUntil || (tunnelCfg.on && tunnelCfg.pump);
   if (show && !tunnel.isVisible()) {
     // cover the whole screen, taskbar area included (Windows may shrink a new window to the work area)
     tunnel.setBounds(screen.getPrimaryDisplay().bounds);
@@ -203,9 +253,9 @@ function applyTunnel() {
 ipcMain.on("tunnel:set", (_e, c) => {
   c = c && typeof c === "object" ? c : {};
   const n = (v, lo, hi, d) => { v = +v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; };
-  tunnelCfg = { on: !!c.on, size: n(c.size, 3, 70, 34), dark: n(c.dark, 10, 90, 55), soft: n(c.soft, 0, 100, 60), shape: c.shape === "square" ? "square" : "circle" };
+  tunnelCfg = { on: !!c.on, size: n(c.size, 3, 70, 34), dark: n(c.dark, 10, 90, 55), soft: n(c.soft, 0, 100, 60), shape: c.shape === "square" ? "square" : "circle", pump: !!c.pump };
   if (tunnelCfg.on) createTunnel();
-  applyTunnel();
+  hookSync(); applyTunnel();
 });
 function edgeFlash(dir) {
   if (!["l", "r", "u", "b"].includes(dir)) return;
@@ -517,5 +567,5 @@ app.whenReady().then(() => {
   try { registerHotkeys(); } catch (e) {}
   screen.on("display-metrics-changed", applyOverlayLook);
 });
-app.on("will-quit", () => { clearInterval(gameTimer); globalShortcut.unregisterAll(); try { if (rpc && rpcReady) rpc.destroy(); } catch (e) {} });
+app.on("will-quit", () => { hookStop(); clearInterval(gameTimer); globalShortcut.unregisterAll(); try { if (rpc && rpcReady) rpc.destroy(); } catch (e) {} });
 app.on("window-all-closed", () => app.quit());
