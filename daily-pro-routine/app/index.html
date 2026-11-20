@@ -1224,6 +1224,39 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 #v-cue .fc-how ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: #c7c7cc; font-size: 15px; }
 #v-cue .fc-how ol b { color: var(--porcelain); }
 @media (prefers-reduced-motion: reduce) { #v-cue .fc-flash.on i { animation: none; } }
+/* ---------- Hand & arm warm-up (in #v-mind) ---------- */
+#v-mind .wu { background: var(--carbon); border-radius: 28px; padding: clamp(18px, 3vw, 28px); display: grid; gap: 16px; margin-bottom: 28px; }
+#v-mind .wu-head { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+#v-mind .wu-head > div:first-child { display: grid; gap: 4px; }
+#v-mind .wu-t { font-size: 24px; letter-spacing: -.4px; }
+#v-mind .wu-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+#v-mind .wu-main { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 860px) { #v-mind .wu-main { grid-template-columns: minmax(0, 1fr); } }
+#v-mind .wu-left, #v-mind .wu-side { display: grid; gap: 12px; align-content: start; min-width: 0; }
+#v-mind .wu-stage { position: relative; background: var(--graphite); border-radius: 22px; overflow: hidden; }
+#v-mind .wu-stage canvas { display: block; width: 100%; aspect-ratio: 4 / 3; }
+#v-mind .wu-badge { position: absolute; left: 14px; top: 12px; font: 600 12px var(--mono); color: var(--ash); }
+#v-mind .wu-hold { position: absolute; right: 14px; top: 12px; font: 700 13px var(--mono); color: var(--c1); }
+#v-mind .wu-bar { height: 6px; background: var(--steel); border-radius: 3px; overflow: hidden; }
+#v-mind .wu-bar i { display: block; height: 100%; width: 0; background: var(--c1); }
+#v-mind .wu-now b { font-size: clamp(22px, 3vw, 28px); letter-spacing: -.4px; display: block; }
+#v-mind .wu-now p { margin: 4px 0 0; color: #c7c7cc; }
+#v-mind .wu-ctl { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+#v-mind .wu-time { font: 700 26px var(--mono); font-variant-numeric: tabular-nums; margin-left: auto; }
+#v-mind .wu-list { display: grid; gap: 4px; }
+#v-mind .wu-step { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: left; font: inherit; color: var(--porcelain); background: transparent; border: 0; border-radius: 14px; padding: 9px 12px; cursor: pointer; }
+#v-mind .wu-step:hover { background: var(--graphite); }
+#v-mind .wu-step.cur { background: var(--steel); }
+#v-mind .wu-step .n, #v-mind .wu-step .d { font: 500 12px var(--mono); color: var(--ash); }
+#v-mind .wu-step.done .n { color: var(--green); }
+#v-mind .wu-step b { font-weight: 600; font-size: 15px; }
+#v-mind .wu-askrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--graphite); border-radius: 18px; padding: 14px 16px; }
+#v-mind .wu-askrow > span { display: grid; gap: 2px; }
+#v-mind .wu-sw { position: relative; flex: 0 0 auto; width: 52px; height: 32px; border-radius: 99px; border: 0; background: var(--steel); cursor: pointer; }
+#v-mind .wu-sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: transform .25s var(--ease); }
+#v-mind .wu-sw[aria-checked="true"] { background: var(--green); }
+#v-mind .wu-sw[aria-checked="true"]::after { transform: translateX(20px); }
+#v-mind .wu-step:focus-visible, #v-mind .wu-sw:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
 </style>
 
 </head>
@@ -1259,7 +1292,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#cue">In-game Tools</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind &amp; Body</a><a href="#cue">In-game Tools</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1527,7 +1560,26 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 
 <main class="view wrap flowv" data-view="mind" id="v-mind" hidden>
   <button class="back" type="button" data-go="">Home</button>
-  <div class="vhead"><div><h1 class="d-l">Mind.</h1><p class="lead">Breathing and focus games for your head. Before a cup, between games or after a bad one.</p></div></div>
+  <div class="vhead"><div><h1 class="d-l">Mind &amp; Body.</h1><p class="lead">Warm up your hands, then breathing and focus games for your head. Before a cup, between games or after a bad one.</p></div></div>
+  <section class="wu" id="wu" aria-labelledby="wu-h">
+    <div class="wu-head">
+      <div><b id="wu-h" class="wu-t">Hand &amp; arm warm-up</b><span class="tiny">Before you play: hands, wrists, forearms and shoulders. Gentle, never into pain.</span></div>
+      <div class="wu-opts"><div class="seg" id="wu-len" role="group" aria-label="Length"></div><div class="seg" id="wu-style" role="group" aria-label="Look"></div></div>
+    </div>
+    <div class="wu-main">
+      <div class="wu-left">
+        <div class="wu-stage"><span class="wu-badge" id="wu-badge"></span><span class="wu-hold" id="wu-hold"></span><canvas id="wu-cv" width="1280" height="960" role="img" aria-label="Animated hands showing the exercise"></canvas></div>
+        <div class="wu-bar" aria-hidden="true"><i id="wu-bar"></i></div>
+        <div class="wu-now"><b id="wu-name"></b><p id="wu-how"></p></div>
+        <div class="wu-ctl"><button class="pill" type="button" id="wu-go">Start warm-up</button><button class="pill out" type="button" id="wu-skip">Next</button><button class="pill out" type="button" id="wu-voice">Voice off</button><span class="wu-time" id="wu-time"></span></div>
+      </div>
+      <div class="wu-side">
+        <div class="wu-list" id="wu-list" aria-label="Steps"></div>
+        <div class="wu-askrow"><span><b>Ask me before my routines</b><span class="tiny">Once a day, before the first set. You can skip it.</span></span><button class="wu-sw" type="button" role="switch" id="wu-ask" aria-label="Ask me before my routines"></button></div>
+        <span class="tiny">Not medical advice. Stop if you feel pain, numbness or tingling.</span>
+      </div>
+    </div>
+  </section>
   <div class="mind mi-wrap">
   <div id="players">
   <div class="mi-card mplayer" id="mplayer">
@@ -2134,6 +2186,285 @@ window.__games = { GAMES, selectGame, startGame, tap, edgeAnswer, get gs() { ret
 })();
 </script>
 <script>
+/* ---------- Hand & arm warm-up (in Mind & Body, #mind): jointed hands in two looks (Clay, Hand tracking).
+   Runs on the device. Settings in localStorage rl.warm. "Ask before routines" asks once a day before the first set. ---------- */
+(function () {
+const $ = (id) => document.getElementById(id);
+/* ---------- vector helpers ---------- */
+const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const mul = (a, k) => [a[0] * k, a[1] * k, a[2] * k];
+const nrm = (a) => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+const vl = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const rX = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0], p[1] * c - p[2] * s, p[1] * s + p[2] * c]; };
+const rY = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c]; };
+const rZ = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]]; };
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (t) => .5 - .5 * Math.cos(Math.PI * t);
+
+/* ---------- the hand (left hand, palm toward the viewer, thumb on the outside; wrist at 0,0,0, fingers up +y, palm faces -z) ---------- */
+const FING = [ // base, fan angle, segment lengths, width
+  { b: [-.30, .97, 0], fan: -.10, L: [.46, .29, .21], w: .205 },
+  { b: [-.09, 1.02, 0], fan: -.03, L: [.51, .32, .22], w: .215 },
+  { b: [.12, .99, 0], fan: .04, L: [.48, .30, .21], w: .205 },
+  { b: [.31, .91, 0], fan: .12, L: [.37, .23, .18], w: .175 }
+];
+const THUMB = { b: [-.30, .24, -.06], L: [.38, .28, .23], w: .235 };
+const PALM = [[-.30, 0, 0], [-.43, .38, -.05], [-.39, .80, 0], [-.30, .99, 0], [-.09, 1.04, 0], [.12, 1.01, 0], [.33, .93, 0], [.38, .55, 0], [.29, 0, 0]];
+/* a pose: wrist flex (+ toward the palm), dev (side bend), twist (forearm turn), fingers [mcp, pip, dip] x4, spread 0..1, thumb {out, opp, flex} */
+const P = (o) => Object.assign({ flex: 0, dev: 0, twist: 0, f: [[.08, .12, .06], [.08, .12, .06], [.1, .14, .07], [.12, .16, .08]], spread: .25, th: { out: .45, opp: .12, flex: .12 }, y: 0 }, o);
+const F4 = (m, p, d) => [[m, p, d], [m, p, d], [m, p, d], [m, p, d]];
+function mix(a, b, t) {
+  if (typeof a === "number") return lerp(a, b, t);
+  if (Array.isArray(a)) return a.map((x, i) => mix(x, b[i], t));
+  const o = {}; for (const k in a) o[k] = mix(a[k], b[k] ?? a[k], t); return o;
+}
+/* forward kinematics: local points of every bone */
+function bones(p) {
+  const out = [];
+  FING.forEach((F, k) => {
+    const a = F.fan * (.55 + p.spread * 2.8), fl = p.f[k];
+    let pos = F.b, th = 0;
+    F.L.forEach((L, j) => {
+      th += fl[j];
+      const d = [Math.sin(a) * Math.cos(th), Math.cos(a) * Math.cos(th), -Math.sin(th)];
+      const nx = add(pos, mul(d, L));
+      out.push({ a: pos, b: nx, w: F.w * (1 - j * .1), tip: j === 2, finger: k });
+      pos = nx;
+    });
+  });
+  const T = p.th;
+  const base = nrm(vl([-.32, .94, -.12], [-.86, .48, -.16], T.out));
+  let d = nrm(vl(base, [-.05, .55, -.83], T.opp)), pos = THUMB.b;
+  const c = nrm([.85, .25, -.45]);
+  THUMB.L.forEach((L, j) => {
+    if (j) d = nrm(vl(d, c, T.flex * (j === 1 ? .55 : .7)));
+    const nx = add(pos, mul(d, L));
+    out.push({ a: pos, b: nx, w: THUMB.w * (1 - j * .1), tip: j === 2, finger: 4 });
+    pos = nx;
+  });
+  return out;
+}
+/* ---------- projection and drawing ---------- */
+const CAM_PITCH = -.18;
+function project(pt, p, h, S, cx, cy, wristOnly) {
+  let q = pt;
+  if (!wristOnly) { q = rY(q, p.twist); q = rX(q, -p.flex); q = rZ(q, p.dev); }
+  if (h.mirror) q = [-q[0], q[1], q[2]];
+  q = rY(q, h.yaw); q = rX(q, CAM_PITCH);
+  q = add(q, h.pos);
+  return [cx + q[0] * S, cy - (q[1] + (p.y || 0)) * S, q[2]];
+}
+function prims(p, h, S, cx, cy) {
+  const list = [];
+  const fa = project([0, 0, 0], p, h, S, cx, cy, true), fb = project([0, -1.7, .05], p, h, S, cx, cy, true);
+  list.push({ t: "arm", a: fa, b: fb, w: .66 * S, z: 9 });
+  const pp = PALM.map((q) => project(q, p, h, S, cx, cy));
+  list.push({ t: "palm", pts: pp, z: pp.reduce((s, q) => s + q[2], 0) / pp.length + .05 });
+  bones(p).forEach((B) => { const a = project(B.a, p, h, S, cx, cy), b = project(B.b, p, h, S, cx, cy); list.push({ t: "bone", a, b, w: B.w * S, z: (a[2] + b[2]) / 2, tip: B.tip, finger: B.finger }); });
+  return list;
+}
+const STYLES = {
+  clay: { name: "Clay", note: "Soft, warm, easy to follow" },
+  track: { name: "Hand tracking", note: "Joints, bones and motion trails" }
+};
+function shade(hex, k) { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; const f = (c) => Math.round(Math.max(0, Math.min(255, c * k))); return `rgb(${f(r)},${f(g)},${f(b)})`; }
+function cap(ctx, a, b, w, col) { ctx.strokeStyle = col; ctx.lineWidth = Math.max(1, w); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
+function poly(ctx, pts, fill, stroke, lw) { ctx.beginPath(); pts.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]))); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } }
+function drawHand(ctx, style, list, S, trail) {
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  const bonesL = list.filter((x) => x.t === "bone"), palm = list.find((x) => x.t === "palm"), arm = list.find((x) => x.t === "arm");
+  if (style === "track") {
+    // motion trails of the fingertips: shows which way to move
+    if (trail) {
+      bonesL.filter((B) => B.tip).forEach((B) => { const tr = trail[B.finger] = (trail[B.finger] || []).concat([[B.b[0], B.b[1]]]).slice(-16); for (let k = 1; k < tr.length; k++) cap(ctx, tr[k - 1], tr[k], 2 + k * .35, `rgba(56,224,255,${(k / tr.length) * .35})`); });
+    }
+    ctx.setLineDash([5, 9]); cap(ctx, arm.a, arm.b, 2, "rgba(56,224,255,.3)"); ctx.setLineDash([]);
+    poly(ctx, palm.pts, "rgba(56,224,255,.06)", "rgba(56,224,255,.35)", 1.5);
+    // palm frame: wrist to each finger base
+    const w0 = arm.a; bonesL.filter((B, k) => k % 3 === 0).forEach((B) => cap(ctx, w0, B.a, 1.5, "rgba(56,224,255,.25)"));
+    const zs = bonesL.map((B) => B.z), zmin = Math.min(...zs), zmax = Math.max(...zs), near = (z) => 1 - (z - zmin) / ((zmax - zmin) || 1);
+    bonesL.slice().sort((x, y) => y.z - x.z).forEach((B) => cap(ctx, B.a, B.b, 2.5 + near(B.z) * 2.5, `rgba(56,224,255,${.55 + near(B.z) * .45})`));
+    ctx.shadowColor = "rgba(56,224,255,.9)"; ctx.shadowBlur = 10;
+    bonesL.forEach((B) => { const r = 4 + near(B.z) * 2.5; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(B.a[0], B.a[1], r, 0, 7); ctx.fill(); if (B.tip) { ctx.fillStyle = "#38e0ff"; ctx.beginPath(); ctx.arc(B.b[0], B.b[1], r + 2.5, 0, 7); ctx.fill(); } });
+    ctx.shadowBlur = 0; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(w0[0], w0[1], 7, 0, 7); ctx.fill();
+    return;
+  }
+  // Clay: each finger is one soft shape (outline once, then fill), so there are no lines at every joint
+  const skin = "#eedccb", line = "rgba(70,40,20,.24)", ow = 3;
+  const groups = [{ z: palm.z, draw: (pass) => { const lw = .16 * S; poly(ctx, palm.pts, pass ? skin : null, pass ? skin : line, pass ? lw : lw + ow); } }];
+  [0, 1, 2, 3, 4].forEach((f) => {
+    const segs = bonesL.filter((B) => B.finger === f); if (!segs.length) return;
+    const z = Math.min(...segs.map((B) => B.z));
+    groups.push({ z, draw: (pass) => {
+      segs.forEach((B) => cap(ctx, B.a, B.b, pass ? B.w : B.w + ow, pass ? skin : line));
+      if (pass) { // a soft highlight along the whole finger, and a faint hint of the middle joint
+        const pts = [segs[0].a].concat(segs.map((B) => B.b));
+        ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = segs[0].w * .22; ctx.beginPath();
+        pts.forEach((q, k) => { const o = segs[0].w * .16; k ? ctx.lineTo(q[0] - o, q[1] - o * .3) : ctx.moveTo(q[0] - o, q[1] - o * .3); }); ctx.stroke();
+      }
+    } });
+  });
+  cap(ctx, arm.a, arm.b, arm.w + ow, "rgba(0,0,0,.5)"); cap(ctx, arm.a, arm.b, arm.w, "#2c3442");
+  groups.sort((x, y) => y.z - x.z).forEach((g) => { g.draw(0); g.draw(1); });
+}
+/* ---------- the exercises ---------- */
+const OPEN = P({}), FIST = P({ f: F4(1.45, 1.75, 1.0), spread: 0, th: { out: .15, opp: .75, flex: .95 } });
+const loopP = (poses, per) => (t) => { t = Math.max(0, t); const n = poses.length, k = Math.floor(t / per) % n, f = (t % per) / per; return mix(poses[k], poses[(k + 1) % n], ease(Math.min(1, f * 1.7))); };
+const touch = (k, f) => { const fl = F4(.08, .12, .06); fl[k] = [.75 * f, .7 * f, .35 * f]; return P({ f: fl, spread: .2, th: { out: .35 - .1 * f, opp: .25 + .7 * f, flex: .15 + .45 * f } }); };
+const STEPS = [
+  { id: "shoulders", name: "Shoulder rolls", sec: 20, how: "Roll your shoulders up, back and down in big, slow circles. 10 times.", body: "shoulders" },
+  { id: "armcircles", name: "Arm circles", sec: 20, how: "Arms out to the side, small circles. 10 forward, then 10 back.", body: "arms" },
+  { id: "neck", name: "Neck side stretch", sec: 30, how: "Tilt your head slowly toward one shoulder and hold. 15 seconds each side, gentle.", body: "neck" },
+  { id: "rub", name: "Rub your hands", sec: 20, how: "Press your palms together and rub them fast until they feel warm.", rub: true },
+  { id: "circle", name: "Wrist circles", sec: 30, how: "Make slow, big circles with both wrists. 10 one way, then 10 the other way.", pose: (t) => { const a = t * (t < 15 ? 2.4 : -2.4); return P({ flex: Math.sin(a) * .55, dev: Math.cos(a) * .32 }); } },
+  { id: "flex", name: "Wrist up and down", sec: 25, how: "Bend your wrists slowly toward you, then away. Fingers loose. 10 times.", pose: loopP([P({ flex: 0 }), P({ flex: .95, f: F4(.25, .3, .15) }), P({ flex: 0 }), P({ flex: -.75, f: F4(-.05, 0, 0) })], 1.25) },
+  { id: "side", name: "Wrist side to side", sec: 25, how: "Keep your hands flat and wave them left and right, like a windshield wiper. 10 times.", pose: loopP([P({ dev: -.38 }), P({ dev: .28 })], 1.2) },
+  { id: "spread", name: "Finger spreads", sec: 25, how: "Spread your fingers as wide as you can, hold one second, then close them. 10 times.", pose: loopP([P({ spread: 0, th: { out: .1, opp: .1, flex: .1 } }), P({ spread: 1, th: { out: 1, opp: 0, flex: 0 }, f: F4(-.05, 0, 0) }), P({ spread: 1, th: { out: 1, opp: 0, flex: 0 }, f: F4(-.05, 0, 0) })], .9) },
+  { id: "glide", name: "Tendon glides", sec: 50, how: "Five shapes, hold each for 3 seconds: straight, hook, full fist, tabletop, straight fist. Twice.", labels: ["Straight", "Hook", "Full fist", "Tabletop", "Straight fist"],
+    pose: loopP([P({ spread: .05, th: { out: .2, opp: .1, flex: .05 }, f: F4(0, 0, 0) }), P({ f: F4(.05, 1.6, 1.25), spread: .05, th: { out: .3, opp: .2, flex: .2 } }), FIST, P({ f: F4(1.45, .05, .05), spread: .05, th: { out: .35, opp: .3, flex: .1 } }), P({ f: F4(1.4, 1.55, .12), spread: 0, th: { out: .15, opp: .6, flex: .6 } })], 4) },
+  { id: "touch", name: "Thumb touches", sec: 25, how: "Touch your thumb to each fingertip, index to little and back. Quick and light.", pose: (t) => { const seq = [0, 1, 2, 3, 2, 1], k = seq[Math.floor(t / .7) % seq.length], f = Math.sin(((t % .7) / .7) * Math.PI); return touch(k, f); } },
+  { id: "flexstretch", name: "Forearm stretch, palm side", sec: 40, how: "Arm straight, palm facing out. Gently pull your fingers back with the other hand. 20 seconds each hand, no pain.", one: true, arrow: "back", pose: (t) => P({ flex: -1.0 - Math.sin(t * 1.3) * .04, f: F4(-.12, -.04, 0), spread: .15, th: { out: .6, opp: 0, flex: 0 } }) },
+  { id: "extstretch", name: "Forearm stretch, back side", sec: 40, how: "Arm straight, palm down. Gently press your hand down with the other hand. 20 seconds each hand.", one: true, arrow: "down", pose: (t) => P({ flex: 1.15 + Math.sin(t * 1.3) * .04, f: F4(.45, .55, .3), spread: .05, th: { out: .2, opp: .3, flex: .3 } }) },
+  { id: "shake", name: "Shake it out", sec: 15, how: "Let your arms hang and shake your hands loose. Done, you're ready.", pose: (t) => P({ dev: Math.sin(t * 22) * .16, flex: Math.sin(t * 17) * .2, f: F4(.2, .28, .15), y: Math.abs(Math.sin(t * 22)) * .06 }) }
+];
+const LENS = { quick: ["Quick", ["rub", "shoulders", "circle", "spread", "glide", "shake"]], full: ["Full", ["rub", "shoulders", "armcircles", "neck", "circle", "flex", "side", "spread", "glide", "touch", "flexstretch", "extstretch", "shake"]] };
+/* ---------- upper body for shoulder, neck and arm moves ---------- */
+function drawBody(ctx, style, kind, t, W, H) {
+  const S = H / 5.2, cx = W / 2, cy = H * .64, p = (q) => [cx + q[0] * S, cy - q[1] * S];
+  let sh = [0, 0], tilt = 0, out = false, a = 0;
+  if (kind === "shoulders") { a = t * 2.2; sh = [Math.cos(a) * .05, Math.sin(a) * .2]; }
+  if (kind === "neck") { const side = (t % 30) < 15 ? -1 : 1, f = Math.min(1, (t % 15) / 2); tilt = side * .42 * ease(f); }
+  if (kind === "arms") { out = true; a = t * 4 * (t < 10 ? 1 : -1); }
+  const shL = [-.78 + sh[0], 1.0 + sh[1]], shR = [.78 - sh[0], 1.0 + sh[1]], neck = [0, 1.15 + sh[1] * .3];
+  const head = [neck[0] + Math.sin(tilt) * .62, neck[1] + Math.cos(tilt) * .62];
+  let elL, wrL, elR, wrR;
+  if (out) { const dy = Math.sin(a) * .18, dx = Math.cos(a) * .08; elL = [shL[0] - .8, shL[1] + dy * .5]; wrL = [shL[0] - 1.6 + dx, shL[1] + dy]; elR = [shR[0] + .8, shR[1] + dy * .5]; wrR = [shR[0] + 1.6 - dx, shR[1] + dy]; }
+  else { elL = [shL[0] - .12, shL[1] - .85]; wrL = [shL[0] - .08, shL[1] - 1.7]; elR = [shR[0] + .12, shR[1] - .85]; wrR = [shR[0] + .08, shR[1] - 1.7]; }
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  if (style === "track") {
+    const hb = [head[0] - Math.sin(tilt) * .34, head[1] - Math.cos(tilt) * .34];
+    [[neck, hb], [shL, shR], [shL, elL], [elL, wrL], [shR, elR], [elR, wrR], [neck, [0, -.7]]].forEach(([x, y]) => cap(ctx, p(x), p(y), 4, "rgba(56,224,255,.9)"));
+    const ph = p(head); ctx.strokeStyle = "#38e0ff"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(ph[0], ph[1], .34 * S, 0, 7); ctx.stroke();
+    ctx.shadowColor = "rgba(56,224,255,.9)"; ctx.shadowBlur = 10;
+    [neck, shL, shR, elL, elR, wrL, wrR].forEach((q) => { const pq = p(q); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pq[0], pq[1], 6.5, 0, 7); ctx.fill(); });
+    ctx.shadowBlur = 0; return;
+  }
+  const skin = "#eedccb", hood = "#2c3442", line = "rgba(0,0,0,.45)";
+  const torso = [shL, [shL[0] - .05, shL[1] - .3], [-.62, -.95], [.62, -.95], [shR[0] + .05, shR[1] - .3], shR, neck].map(p);
+  poly(ctx, torso, null, line, .3 * S + 3); poly(ctx, torso, hood, hood, .3 * S);
+  [[shL, elL, wrL], [shR, elR, wrR]].forEach(([s1, e1, w1]) => {
+    cap(ctx, p(s1), p(e1), .34 * S + 3, line); cap(ctx, p(e1), p(w1), .3 * S + 3, line);
+    cap(ctx, p(s1), p(e1), .34 * S, hood); cap(ctx, p(e1), p(w1), .3 * S, hood);
+    const pw = p(w1); ctx.fillStyle = "rgba(70,40,20,.24)"; ctx.beginPath(); ctx.arc(pw[0], pw[1], .17 * S + 2, 0, 7); ctx.fill(); ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(pw[0], pw[1], .17 * S, 0, 7); ctx.fill();
+  });
+  cap(ctx, p(neck), p([(neck[0] + head[0]) / 2, (neck[1] + head[1]) / 2]), .27 * S, skin);
+  const ph = p(head);
+  ctx.fillStyle = "rgba(70,40,20,.24)"; ctx.beginPath(); ctx.arc(ph[0], ph[1], .36 * S + 2.5, 0, 7); ctx.fill();
+  ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(ph[0], ph[1], .36 * S, 0, 7); ctx.fill();
+  ctx.strokeStyle = hood; ctx.lineWidth = .1 * S; ctx.beginPath(); ctx.arc(ph[0], ph[1], .42 * S, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();
+}
+/* layout of the hands for a step */
+function layout(s, t, W, H) {
+  const S = Math.min(W, H) / 5.4, cx = W / 2, cy = H * .7;
+  if (s.rub) {
+    const y = Math.sin(t * 13) * .18;
+    const p = P({ twist: -1.45, spread: 0, f: F4(.05, .08, .04), th: { out: .2, opp: 0, flex: .05 } });
+    return [[{ ...p, y }, { pos: [-.3, -.55, 0], yaw: .12, mirror: false }], [{ ...p, y: -y }, { pos: [.3, -.55, 0], yaw: -.12, mirror: true }]].map(([pp, h]) => ({ p: pp, h, S, cx, cy }));
+  }
+  const p = s.pose(t);
+  if (s.one) return [{ p, h: { pos: [-.15, -.6, 0], yaw: .35, mirror: false }, S: S * 1.12, cx, cy }];
+  return [{ p, h: { pos: [-1.25, -.55, 0], yaw: .32, mirror: false }, S, cx, cy }, { p, h: { pos: [1.25, -.55, 0], yaw: -.32, mirror: true }, S, cx, cy }];
+}
+function render(cv, style, s, t) {
+  const ctx = cv.getContext("2d"), W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(W / 2, H * .55, 10, W / 2, H * .55, W * .7); g.addColorStop(0, "#1a1a1d"); g.addColorStop(1, "#0e0e0e"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  if (s.body) { drawBody(ctx, style, s.body, t, W, H); return; }
+  const hands = layout(s, t, W, H);
+  cv.__tr = cv.__tr && cv.__tr.key === s.id + style ? cv.__tr : { key: s.id + style, h: [{}, {}] };
+  hands.forEach(({ p, h, S, cx, cy }, k) => drawHand(ctx, style, prims(p, h, S, cx, cy), S, cv.__tr.h[k]));
+  if (s.arrow) {
+    ctx.strokeStyle = "#38e0ff"; ctx.lineWidth = W / 110; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    const x = W * .64, y = H * (s.arrow === "back" ? .25 : .32), r = W * .09;
+    ctx.beginPath(); if (s.arrow === "back") ctx.arc(x, y + r, r, -Math.PI * .55, Math.PI * .15); else ctx.arc(x - r * .2, y, r, -Math.PI * .1, Math.PI * .6); ctx.stroke();
+  }
+}
+
+const WK = "rl.warm";
+const get = () => { try { return JSON.parse(localStorage.getItem(WK)) || {}; } catch (e) { return {}; } };
+let W = Object.assign({ style: "clay", len: "quick", voice: false, ask: false, last: "", skip: "" }, get());
+const saveW = () => { try { localStorage.setItem(WK, JSON.stringify(W)); } catch (e) {} };
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+let steps = [], i = 0, t = 0, running = false, spoken = -1, last = 0, idle = 0, raf = 0, open = false, after = null;
+const mins = (k) => Math.round(LENS[k][1].reduce((a, id) => a + STEPS.find((s) => s.id === id).sec, 0) / 60);
+function say(txt) { if (!W.voice) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = "en-US"; speechSynthesis.speak(u); } catch (e) {} }
+const fmt = (s) => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+function seg(el, items, cur, pick) {
+  if (!el) return;
+  el.innerHTML = items.map(([v, txt]) => `<button type="button" data-v="${v}" aria-pressed="${v === cur}">${txt}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => pick(b.dataset.v)));
+}
+function list() {
+  const el = $("wu-list"); if (!el) return;
+  el.innerHTML = steps.map((s, k) => `<button class="wu-step${k === i ? " cur" : ""}${k < i ? " done" : ""}" type="button" data-k="${k}"><span class="n">${k < i ? "✓" : k + 1}</span><b>${s.name}</b><span class="d">${s.sec} s</span></button>`).join("");
+  el.querySelectorAll("[data-k]").forEach((b) => b.addEventListener("click", () => { i = +b.dataset.k; t = 0; spoken = -1; ui(); }));
+}
+function ui() {
+  if (!$("wu-go")) return;
+  const s = steps[i];
+  seg($("wu-len"), Object.keys(LENS).map((k) => [k, `${LENS[k][0]} · ${mins(k)} min`]), W.len, (v) => { W.len = v; saveW(); setLen(); });
+  seg($("wu-style"), [["clay", "Clay"], ["track", "Hand tracking"]], W.style, (v) => { W.style = v; saveW(); ui(); });
+  $("wu-badge").textContent = `${i + 1} / ${steps.length}`;
+  $("wu-name").textContent = s.name; $("wu-how").textContent = s.how;
+  $("wu-go").textContent = running ? "Pause" : t > 0 || i > 0 ? "Resume" : "Start warm-up";
+  $("wu-voice").textContent = W.voice ? "Voice on" : "Voice off";
+  $("wu-ask").setAttribute("aria-checked", String(!!W.ask));
+  list();
+  if (running && spoken !== i) { spoken = i; say(s.name + ". " + s.how); }
+}
+function done() {
+  running = false; W.last = today(); saveW(); ui();
+  $("wu-name").textContent = "Done. Your hands are ready."; $("wu-how").textContent = after ? "Back to your routine." : "Have a good session.";
+  say("Done. Your hands are ready.");
+  if (after) { const f = after; after = null; setTimeout(f, 1200); }
+}
+function frame(now) {
+  if (!open) { raf = 0; return; }
+  const dt = Math.max(0, Math.min(.1, (now - last) / 1000)); last = now; idle += dt;
+  const s = steps[i];
+  if (running) { t += dt; if (t >= s.sec) { if (i < steps.length - 1) { i++; t = 0; ui(); } else { t = s.sec; done(); } } }
+  const tt = running || t > 0 ? t : idle % s.sec;
+  $("wu-time").textContent = fmt(s.sec - t);
+  $("wu-bar").style.width = (t / s.sec * 100).toFixed(1) + "%";
+  $("wu-hold").textContent = s.labels ? s.labels[Math.floor(tt / 4) % s.labels.length] : s.one ? (tt < s.sec / 2 ? "Right hand" : "Left hand") : s.body === "neck" ? ((tt % 30) < 15 ? "Left side" : "Right side") : "";
+  render($("wu-cv"), W.style, s, tt);
+  raf = requestAnimationFrame(frame);
+}
+function setLen() { steps = LENS[W.len][1].map((id) => STEPS.find((s) => s.id === id)); i = 0; t = 0; running = false; spoken = -1; ui(); }
+let bound = false;
+function bind() {
+  if (bound || !$("wu-go")) return; bound = true;
+  $("wu-go").addEventListener("click", () => { if (!running && i === steps.length - 1 && t >= steps[i].sec) { i = 0; t = 0; } running = !running; if (running) spoken = -1; ui(); });
+  $("wu-skip").addEventListener("click", () => { if (i < steps.length - 1) { i++; t = 0; spoken = -1; ui(); } else done(); });
+  $("wu-voice").addEventListener("click", () => { W.voice = !W.voice; saveW(); ui(); if (W.voice) say("Voice on"); });
+  $("wu-ask").addEventListener("click", () => { W.ask = !W.ask; saveW(); ui(); });
+}
+window.ReplineWarm = {
+  open(opts) {
+    bind(); if (!steps.length) setLen();
+    if (opts && opts.start) { W.len = "quick"; saveW(); setLen(); running = true; spoken = -1; after = opts.after || null; ui(); setTimeout(() => { const el = $("wu"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80); }
+    ui(); open = true; last = performance.now(); if (!raf) raf = requestAnimationFrame(frame);
+  },
+  close() { open = false; running = false; after = null; try { speechSynthesis.cancel(); } catch (e) {} },
+  // ask before the first set of a routine: switched on, not warmed up or skipped today
+  shouldAsk() { return !!W.ask && W.last !== today() && W.skip !== today(); },
+  skipToday() { W.skip = today(); saveW(); },
+  quickMinutes() { return mins("quick"); },
+  homeCard() { return `<a class="mi-hcard" href="#mind" data-warm="1"><span class="mi-orb" aria-hidden="true" style="background:radial-gradient(circle at 35% 30%,#fff,#eedccb 70%)"></span><span class="t"><b>Warm up your hands</b><span class="s">${W.last === today() ? "Done today ✓" : mins("quick") + " min · hands, wrists, shoulders"}</span></span></a>`; }
+};
+})();
+</script>
+<script>
 /* ---------- In-game Tools (#cue): Focus Cue, Focus Tunnel, Look Around. Each has a switch; switched-on tools run
    while a routine runs (or in a free-play session). Runs on the device, nothing reads Fortnite.
    Windows app: overlay shows and speaks callouts (DESK.cue), the tunnel and edge lights are a click-through window
@@ -2452,7 +2783,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.15.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.16.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -2748,6 +3079,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     hg.appendChild(aiCard());
     let hm = $("home-mind"); if (!hm) { hm = document.createElement("div"); hm.id = "home-mind"; hm.className = "mi-home"; hg.after(hm); }
     if (window.ReplineMind) ReplineMind.renderHome(hm);
+    if (window.ReplineWarm) hm.insertAdjacentHTML("afterbegin", ReplineWarm.homeCard());
     if (window.ReplineCue) ReplineCue.renderHome(hm);
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
     $("resume").hidden = !(S.active && length(S.goal, S.len));
@@ -3054,7 +3386,15 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (b.min != null && elapsed() >= b.min * 60000) { clearInterval(raf); S.before = b.min * 60000; countTime(); S.status = "fertig"; S.done[S.b] = true; keepAwake(false); beep(); flash(); save(); render(); pushOverlay(true); autoNext(); return; }
     render();
   }
-  function play(at) { if (isKill(cur()) || S.status === "fertig") return; startRun(); S.gAt = 0; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
+  // Hand warm-up: asked once a day before the first set, when the player switched it on (Mind & Body)
+  function askWarm(at) {
+    openModal(`<h2 id="sheet-t">Warm up your hands first?</h2><p class="small">${window.ReplineWarm.quickMinutes()} minutes: hands, wrists and shoulders. Then your routine starts.</p><div class="acts"><button class="pill out" type="button" id="wu-no">Skip today</button><button class="pill" type="button" id="wu-yes">Warm up</button></div>`,
+      (sh, close) => {
+        sh.querySelector("#wu-no").addEventListener("click", () => { window.ReplineWarm.skipToday(); close(); play(at); });
+        sh.querySelector("#wu-yes").addEventListener("click", () => { close(); go("mind"); setTimeout(() => window.ReplineWarm.open({ start: true, after: () => go("training") }), 150); });
+      });
+  }
+  function play(at) { if (isKill(cur()) || S.status === "fertig") return; if (!S.run && !S.b && window.ReplineWarm && window.ReplineWarm.shouldAsk()) { askWarm(at); return; } startRun(); S.gAt = 0; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
   function pause() { countTime(); S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
   function restart() { if (S.status === "wechsel") { addSwitch(15); return; } countTime(); if (S.counted) S.counted[S.b] = 0; clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
   // No skipping: the next set only starts once this one is done (timer over, all targets ticked).
@@ -6106,6 +6446,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (id === "aim") buildAim();
     if (id === "ai") buildCoach();
     if (window.ReplineMind) { if (id === "mind") ReplineMind.open(); else ReplineMind.close(); }
+    if (window.ReplineWarm) { if (id === "mind") ReplineWarm.open(); else ReplineWarm.close(); }
     if (window.ReplineCue && id === "cue") ReplineCue.open();
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
