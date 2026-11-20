@@ -1157,6 +1157,51 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 .mind .bars div:nth-child(3) span,.mind .bars div:nth-child(4) span{background:var(--m-in)}
 .mind .bars div:nth-child(1) span{background:var(--m-out)}
 
+/* ---------- Focus Cue (#cue) ---------- */
+#v-cue .fc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 18px; }
+#v-cue .fc-live { grid-column: 1 / -1; gap: 16px; }
+#v-cue .fc-h { font-size: 21px; letter-spacing: -.3px; }
+#v-cue .fc-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#v-cue .fc-flash { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 130px; border-radius: 22px; background: var(--graphite); box-shadow: inset 0 0 0 1px var(--keyline); transition: box-shadow .3s, background .3s; }
+#v-cue .fc-flash i { width: 16px; height: 16px; border-radius: 50%; background: var(--dim); }
+#v-cue .fc-flash b { font-size: clamp(40px, 8vw, 72px); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); transition: color .3s; }
+#v-cue .fc-flash.run i { background: var(--c1); }
+#v-cue .fc-flash.run b { color: var(--porcelain); }
+#v-cue .fc-flash.on { box-shadow: inset 0 0 0 2px var(--c1), 0 0 40px -8px rgba(56,224,255,.6); }
+#v-cue .fc-flash.on b { color: var(--c1); }
+#v-cue .fc-flash.on i { animation: fcPing 1.1s ease-out infinite; }
+#v-cue .fc-flash.ok { box-shadow: inset 0 0 0 2px var(--green); } #v-cue .fc-flash.ok i { background: var(--green); }
+#v-cue .fc-flash.miss { box-shadow: inset 0 0 0 2px #ffb36b; } #v-cue .fc-flash.miss i { background: #ffb36b; }
+@keyframes fcPing { from { box-shadow: 0 0 0 0 rgba(56,224,255,.75); } to { box-shadow: 0 0 0 18px rgba(56,224,255,0); } }
+#v-cue .fc-plan { text-align: center; color: #c7c7cc; margin: 0; }
+#v-cue .fc-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+#v-cue .fc-yes { background: var(--green); color: #000; }
+#v-cue .fc-no { background: #ffb36b; color: #000; }
+#v-cue .fc-yes:disabled, #v-cue .fc-no:disabled { opacity: .35; cursor: default; }
+#v-cue .fc-keys, #v-cue #fc-keys { text-align: center; }
+#v-cue .fc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+#v-cue .fc-stats div { background: var(--graphite); border-radius: 16px; padding: 14px; display: grid; gap: 2px; }
+#v-cue .fc-stats b { font-size: clamp(19px, 5vw, 26px); font-variant-numeric: tabular-nums; letter-spacing: -.5px; }
+#v-cue .fc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+#v-cue .fc-chip { border: 0; background: var(--steel); color: var(--porcelain); border-radius: 99px; padding: 0 15px; min-height: 40px; font-size: 14px; cursor: pointer; }
+#v-cue .fc-chip[aria-pressed="true"] { background: var(--porcelain); color: #000; }
+#v-cue .fc-chip.locked::after { content: " ✓"; color: var(--green); }
+#v-cue .fc-chip[aria-pressed="true"].locked::after { color: #0a7a3a; }
+#v-cue .fc-planbox { background: var(--graphite); border-radius: 18px; padding: 14px 16px; display: grid; gap: 6px; }
+#v-cue .fc-planbox b { font-size: 17px; line-height: 1.35; }
+#v-cue .fc-in, #v-cue #fc-own { width: 100%; box-sizing: border-box; font: inherit; font-size: 17px; color: var(--porcelain); background: var(--graphite); border: 0; border-radius: 14px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--keyline); }
+#v-cue .fc-in:focus-visible, #v-cue #fc-own:focus-visible, #v-cue .fc-chip:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
+#v-cue .fc-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 120px; }
+#v-cue .fc-week div { display: grid; gap: 6px; justify-items: center; align-self: stretch; grid-template-rows: 1fr auto; }
+#v-cue .fc-week .bar { width: 100%; max-width: 34px; align-self: end; border-radius: 6px; background: var(--steel); min-height: 4px; }
+#v-cue .fc-week .bar.good { background: var(--green); } #v-cue .fc-week .bar.mid { background: var(--c1); }
+#v-cue .fc-week span { font-size: 11px; color: var(--ash); }
+#v-cue .fc-days { display: flex; gap: 8px; }
+#v-cue .fc-days i { width: 30px; height: 30px; border-radius: 50%; background: var(--steel); }
+#v-cue .fc-days i.ok { background: var(--green); }
+#v-cue .fc-how ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: #c7c7cc; font-size: 15px; }
+#v-cue .fc-how ol b { color: var(--porcelain); }
+@media (prefers-reduced-motion: reduce) { #v-cue .fc-flash.on i { animation: none; } }
 </style>
 
 </head>
@@ -1192,7 +1237,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#cue">Focus Cue</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1500,6 +1545,77 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div class="m-sec"><h2>Focus games</h2><p class="small" style="margin:0">Short games that train your head: focus, reaction control, tracking and awareness. Your best score is saved on this device.</p></div>
   <div class="m-grid" id="g-grid"></div>
 
+  </div>
+</main>
+
+<main class="view wrap flowv" data-view="cue" id="v-cue" hidden>
+  <button class="back" type="button" data-go="">Home</button>
+  <div class="vhead"><div><h1 class="d-l">Focus Cue.</h1><p class="lead">One focus, called out in game like a teammate. You tap whether you did it, and the callouts fade as it becomes automatic.</p></div></div>
+  <div class="fc">
+    <section class="c-card fc-live" aria-label="Session">
+      <div class="fc-top"><span class="tiny" id="fc-status">Not running</span><span class="tiny" id="fc-next"></span></div>
+      <div class="fc-flash" id="fc-flash" aria-live="assertive"><i></i><b id="fc-word">HEAD</b></div>
+      <p class="small fc-plan" id="fc-plan"></p>
+      <div class="fc-acts">
+        <button class="pill big" type="button" id="fc-go">Start session</button>
+        <button class="pill fc-yes" type="button" id="fc-yes" disabled>Did it</button>
+        <button class="pill fc-no" type="button" id="fc-no" disabled>Forgot</button>
+      </div>
+      <span class="tiny" id="fc-keys"></span>
+      <div class="fc-stats">
+        <div><b id="fc-s-cues">0</b><span class="tiny">callouts today</span></div>
+        <div><b id="fc-s-rate">–</b><span class="tiny">remembered today</span></div>
+        <div><b id="fc-s-stage">Learning</b><span class="tiny">stage</span></div>
+      </div>
+    </section>
+
+    <section class="c-card" aria-labelledby="fc-h1">
+      <b id="fc-h1" class="fc-h">Your focus</b>
+      <div class="fc-chips" id="fc-focus" role="group" aria-label="Focus"></div>
+      <div class="fc-planbox">
+        <span class="tiny">Your if-then plan</span>
+        <b id="fc-plan2"></b>
+        <label class="tiny" for="fc-own" id="fc-own-l" hidden>Write your plan: If …, then I …</label>
+        <input id="fc-own" type="text" maxlength="120" hidden>
+      </div>
+      <label class="tiny" for="fc-wordin">Cue word (what you hear in game)</label>
+      <input id="fc-wordin" type="text" maxlength="18" class="fc-in">
+      <span class="tiny">Short, and about what you see, not your hands.</span>
+    </section>
+
+    <section class="c-card" aria-labelledby="fc-h2">
+      <b id="fc-h2" class="fc-h">How often and how</b>
+      <div class="seg" id="fc-mode" role="group" aria-label="How often"></div>
+      <span class="tiny" id="fc-mode-hint"></span>
+      <div class="fc-chips" role="group" aria-label="How you get it">
+        <button class="fc-chip" type="button" id="fc-o-voice">Voice</button>
+        <button class="fc-chip" type="button" id="fc-o-tone">Soft tone</button>
+        <button class="fc-chip" type="button" id="fc-o-flash">Overlay pulse</button>
+      </div>
+      <button class="fc-chip" type="button" id="fc-o-auto" style="justify-self:start">Start with my routines</button>
+      <span class="tiny">With this on, Focus Cue runs by itself while a routine is running: often in drill sets, less in fights and ranked, quiet in breaks and reviews.</span>
+    </section>
+
+    <section class="c-card" aria-labelledby="fc-h3">
+      <b id="fc-h3" class="fc-h">Progress</b>
+      <div class="fc-week" id="fc-week" aria-label="Remembered per day, last 7 days"></div>
+      <div class="fc-days" id="fc-days"></div>
+      <span class="tiny" id="fc-master"></span>
+      <div id="fc-locked"></div>
+    </section>
+
+    <section class="c-card fc-how" aria-labelledby="fc-h4">
+      <b id="fc-h4" class="fc-h">How it works</b>
+      <ol>
+        <li><b>Plan it.</b> One focus, as an if-then plan. Plans like this make you act even under pressure, because the situation triggers the action.</li>
+        <li><b>Lock in.</b> When you start, you hear your plan once. Breathe out and say it with it.</li>
+        <li><b>Called out.</b> Your cue word comes at random moments, never on a fixed beat, so you don't tune it out.</li>
+        <li><b>Check.</b> After a fight: did it or forgot. Checking is the training.</li>
+        <li><b>Adapt.</b> Forgot: the next callout comes sooner. Three in a row: callouts get rarer.</li>
+        <li><b>Locked in.</b> 80 % or more on 3 days and the focus is yours. Pick the next one.</li>
+      </ol>
+      <span class="tiny">On console or without the Windows app: keep this page open on your phone next to you. It calls out through the phone speaker. Repline never reads anything from Fortnite.</span>
+    </section>
   </div>
 </main>
 
@@ -1963,6 +2079,203 @@ window.__games = { GAMES, selectGame, startGame, tap, edgeAnswer, get gs() { ret
 })();
 </script>
 <script>
+/* ---------- Focus Cue (#cue): one focus, called out in game at random moments.
+   Answers (did it / forgot) adapt the timing; 80 % on 3 days locks the focus in. Runs on the device, nothing reads Fortnite.
+   Windows app: the overlay shows and speaks the cue (DESK.cue), Ctrl+Shift+1 / 2 answer. Website: speaks on the page. ---------- */
+(function () {
+const $ = (id) => document.getElementById(id);
+const DESK = window.replineDesktop || null;
+const FOCI = [
+  { id: "head", name: "Crosshair placement", word: "Head", plan: "If I move, my crosshair sits at head height on the next angle." },
+  { id: "zone", name: "Zone check", word: "Zone", plan: "If a fight ends, I check the zone and my next rotation." },
+  { id: "reset", name: "Reset after fights", word: "Reset", plan: "If I win a fight, I heal, reload and farm before I peek again." },
+  { id: "listen", name: "Sound", word: "Listen", plan: "If it goes quiet, I check sound and the minimap first." },
+  { id: "high", name: "High ground", word: "Up", plan: "If someone takes height, I take it back before I shoot." },
+  { id: "mats", name: "Mats", word: "Mats", plan: "If my mats drop under 300, I farm before the next fight." },
+  { id: "calm", name: "Stay calm", word: "Breathe", plan: "If I get hit, I breathe out once and play my next move." },
+  { id: "own", name: "My own", word: "Focus", plan: "Write your own if-then plan below." }
+];
+const MODES = { drill: ["Drill", 10, 20, "Every 10 to 20 seconds. For drill sets like edit wall."], match: ["Match", 30, 75, "Every 30 to 75 seconds. For box fights and ranked."], calm: ["Calm", 60, 120, "Every 1 to 2 minutes. Once it mostly sticks."] };
+const PK = "rl.cue", LK = "rl.cue.log";
+const get = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+let P = Object.assign({ focus: "head", mode: "match", voice: true, tone: true, flash: true, auto: false, words: {}, own: "" }, get(PK, {}));
+let L = Object.assign({ days: {}, locked: [] }, get(LK, {}));
+const saveP = () => put(PK, P), saveL = () => put(LK, L);
+const day = (d) => { d = d || new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const F = () => FOCI.find((f) => f.id === P.focus) || FOCI[0];
+const word = () => P.words[P.focus] || F().word;
+const plan = () => (P.focus === "own" ? (P.own || "If I notice it, I do it.") : F().plan);
+const rec = (id, d) => { id = id || P.focus; d = d || day(); L.days[d] = L.days[d] || {}; return (L.days[d][id] = L.days[d][id] || { c: 0, y: 0, n: 0 }); };
+const peek = (id, d) => (L.days[d] && L.days[d][id]) || null;
+const pct = (r) => (r && r.y + r.n ? Math.round((r.y / (r.y + r.n)) * 100) : null);
+const goodDays = (id) => Object.keys(L.days).sort().filter((d) => { const r = peek(id, d); return r && r.y + r.n >= 4 && pct(r) >= 80; });
+// keep the log small: last 60 days
+(function trim() { const ks = Object.keys(L.days).sort(); if (ks.length > 60) { ks.slice(0, ks.length - 60).forEach((k) => delete L.days[k]); saveL(); } })();
+
+let run = null, timer = 0, actx = null, flashT = 0, auto = 0;
+const train = () => { try { return window.replineTraining ? window.replineTraining() : null; } catch (e) { return null; } };
+function range() {
+  if (run && run.auto) {
+    const t = train(), ty = t && t.type;
+    if (P.mode === "calm" && (ty === "aim" || ty === "mech" || ty === "fight" || ty === "live")) return MODES.calm;
+    if (ty === "aim" || ty === "mech") return MODES.drill;
+    if (ty === "fight" || ty === "live") return MODES.match;
+    return null; // breaks, reviews, cup prep: quiet
+  }
+  return MODES[P.mode] || MODES.match;
+}
+const gap = () => { const m = range() || MODES.match; return (m[1] + Math.random() * (m[2] - m[1])) * run.factor * 1000; };
+
+function tone() {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    [660, 880].forEach((f, i) => { const o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + i * 0.12; o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.12, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35); o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + 0.4); });
+  } catch (e) {}
+}
+function say(text) { try { if (!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 1.05; u.lang = "en-US"; speechSynthesis.speak(u); } catch (e) {} }
+// Windows app: the overlay shows and speaks it. Website: tone and voice on the page.
+function emit(c) {
+  if (DESK && DESK.cue) { try { DESK.cue(c); return; } catch (e) {} }
+  if (c.tone) tone();
+  if (c.voice && c.say) setTimeout(() => say(c.say), c.tone ? 380 : 0);
+}
+function flash(cls, ms) {
+  const el = $("fc-flash"); if (!el) return;
+  el.classList.remove("on", "ok", "miss"); el.classList.add(cls);
+  clearTimeout(flashT); flashT = setTimeout(() => el.classList.remove(cls), ms);
+}
+
+function fire() {
+  const r = rec(); r.c++; saveL();
+  emit({ kind: "cue", word: word(), plan: plan(), voice: P.voice, tone: P.tone, say: word(), show: P.flash, ms: 3500 });
+  flash("on", 3000);
+  run.cues++;
+  run.next = Date.now() + gap();
+  paint();
+}
+function answer(ok) {
+  if (!run) return false;
+  const r = rec(); if (ok) r.y++; else r.n++; saveL();
+  if (ok) { run.row++; if (run.row >= 3) { run.factor = Math.min(2.5, run.factor * 1.35); run.row = 0; } }
+  else { run.row = 0; run.factor = Math.max(0.5, run.factor * 0.6); run.next = Math.min(run.next, Date.now() + 8000); }
+  emit({ kind: "ack", ok, word: ok ? "Nice" : "Next fight", note: `${r.y} of ${r.y + r.n} today`, voice: false, tone: false, show: true, ms: 1600 });
+  flash(ok ? "ok" : "miss", 1400);
+  lockCheck(); paint(); progress();
+  return true;
+}
+function lockCheck() {
+  if (L.locked.indexOf(P.focus) >= 0 || goodDays(P.focus).length < 3) return;
+  L.locked.push(P.focus); saveL();
+  P.mode = "calm"; saveP(); setup();
+  emit({ kind: "ack", ok: true, word: "Locked in", note: `${F().name} sticks. Pick your next focus.`, voice: P.voice, tone: P.tone, say: "Locked in.", show: true, ms: 4000 });
+}
+function start(isAuto) {
+  run = { auto: !!isAuto, factor: P.mode === "calm" ? 1.2 : 1, row: 0, cues: 0, next: Date.now() + 9000 };
+  emit({ kind: "lock", word: word(), plan: plan(), voice: P.voice, tone: false, say: "Lock in. " + plan(), show: true, ms: 5000 });
+  clearInterval(timer); timer = setInterval(loop, 1000);
+  paint();
+}
+function stop() { run = null; clearInterval(timer); timer = 0; try { speechSynthesis.cancel(); } catch (e) {} paint(); }
+function loop() {
+  if (!run) return;
+  if (run.auto) {
+    const t = train();
+    if (!t || !t.active) { stop(); return; }
+    if (!t.on || !range()) { run.next = Math.max(run.next, Date.now() + 6000); paint(); return; }
+  }
+  if (Date.now() >= run.next) fire(); else paint();
+}
+// "Start with my routines": a running routine starts and stops Focus Cue by itself
+function watchAuto() {
+  clearInterval(auto); auto = 0;
+  if (!P.auto) return;
+  auto = setInterval(() => { const t = train(); if (!run && t && t.active && t.on) start(true); }, 2000);
+}
+
+/* ---------- page ---------- */
+function stage() {
+  if (L.locked.indexOf(P.focus) >= 0) return "Locked in";
+  const g = goodDays(P.focus).length;
+  return g >= 2 ? "Almost" : g >= 1 ? "Sticking" : "Learning";
+}
+function paint() {
+  const fl = $("fc-flash"); if (!fl) return;
+  fl.classList.toggle("run", !!run);
+  $("fc-word").textContent = word();
+  $("fc-plan").textContent = plan();
+  $("fc-status").textContent = run ? (run.auto ? "Running with your routine" : "Running") + ` · ${run.auto && !range() ? "quiet in this set" : (range() || MODES.match)[0]}` : P.auto ? "Starts with your next routine" : "Not running";
+  $("fc-next").textContent = run && (!run.auto || range()) ? `Next callout in about ${Math.max(0, Math.round((run.next - Date.now()) / 1000))} s` : "";
+  $("fc-go").textContent = run ? "Stop session" : "Start session";
+  $("fc-yes").disabled = $("fc-no").disabled = !run;
+  const r = peek(P.focus, day()), p = pct(r);
+  $("fc-s-cues").textContent = r ? r.c : 0;
+  $("fc-s-rate").textContent = p == null ? "–" : p + " %";
+  $("fc-s-stage").textContent = stage();
+  $("fc-keys").textContent = DESK ? "In game: Ctrl+Shift+1 did it · Ctrl+Shift+2 forgot (after a fight)" : "On this page: press 1 or 2. In the Windows app it's Ctrl+Shift+1 / 2 in game.";
+}
+function setup() {
+  const fc = $("fc-focus"); if (!fc) return;
+  fc.innerHTML = FOCI.map((f) => `<button class="fc-chip${L.locked.indexOf(f.id) >= 0 ? " locked" : ""}" type="button" data-f="${f.id}" aria-pressed="${f.id === P.focus}">${esc(f.name)}</button>`).join("");
+  fc.querySelectorAll("[data-f]").forEach((b) => b.addEventListener("click", () => { P.focus = b.dataset.f; saveP(); setup(); paint(); progress(); }));
+  $("fc-plan2").textContent = plan();
+  const own = P.focus === "own"; $("fc-own").hidden = $("fc-own-l").hidden = !own; if (own) $("fc-own").value = P.own || "";
+  $("fc-wordin").value = word();
+  const m = $("fc-mode");
+  m.innerHTML = Object.entries(MODES).map(([k, v]) => `<button type="button" data-m="${k}" aria-pressed="${k === P.mode}">${v[0]}</button>`).join("");
+  m.querySelectorAll("[data-m]").forEach((b) => b.addEventListener("click", () => { P.mode = b.dataset.m; saveP(); setup(); paint(); }));
+  $("fc-mode-hint").textContent = MODES[P.mode][3];
+  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"], ["fc-o-auto", "auto"]].forEach(([id, k]) => $(id).setAttribute("aria-pressed", String(!!P[k])));
+}
+function progress() {
+  const w = $("fc-week"); if (!w) return;
+  const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], cols = [];
+  for (let k = 6; k >= 0; k--) {
+    const d = new Date(); d.setDate(d.getDate() - k);
+    const r = peek(P.focus, day(d)), p = pct(r);
+    cols.push(`<div><i class="bar${p != null && r.y + r.n >= 4 && p >= 80 ? " good" : p != null ? " mid" : ""}" style="height:${p == null ? 4 : Math.max(8, p)}%" title="${p == null ? "No answers" : p + " %"}"></i><span>${k === 0 ? "Today" : names[d.getDay()]}</span></div>`);
+  }
+  w.innerHTML = cols.join("");
+  const g = goodDays(P.focus).length, locked = L.locked.indexOf(P.focus) >= 0;
+  $("fc-days").innerHTML = [0, 1, 2].map((i) => `<i class="${locked || i < g ? "ok" : ""}" aria-hidden="true"></i>`).join("");
+  $("fc-master").textContent = locked ? `${F().name} is Locked in. Pick a new focus, or keep it on Calm to stay sharp.` : `${Math.min(g, 3)} of 3 days at 80 % or more (with at least 4 answers that day). Then ${F().name} is Locked in.`;
+  const lk = L.locked.map((id) => FOCI.find((f) => f.id === id)).filter(Boolean);
+  $("fc-locked").innerHTML = lk.length ? `<span class="tiny">Locked in: ${lk.map((f) => esc(f.name)).join(" · ")}</span>` : "";
+}
+function bind() {
+  if (!$("fc-go") || bind.done) return; bind.done = true;
+  $("fc-go").addEventListener("click", () => (run ? stop() : start(false)));
+  $("fc-yes").addEventListener("click", () => answer(true));
+  $("fc-no").addEventListener("click", () => answer(false));
+  $("fc-wordin").addEventListener("input", (e) => { const v = e.target.value.trim(); if (v) P.words[P.focus] = v.slice(0, 18); else delete P.words[P.focus]; saveP(); paint(); });
+  $("fc-own").addEventListener("input", (e) => { P.own = e.target.value.slice(0, 120); saveP(); $("fc-plan2").textContent = plan(); paint(); });
+  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"], ["fc-o-auto", "auto"]].forEach(([id, k]) => $(id).addEventListener("click", () => {
+    P[k] = !P[k]; saveP(); setup(); paint();
+    if (k === "auto") watchAuto();
+    if (k === "voice" && P.voice) say(word());
+  }));
+  addEventListener("keydown", (e) => {
+    if (!run || location.hash !== "#cue" || /INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || "") || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "1") answer(true); else if (e.key === "2") answer(false);
+  });
+}
+function homeCard() {
+  const r = peek(P.focus, day()), p = pct(r), locked = L.locked.indexOf(P.focus) >= 0;
+  const sub = run ? "Running now" : locked ? "Locked in · pick a new focus" : p != null ? `${p} % remembered today` : "Called out in game, so you don't tunnel";
+  return `<a class="mi-hcard" href="#cue"><span class="mi-orb" aria-hidden="true" style="background:radial-gradient(circle at 35% 30%,#fff,#38e0ff 70%)"></span><span class="t"><b>Focus Cue: ${esc(word())}</b><span class="s">${esc(sub)}</span></span></a>`;
+}
+window.ReplineCue = {
+  open() { bind(); setup(); progress(); paint(); },
+  close() {},
+  answer(ok) { return answer(ok); },
+  renderHome(el) { if (el) el.insertAdjacentHTML("beforeend", homeCard()); }
+};
+watchAuto();
+})();
+</script>
+<script>
 /* =====================================================================
    SITE — site-wide values. Optional values that are null are simply hidden.
    ===================================================================== */
@@ -1970,7 +2283,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.12.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.13.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -2140,6 +2453,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     return RANK[bonus] > RANK[base] ? bonus : base;
   }
   window.replinePlanId = () => planId();
+  // Focus Cue reads whether a routine is running and the type of the current set (aim / mech / fight / live / ...)
+  window.replineTraining = () => { const b = S && S.active && S.goal ? cur() : null; return { active: !!(S && S.active && S.goal && length(S.goal, S.len)), on: !!(S && S.active && S.status === "laeuft"), type: b ? b.type : null }; };
   const planName = () => (PLANS.find((p) => p.id === planId()) || PLANS[0]).name;
   const routineLimit = () => ({ free: 1, standard: 2, pro: Infinity })[planId()];
   const customCache = {};
@@ -2264,6 +2579,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     hg.appendChild(aiCard());
     let hm = $("home-mind"); if (!hm) { hm = document.createElement("div"); hm.id = "home-mind"; hm.className = "mi-home"; hg.after(hm); }
     if (window.ReplineMind) ReplineMind.renderHome(hm);
+    if (window.ReplineCue) ReplineCue.renderHome(hm);
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
     $("resume").hidden = !(S.active && length(S.goal, S.len));
     $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Set by set";
@@ -2636,6 +2952,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   if (DESK) {
     const cs0 = store.get(CUSTOM, null); if (cs0 && cs0.data && DESK.overlay.custom) DESK.overlay.custom(cs0.data);
     DESK.onHotkey((name) => {
+      if (name === "cueYes" || name === "cueNo") { if (window.ReplineCue) ReplineCue.answer(name === "cueYes"); return; }
       if (typeof gateOn !== "undefined" && gateOn) return;
       if (!(S.active && length(S.goal, S.len) && signedIn())) return;
       if (name === "toggle") { if (!$("b-main").disabled) mainAction(); else toast("Tick all targets first"); }
@@ -3559,7 +3876,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
             <span class="small">The in-game overlay comes with Standard and Pro: set, time left, finish alerts, 8 positions, size and opacity.</span>
             <button class="pill sm" type="button" id="ov-plans" style="justify-self:start">See plans</button></div>
             <div class="group" style="margin-top:12px">${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}</div>
-            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing." : "Hotkeys are off."}</p></section>`;
+            <p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing · Ctrl+Shift+1 / 2 Focus Cue did it / forgot." : "Hotkeys are off."}</p></section>`;
         } else if (ov) {
           const P = [["tl", "Top left"], ["tc", "Top center"], ["tr", "Top right"], ["ml", "Middle left"], [null, ""], ["mr", "Middle right"], ["bl", "Bottom left"], ["bc", "Bottom center"], ["br", "Bottom right"]];
           h += `<section class="dr-sec"><h3>In-game overlay</h3><div class="group">
@@ -3570,7 +3887,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
             <div class="row"><span>Size</span><span class="seg" role="group" aria-label="Overlay size">${[["s", "S"], ["m", "M"], ["l", "L"]].map(([id, t]) => `<button type="button" data-size="${id}" aria-pressed="${ov.size === id}">${t}</button>`).join("")}</span></div>
             <div class="row"><label for="ov-op">Opacity</label><input class="range" id="ov-op" type="range" min="40" max="100" step="5" value="${Math.round(ov.opacity * 100)}"></div>
             ${sw("ov-keys", "Hotkeys in game", ov.hotkeys)}
-          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing in the overlay · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
+          </div><p class="dr-foot">${ov.hotkeys ? "Ctrl+Shift+Space start/pause · Ctrl+Shift+N next set when done · Ctrl+Shift+R restart · Ctrl+Shift+E end routine · Ctrl+Shift+B breathing in the overlay · Ctrl+Shift+1 / 2 Focus Cue did it / forgot · Ctrl+Shift+O overlay on/off. " : ""}Set Fortnite to Windowed Fullscreen so the overlay can show on top.</p></section>`;
     }
       } else {
         h += `<section class="dr-sec"><h3>Windows app</h3><div class="teaser-card">
@@ -5579,7 +5896,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio", "mind"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio", "mind", "cue"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -5619,6 +5936,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (id === "aim") buildAim();
     if (id === "ai") buildCoach();
     if (window.ReplineMind) { if (id === "mind") ReplineMind.open(); else ReplineMind.close(); }
+    if (window.ReplineCue && id === "cue") ReplineCue.open();
     if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "drops") buildDrops();

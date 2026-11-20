@@ -165,9 +165,23 @@ function toggleBreath() {
   overlay.webContents.send("overlay:breath", { on, at: Date.now(), seconds: 64 });
   updateOverlayVisibility();
 }
+/* Focus Cue: the page decides when to call out; the overlay shows the cue word and speaks it */
+let cueUntil = 0, cueT = null;
+ipcMain.on("cue:show", (_e, c) => {
+  if (!c || typeof c !== "object") return;
+  if (!overlay) createOverlay();
+  const ms = Math.max(1200, Math.min(6000, +c.ms || 3500)), show = c.show !== false;
+  if (show) { cueUntil = Date.now() + ms; clearTimeout(cueT); cueT = setTimeout(() => { cueUntil = 0; updateOverlayVisibility(); }, ms + 200); }
+  overlay.webContents.send("overlay:cue", {
+    kind: c.kind === "ack" ? "ack" : c.kind === "lock" ? "lock" : "cue",
+    word: String(c.word || "").slice(0, 24), plan: String(c.plan || "").slice(0, 140), note: String(c.note || "").slice(0, 60),
+    ok: !!c.ok, voice: !!c.voice, tone: !!c.tone, say: String(c.say || "").slice(0, 200), ms, show
+  });
+  updateOverlayVisibility();
+});
 function updateOverlayVisibility() {
   if (!overlay) return;
-  const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil || Date.now() < breathUntil;
+  const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil || Date.now() < breathUntil || Date.now() < cueUntil;
   if (show && !overlay.isVisible()) overlay.showInactive();
   if (!show && overlay.isVisible()) overlay.hide();
 }
@@ -182,7 +196,7 @@ function setMoving(on) {
 }
 
 /* ---------- Hotkeys that work while the game is in front ---------- */
-const HOTKEYS = { "CommandOrControl+Shift+B": "breath", "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay", "CommandOrControl+Shift+E": "end" };
+const HOTKEYS = { "CommandOrControl+Shift+B": "breath", "CommandOrControl+Shift+Space": "toggle", "CommandOrControl+Shift+N": "next", "CommandOrControl+Shift+R": "restart", "CommandOrControl+Shift+O": "overlay", "CommandOrControl+Shift+E": "end", "CommandOrControl+Shift+1": "cueYes", "CommandOrControl+Shift+2": "cueNo" };
 function registerHotkeys() {
   globalShortcut.unregisterAll();
   if (!overlaySettings.hotkeys) return;
