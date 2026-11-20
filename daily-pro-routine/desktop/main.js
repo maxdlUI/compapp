@@ -178,7 +178,7 @@ function createTunnel() {
   tunnel = new BrowserWindow({
     x: b.x, y: b.y, width: b.width, height: b.height, frame: false, transparent: true, backgroundColor: "#00000000",
     resizable: false, movable: false, minimizable: false, maximizable: false, fullscreenable: false, skipTaskbar: true,
-    focusable: false, hasShadow: false, alwaysOnTop: true, show: false, title: "Repline focus tunnel",
+    focusable: false, hasShadow: false, alwaysOnTop: true, show: false, title: "Repline focus tunnel", enableLargerThanScreen: true, thickFrame: false,
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false }
   });
   tunnel.setAlwaysOnTop(true, "screen-saver");
@@ -191,13 +191,19 @@ function applyTunnel() {
   if (!tunnel) return;
   tunnelJS(`window.apply(${JSON.stringify(tunnelCfg)})`);
   const show = tunnelCfg.on || Date.now() < edgeUntil;
-  if (show && !tunnel.isVisible()) { tunnel.showInactive(); if (overlay && overlay.isVisible()) overlay.moveTop(); }
+  if (show && !tunnel.isVisible()) {
+    // cover the whole screen, taskbar area included (Windows may shrink a new window to the work area)
+    tunnel.setBounds(screen.getPrimaryDisplay().bounds);
+    tunnel.showInactive();
+    tunnel.setBounds(screen.getPrimaryDisplay().bounds);
+    if (overlay && overlay.isVisible()) overlay.moveTop();
+  }
   if (!show && tunnel.isVisible()) tunnel.hide();
 }
 ipcMain.on("tunnel:set", (_e, c) => {
   c = c && typeof c === "object" ? c : {};
   const n = (v, lo, hi, d) => { v = +v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; };
-  tunnelCfg = { on: !!c.on, size: n(c.size, 12, 70, 34), dark: n(c.dark, 10, 90, 55), soft: n(c.soft, 0, 100, 60), shape: ["oval", "circle", "band"].includes(c.shape) ? c.shape : "oval" };
+  tunnelCfg = { on: !!c.on, size: n(c.size, 12, 70, 34), dark: n(c.dark, 10, 90, 55), soft: n(c.soft, 0, 100, 60), shape: c.shape === "square" ? "square" : "circle" };
   if (tunnelCfg.on) createTunnel();
   applyTunnel();
 });
