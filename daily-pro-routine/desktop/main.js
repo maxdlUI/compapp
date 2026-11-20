@@ -165,15 +165,60 @@ function toggleBreath() {
   overlay.webContents.send("overlay:breath", { on, at: Date.now(), seconds: 64 });
   updateOverlayVisibility();
 }
+/* Focus Tunnel + Look Around edge light: a full-screen, click-through window over the game. It only draws, it reads nothing. */
+let tunnel = null, tunnelCfg = { on: false }, edgeUntil = 0, edgeT = null;
+function tunnelJS(code) {
+  if (!tunnel) return;
+  const run = () => tunnel && tunnel.webContents.executeJavaScript(code).catch(() => {});
+  if (tunnel.webContents.isLoading()) tunnel.webContents.once("did-finish-load", run); else run();
+}
+function createTunnel() {
+  if (tunnel) return;
+  const b = screen.getPrimaryDisplay().bounds;
+  tunnel = new BrowserWindow({
+    x: b.x, y: b.y, width: b.width, height: b.height, frame: false, transparent: true, backgroundColor: "#00000000",
+    resizable: false, movable: false, minimizable: false, maximizable: false, fullscreenable: false, skipTaskbar: true,
+    focusable: false, hasShadow: false, alwaysOnTop: true, show: false, title: "Repline focus tunnel",
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false }
+  });
+  tunnel.setAlwaysOnTop(true, "screen-saver");
+  tunnel.setVisibleOnAllWorkspaces(true);
+  tunnel.setIgnoreMouseEvents(true);
+  tunnel.loadFile(path.join(__dirname, "tunnel.html"));
+  tunnel.on("closed", () => { tunnel = null; });
+}
+function applyTunnel() {
+  if (!tunnel) return;
+  tunnelJS(`window.apply(${JSON.stringify(tunnelCfg)})`);
+  const show = tunnelCfg.on || Date.now() < edgeUntil;
+  if (show && !tunnel.isVisible()) { tunnel.showInactive(); if (overlay && overlay.isVisible()) overlay.moveTop(); }
+  if (!show && tunnel.isVisible()) tunnel.hide();
+}
+ipcMain.on("tunnel:set", (_e, c) => {
+  c = c && typeof c === "object" ? c : {};
+  const n = (v, lo, hi, d) => { v = +v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; };
+  tunnelCfg = { on: !!c.on, size: n(c.size, 12, 70, 34), dark: n(c.dark, 10, 90, 55), soft: n(c.soft, 0, 100, 60), shape: ["oval", "circle", "band"].includes(c.shape) ? c.shape : "oval" };
+  if (tunnelCfg.on) createTunnel();
+  applyTunnel();
+});
+function edgeFlash(dir) {
+  if (!["l", "r", "u", "b"].includes(dir)) return;
+  createTunnel();
+  edgeUntil = Date.now() + 1800;
+  applyTunnel();
+  tunnelJS(`window.flash(${JSON.stringify(dir)})`);
+  clearTimeout(edgeT); edgeT = setTimeout(() => { edgeUntil = 0; applyTunnel(); }, 1900);
+}
 /* Focus Cue: the page decides when to call out; the overlay shows the cue word and speaks it */
 let cueUntil = 0, cueT = null;
 ipcMain.on("cue:show", (_e, c) => {
   if (!c || typeof c !== "object") return;
+  if (c.kind === "look" && c.edge) edgeFlash(String(c.dir || ""));
   if (!overlay) createOverlay();
   const ms = Math.max(1200, Math.min(6000, +c.ms || 3500)), show = c.show !== false;
   if (show) { cueUntil = Date.now() + ms; clearTimeout(cueT); cueT = setTimeout(() => { cueUntil = 0; updateOverlayVisibility(); }, ms + 200); }
   overlay.webContents.send("overlay:cue", {
-    kind: c.kind === "ack" ? "ack" : c.kind === "lock" ? "lock" : "cue",
+    kind: c.kind === "ack" ? "ack" : c.kind === "lock" ? "lock" : c.kind === "look" ? "look" : "cue",
     word: String(c.word || "").slice(0, 24), plan: String(c.plan || "").slice(0, 140), note: String(c.note || "").slice(0, 60),
     ok: !!c.ok, voice: !!c.voice, tone: !!c.tone, say: String(c.say || "").slice(0, 200), ms, show
   });
@@ -182,7 +227,7 @@ ipcMain.on("cue:show", (_e, c) => {
 function updateOverlayVisibility() {
   if (!overlay) return;
   const show = (overlaySettings.enabled && (lastState.active || moving)) || Date.now() < previewUntil || Date.now() < breathUntil || Date.now() < cueUntil;
-  if (show && !overlay.isVisible()) overlay.showInactive();
+  if (show && !overlay.isVisible()) { overlay.showInactive(); overlay.moveTop(); }
   if (!show && overlay.isVisible()) overlay.hide();
 }
 function setMoving(on) {

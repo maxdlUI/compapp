@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld("replineDesktop", {
   },
   onHotkey: (cb) => ipcRenderer.on("hotkey", (_e, name) => cb(name)),
   cue: (c) => ipcRenderer.send("cue:show", JSON.parse(JSON.stringify(c || {}))),
+  tunnel: (c) => ipcRenderer.send("tunnel:set", JSON.parse(JSON.stringify(c || {}))),
   auth: (url) => ipcRenderer.invoke("auth:discord", url),
   rpc: { set: (v) => ipcRenderer.send("rpc:set", { on: !!(v && v.on), name: !!(v && v.name) }) },
   reminder: { set: (v) => ipcRenderer.send("reminder:set", JSON.parse(JSON.stringify(v || {}))) },

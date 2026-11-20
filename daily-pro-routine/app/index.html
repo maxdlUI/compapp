@@ -1159,6 +1159,22 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 
 /* ---------- Focus Cue (#cue) ---------- */
 #v-cue .fc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 18px; }
+#v-cue .fc-hub { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+#v-cue .fc-tool { background: var(--carbon); border-radius: 22px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+#v-cue .fc-tool b { display: block; font-size: 18px; letter-spacing: -.2px; }
+#v-cue .fc-sw { position: relative; flex: 0 0 auto; width: 52px; height: 32px; border-radius: 99px; border: 0; background: var(--steel); cursor: pointer; transition: background .2s; }
+#v-cue .fc-sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: transform .25s var(--ease); }
+#v-cue .fc-sw[aria-checked="true"] { background: var(--green); }
+#v-cue .fc-sw[aria-checked="true"]::after { transform: translateX(20px); }
+#v-cue .fc-sw:disabled { opacity: .35; cursor: default; }
+#v-cue .fc-sw:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
+#v-cue .fc-sl { display: grid; gap: 4px; }
+#v-cue .fc-sl label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ash); }
+#v-cue .fc-sl label b { color: var(--porcelain); font-variant-numeric: tabular-nums; }
+#v-cue .fc-sl input { width: 100%; accent-color: var(--c1); }
+#v-cue .fc-tprev { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 16px; overflow: hidden; background: linear-gradient(180deg, #2a4a66 0%, #6b8aa6 45%, #9fb3a0 46%, #4b5d47 100%); }
+#v-cue .fc-tprev i { position: absolute; inset: 0; }
+#v-cue .fc-tprev b { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 22px; font-weight: 400; }
 #v-cue .fc-live { grid-column: 1 / -1; gap: 16px; }
 #v-cue .fc-h { font-size: 21px; letter-spacing: -.3px; }
 #v-cue .fc-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -1237,7 +1253,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
-    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#cue">Focus Cue</a><a href="#" data-scroll="faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#goal">Routines</a><a href="#drops">Drops</a><a href="#board">Leaderboards</a><a href="#plans">Plans</a><a href="#partners">Partners</a><a href="#ai">Personal Plan</a><a href="#mind">Mind</a><a href="#cue">In-game Tools</a><a href="#" data-scroll="faq">FAQ</a></nav>
     <button class="pill sm out" type="button" id="acct-open-out" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
     <button class="acct-btn" type="button" id="acct-open-in" aria-haspopup="dialog" aria-controls="drawer" aria-label="Account" hidden></button>
   </div>
@@ -1550,8 +1566,14 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 
 <main class="view wrap flowv" data-view="cue" id="v-cue" hidden>
   <button class="back" type="button" data-go="">Home</button>
-  <div class="vhead"><div><h1 class="d-l">Focus Cue.</h1><p class="lead">One focus, called out in game like a teammate. You tap whether you did it, and the callouts fade as it becomes automatic.</p></div></div>
+  <div class="vhead"><div><h1 class="d-l">In-game Tools.</h1><p class="lead">Three tools against tunnel vision. Switch them on here and they run while your routine runs, or start a session for free play.</p></div></div>
   <div class="fc">
+    <section class="fc-hub" aria-label="Tools">
+      <div class="fc-tool"><div><b>Focus Cue</b><span class="tiny">One focus, called out in game</span></div><button class="fc-sw" type="button" role="switch" id="fc-sw-cue" aria-label="Focus Cue"></button></div>
+      <div class="fc-tool"><div><b>Focus Tunnel</b><span class="tiny" id="fc-tu-sub">Darker edges, eyes on the crosshair</span></div><button class="fc-sw" type="button" role="switch" id="fc-sw-tunnel" aria-label="Focus Tunnel"></button></div>
+      <div class="fc-tool"><div><b>Look Around</b><span class="tiny">“Check left”, “Behind you”, “Minimap”</span></div><button class="fc-sw" type="button" role="switch" id="fc-sw-look" aria-label="Look Around"></button></div>
+    </section>
+
     <section class="c-card fc-live" aria-label="Session">
       <div class="fc-top"><span class="tiny" id="fc-status">Not running</span><span class="tiny" id="fc-next"></span></div>
       <div class="fc-flash" id="fc-flash" aria-live="assertive"><i></i><b id="fc-word">HEAD</b></div>
@@ -1570,7 +1592,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
     </section>
 
     <section class="c-card" aria-labelledby="fc-h1">
-      <b id="fc-h1" class="fc-h">Your focus</b>
+      <b id="fc-h1" class="fc-h">Focus Cue</b>
       <div class="fc-chips" id="fc-focus" role="group" aria-label="Focus"></div>
       <div class="fc-planbox">
         <span class="tiny">Your if-then plan</span>
@@ -1580,11 +1602,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       </div>
       <label class="tiny" for="fc-wordin">Cue word (what you hear in game)</label>
       <input id="fc-wordin" type="text" maxlength="18" class="fc-in">
-      <span class="tiny">Short, and about what you see, not your hands.</span>
-    </section>
-
-    <section class="c-card" aria-labelledby="fc-h2">
-      <b id="fc-h2" class="fc-h">How often and how</b>
+      <span class="tiny">How often</span>
       <div class="seg" id="fc-mode" role="group" aria-label="How often"></div>
       <span class="tiny" id="fc-mode-hint"></span>
       <div class="fc-chips" role="group" aria-label="How you get it">
@@ -1592,12 +1610,35 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
         <button class="fc-chip" type="button" id="fc-o-tone">Soft tone</button>
         <button class="fc-chip" type="button" id="fc-o-flash">Overlay pulse</button>
       </div>
-      <button class="fc-chip" type="button" id="fc-o-auto" style="justify-self:start">Start with my routines</button>
-      <span class="tiny">With this on, Focus Cue runs by itself while a routine is running: often in drill sets, less in fights and ranked, quiet in breaks and reviews.</span>
+    </section>
+
+    <section class="c-card" aria-labelledby="fc-h5">
+      <b id="fc-h5" class="fc-h">Focus Tunnel</b>
+      <p class="small" style="margin:0;color:#c7c7cc">Darkens the edges of your screen so your eyes stay on the crosshair. For learning crosshair placement in Creative.</p>
+      <div class="fc-sl"><label for="fc-tu-size">Clear area <b id="fc-tu-size-v"></b></label><input id="fc-tu-size" type="range" min="12" max="70"></div>
+      <div class="fc-sl"><label for="fc-tu-dark">Darkness <b id="fc-tu-dark-v"></b></label><input id="fc-tu-dark" type="range" min="10" max="90"></div>
+      <div class="fc-sl"><label for="fc-tu-soft">Soft edge <b id="fc-tu-soft-v"></b></label><input id="fc-tu-soft" type="range" min="0" max="100"></div>
+      <span class="tiny">Shape</span>
+      <div class="fc-chips" id="fc-tu-shape" role="group" aria-label="Shape"></div>
+      <span class="tiny">When</span>
+      <div class="fc-chips" id="fc-tu-when" role="group" aria-label="When"></div>
+      <div class="fc-tprev" aria-hidden="true"><i id="fc-tu-prev"></i><b>+</b></div>
+      <span class="tiny" id="fc-tu-note"></span>
+    </section>
+
+    <section class="c-card" aria-labelledby="fc-h6">
+      <b id="fc-h6" class="fc-h">Look Around</b>
+      <p class="small" style="margin:0;color:#c7c7cc">At random moments you hear where to look and that edge of the screen lights up. Look, then go back to your fight.</p>
+      <span class="tiny">Directions</span>
+      <div class="fc-chips" id="fc-lk-dirs" role="group" aria-label="Directions"></div>
+      <span class="tiny">How often</span>
+      <div class="fc-chips" id="fc-lk-mode" role="group" aria-label="How often"></div>
+      <span class="tiny">How you get it</span>
+      <div class="fc-chips" id="fc-lk-how" role="group" aria-label="How you get it"></div>
     </section>
 
     <section class="c-card" aria-labelledby="fc-h3">
-      <b id="fc-h3" class="fc-h">Progress</b>
+      <b id="fc-h3" class="fc-h">Focus Cue progress</b>
       <div class="fc-week" id="fc-week" aria-label="Remembered per day, last 7 days"></div>
       <div class="fc-days" id="fc-days"></div>
       <span class="tiny" id="fc-master"></span>
@@ -1607,14 +1648,12 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
     <section class="c-card fc-how" aria-labelledby="fc-h4">
       <b id="fc-h4" class="fc-h">How it works</b>
       <ol>
-        <li><b>Plan it.</b> One focus, as an if-then plan. Plans like this make you act even under pressure, because the situation triggers the action.</li>
-        <li><b>Lock in.</b> When you start, you hear your plan once. Breathe out and say it with it.</li>
-        <li><b>Called out.</b> Your cue word comes at random moments, never on a fixed beat, so you don't tune it out.</li>
-        <li><b>Check.</b> After a fight: did it or forgot. Checking is the training.</li>
-        <li><b>Adapt.</b> Forgot: the next callout comes sooner. Three in a row: callouts get rarer.</li>
-        <li><b>Locked in.</b> 80 % or more on 3 days and the focus is yours. Pick the next one.</li>
+        <li><b>Switch on</b> the tools you want. They start with your next routine and stop when it ends.</li>
+        <li><b>Focus Cue:</b> one focus as an if-then plan. Your cue word comes at random moments. After a fight: did it or forgot. 80 % on 3 days and it's Locked in.</li>
+        <li><b>Focus Tunnel:</b> on in drill sets, or whenever it's switched on. It turns itself off in ranked and cup sets.</li>
+        <li><b>Look Around:</b> random calls to check left, right, behind, up or the minimap, so you stop staring straight ahead.</li>
       </ol>
-      <span class="tiny">On console or without the Windows app: keep this page open on your phone next to you. It calls out through the phone speaker. Repline never reads anything from Fortnite.</span>
+      <span class="tiny">Everything is drawn on top of your screen or spoken. Repline never reads anything from Fortnite. Use the tunnel for training, not in tournaments. On console: keep this page open on your phone next to you for Focus Cue and Look Around.</span>
     </section>
   </div>
 </main>
@@ -2079,9 +2118,10 @@ window.__games = { GAMES, selectGame, startGame, tap, edgeAnswer, get gs() { ret
 })();
 </script>
 <script>
-/* ---------- Focus Cue (#cue): one focus, called out in game at random moments.
-   Answers (did it / forgot) adapt the timing; 80 % on 3 days locks the focus in. Runs on the device, nothing reads Fortnite.
-   Windows app: the overlay shows and speaks the cue (DESK.cue), Ctrl+Shift+1 / 2 answer. Website: speaks on the page. ---------- */
+/* ---------- In-game Tools (#cue): Focus Cue, Focus Tunnel, Look Around. Each has a switch; switched-on tools run
+   while a routine runs (or in a free-play session). Runs on the device, nothing reads Fortnite.
+   Windows app: overlay shows and speaks callouts (DESK.cue), the tunnel and edge lights are a click-through window
+   (DESK.tunnel); Ctrl+Shift+1 / 2 answer Focus Cue in game. Website: callouts are spoken on the page. ---------- */
 (function () {
 const $ = (id) => document.getElementById(id);
 const DESK = window.replineDesktop || null;
@@ -2096,10 +2136,18 @@ const FOCI = [
   { id: "own", name: "My own", word: "Focus", plan: "Write your own if-then plan below." }
 ];
 const MODES = { drill: ["Drill", 10, 20, "Every 10 to 20 seconds. For drill sets like edit wall."], match: ["Match", 30, 75, "Every 30 to 75 seconds. For box fights and ranked."], calm: ["Calm", 60, 120, "Every 1 to 2 minutes. Once it mostly sticks."] };
+const LMODES = { often: ["Often", 15, 35], normal: ["Normal", 30, 70], rare: ["Rare", 60, 120] };
+const LOOK = { left: ["Check left", "l"], right: ["Check right", "r"], behind: ["Behind you", "b"], up: ["Look up", "u"], map: ["Minimap", ""] };
 const PK = "rl.cue", LK = "rl.cue.log";
 const get = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-let P = Object.assign({ focus: "head", mode: "match", voice: true, tone: true, flash: true, auto: false, words: {}, own: "" }, get(PK, {}));
+const P0 = get(PK, {});
+let P = Object.assign({ focus: "head", mode: "match", voice: true, tone: true, flash: true, words: {}, own: "",
+  on: !!P0.auto, tunnel: { on: false, size: 34, dark: 55, soft: 60, shape: "oval", when: "drill" },
+  look: { on: false, dirs: { left: true, right: true, behind: true, up: false, map: true }, mode: "normal", voice: true, edge: true } }, P0);
+P.tunnel = Object.assign({ on: false, size: 34, dark: 55, soft: 60, shape: "oval", when: "drill" }, P.tunnel || {});
+P.look = Object.assign({ on: false, dirs: { left: true, right: true, behind: true, up: false, map: true }, mode: "normal", voice: true, edge: true }, P.look || {});
+delete P.auto;
 let L = Object.assign({ days: {}, locked: [] }, get(LK, {}));
 const saveP = () => put(PK, P), saveL = () => put(LK, L);
 const day = (d) => { d = d || new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
@@ -2111,22 +2159,23 @@ const rec = (id, d) => { id = id || P.focus; d = d || day(); L.days[d] = L.days[
 const peek = (id, d) => (L.days[d] && L.days[d][id]) || null;
 const pct = (r) => (r && r.y + r.n ? Math.round((r.y / (r.y + r.n)) * 100) : null);
 const goodDays = (id) => Object.keys(L.days).sort().filter((d) => { const r = peek(id, d); return r && r.y + r.n >= 4 && pct(r) >= 80; });
-// keep the log small: last 60 days
 (function trim() { const ks = Object.keys(L.days).sort(); if (ks.length > 60) { ks.slice(0, ks.length - 60).forEach((k) => delete L.days[k]); saveL(); } })();
 
-let run = null, timer = 0, actx = null, flashT = 0, auto = 0;
+let run = null, timer = 0, actx = null, flashT = 0, watch = 0, showText = null, showUntil = 0, tunnelKey = "";
 const train = () => { try { return window.replineTraining ? window.replineTraining() : null; } catch (e) { return null; } };
+const anyCall = () => P.on || P.look.on;
 function range() {
   if (run && run.auto) {
     const t = train(), ty = t && t.type;
-    if (P.mode === "calm" && (ty === "aim" || ty === "mech" || ty === "fight" || ty === "live")) return MODES.calm;
-    if (ty === "aim" || ty === "mech") return MODES.drill;
-    if (ty === "fight" || ty === "live") return MODES.match;
-    return null; // breaks, reviews, cup prep: quiet
+    if (!(ty === "aim" || ty === "mech" || ty === "fight" || ty === "live")) return null; // breaks, reviews, cup prep: quiet
+    if (P.mode === "calm") return MODES.calm;
+    return ty === "aim" || ty === "mech" ? MODES.drill : MODES.match;
   }
   return MODES[P.mode] || MODES.match;
 }
-const gap = () => { const m = range() || MODES.match; return (m[1] + Math.random() * (m[2] - m[1])) * run.factor * 1000; };
+const rnd = (m) => (m[1] + Math.random() * (m[2] - m[1])) * 1000;
+const gap = () => rnd(range() || MODES.match) * run.factor;
+const lgap = () => rnd(LMODES[P.look.mode] || LMODES.normal);
 
 function tone() {
   try {
@@ -2136,28 +2185,29 @@ function tone() {
   } catch (e) {}
 }
 function say(text) { try { if (!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 1.05; u.lang = "en-US"; speechSynthesis.speak(u); } catch (e) {} }
-// Windows app: the overlay shows and speaks it. Website: tone and voice on the page.
 function emit(c) {
   if (DESK && DESK.cue) { try { DESK.cue(c); return; } catch (e) {} }
   if (c.tone) tone();
   if (c.voice && c.say) setTimeout(() => say(c.say), c.tone ? 380 : 0);
 }
-function flash(cls, ms) {
+function flash(cls, ms, text) {
   const el = $("fc-flash"); if (!el) return;
   el.classList.remove("on", "ok", "miss"); el.classList.add(cls);
-  clearTimeout(flashT); flashT = setTimeout(() => el.classList.remove(cls), ms);
+  showText = text || null; showUntil = text ? Date.now() + ms : 0;
+  if (text) $("fc-word").textContent = text;
+  clearTimeout(flashT); flashT = setTimeout(() => { el.classList.remove(cls); showText = null; paint(); }, ms);
 }
 
+/* Focus Cue */
 function fire() {
   const r = rec(); r.c++; saveL();
   emit({ kind: "cue", word: word(), plan: plan(), voice: P.voice, tone: P.tone, say: word(), show: P.flash, ms: 3500 });
   flash("on", 3000);
-  run.cues++;
   run.next = Date.now() + gap();
   paint();
 }
 function answer(ok) {
-  if (!run) return false;
+  if (!run || !P.on) return false;
   const r = rec(); if (ok) r.y++; else r.n++; saveL();
   if (ok) { run.row++; if (run.row >= 3) { run.factor = Math.min(2.5, run.factor * 1.35); run.row = 0; } }
   else { run.row = 0; run.factor = Math.max(0.5, run.factor * 0.6); run.next = Math.min(run.next, Date.now() + 8000); }
@@ -2172,27 +2222,54 @@ function lockCheck() {
   P.mode = "calm"; saveP(); setup();
   emit({ kind: "ack", ok: true, word: "Locked in", note: `${F().name} sticks. Pick your next focus.`, voice: P.voice, tone: P.tone, say: "Locked in.", show: true, ms: 4000 });
 }
+/* Look Around */
+function lookFire() {
+  const ks = Object.keys(LOOK).filter((k) => P.look.dirs[k]);
+  run.lnext = Date.now() + lgap();
+  if (!ks.length) return;
+  const k = ks[Math.floor(Math.random() * ks.length)], [txt, dir] = LOOK[k];
+  emit({ kind: "look", word: txt, plan: "", voice: P.look.voice, tone: false, say: txt, show: true, edge: P.look.edge && !!dir, dir, ms: 2200 });
+  flash("on", 2000, txt);
+}
+
 function start(isAuto) {
-  run = { auto: !!isAuto, factor: P.mode === "calm" ? 1.2 : 1, row: 0, cues: 0, next: Date.now() + 9000 };
-  emit({ kind: "lock", word: word(), plan: plan(), voice: P.voice, tone: false, say: "Lock in. " + plan(), show: true, ms: 5000 });
+  if (!anyCall()) return;
+  run = { auto: !!isAuto, factor: P.mode === "calm" ? 1.2 : 1, row: 0, next: Date.now() + 9000, lnext: Date.now() + 15000 + Math.random() * 15000 };
+  if (P.on) emit({ kind: "lock", word: word(), plan: plan(), voice: P.voice, tone: false, say: "Lock in. " + plan(), show: true, ms: 5000 });
   clearInterval(timer); timer = setInterval(loop, 1000);
   paint();
 }
 function stop() { run = null; clearInterval(timer); timer = 0; try { speechSynthesis.cancel(); } catch (e) {} paint(); }
 function loop() {
   if (!run) return;
+  if (!anyCall()) { stop(); return; }
   if (run.auto) {
     const t = train();
     if (!t || !t.active) { stop(); return; }
-    if (!t.on || !range()) { run.next = Math.max(run.next, Date.now() + 6000); paint(); return; }
+    if (!t.on || !range()) { run.next = Math.max(run.next, Date.now() + 6000); run.lnext = Math.max(run.lnext, Date.now() + 6000); paint(); return; }
   }
-  if (Date.now() >= run.next) fire(); else paint();
+  const now = Date.now();
+  if (P.on && now >= run.next) fire();
+  else if (P.look.on && now >= run.lnext && now >= run.next - 4000) lookFire(); // never right before a Focus Cue callout
+  else if (P.look.on && now >= run.lnext) run.lnext = now + 5000;
+  paint();
 }
-// "Start with my routines": a running routine starts and stops Focus Cue by itself
-function watchAuto() {
-  clearInterval(auto); auto = 0;
-  if (!P.auto) return;
-  auto = setInterval(() => { const t = train(); if (!run && t && t.active && t.on) start(true); }, 2000);
+/* Focus Tunnel: Windows app only. On in drill sets (or always when set so), never in ranked or cup sets. */
+function syncTunnel() {
+  if (!(DESK && DESK.tunnel)) return;
+  const T = P.tunnel, t = train();
+  let on = !!T.on;
+  if (on && t && t.active && (t.type === "live" || t.goal === "cup")) on = false;
+  if (on && T.when === "drill") on = !!(t && t.active && t.on && (t.type === "aim" || t.type === "mech" || t.type === "fight"));
+  const cfg = { on, size: T.size, dark: T.dark, soft: T.soft, shape: T.shape }, key = JSON.stringify(cfg);
+  if (key === tunnelKey) return;
+  tunnelKey = key;
+  try { DESK.tunnel(cfg); } catch (e) {}
+}
+function tick() {
+  syncTunnel();
+  const t = train();
+  if (!run && anyCall() && t && t.active && t.on) start(true);
 }
 
 /* ---------- page ---------- */
@@ -2204,20 +2281,35 @@ function stage() {
 function paint() {
   const fl = $("fc-flash"); if (!fl) return;
   fl.classList.toggle("run", !!run);
-  $("fc-word").textContent = word();
-  $("fc-plan").textContent = plan();
-  $("fc-status").textContent = run ? (run.auto ? "Running with your routine" : "Running") + ` · ${run.auto && !range() ? "quiet in this set" : (range() || MODES.match)[0]}` : P.auto ? "Starts with your next routine" : "Not running";
-  $("fc-next").textContent = run && (!run.auto || range()) ? `Next callout in about ${Math.max(0, Math.round((run.next - Date.now()) / 1000))} s` : "";
+  if (!(showText && Date.now() < showUntil)) $("fc-word").textContent = P.on ? word() : P.look.on ? "Look" : "Off";
+  $("fc-plan").textContent = P.on ? plan() : P.look.on ? "Look Around is on." : "Switch on Focus Cue or Look Around above.";
+  const tools = [P.on && "Focus Cue", P.look.on && "Look Around"].filter(Boolean).join(" + ");
+  $("fc-status").textContent = run ? `${run.auto ? "Running with your routine" : "Running"} · ${tools}${run.auto && !range() ? " · quiet in this set" : ""}` : anyCall() ? `${tools} · starts with your next routine` : "Nothing switched on";
+  $("fc-next").textContent = run && P.on && (!run.auto || range()) ? `Next callout in about ${Math.max(0, Math.round((run.next - Date.now()) / 1000))} s` : "";
   $("fc-go").textContent = run ? "Stop session" : "Start session";
-  $("fc-yes").disabled = $("fc-no").disabled = !run;
+  $("fc-go").disabled = !run && !anyCall();
+  $("fc-yes").disabled = $("fc-no").disabled = !(run && P.on);
   const r = peek(P.focus, day()), p = pct(r);
   $("fc-s-cues").textContent = r ? r.c : 0;
   $("fc-s-rate").textContent = p == null ? "–" : p + " %";
   $("fc-s-stage").textContent = stage();
-  $("fc-keys").textContent = DESK ? "In game: Ctrl+Shift+1 did it · Ctrl+Shift+2 forgot (after a fight)" : "On this page: press 1 or 2. In the Windows app it's Ctrl+Shift+1 / 2 in game.";
+  $("fc-keys").textContent = DESK ? "Focus Cue in game: Ctrl+Shift+1 did it · Ctrl+Shift+2 forgot (after a fight)" : "On this page: press 1 or 2. In the Windows app it's Ctrl+Shift+1 / 2 in game.";
+}
+function chips(el, items, isOn, pick) {
+  if (!el) return;
+  el.innerHTML = items.map(([v, t]) => `<button class="fc-chip" type="button" data-v="${v}" aria-pressed="${!!isOn(v)}">${esc(t)}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { pick(b.dataset.v); saveP(); setup(); paint(); syncTunnel(); }));
+}
+function tunnelBg(T) {
+  const a = T.dark / 100, r = T.size, soft = 4 + T.soft * 0.35;
+  return T.shape === "band"
+    ? `linear-gradient(180deg, rgba(0,0,0,${a}) 0%, rgba(0,0,0,${a}) ${50 - r / 2 - soft}%, rgba(0,0,0,0) ${50 - r / 2}%, rgba(0,0,0,0) ${50 + r / 2}%, rgba(0,0,0,${a}) ${50 + r / 2 + soft}%, rgba(0,0,0,${a}) 100%)`
+    : `radial-gradient(${T.shape === "circle" ? "ellipse " + r * 0.56 + "% " + r + "%" : "ellipse " + r + "% " + r * 0.9 + "%"} at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) ${Math.max(0, 100 - soft * 2.2)}%, rgba(0,0,0,${a}) 100%)`;
 }
 function setup() {
   const fc = $("fc-focus"); if (!fc) return;
+  [["fc-sw-cue", P.on], ["fc-sw-tunnel", P.tunnel.on], ["fc-sw-look", P.look.on]].forEach(([id, v]) => $(id).setAttribute("aria-checked", String(!!v)));
+  if (!DESK) { $("fc-sw-tunnel").disabled = true; $("fc-tu-sub").textContent = "Windows app only"; }
   fc.innerHTML = FOCI.map((f) => `<button class="fc-chip${L.locked.indexOf(f.id) >= 0 ? " locked" : ""}" type="button" data-f="${f.id}" aria-pressed="${f.id === P.focus}">${esc(f.name)}</button>`).join("");
   fc.querySelectorAll("[data-f]").forEach((b) => b.addEventListener("click", () => { P.focus = b.dataset.f; saveP(); setup(); paint(); progress(); }));
   $("fc-plan2").textContent = plan();
@@ -2227,7 +2319,19 @@ function setup() {
   m.innerHTML = Object.entries(MODES).map(([k, v]) => `<button type="button" data-m="${k}" aria-pressed="${k === P.mode}">${v[0]}</button>`).join("");
   m.querySelectorAll("[data-m]").forEach((b) => b.addEventListener("click", () => { P.mode = b.dataset.m; saveP(); setup(); paint(); }));
   $("fc-mode-hint").textContent = MODES[P.mode][3];
-  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"], ["fc-o-auto", "auto"]].forEach(([id, k]) => $(id).setAttribute("aria-pressed", String(!!P[k])));
+  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"]].forEach(([id, k]) => $(id).setAttribute("aria-pressed", String(!!P[k])));
+  // tunnel
+  const T = P.tunnel;
+  ["size", "dark", "soft"].forEach((k) => { $("fc-tu-" + k).value = T[k]; $("fc-tu-" + k + "-v").textContent = T[k] + " %"; });
+  chips($("fc-tu-shape"), [["oval", "Oval"], ["circle", "Circle"], ["band", "Horizontal band"]], (v) => T.shape === v, (v) => { T.shape = v; });
+  chips($("fc-tu-when"), [["drill", "Only in drill and fight sets"], ["always", "Whenever it's switched on"]], (v) => T.when === v, (v) => { T.when = v; });
+  $("fc-tu-prev").style.background = tunnelBg(T);
+  $("fc-tu-note").textContent = DESK ? "Shows on top of Fortnite in Windowed Fullscreen. Turns itself off in ranked and cup sets. Training only, not for tournaments." : "The tunnel needs the Windows app: a browser can't draw on top of your game. Preview above.";
+  // look around
+  const A = P.look;
+  chips($("fc-lk-dirs"), Object.keys(LOOK).map((k) => [k, LOOK[k][0]]), (v) => A.dirs[v], (v) => { A.dirs[v] = !A.dirs[v]; });
+  chips($("fc-lk-mode"), Object.entries(LMODES).map(([k, v]) => [k, v[0]]), (v) => A.mode === v, (v) => { A.mode = v; });
+  chips($("fc-lk-how"), [["voice", "Voice"], ["edge", "Edge light"]], (v) => A[v], (v) => { A[v] = !A[v]; });
 }
 function progress() {
   const w = $("fc-week"); if (!w) return;
@@ -2251,20 +2355,20 @@ function bind() {
   $("fc-no").addEventListener("click", () => answer(false));
   $("fc-wordin").addEventListener("input", (e) => { const v = e.target.value.trim(); if (v) P.words[P.focus] = v.slice(0, 18); else delete P.words[P.focus]; saveP(); paint(); });
   $("fc-own").addEventListener("input", (e) => { P.own = e.target.value.slice(0, 120); saveP(); $("fc-plan2").textContent = plan(); paint(); });
-  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"], ["fc-o-auto", "auto"]].forEach(([id, k]) => $(id).addEventListener("click", () => {
-    P[k] = !P[k]; saveP(); setup(); paint();
-    if (k === "auto") watchAuto();
-    if (k === "voice" && P.voice) say(word());
-  }));
+  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"]].forEach(([id, k]) => $(id).addEventListener("click", () => { P[k] = !P[k]; saveP(); setup(); paint(); if (k === "voice" && P.voice) say(word()); }));
+  $("fc-sw-cue").addEventListener("click", () => { P.on = !P.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
+  $("fc-sw-look").addEventListener("click", () => { P.look.on = !P.look.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
+  $("fc-sw-tunnel").addEventListener("click", () => { if (!DESK) return; P.tunnel.on = !P.tunnel.on; saveP(); setup(); syncTunnel(); });
+  ["size", "dark", "soft"].forEach((k) => $("fc-tu-" + k).addEventListener("input", (e) => { P.tunnel[k] = +e.target.value; $("fc-tu-" + k + "-v").textContent = P.tunnel[k] + " %"; $("fc-tu-prev").style.background = tunnelBg(P.tunnel); saveP(); syncTunnel(); }));
   addEventListener("keydown", (e) => {
     if (!run || location.hash !== "#cue" || /INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || "") || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "1") answer(true); else if (e.key === "2") answer(false);
   });
 }
 function homeCard() {
-  const r = peek(P.focus, day()), p = pct(r), locked = L.locked.indexOf(P.focus) >= 0;
-  const sub = run ? "Running now" : locked ? "Locked in · pick a new focus" : p != null ? `${p} % remembered today` : "Called out in game, so you don't tunnel";
-  return `<a class="mi-hcard" href="#cue"><span class="mi-orb" aria-hidden="true" style="background:radial-gradient(circle at 35% 30%,#fff,#38e0ff 70%)"></span><span class="t"><b>Focus Cue: ${esc(word())}</b><span class="s">${esc(sub)}</span></span></a>`;
+  const r = peek(P.focus, day()), p = pct(r), on = [P.on && "Focus Cue", P.tunnel.on && DESK && "Tunnel", P.look.on && "Look Around"].filter(Boolean);
+  const sub = run ? "Running now" : on.length ? `On: ${on.join(", ")}${P.on && p != null ? ` · ${p} % today` : ""}` : "Focus Cue, Focus Tunnel, Look Around";
+  return `<a class="mi-hcard" href="#cue"><span class="mi-orb" aria-hidden="true" style="background:radial-gradient(circle at 35% 30%,#fff,#38e0ff 70%)"></span><span class="t"><b>In-game Tools</b><span class="s">${esc(sub)}</span></span></a>`;
 }
 window.ReplineCue = {
   open() { bind(); setup(); progress(); paint(); },
@@ -2272,7 +2376,8 @@ window.ReplineCue = {
   answer(ok) { return answer(ok); },
   renderHome(el) { if (el) el.insertAdjacentHTML("beforeend", homeCard()); }
 };
-watchAuto();
+watch = setInterval(tick, 2000);
+setTimeout(syncTunnel, 1500);
 })();
 </script>
 <script>
@@ -2283,7 +2388,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.13.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.14.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -2454,7 +2559,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }
   window.replinePlanId = () => planId();
   // Focus Cue reads whether a routine is running and the type of the current set (aim / mech / fight / live / ...)
-  window.replineTraining = () => { const b = S && S.active && S.goal ? cur() : null; return { active: !!(S && S.active && S.goal && length(S.goal, S.len)), on: !!(S && S.active && S.status === "laeuft"), type: b ? b.type : null }; };
+  window.replineTraining = () => { const b = S && S.active && S.goal ? cur() : null; return { active: !!(S && S.active && S.goal && length(S.goal, S.len)), on: !!(S && S.active && S.status === "laeuft"), type: b ? b.type : null, goal: S ? S.goal : null }; };
   const planName = () => (PLANS.find((p) => p.id === planId()) || PLANS[0]).name;
   const routineLimit = () => ({ free: 1, standard: 2, pro: Infinity })[planId()];
   const customCache = {};
@@ -5910,6 +6015,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     let importCode = null;
     if (/^import=/.test(name)) { importCode = decodeURIComponent(name.slice(7)); name = "goal"; }
     const asked = name;
+    if (name === "tools") name = "cue";
     if (name === "quick") { if (!(S.active && S.b > 0)) { S.goal = "quick"; S.len = "15"; resetRun(); save(); } name = "plan"; }
     if (ORDER.indexOf(name) < 0) name = "";
     if (name === "length" && !S.goal) name = "goal";
