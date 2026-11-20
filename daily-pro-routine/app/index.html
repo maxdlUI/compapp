@@ -1171,6 +1171,10 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
 #v-cue .fc-sl { display: grid; gap: 4px; }
 #v-cue .fc-pump { display: grid; gap: 8px; background: var(--graphite); border-radius: 18px; padding: 14px 16px; }
 #v-cue .fc-pump[hidden] { display: none; }
+#v-cue .fc-pump-what { margin: 0; color: #c7c7cc; }
+#v-cue .fc-pump-row { display: grid; gap: 6px; }
+#v-cue .fc-need { color: #ffb36b; font-weight: 600; margin-left: 6px; }
+#v-cue .fc-need[hidden] { display: none; }
 #v-cue .fc-sl label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ash); }
 #v-cue .fc-sl label b { color: var(--porcelain); font-variant-numeric: tabular-nums; }
 #v-cue .fc-sl input { width: 100%; accent-color: var(--c1); }
@@ -1625,12 +1629,14 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
       <span class="tiny">When</span>
       <div class="fc-chips" id="fc-tu-when" role="group" aria-label="When"></div>
       <div class="fc-pump" id="fc-pump" hidden>
-        <span class="tiny">Your pump key</span>
-        <div class="fc-chips"><button class="fc-chip" type="button" id="fc-pump-key">Set key</button><span class="tiny" id="fc-pump-hint"></span></div>
-        <span class="tiny">Puts the pump away (tunnel off)</span>
-        <div class="fc-chips" id="fc-pump-off"></div>
-        <div class="fc-sl"><label for="fc-pump-hold">Stays on at most <b id="fc-pump-hold-v"></b></label><input id="fc-pump-hold" type="range" min="0" max="20"></div>
-        <span class="tiny">Repline listens for these keys like push-to-talk does. It never blocks a key, and nothing is saved or sent.</span>
+        <p class="small fc-pump-what">The tunnel comes on when you press your pump key. <b>Any other key puts it away</b>, except your edit key and the movement keys below. It stays on until then, or until you switch it off here.</p>
+        <div class="fc-pump-row"><span class="tiny">1 · Your pump key</span><div class="fc-chips"><button class="fc-chip" type="button" id="fc-pump-key">Set key</button></div></div>
+        <div class="fc-pump-row"><span class="tiny">2 · Your edit key <b class="fc-need">needed</b></span><div class="fc-chips"><button class="fc-chip" type="button" id="fc-pump-edit">Set key</button></div>
+          <span class="tiny">Set the key you edit with in Fortnite. Without it the tunnel would disappear every time you edit with the pump out.</span></div>
+        <span class="tiny" id="fc-pump-hint"></span>
+        <span class="tiny">Keys that keep it on (moving)</span>
+        <div class="fc-chips" id="fc-pump-keep"></div>
+        <span class="tiny">Repline listens for keys like push-to-talk does. It never blocks a key, and nothing is saved or sent. Shooting and aiming (left and right click) never turn it off.</span>
       </div>
       <div class="fc-tprev" aria-hidden="true"><i id="fc-tu-prev"></i><b>+</b></div>
       <span class="tiny" id="fc-tu-note"></span>
@@ -2156,7 +2162,8 @@ let P = Object.assign({ focus: "head", mode: "match", voice: true, tone: true, f
   on: !!P0.auto, tunnel: { on: false, size: 34, dark: 55, soft: 60, shape: "circle", when: "drill" },
   look: { on: false, dirs: { left: true, right: true, behind: true, up: false, map: true }, mode: "normal", voice: true, edge: true } }, P0);
 P.tunnel = Object.assign({ on: false, size: 34, dark: 55, soft: 60, shape: "circle", when: "drill" }, P.tunnel || {});
-P.tunnel.pump = Object.assign({ key: null, off: null, hold: 8 }, P.tunnel.pump || {});
+P.tunnel.pump = Object.assign({ key: null, edit: null, keep: null, hold: 8 }, P.tunnel.pump || {});
+delete P.tunnel.pump.off;
 if (P.tunnel.when === "pump" && !DESK) P.tunnel.when = "drill";
 if (P.tunnel.shape !== "square") P.tunnel.shape = "circle";
 P.look = Object.assign({ on: false, dirs: { left: true, right: true, behind: true, up: false, map: true }, mode: "normal", voice: true, edge: true }, P.look || {});
@@ -2274,10 +2281,10 @@ function syncTunnel() {
   let on = !!T.on;
   if (on && t && t.active && (t.type === "live" || t.goal === "cup")) on = false;
   if (on && T.when === "drill") on = !!(t && t.active && t.on && (t.type === "aim" || t.type === "mech" || t.type === "fight"));
-  const pm = T.when === "pump", pk = T.pump.key && T.pump.key.id;
-  if (pm && !pk) on = false;
+  const pm = T.when === "pump", pk = T.pump.key && T.pump.key.id, ek = T.pump.edit && T.pump.edit.id;
+  if (pm && !(pk && ek)) on = false;
   const cfg = { on, size: T.size, dark: T.dark, soft: T.soft, shape: T.shape, pump: pm };
-  const pcfg = { on: on && pm, pump: pk || "", off: (T.pump.off || []).map((k) => k.id).filter((id) => id !== pk), hold: T.pump.hold };
+  const pcfg = { on: on && pm, pump: pk || "", edit: ek || "", keep: (T.pump.keep || []).map((k) => k.id).filter((id) => id !== pk), hold: 0 };
   const key = JSON.stringify([cfg, pcfg]);
   if (key === tunnelKey) return;
   tunnelKey = key;
@@ -2330,29 +2337,35 @@ function tunnelPrev(el, T) {
 /* Pump Mode settings (Windows app): pump key, keys that put it away, time limit */
 async function pumpDefaults() {
   const T = P.tunnel;
-  if (T.pump.off || !(DESK && DESK.pump)) return;
-  try { T.pump.off = (await DESK.pump.defaults()) || []; } catch (e) { T.pump.off = []; }
+  if (T.pump.keep || !(DESK && DESK.pump)) return;
+  try { T.pump.keep = (await DESK.pump.defaults()) || []; } catch (e) { T.pump.keep = []; }
   saveP(); setup(); syncTunnel();
+}
+async function pumpCapture(btn, set) {
+  if (!(DESK && DESK.pump)) return;
+  btn.textContent = "Press the key…"; $("fc-pump-hint").textContent = "Any key or a side mouse button. 10 seconds.";
+  const r = await DESK.pump.capture();
+  if (r && r.error) $("fc-pump-hint").textContent = "Couldn't listen for keys on this PC.";
+  else if (r && r.id) { set({ id: r.id, name: r.name }); saveP(); $("fc-pump-hint").textContent = ""; }
+  else $("fc-pump-hint").textContent = "";
+  pumpUI(); syncTunnel();
 }
 function pumpUI() {
   const box = $("fc-pump"); if (!box) return;
-  const T = P.tunnel, pk = T.pump.key;
+  const T = P.tunnel, pk = T.pump.key, ek = T.pump.edit;
   box.hidden = T.when !== "pump";
   if (box.hidden) return;
   $("fc-pump-key").textContent = pk ? pk.name : "Set key";
   $("fc-pump-key").setAttribute("aria-pressed", String(!!pk));
-  $("fc-pump-hint").textContent = pk ? "Tap to change" : "Tap, then press your pump key (or a side mouse button)";
-  const off = (T.pump.off || []).filter((k) => !pk || k.id !== pk.id);
-  $("fc-pump-off").innerHTML = off.map((k) => `<button class="fc-chip" type="button" data-off="${esc(k.id)}" aria-label="Remove ${esc(k.name)}">${esc(k.name)} ×</button>`).join("") + `<button class="fc-chip" type="button" id="fc-pump-add">+ Add key</button>`;
-  $("fc-pump-off").querySelectorAll("[data-off]").forEach((b) => b.addEventListener("click", () => { T.pump.off = (T.pump.off || []).filter((k) => k.id !== b.dataset.off); saveP(); pumpUI(); syncTunnel(); }));
-  $("fc-pump-add").addEventListener("click", async (e) => {
-    const b = e.currentTarget; b.textContent = "Press a key…";
-    const r = await DESK.pump.capture();
-    if (r && r.id && !(T.pump.off || []).some((k) => k.id === r.id)) T.pump.off = (T.pump.off || []).concat([{ id: r.id, name: r.name }]);
-    saveP(); pumpUI(); syncTunnel();
-  });
-  $("fc-pump-hold").value = T.pump.hold;
-  $("fc-pump-hold-v").textContent = T.pump.hold ? T.pump.hold + " s" : "No limit";
+  $("fc-pump-edit").textContent = ek ? ek.name : "Set key";
+  $("fc-pump-edit").setAttribute("aria-pressed", String(!!ek));
+  box.querySelector(".fc-need").hidden = !!ek;
+  if (!$("fc-pump-hint").textContent || /Set your/.test($("fc-pump-hint").textContent))
+    $("fc-pump-hint").textContent = !pk || !ek ? `Set your ${!pk ? "pump key" : ""}${!pk && !ek ? " and " : ""}${!ek ? "edit key" : ""} first. Pump Mode stays off until both are set.` : "";
+  const keep = (T.pump.keep || []).filter((k) => (!pk || k.id !== pk.id) && (!ek || k.id !== ek.id));
+  $("fc-pump-keep").innerHTML = keep.map((k) => `<button class="fc-chip" type="button" data-keep="${esc(k.id)}" aria-label="Remove ${esc(k.name)}">${esc(k.name)} ×</button>`).join("") + `<button class="fc-chip" type="button" id="fc-pump-add">+ Add key</button>`;
+  $("fc-pump-keep").querySelectorAll("[data-keep]").forEach((b) => b.addEventListener("click", () => { T.pump.keep = (T.pump.keep || []).filter((k) => k.id !== b.dataset.keep); saveP(); pumpUI(); syncTunnel(); }));
+  $("fc-pump-add").addEventListener("click", (e) => pumpCapture(e.currentTarget, (k) => { if (!(T.pump.keep || []).some((x) => x.id === k.id)) T.pump.keep = (T.pump.keep || []).concat([k]); }));
 }
 function setup() {
   const fc = $("fc-focus"); if (!fc) return;
@@ -2408,15 +2421,8 @@ function bind() {
   $("fc-sw-cue").addEventListener("click", () => { P.on = !P.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
   $("fc-sw-look").addEventListener("click", () => { P.look.on = !P.look.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
   $("fc-sw-tunnel").addEventListener("click", () => { if (!DESK) return; P.tunnel.on = !P.tunnel.on; saveP(); setup(); syncTunnel(); });
-  $("fc-pump-key").addEventListener("click", async () => {
-    if (!(DESK && DESK.pump)) return;
-    $("fc-pump-key").textContent = "Press your pump key…"; $("fc-pump-hint").textContent = "Any key or a side mouse button. 10 seconds.";
-    const r = await DESK.pump.capture();
-    if (r && r.error) $("fc-pump-hint").textContent = "Couldn't listen for keys on this PC.";
-    else if (r && r.id) { P.tunnel.pump.key = { id: r.id, name: r.name }; saveP(); }
-    pumpUI(); syncTunnel();
-  });
-  $("fc-pump-hold").addEventListener("input", (e) => { P.tunnel.pump.hold = +e.target.value; $("fc-pump-hold-v").textContent = P.tunnel.pump.hold ? P.tunnel.pump.hold + " s" : "No limit"; saveP(); syncTunnel(); });
+  $("fc-pump-key").addEventListener("click", (e) => pumpCapture(e.currentTarget, (k) => { P.tunnel.pump.key = k; }));
+  $("fc-pump-edit").addEventListener("click", (e) => pumpCapture(e.currentTarget, (k) => { P.tunnel.pump.edit = k; }));
   ["size", "dark", "soft"].forEach((k) => $("fc-tu-" + k).addEventListener("input", (e) => { P.tunnel[k] = +e.target.value; $("fc-tu-" + k + "-v").textContent = P.tunnel[k] + " %"; tunnelPrev($("fc-tu-prev"), P.tunnel); saveP(); syncTunnel(); }));
   addEventListener("keydown", (e) => {
     if (!run || location.hash !== "#cue" || /INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || "") || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -2446,7 +2452,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.15.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.15.1", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page

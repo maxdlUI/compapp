@@ -189,7 +189,7 @@ function createTunnel() {
 }
 /* Pump Mode: the tunnel only shows while the pump slot is out. Repline listens for the pump key and the "off" keys
    the way push-to-talk does (uiohook, never blocks a key, nothing is stored or sent). The hook only runs while Pump Mode is on. */
-let hook = null, pumpCfg = { on: false, pump: "", off: [], hold: 8 }, pumpActive = false, pumpT = null, capture = null;
+let hook = null, pumpCfg = { on: false, pump: "", edit: "", keep: [], hold: 8 }, pumpActive = false, pumpT = null, capture = null;
 let KEYNAME = null;
 function keyName(id) {
   if (id.startsWith("m")) return "Mouse " + id.slice(1);
@@ -206,25 +206,26 @@ function hookStart() {
   } catch (e) { ulog("key hook failed", e); hook = null; return false; }
 }
 function hookStop() { if (!hook) return; try { hook.removeAllListeners(); hook.stop(); } catch (e) {} hook = null; }
-const needHook = () => !!capture || (pumpCfg.on && !!pumpCfg.pump && tunnelCfg.pump && tunnelCfg.on);
+const needHook = () => !!capture || (pumpCfg.on && !!pumpCfg.pump && !!pumpCfg.edit && tunnelCfg.pump && tunnelCfg.on);
 function hookSync() { if (needHook()) hookStart(); else hookStop(); }
 function onInput(id) {
   if (capture) { const cb = capture; capture = null; cb(id); hookSync(); return; }
   if (!pumpCfg.on) return;
+  // pump key: tunnel on. Edit key and movement keys: keep it. Every other key or side mouse button: pump is away.
   if (id === pumpCfg.pump) setPump(true);
-  else if (pumpCfg.off.includes(id)) setPump(false);
+  else if (id === pumpCfg.edit || pumpCfg.keep.includes(id)) return;
+  else if (pumpActive) setPump(false);
 }
 function setPump(on) {
   clearTimeout(pumpT);
   pumpActive = on;
-  if (on && pumpCfg.hold > 0) pumpT = setTimeout(() => setPump(false), pumpCfg.hold * 1000);
   if (on) createTunnel();
   applyTunnel();
 }
 ipcMain.on("pump:set", (_e, c) => {
   c = c && typeof c === "object" ? c : {};
   const ok = (x) => typeof x === "string" && /^[km]\d{1,6}$/.test(x);
-  pumpCfg = { on: !!c.on, pump: ok(c.pump) ? c.pump : "", off: Array.isArray(c.off) ? c.off.filter(ok).slice(0, 30) : [], hold: Math.max(0, Math.min(30, +c.hold || 0)) };
+  pumpCfg = { on: !!c.on, pump: ok(c.pump) ? c.pump : "", edit: ok(c.edit) ? c.edit : "", keep: Array.isArray(c.keep) ? c.keep.filter(ok).slice(0, 30) : [], hold: Math.max(0, Math.min(30, +c.hold || 0)) };
   if (!pumpCfg.on) { pumpActive = false; clearTimeout(pumpT); }
   hookSync(); applyTunnel();
 });
@@ -234,8 +235,8 @@ ipcMain.handle("pump:capture", () => new Promise((resolve) => {
   capture = (id) => { clearTimeout(t); resolve({ id, name: keyName(id) }); };
   if (!hookStart()) { capture = null; clearTimeout(t); resolve({ error: "hook" }); }
 }));
-// Fortnite's default slot keys 1 to 6 and edit (G): switching to them puts the pump away
-ipcMain.handle("pump:defaults", () => { try { const { UiohookKey } = require("uiohook-napi"); return ["1", "2", "3", "4", "5", "6", "G"].map((k) => ({ id: "k" + UiohookKey[k], name: k })); } catch (e) { return []; } });
+// Movement keys that keep the tunnel on (walking, jumping, sprinting, crouching with the pump out)
+ipcMain.handle("pump:defaults", () => { try { const { UiohookKey } = require("uiohook-napi"); return ["W", "A", "S", "D", "Space", "Shift", "Ctrl"].map((k) => ({ id: "k" + UiohookKey[k], name: k })); } catch (e) { return []; } });
 function applyTunnel() {
   if (!tunnel) return;
   const eff = { ...tunnelCfg, on: tunnelCfg.on && (!tunnelCfg.pump || pumpActive) };
