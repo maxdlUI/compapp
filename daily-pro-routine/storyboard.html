@@ -1,0 +1,402 @@
+<title>Daily Pro Routine Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: schwarze "Galerie" (Apple iPhone 18 Pro, Refero). Jede Szene = 16:10-Rahmen (Desktop 1440px, in cqw skaliert) + Notizen.
+   Die Blockfarben Cyan → Blau → Violett sind die "Gerätefarbe" der Routine und bleiben im Produkt. */
+:root {
+  color-scheme: dark;
+  --obsidian: #000; --graphite: #0e0e0e; --carbon: #1d1d1f; --steel: #333336; --slate: #6e6e73; --ash: #86868b; --dim: #424245;
+  --porcelain: #f5f5f7; --white: #fff; --blue: #0071e3; --link: #2997ff; --link-pale: #0066cc; --copper: #b64400; --keyline: #282828;
+  --c1: #38e0ff; --c2: #7debff; --c3: #3f8dff; --c4: #a855f7; --c5: #8f7bff; --pos: #5ed39a;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", Arial, sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { background: var(--obsidian); color: var(--porcelain); font-family: var(--text); font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.intro { padding-block: 72px 40px; display: grid; gap: 20px; }
+.eyebrow { font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--ash); margin: 0; }
+h1 { font-family: var(--display); font-weight: 600; margin: 0; font-size: clamp(44px, 8vw, 80px); line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
+.lead { color: var(--ash); max-width: 660px; margin: 0; font-size: 19px; line-height: 1.42; }
+.lead strong { color: var(--porcelain); font-weight: 600; }
+.box { background: linear-gradient(var(--carbon), var(--obsidian) 288px); border-radius: 28px; padding: 28px; display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.box h2 { font-family: var(--display); font-size: 21px; font-weight: 600; margin: 0 0 12px; }
+.box ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); }
+.box b { color: var(--porcelain); font-weight: 600; }
+.box code { font-family: var(--text); color: var(--porcelain); background: var(--steel); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+.flow { padding-block: 56px 24px; display: grid; gap: 72px; }
+.scene { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 860px) { .scene { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+.notes { display: grid; gap: 14px; min-width: 0; }
+.step { font-size: 12px; font-weight: 600; letter-spacing: -0.12px; color: var(--ash); }
+.notes h3 { font-family: var(--display); font-size: 32px; line-height: 1.13; font-weight: 600; margin: 0; text-wrap: balance; }
+.notes dl { margin: 0; display: grid; gap: 12px; }
+.notes dt { font-size: 12px; font-weight: 600; letter-spacing: -0.12px; }
+.notes dd { margin: 2px 0 0; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: var(--ash); }
+.notes dd code { font-family: var(--text); color: var(--porcelain); background: var(--carbon); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+
+/* Rahmen: 1cqw = 14,4px einer 1440px-Seite */
+.frame { container-type: inline-size; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 28px; overflow: hidden; position: relative; background: var(--obsidian); box-shadow: 0 0 0 1px var(--keyline); }
+.cap { position: absolute; left: 1.6cqw; bottom: 1.4cqw; font-size: .85cqw; color: var(--ash); background: rgba(29,29,31,.85); padding: .3cqw .8cqw; border-radius: 999px; z-index: 3; }
+.f { position: absolute; inset: 0; display: grid; }
+.lnav { margin: .8cqw 1.6cqw 0; height: 3.6cqw; border-radius: 1.39cqw; background: var(--graphite); box-shadow: 0 0 0 1px var(--keyline); display: flex; align-items: center; padding: 0 1.4cqw; gap: 2cqw; }
+.lnav .n { font-family: var(--display); font-weight: 600; font-size: 1.32cqw; margin-right: auto; }
+.lnav span { font-size: 1cqw; color: var(--ash); }
+.pill { display: inline-flex; align-items: center; gap: .4cqw; border-radius: 999px; background: var(--blue); color: var(--white); font-size: .9cqw; padding: .5cqw 1cqw; white-space: nowrap; }
+.pill.lg { font-size: 1.2cqw; padding: .8cqw 1.7cqw; }
+.pill.out { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--porcelain); }
+.capsule { display: inline-flex; border-radius: 2.5cqw; background: rgba(66,66,69,.72); color: rgba(255,255,255,.8); font-size: 1cqw; padding: .8cqw 1.5cqw; white-space: nowrap; }
+.seg { display: inline-flex; background: var(--carbon); border-radius: 99px; padding: .3cqw; gap: .2cqw; }
+.seg span { font-size: .95cqw; padding: .45cqw 1.1cqw; border-radius: 99px; color: var(--ash); white-space: nowrap; }
+.seg span.on { background: var(--steel); color: var(--porcelain); }
+.disp { font-family: var(--display); font-weight: 600; font-size: 5.56cqw; line-height: 1.05; letter-spacing: -.083cqw; margin: 0; }
+.disp.m { font-size: 3.33cqw; line-height: 1.08; }
+.pname { font-family: var(--display); font-weight: 600; font-size: 2.2cqw; margin: 0; }
+.sub { font-size: 1.18cqw; color: var(--ash); margin: 0; line-height: 1.4; }
+.small { font-size: .95cqw; color: var(--ash); line-height: 1.35; }
+.lnk { color: var(--link); font-size: 1.1cqw; }
+.ph { color: var(--ash); letter-spacing: .1em; }
+
+/* Zifferblatt mit Blocksegmenten */
+.dial { --s: 0; position: relative; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; }
+.dial::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--g); -webkit-mask: radial-gradient(closest-side, transparent 86%, #000 87%); mask: radial-gradient(closest-side, transparent 86%, #000 87%); }
+.dial::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(56,224,255,.12), transparent 80%); }
+.dial > div { position: relative; text-align: center; display: grid; gap: .3cqw; z-index: 1; }
+.dial .t { font-family: var(--display); font-weight: 600; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.g3 { --g: conic-gradient(var(--c1) 0 13.4%, #000 0 14%, var(--c2) 0 34.9%, #000 0 35.5%, var(--c3) 0 56.3%, #000 0 56.9%, var(--c4) 0 77.8%, #000 0 78.4%, var(--c5) 0 99.4%, #000 0); }
+.g6 { --g: conic-gradient(var(--c1) 0 7.9%, #000 0 8.3%, var(--c2) 0 19.2%, #000 0 19.6%, #5cc6ff 0 30.6%, #000 0 31%, #4dabff 0 42%, #000 0 42.4%, var(--c3) 0 53.4%, #000 0 53.8%, var(--c4) 0 64.8%, #000 0 65.2%, #9b6bf5 0 76.2%, #000 0 76.6%, var(--c5) 0 87.6%, #000 0 88%, #b3a6ff 0 99.6%, #000 0); }
+.g1 { --g: conic-gradient(var(--c1) 0 9%, rgba(56,224,255,.18) 0 13.4%, #000 0 14%, rgba(125,235,255,.18) 0 34.9%, #000 0 35.5%, rgba(63,141,255,.18) 0 56.3%, #000 0 56.9%, rgba(168,85,247,.18) 0 77.8%, #000 0 78.4%, rgba(143,123,255,.18) 0 99.4%, #000 0); }
+
+.tile { background: var(--obsidian); border-radius: 1.94cqw; padding: 1.6cqw; display: grid; align-content: end; gap: .5cqw; }
+.tile.c { background: var(--carbon); }
+.stat { font-family: var(--display); font-weight: 600; font-size: 1.94cqw; line-height: 1; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 1cqw; }
+.list { display: grid; gap: .6cqw; }
+.li { display: flex; align-items: center; gap: 1cqw; background: var(--carbon); border-radius: 1.2cqw; padding: .9cqw 1.2cqw; font-size: 1cqw; }
+.li i { width: .8cqw; height: .8cqw; border-radius: 50%; flex: none; }
+.li span:last-child { margin-left: auto; color: var(--ash); }
+.li.lock { color: var(--ash); }
+.code { display: flex; align-items: center; justify-content: space-between; gap: 1cqw; background: var(--obsidian); box-shadow: 0 0 0 1px var(--steel); border-radius: 1.2cqw; padding: 1cqw 1.4cqw; }
+.code b { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1.4cqw; letter-spacing: .1em; font-weight: 500; }
+.chk { display: flex; align-items: center; gap: 1cqw; font-size: 1.05cqw; padding: .8cqw 0; border-bottom: 1px solid var(--steel); }
+.chk i { width: 1.5cqw; height: 1.5cqw; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--slate); flex: none; display: grid; place-items: center; font-style: normal; font-size: .9cqw; }
+.chk i.on { background: var(--c1); box-shadow: none; color: #000; }
+.chk span:last-child { margin-left: auto; color: var(--ash); }
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: .8cqw; }
+.days div { display: grid; justify-items: center; gap: .5cqw; font-size: .9cqw; color: var(--ash); }
+.days i { width: 100%; aspect-ratio: 1; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--steel); display: block; }
+.days i.on { background: conic-gradient(var(--c1), var(--c3), var(--c4), var(--c1)); box-shadow: none; }
+.card-w { background: var(--white); color: var(--carbon); border-radius: 1.94cqw; padding: 2.2cqw; display: grid; align-content: start; gap: 1cqw; }
+.card-w h4 { font-family: var(--display); font-weight: 600; font-size: 2.2cqw; margin: 0; }
+.card-w p { margin: 0; font-size: 1.05cqw; color: #424245; }
+.field { border-radius: 99px; box-shadow: inset 0 0 0 1px var(--slate); padding: .9cqw 1.6cqw; font-size: 1.05cqw; color: var(--ash); background: rgba(255,255,255,.04); }
+.mphone { width: 22cqw; aspect-ratio: 9 / 19.3; border-radius: 3.4cqw; background: #000; box-shadow: 0 0 0 .35cqw #2c2c2e; overflow: hidden; position: relative; padding: 3.6cqw 1.6cqw 1.6cqw; display: grid; align-content: start; gap: 1.2cqw; justify-items: center; text-align: center; }
+.next { padding-block: 24px 96px; }
+.next-box { border-radius: 28px; background: linear-gradient(var(--carbon), var(--obsidian) 288px); padding: 40px 28px; display: grid; gap: 16px; }
+.next-box h2 { font-family: var(--display); font-size: clamp(28px, 4vw, 40px); line-height: 1.1; font-weight: 600; margin: 0; }
+.next-box p, .next-box li { color: var(--ash); margin: 0; }
+.next-box ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
+.next-box li b { color: var(--porcelain); font-weight: 600; }
+</style>
+<style>
+/* Ergänzungen Version 2: Ablaufleiste, Zielkarten, Coming-Soon-Kennzeichen */
+.flowbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.flowbar span { font-size: 14px; letter-spacing: -0.224px; padding: 8px 16px; border-radius: 99px; background: var(--carbon); color: var(--porcelain); }
+.flowbar span.ai { background: transparent; box-shadow: inset 0 0 0 1px var(--slate); color: var(--ash); }
+.flowbar i { color: var(--ash); font-style: normal; }
+.goal { border-radius: 1.94cqw; padding: 1.8cqw; display: grid; align-content: space-between; gap: 2cqw; position: relative; overflow: hidden; }
+.goal .gt { font-family: var(--display); font-weight: 600; font-size: 1.8cqw; line-height: 1.1; }
+.goal .gd { font-size: .95cqw; color: rgba(245,245,247,.72); line-height: 1.35; }
+.goal.cup { background: radial-gradient(90% 90% at 100% 0%, #1b4a8f, #08142a 65%, #000); }
+.goal.imp { background: radial-gradient(90% 90% at 100% 0%, #4b2a8f, #120a26 65%, #000); }
+.goal.aim { background: radial-gradient(90% 90% at 100% 0%, #0f5a6b, #041a20 65%, #000); }
+.goal.mech { background: radial-gradient(90% 90% at 100% 0%, #3b3b8f, #0d0d26 65%, #000); }
+.goal.ai { background: var(--obsidian); box-shadow: inset 0 0 0 1px var(--steel); }
+.goal.sel { box-shadow: inset 0 0 0 .2cqw var(--blue); }
+.soon { display: inline-flex; font-size: .85cqw; font-weight: 600; color: var(--copper); }
+.stepper { display: flex; gap: .6cqw; align-items: center; font-size: .9cqw; color: var(--ash); }
+.stepper b { color: var(--porcelain); font-weight: 600; }
+.stepper i { width: 2.4cqw; height: .3cqw; border-radius: 99px; background: var(--steel); display: block; }
+.stepper i.on { background: var(--porcelain); }
+.len { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqw; }
+.len div { background: var(--carbon); border-radius: 1.94cqw; padding: 2cqw; display: grid; gap: .6cqw; }
+.len div.sel { box-shadow: inset 0 0 0 .2cqw var(--blue); }
+.len .stat { font-size: 3cqw; }
+</style>
+
+<header class="wrap intro">
+  <p class="eyebrow">Storyboard · Version 2</p>
+  <h1>Daily Pro Routine. Einfach starten.</h1>
+  <p class="lead">Eine eigenständige Webseite ohne Preise und ohne Kauf. Du kommst auf einen <strong>Homescreen</strong>, wählst dein <strong>Ziel</strong> und die <strong>Länge</strong>, siehst deinen <strong>Plan</strong> und trainierst mit dem <strong>Timer</strong>. Alle Routinen sind fest vorgegeben und für jeden Spieler gleich. Ihre Inhalte trägst du später ein, bis dahin stehen dort Platzhalter (<code style="font-family:inherit">***</code>). Nur das <strong>KI-Training</strong> ist als „Coming Soon“ markiert.</p>
+</header>
+
+<section class="wrap" aria-label="Ablauf">
+  <div class="box">
+    <div style="grid-column:1/-1">
+      <h2>Ablauf</h2>
+      <div class="flowbar"><span>Homescreen</span><i>›</i><span>1 · Ziel</span><i>›</i><span>2 · Länge</span><i>›</i><span>3 · Dein Plan</span><i>›</i><span>Timer</span><i>›</i><span>Geschafft</span><span class="ai">KI-Training · Coming Soon</span></div>
+    </div>
+    <div>
+      <h2>Ziele (Vorschlag)</h2>
+      <ul>
+        <li><b>Cup-Warm-up:</b> kurz und gezielt vor einem Cup</li>
+        <li><b>Besser werden:</b> die lange Routine für normale Trainingstage</li>
+        <li><b>Schnell: Aim</b> und <b>Schnell: Mechanics</b> für wenig Zeit</li>
+        <li><b>KI-Training:</b> stellt die Routine für dich zusammen · Coming Soon</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Warum diese Reihenfolge</h2>
+      <ul>
+        <li><b>Erst das Ziel,</b> weil es bestimmt, welche Längen sinnvoll sind.</li>
+        <li><b>Dann die Länge,</b> passend zum Ziel: kurz beim Warm-up, lang beim Besserwerden.</li>
+        <li><b>Plan vor dem Start,</b> damit du die Codes schon laden kannst. Hier wählst du auch Maus &amp; Tastatur oder Controller.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Platzhalter</h2>
+      <ul>
+        <li>Name der Seite: <code>***</code></li>
+        <li>Blöcke: <code>Block 1 · ***</code>, Dauer <code>*** min</code></li>
+        <li>Codes: <code>****-****-****</code></li>
+        <li>Längen pro Ziel sind Vorschläge und änderbar</li>
+        <li>Kein Preis, kein Kauf, keine gesperrten Inhalte</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<main class="wrap flow">
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 1: Homescreen mit Übersicht">
+      <div class="f" style="grid-template-rows:auto auto 1fr">
+        <div class="lnav"><span class="n"><span class="ph">***</span></span><span>Routinen</span><span>KI-Training</span><span>Fortschritt</span><span>Fragen</span><span class="pill">Routine starten</span></div>
+        <div style="display:grid;justify-items:center;text-align:center;gap:1cqw;padding:3.4cqw 0 2.4cqw"><p class="disp">Daily Pro Routine.</p><p class="sub">Dein Training, Block für Block.</p><span class="pill lg">Routine starten</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.1cqw;padding:0 3cqw 3cqw">
+          <div class="goal cup"><span class="gt">Cup-Warm-up</span><span class="gd">Vor dem Cup, auf den Punkt.</span></div>
+          <div class="goal imp"><span class="gt">Besser werden</span><span class="gd">Die lange Routine für jeden Tag.</span></div>
+          <div class="goal aim"><span class="gt">Schnell: Aim<br>&amp; Mechanics</span><span class="gd">Wenn wenig Zeit ist.</span></div>
+          <div class="goal ai"><span class="soon">Coming Soon</span><span class="gt">KI-Training</span><span class="gd">Eine Routine nur für dich.</span></div>
+        </div>
+      </div>
+      <span class="cap">Desktop 1440 px</span>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 1 von 9 · Homescreen</span>
+      <h3>Homescreen: alles auf einen Blick</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Oben eine schlichte Leiste, darunter der Titel und ein blauer Knopf. Darunter vier Kacheln: drei Routine-Arten und das KI-Training. Unter den Kacheln (nicht im Bild): Fortschritt mit Streak und Fragen.</dd></div>
+        <div><dt>Bewegung</dt><dd>Der Titel steigt auf, die Kacheln gleiten nacheinander ein. Beim Überfahren wird der Farbschein einer Kachel etwas heller.</dd></div>
+        <div><dt>Interaktion</dt><dd>Eine Kachel startet den Ablauf mit diesem Ziel schon ausgewählt. „Routine starten“ beginnt bei Schritt 1.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 2: Schritt 1, Ziel wählen">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-rows:auto auto 1fr;gap:2cqw">
+        <div class="stepper"><i class="on"></i><i></i><i></i><span><b>Schritt 1 von 3</b> · Ziel</span></div>
+        <p class="disp m">Wofür trainierst du heute?</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:1.1cqw">
+          <div class="goal cup sel" style="grid-row:span 2"><span class="gt">Cup-Warm-up</span><span class="gd">Aufwärmen vor dem Cup. Mit Cup-Startzeit, damit du pünktlich fertig bist.</span></div>
+          <div class="goal imp" style="grid-row:span 2"><span class="gt">Besser werden</span><span class="gd">Die Routine für normale Trainingstage.</span></div>
+          <div class="goal aim"><span class="gt">Schnell: Aim</span><span class="gd">Kurz und nur Aim.</span></div>
+          <div class="goal mech"><span class="gt">Schnell: Mechanics</span><span class="gd">Kurz und nur Mechanics.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 2 von 9 · Schritt 1</span>
+      <h3>Ziel wählen: vier große Karten</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Eine Frage, vier Karten. Die gewählte Karte bekommt einen blauen Rand. Oben zeigt eine Schrittleiste, wo du bist.</dd></div>
+        <div><dt>Interaktion</dt><dd>Ein Tipp wählt das Ziel und geht direkt weiter zu Schritt 2. Mit „Zurück“ kommst du wieder hierher.</dd></div>
+        <div><dt>Bewegung</dt><dd>Beim Wechsel schiebt sich der nächste Schritt von rechts herein, der alte blendet nach links aus.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 3: KI-Training, Coming Soon">
+      <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
+        <div style="display:grid;gap:1.2cqw"><span class="soon" style="font-size:1cqw">Coming Soon</span><p class="disp m">KI-Training.<br>Nur für dich.</p><p class="sub">Du sagst, was du heute erreichen willst. Die KI stellt daraus deine eigene Routine zusammen, als Warm-up oder fürs Besserwerden.</p><span class="pill out" style="justify-self:start">Coming Soon</span></div>
+        <div style="display:grid;gap:1cqw">
+          <div class="field" style="border-radius:1.4cqw;padding:1.4cqw 1.6cqw">„Ich habe heute *** Stunden und will an *** arbeiten.“</div>
+          <div class="list" style="opacity:.55"><div class="li"><i style="background:var(--c1)"></i><span>Block 1 · ***</span><span>*** min</span></div><div class="li"><i style="background:var(--c3)"></i><span>Block 2 · ***</span><span>*** min</span></div><div class="li"><i style="background:var(--c4)"></i><span>Block 3 · ***</span><span>*** min</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 3 von 9 · KI-Training</span>
+      <h3>KI-Training als eigene Seite, Coming Soon</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Die Kachel auf dem Homescreen führt hierher. Gezeigt wird, wie es später funktioniert: ein Satz als Eingabe, daraus eine Routine. Alles ist gedimmt und als Coming Soon gekennzeichnet.</dd></div>
+        <div><dt>Interaktion</dt><dd>Das Eingabefeld und der Knopf sind nicht aktiv. Darunter führt ein Link zurück zu den festen Routinen.</dd></div>
+        <div><dt>Bewegung</dt><dd>Die Beispielblöcke bauen sich langsam nacheinander auf, als würde die KI tippen.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 4: Schritt 2, Länge wählen">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-rows:auto auto 1fr;gap:2cqw">
+        <div class="stepper"><i class="on"></i><i class="on"></i><i></i><span><b>Schritt 2 von 3</b> · Länge · Cup-Warm-up</span></div>
+        <p class="disp m">Wie viel Zeit hast du?</p>
+        <div class="len" style="align-self:start">
+          <div><span class="small">Kurz</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+          <div class="sel"><span class="small">Normal</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+          <div><span class="small">Lang</span><span class="stat">*** min</span><span class="small">*** Blöcke</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 4 von 9 · Schritt 2</span>
+      <h3>Länge wählen: drei Stufen pro Ziel</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Drei Karten Kurz, Normal und Lang. Welche Minuten dahinterstehen, hängt vom Ziel ab. Beim Besserwerden wären das zum Beispiel Stunden, beim schnellen Aim Minuten.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Minuten und Blockzahl sind <code>***</code>, bis du die Routinen festlegst.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 5: Schritt 3, dein Plan">
+      <div class="f" style="padding:3cqw 5cqw;grid-template-columns:1fr 1.1fr;gap:3cqw;align-items:start">
+        <div style="display:grid;gap:1.4cqw">
+          <div class="stepper"><i class="on"></i><i class="on"></i><i class="on"></i><span><b>Schritt 3 von 3</b> · Plan</span></div>
+          <p class="disp m">Dein Plan.</p>
+          <p class="sub">Cup-Warm-up · Normal · *** min</p>
+          <span class="seg"><span class="on">Maus &amp; Tastatur</span><span>Controller</span></span>
+          <span class="field">Dein Cup beginnt um <b style="color:var(--porcelain)">***</b></span>
+          <span class="pill lg" style="justify-self:start">Start</span>
+        </div>
+        <div class="list">
+          <div class="li"><i style="background:var(--c1)"></i><span>*** · Block 1 · ***</span><span>*** min</span></div>
+          <div class="code" style="margin-left:2cqw"><div><span class="small">Map-Code</span><br><b>****-****-****</b></div><span class="pill">Kopieren</span></div>
+          <div class="li"><i style="background:var(--c2)"></i><span>*** · Block 2 · ***</span><span>*** Kills</span></div>
+          <div class="li"><i style="background:var(--c3)"></i><span>*** · Block 3 · ***</span><span>*** min</span></div>
+          <div class="li"><i style="background:var(--c4)"></i><span>*** · Block 4 · ***</span><span>*** min</span></div>
+          <div class="li" style="background:transparent;box-shadow:inset 0 0 0 1px var(--slate)"><i style="background:var(--white)"></i><span>*** · Cup</span><span>fertig</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 5 von 9 · Schritt 3</span>
+      <h3>Plan: alle Blöcke vor dem Start</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Links die Wahl Maus &amp; Tastatur oder Controller und beim Cup-Warm-up die Cup-Startzeit. Rechts alle Blöcke mit Dauer oder Kill-Ziel. Ein Tipp auf einen Block klappt seine Codes auf.</dd></div>
+        <div><dt>Interaktion</dt><dd>Gibst du die Cup-Zeit ein, rechnet der Plan rückwärts und schreibt vor jeden Block seine Startzeit.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Blocknamen, Dauern, Kills, Uhrzeiten und Codes sind alle <code>***</code>.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 6: Timer">
+      <div class="f" style="grid-template-columns:1.2fr 1fr;gap:2.4cqw;padding:2.4cqw">
+        <div style="background:linear-gradient(var(--carbon),var(--obsidian) 30cqw);border-radius:1.94cqw;display:grid;place-items:center;gap:1.4cqw;padding:2cqw">
+          <div class="dial g1" style="width:24cqw"><div><span class="small" style="color:var(--c1)">● Läuft</span><span class="t" style="font-size:5cqw">*:**</span><span class="small">noch in Block 1</span></div></div>
+          <div style="display:flex;gap:1cqw;align-items:center"><span class="pill out">↺ R</span><span class="pill lg">Pause · Leertaste</span><span class="pill out">⏭ N</span></div>
+        </div>
+        <div style="display:grid;align-content:start;gap:1.2cqw;padding-top:1cqw">
+          <div class="row"><span class="small">Block 1 von ***</span><span class="small">Ton · Vollbild F</span></div>
+          <p class="pname">Block 1 · ***</p>
+          <p class="sub">Code laden, dann den Timer starten.</p>
+          <div class="code"><div><span class="small">Map-Code</span><br><b>****-****-****</b></div><span class="pill">Kopieren</span></div>
+          <span class="small" style="margin-top:.6cqw">Als Nächstes</span>
+          <div class="list"><div class="li"><i style="background:var(--c2)"></i><span>Block 2 · ***</span><span>*** Kills</span></div><div class="li"><i style="background:var(--c3)"></i><span>Block 3 · ***</span><span>*** min</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 6 von 9 · Training</span>
+      <h3>Timer: ein Block im Fokus</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Links das Zifferblatt mit einem Segment pro Block. Rechts der aktuelle Block mit Code und „Als Nächstes“.</dd></div>
+        <div><dt>Interaktion</dt><dd>Leertaste für Start/Pause, R für Neu, N für Überspringen, F für Vollbild. Am Blockende ertönt ein Ton, auf dem Handy vibriert es. Der Stand wird für heute gemerkt.</dd></div>
+        <div><dt>Bewegung</dt><dd>Das Segment füllt sich gleichmäßig. Am Ende pulsiert es kurz, dann rückt das nächste Segment nach.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 7: Kill-Block">
+      <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
+        <div class="dial" style="width:24cqw;--g:conic-gradient(var(--c2) 0 50%, rgba(125,235,255,.16) 0);justify-self:center"><div><span class="t" style="font-size:4cqw">2 / 4</span><span class="small">Ziele geschafft</span></div></div>
+        <div style="display:grid;gap:.4cqw">
+          <p class="pname" style="margin-bottom:1cqw">Block 2 · ***</p>
+          <div class="chk"><i class="on">✓</i><span>Modus 1 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i class="on">✓</i><span>Modus 2 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i></i><span>Modus 3 · ***</span><span>*** Kills</span></div>
+          <div class="chk"><i></i><span>Modus 4 · ***</span><span>*** Kills</span></div>
+          <p class="small" style="margin-top:1cqw">Hak jeden Modus ab, sobald seine Kills voll sind.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 7 von 9 · Training</span>
+      <h3>Blöcke mit Kill-Ziel</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Statt einer Uhr gibt es eine Liste zum Abhaken. Jeder Haken füllt den Ring weiter. Sind alle Haken gesetzt, geht es zum nächsten Block.</dd></div>
+        <div><dt>Platzhalter</dt><dd>Modi und Kills sind <code>***</code>.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 8: Geschafft mit Streak">
+      <div class="f" style="grid-template-columns:1fr 1fr;align-items:center;padding:0 6cqw;gap:4cqw">
+        <div style="display:grid;gap:1.2cqw"><p class="disp m">Geschafft.</p><p class="sub">Cup-Warm-up · Normal · alle Blöcke fertig. Viel Erfolg im Cup.</p><div style="display:flex;gap:.8cqw"><span class="pill">Zum Homescreen</span><span class="pill out">Noch eine Routine</span></div></div>
+        <div style="display:grid;gap:2cqw">
+          <div><span style="font-family:var(--display);font-weight:600;font-size:7cqw;line-height:1">5</span><span class="sub"> Tage am Stück</span></div>
+          <div class="days"><div><i class="on"></i>Mo</div><div><i class="on"></i>Di</div><div><i class="on"></i>Mi</div><div><i class="on"></i>Do</div><div><i class="on"></i>Fr</div><div><i></i>Sa</div><div><i></i>So</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 8 von 9 · Abschluss</span>
+      <h3>Geschafft und Streak</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Eine ruhige Abschlussseite mit Zusammenfassung und Streak. Die Streak findest du auch auf dem Homescreen unter „Fortschritt“.</dd></div>
+        <div><dt>Bewegung</dt><dd>Der heutige Kreis füllt sich als Letzter, die Zahl springt um eins hoch.</dd></div>
+        <div><dt>Hinweis</dt><dd>„5 Tage“ ist ein Beispiel. Die Streak wird nur im Browser gespeichert, ohne Konto.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="scene">
+    <div class="frame" role="img" aria-label="Szene 9: iPhone-Ansicht">
+      <div class="f" style="display:flex;justify-content:center;align-items:center;gap:5cqw">
+        <div class="mphone" style="gap:.9cqw"><span style="font-family:var(--display);font-weight:600;font-size:3cqw;line-height:1.05">Daily Pro<br>Routine.</span><span class="pill" style="font-size:1.1cqw;padding:.6cqw 1.2cqw">Routine starten</span>
+          <div class="goal cup" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Cup-Warm-up</span></div>
+          <div class="goal imp" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Besser werden</span></div>
+          <div class="goal aim" style="width:100%;padding:1.2cqw;gap:.6cqw"><span class="gt" style="font-size:1.4cqw">Schnell: Aim &amp; Mechanics</span></div>
+          <div class="goal ai" style="width:100%;padding:1.2cqw;gap:.4cqw"><span class="soon" style="font-size:.8cqw">Coming Soon</span><span class="gt" style="font-size:1.4cqw">KI-Training</span></div>
+        </div>
+        <div class="mphone"><span class="small" style="font-size:1.1cqw">Block 1 von *** · ***</span><div class="dial g1" style="width:17cqw"><div><span class="t" style="font-size:3cqw">*:**</span><span class="small" style="font-size:.9cqw">Läuft</span></div></div><span class="pill" style="font-size:1.4cqw;padding:.9cqw 2.4cqw">Pause</span><span class="small" style="font-size:1cqw">Als Nächstes: Block 2 · ***</span></div>
+      </div>
+      <span class="cap">iPhone 390 px</span>
+    </div>
+    <div class="notes">
+      <span class="step">Szene 9 von 9 · Mobil</span>
+      <h3>iPhone: Kacheln untereinander, Timer mit dem Daumen</h3>
+      <dl>
+        <div><dt>Inhalt</dt><dd>Auf dem Homescreen stehen die Kacheln untereinander. Im Timer liegt der große Knopf unten im Daumenbereich.</dd></div>
+        <div><dt>Hinweis</dt><dd>Während der Timer läuft, bleibt der Bildschirm an, soweit der Browser das erlaubt.</dd></div>
+      </dl>
+    </div>
+  </article>
+</main>
+
+<section class="wrap next">
+  <div class="next-box">
+    <h2>Als Nächstes: die Webseite.</h2>
+    <p>Nach deiner Freigabe baue ich die Seite mit Apple-Animationen. Die Inhalte der Routinen kannst du mir danach jederzeit geben, dann ersetze ich die Platzhalter.</p>
+    <ol>
+      <li><b>Homescreen</b> mit Übersicht, Fortschritt und Fragen.</li>
+      <li><b>Ablauf</b> Ziel, Länge und Plan, danach der funktionierende Timer mit Kill-Zielen, Codes, Cup-Zeit und Streak.</li>
+      <li><b>KI-Training</b> als eigene Seite mit „Coming Soon“.</li>
+    </ol>
+  </div>
+</section>

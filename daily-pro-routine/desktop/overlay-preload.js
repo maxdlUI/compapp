@@ -1,0 +1,11 @@
+// Feeds routine progress and look settings into the overlay window.
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("overlayBridge", {
+  onState: (cb) => ipcRenderer.on("overlay:state", (_e, s) => cb(s)),
+  onLook: (cb) => ipcRenderer.on("overlay:look", (_e, l) => cb(l)),
+  onPreview: (cb) => ipcRenderer.on("overlay:preview", (_e, p) => cb(p)),
+  onCustom: (cb) => ipcRenderer.on("overlay:custom", (_e, d) => cb(d)),
+  onBreath: (cb) => ipcRenderer.on("overlay:breath", (_e, b) => cb(b)),
+  onCue: (cb) => ipcRenderer.on("overlay:cue", (_e, c) => cb(c))
+});

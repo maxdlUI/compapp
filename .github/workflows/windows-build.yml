@@ -1,0 +1,36 @@
+# Builds the Repline Windows installer on a GitHub Windows runner. Build only:
+# the installer is uploaded as a workflow artifact, then published to Cloudflare R2
+# with tools/publish_windows.py. Hosting and updates stay on Cloudflare.
+name: Windows build
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/nifty-cannon-p4pndg]
+    paths: [".github/workflows/windows-build.yml", "daily-pro-routine/desktop/package.json"]
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build app files
+        run: python daily-pro-routine/tools/build_app.py
+      - name: Build installer
+        working-directory: daily-pro-routine/desktop
+        run: |
+          npm install --no-audit --no-fund
+          npx electron-builder --win nsis --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            daily-pro-routine/desktop/dist/*.exe
+            daily-pro-routine/desktop/dist/*.blockmap
+            daily-pro-routine/desktop/dist/latest.yml
+          retention-days: 7

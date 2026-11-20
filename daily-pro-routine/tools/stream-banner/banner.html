@@ -1,0 +1,115 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+/* Repline stream banner. A black "island" pill (like the app) opens, morphs between four messages and closes.
+   Rendered frame by frame: window.render(t) sets every style for time t (seconds). */
+:root { --ink: #f5f5f7; --ash: #86868b; --cyan: #38e0ff; --blue: #3f8dff; --violet: #a855f7; --apple: #0071e3; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1200px; height: 240px; background: transparent; overflow: hidden; }
+body { font-family: "Inter Display", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: var(--ink); }
+#pill { position: absolute; top: 50%; left: 50%; height: 104px; border-radius: 52px; background: #000; transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.13), 0 20px 50px rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.4); overflow: hidden; }
+#glow { position: absolute; inset: 0; border-radius: 52px; pointer-events: none; }
+.slot { position: absolute; left: 16px; top: 16px; width: 72px; height: 72px; display: grid; place-items: center; }
+.slot img { width: 72px; height: 72px; border-radius: 50%; transform: scale(1.32); }
+.logo-clip { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
+.txt { position: absolute; left: 108px; top: 0; bottom: 0; display: grid; align-content: center; gap: 3px; white-space: nowrap; }
+.t1 { font-size: 31px; font-weight: 600; letter-spacing: -.5px; line-height: 1.1; }
+.t2 { font-size: 20px; font-weight: 500; color: var(--ash); letter-spacing: -.1px; line-height: 1.2; }
+.t1 .v { color: var(--violet); }
+.t1 .c { color: var(--cyan); }
+.pro { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--violet), var(--blue)); display: grid; place-items: center; font-weight: 700; font-size: 20px; letter-spacing: .5px; color: #fff; }
+.url { width: 72px; height: 72px; border-radius: 50%; background: var(--apple); display: grid; place-items: center; }
+.url svg { width: 34px; height: 34px; }
+</style></head>
+<body>
+<div id="pill">
+  <div id="glow"></div>
+  <div class="slot" id="s0"><div class="logo-clip"><img src="icon.png" alt=""></div></div>
+  <div class="slot" id="s1"><svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="29" fill="none" stroke="#1d1d1f" stroke-width="7"/><circle id="ring" cx="36" cy="36" r="29" fill="none" stroke="#38e0ff" stroke-width="7" stroke-linecap="round" transform="rotate(-90 36 36)" stroke-dasharray="182.2" stroke-dashoffset="0"/><text id="ringt" x="36" y="41" text-anchor="middle" fill="#f5f5f7" font-family="Inter Display, Inter, sans-serif" font-size="15" font-weight="600">4:59</text></svg></div>
+  <div class="slot" id="s2"><div class="pro">PRO</div></div>
+  <div class="slot" id="s3"><div class="url"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div></div>
+  <div class="txt" id="x0"><span class="t1">Repline</span><span class="t2">Daily pro routines for Fortnite</span></div>
+  <div class="txt" id="x1"><span class="t1">Every set is timed.</span><span class="t2">Map codes, switch time and an in-game overlay.</span></div>
+  <div class="txt" id="x2"><span class="t1">Every Pro feature is <span class="v">free.</span></span><span class="t2" id="x2s">Launch month · until 12 December</span></div>
+  <div class="txt" id="x3"><span class="t1">repline.pages.dev</span><span class="t2">Sign in with Discord and start training.</span></div>
+</div>
+<script>
+(function () {
+  // Scenes: [start, end, width, slot index]
+  var LAUNCH = !/evergreen/.test(location.search);
+  if (!LAUNCH) {
+    document.querySelector("#x2 .t1").innerHTML = 'Free to <span class="v">start.</span>';
+    document.getElementById("x2s").textContent = "Pro routines and more on Repline";
+  }
+  var SC = [[1.15, 4.6, 520], [5.0, 8.7, 640], [9.1, 12.9, 600], [13.3, 16.9, 560]];
+  var OPEN = 0.25, CLOSE = 17.3, END = 18.3, COLLAPSED = 104;
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  var easeIn = function (p) { return p * p * p; };
+  function spring(p) { if (p <= 0) return 0; if (p >= 1.6) return 1; return 1 - Math.exp(-6.5 * p) * Math.cos(8.5 * p); }
+  var pill = document.getElementById("pill"), glow = document.getElementById("glow");
+  var slots = [0, 1, 2, 3].map(function (i) { return document.getElementById("s" + i); });
+  var txts = [0, 1, 2, 3].map(function (i) { return document.getElementById("x" + i); });
+  var slotFor = [0, 1, 2, 3];
+  // each scene is as wide as its text needs
+  txts.forEach(function (el, i) { SC[i][2] = Math.ceil(108 + el.scrollWidth + 46); });
+  function widthAt(t) {
+    // width follows the scene targets with a spring each time the target changes
+    var keys = [[OPEN, COLLAPSED, COLLAPSED]];
+    var prev = COLLAPSED;
+    SC.forEach(function (s, i) { var at = i === 0 ? 0.75 : SC[i - 1][1] + 0.12; keys.push([at, prev, s[2]]); prev = s[2]; });
+    keys.push([CLOSE, prev, COLLAPSED]);
+    var w = COLLAPSED;
+    keys.forEach(function (k) { if (t >= k[0]) { var p = (t - k[0]) / 0.75; w = k[1] + (k[2] - k[1]) * spring(p); } });
+    return w;
+  }
+  window.render = function (t) {
+    // pill in / out
+    var pin = clamp((t - OPEN) / 0.45, 0, 1), pout = clamp((t - (END - 0.6)) / 0.5, 0, 1);
+    var sc = (0.55 + 0.45 * spring(pin * 1.6 / 1)) * (1 - 0.45 * easeIn(pout));
+    var op = clamp(pin * 2.2, 0, 1) * (1 - pout);
+    var w = widthAt(t);
+    pill.style.width = Math.max(COLLAPSED, w) + "px";
+    pill.style.opacity = op;
+    pill.style.transform = "translate(-50%, -50%) scale(" + sc + ")";
+    pill.style.filter = pin < 1 ? "blur(" + ((1 - pin) * 6).toFixed(2) + "px)" : pout > 0 ? "blur(" + (pout * 6).toFixed(2) + "px)" : "none";
+    // which scene is active
+    var active = -1; SC.forEach(function (s, i) { if (t >= s[0] - 0.2 && t <= s[1] + 0.45) active = i; });
+    // slots crossfade (logo shows while collapsed too)
+    slots.forEach(function (el, i) {
+      var vis = 0;
+      SC.forEach(function (s, j) {
+        if (slotFor[j] !== i) return;
+        var a = clamp((t - (s[0] - 0.25)) / 0.35, 0, 1), b = clamp((t - (s[1] + 0.05)) / 0.3, 0, 1);
+        vis = Math.max(vis, easeOut(a) * (1 - b));
+      });
+      if (i === 0 && t < SC[0][0]) vis = 1;
+      if (i === 0 && t > SC[SC.length - 1][1] + 0.15) vis = Math.max(vis, easeOut(clamp((t - SC[SC.length - 1][1] - 0.15) / 0.35, 0, 1)));
+      el.style.opacity = vis;
+      el.style.transform = "scale(" + (0.6 + 0.4 * vis) + ") rotate(" + ((1 - vis) * -30) + "deg)";
+    });
+    // text in: blur + rise; out: blur + lift
+    txts.forEach(function (el, i) {
+      var s = SC[i], a = clamp((t - s[0]) / 0.5, 0, 1), b = clamp((t - s[1]) / 0.35, 0, 1);
+      var v = easeOut(a) * (1 - easeIn(b));
+      el.style.opacity = v;
+      el.style.filter = v < 1 ? "blur(" + ((1 - v) * 8).toFixed(2) + "px)" : "none";
+      el.style.transform = "translateY(" + ((1 - easeOut(a)) * 14 - easeIn(b) * 12).toFixed(2) + "px)";
+      // stagger the second line
+      var l2 = el.children[1], a2 = clamp((t - s[0] - 0.12) / 0.5, 0, 1);
+      l2.style.opacity = easeOut(a2);
+    });
+    // timer ring in scene 2
+    var rp = clamp((t - SC[1][0]) / (SC[1][1] - SC[1][0]), 0, 1);
+    document.getElementById("ring").setAttribute("stroke-dashoffset", (182.2 * rp * 0.35).toFixed(2));
+    var secs = 299 - Math.floor(clamp(t - SC[1][0], 0, 99));
+    document.getElementById("ringt").textContent = Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0");
+    // a soft violet glow while the free-Pro scene is on
+    var g = clamp((t - SC[2][0]) / 0.6, 0, 1) * (1 - clamp((t - SC[2][1]) / 0.4, 0, 1));
+    glow.style.boxShadow = "inset 0 0 0 1.5px rgba(168,85,247," + (0.75 * g).toFixed(3) + "), inset 0 0 40px rgba(168,85,247," + (0.22 * g).toFixed(3) + ")";
+  };
+  window.render(0);
+})();
+</script>
+</body></html>
