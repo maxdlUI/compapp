@@ -2756,7 +2756,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.16.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.17.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -3054,6 +3054,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (window.ReplineMind) ReplineMind.renderHome(hm);
     if (window.ReplineWarm) hm.insertAdjacentHTML("afterbegin", ReplineWarm.homeCard());
     if (window.ReplineCue) ReplineCue.renderHome(hm);
+    const jc = joinCard(); if (jc) { hm.insertAdjacentHTML("afterbegin", jc); const jb = hm.querySelector("[data-join]"); if (jb) jb.addEventListener("click", () => { signingIn = false; startSignIn(); }); }
     hg.querySelectorAll(".goal").forEach((g, i) => { g.classList.add("rv"); if (i) g.classList.add("d" + i); observe(g); });
     $("resume").hidden = !(S.active && length(S.goal, S.len));
     $("hero-sub").textContent = S.active ? "Your routine is waiting" : "Set by set";
@@ -4383,13 +4384,33 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     fillDownloads(body);
     bindDrawer();
   }
+  // guilds.join: on sign-in Repline adds you to its Discord server, so reminders and gift DMs can reach you
+  // (Discord bots can only message people who share a server with them). The token is used once, never stored.
+  const DISCORD_SCOPES = "identify email guilds.join";
+  let joinTried = "";
+  function discordJoin(session) {
+    const tok = session && session.provider_token;
+    if (!tok || joinTried === tok || !SB_URL) return;
+    joinTried = tok;
+    fetch(SB_URL + "/functions/v1/join", { method: "POST", headers: { "Content-Type": "application/json", apikey: SB_KEY, Authorization: "Bearer " + session.access_token }, body: JSON.stringify({ token: tok }) })
+      .then((r) => r.ok ? r.json() : null)
+      .then((j) => {
+        if (!j || !j.ok) return;
+        const wait = () => { if (!account || !account.real) return setTimeout(wait, 800); const was = account.joined; account.joined = true; store.set(ACC, account); if (j.first && !was) toast("You're in the Repline Discord · +1 free spin today"); if (typeof buildHome === "function" && $("home-goals")) buildHome(); };
+        wait();
+      }).catch(() => {});
+  }
+  function joinCard() {
+    if (!account || !account.real || account.joined) return "";
+    return `<button class="mi-hcard" type="button" data-join="1" style="text-align:left;border:0;font:inherit;color:inherit;cursor:pointer"><span class="mi-orb" aria-hidden="true" style="background:radial-gradient(circle at 35% 30%,#fff,#5865f2 70%)"></span><span class="t"><b>Join the Repline Discord</b><span class="s">+1 free spin · reminders, drops, help</span></span></button>`;
+  }
   function startSignIn() {
       if (signingIn) return;
       signingIn = true; if (drawerOpen) renderDrawer();
       const fail = (msg) => { signingIn = false; if (drawerOpen) renderDrawer(); toast(msg); };
       if (sb && DESK && DESK.auth) {
         // Windows app: Discord opens in a small sign-in window; the code comes back here.
-        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: "https://repline.pages.dev/auth/desktop", skipBrowserRedirect: true } })
+        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: "https://repline.pages.dev/auth/desktop", skipBrowserRedirect: true, scopes: DISCORD_SCOPES } })
           .then(({ data, error }) => { if (error || !data || !data.url) throw error || new Error("no url"); return DESK.auth(data.url); })
           .then((code) => code ? sb.auth.exchangeCodeForSession(code) : null)
           .then((r) => { if (!r || r.error) { if (r && r.error) fail("Sign-in didn't finish. Please try again."); else { signingIn = false; if (drawerOpen) renderDrawer(); store.del("rl.after"); } } })
@@ -4397,7 +4418,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         return;
       }
       if (sb) {
-        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/" } }).then(({ error }) => { if (error) fail("Sign-in didn't start. Please try again."); });
+        sb.auth.signInWithOAuth({ provider: "discord", options: { redirectTo: location.origin + "/", scopes: DISCORD_SCOPES } }).then(({ error }) => { if (error) fail("Sign-in didn't start. Please try again."); });
         return;
       }
       setTimeout(() => { signingIn = false; account = { name: "Demo Player", ref: refCode(), since: today() }; store.set(ACC, account); topAccount(); if (drawerOpen) { renderDrawer(); $("dr-close").focus(); } toast("Signed in (demo)"); afterSignIn(); }, 900);
@@ -4575,7 +4596,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     try {
       const id = user.id;
       const [prof, code, state, days] = await Promise.all([
-        sb.from("profiles").select("username, avatar_url, is_dev, plan, bonus_plan, bonus_until, created_at").eq("id", id).maybeSingle(),
+        sb.from("profiles").select("username, avatar_url, is_dev, plan, bonus_plan, bonus_until, created_at, discord_joined_at").eq("id", id).maybeSingle(),
         sb.from("referral_codes").select("code, clicks").eq("user_id", id).maybeSingle(),
         sb.from("user_state").select("settings, focus, session, updated_at").eq("user_id", id).maybeSingle(),
         sb.from("training_days").select("day, routines, minutes, by_type, frozen").eq("user_id", id)
@@ -4585,7 +4606,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       const meta = user.user_metadata || {};
       const p = prof.data || {};
       account = { real: true, id, name: p.username || meta.full_name || meta.name || "Player", avatar: p.avatar_url || meta.avatar_url || null,
-        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, plan: p.plan || "free", bonusPlan: p.bonus_plan || null, bonusUntil: p.bonus_until || null, created: p.created_at || null, items: (buys.data || []).map((x) => x.item), since: today() };
+        ref: code.data ? code.data.code : "", clicks: code.data ? code.data.clicks : 0, signups: count || 0, isDev: !!p.is_dev, plan: p.plan || "free", bonusPlan: p.bonus_plan || null, bonusUntil: p.bonus_until || null, created: p.created_at || null, joined: !!p.discord_joined_at, items: (buys.data || []).map((x) => x.item), since: today() };
       // own routines: the account is the source of truth; routines made before signing in are uploaded once
       const rr = await sb.from("custom_routines").select("id, name, sets, updated_at").eq("user_id", id).order("created_at");
       const cloudList = (rr.data || []).map((x) => ({ id: x.id, name: x.name, sets: x.sets || [], updated_at: x.updated_at }));
@@ -4646,7 +4667,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (account && !account.real) { account = null; store.del(ACC); }
     addEventListener("online", () => { if (account && account.real && !cloudUser) sb.auth.getSession().then(() => {}); });
     sb.auth.onAuthStateChange((event, session) => {
+      if (session && session.provider_token) discordJoin(session);
       if (session && session.user) {
+        if (signingIn && event === "SIGNED_IN") { signingIn = false; if (drawerOpen) renderDrawer(); }
         if (!cloudUser || cloudUser.id !== session.user.id) {
           signingIn = false;
           if (/[?&]code=/.test(location.search)) { try { history.replaceState(null, "", location.pathname.replace(/^\/r\/.*$/, "/") + location.hash); } catch (e) {} }

@@ -27,9 +27,11 @@ async function devIds(): Promise<string[]> {
   const { data } = await db.from("profiles").select("discord_id").eq("is_dev", true).not("discord_id", "is", null);
   return (data || []).map((r: any) => String(r.discord_id)).filter(Boolean);
 }
-async function dm(userId: string, payload: Record<string, unknown>) {
+async function dm(userId: string, payload: Record<string, unknown>): Promise<boolean> {
   const ch = await api("/users/@me/channels", "POST", { recipient_id: userId });
-  if (ch && ch.id) await api(`/channels/${ch.id}/messages`, "POST", payload);
+  if (!ch || !ch.id) return false;
+  const m = await api(`/channels/${ch.id}/messages`, "POST", payload);
+  return !!(m && m.id); // false when Discord refuses (player not in the server or DMs closed)
 }
 const clip = (s: string, n: number) => { const t = String(s || "").trim(); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 const big = (s: string) => { try { return BigInt(s); } catch { return 0n; } };
@@ -77,7 +79,7 @@ const FAQ: Faq[] = [
   { id: "partner", keys: [[/partner|sponsor|collab|zusammenarbeit|map creator|my map|meine map|team/, 2]],
     a: "Map creator, team, creator or coach? Tell us who you are in <#" + PARTNER_CH + "> and we'll get back to you." },
   { id: "remind", keys: [[/remind|erinner|notification|benachrichtig|push/, 3]],
-    a: "**Reminders:** Settings → **Reminder**. Pick a time and days, then how you want it: Discord DM (stay in this server so the bot can message you), browser push or the Windows app. You can skip it on days you already trained." },
+    a: "**Reminders:** Settings → **Reminder**. Pick a time and days, then how you want it: Discord DM (stay in this server so the bot can message you), browser push or the Windows app. You can skip it on days you already trained.\nNot in the server yet? On the Repline home page click **Join the Repline Discord**: you're added in one click and get a free spin." },
   { id: "mapcode", keys: [[/map ?code|island code|code for|wo finde ich die map|which map|welche map/, 3]],
     a: "Every set shows its **map code** with a copy button. In Fortnite: Discover → search the code → play. The maps we use are listed in each routine before you start." },
   { id: "update", keys: [[/update|version|aktualis|new version|neue version|outdated|veraltet/, 2]],
@@ -214,6 +216,39 @@ async function welcomeDms() {
       components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Open Repline", SITE)] }],
     });
     sent++;
+  }
+  sent += await comebackDms(now);
+  return sent;
+}
+
+// ---------- comeback reminders (019_discord_join.sql) ----------
+// Players in the Discord who haven't trained for 3+ days get a short reminder in the evening (Berlin),
+// at most every 4 days and 3 times in a row. Training again resets the count.
+const COMEBACK = [
+  "Your aim misses you. 🎯 15 minutes today, one map, and you get a spin on the Drops wheel.",
+  "Quick one before you queue? A 15-minute warm-up and your first fight feels way smoother. 🔥",
+  "Pros don't train for hours every day. They just don't skip. 15 minutes today? 💪",
+];
+async function comebackDms(now: number) {
+  const h = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Berlin" }).format(now));
+  if (h < 17 || h > 20) return 0;
+  const iso = (ms: number) => new Date(ms).toISOString();
+  const { data: list } = await db.from("profiles").select("id, discord_id, created_at, comeback_dm_at, comeback_count")
+    .not("discord_joined_at", "is", null).not("discord_id", "is", null).lt("created_at", iso(now - 3 * 864e5))
+    .or(`comeback_dm_at.is.null,comeback_dm_at.lt.${iso(now - 4 * 864e5)}`).limit(20);
+  let sent = 0;
+  for (const p of list || []) {
+    const { data: last } = await db.from("routine_runs").select("day").eq("user_id", p.id).eq("counted", true).order("day", { ascending: false }).limit(1).maybeSingle();
+    const lastMs = last ? Date.parse(last.day + "T12:00:00Z") : 0;
+    let count = p.comeback_count || 0;
+    if (lastMs && p.comeback_dm_at && lastMs > Date.parse(p.comeback_dm_at)) count = 0; // trained since the last reminder
+    if (lastMs > now - 3 * 864e5) { if (count !== (p.comeback_count || 0)) await db.from("profiles").update({ comeback_count: count }).eq("id", p.id); continue; }
+    if (count >= 3) continue;
+    await db.from("profiles").update({ comeback_dm_at: iso(now), comeback_count: count + 1 }).eq("id", p.id);
+    const text = !lastMs ? "You signed up but never started a routine. 15 minutes, one map: that's all. Your bonus spin is still waiting. 🎁" : COMEBACK[count % COMEBACK.length];
+    const ok = await dm(String(p.discord_id), { content: text, components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Open Repline", SITE)] }] });
+    if (ok) sent++;
+    else console.log("comeback dm failed", p.id);
   }
   return sent;
 }
