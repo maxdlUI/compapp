@@ -74,3 +74,4 @@ Public routines and blocks are stored in the database table `routine_catalog` (n
 - Open idea list: sound trainer, finger/keybind trainer, skill tree, duels, training buddy, live training lobbies, cup calendar.
 - Partners: per-partner commission (50 % for 3 months, then 40 %) and vanity creator codes, once a partner agrees.
 - TikTok: posts go through the vidIQ connector (TikTok account "Repline" connected). Every post needs the owner's OK on the draft.
+- **Videos (owner's rule, 24 Nov 2026):** before building any video, show a **storyboard first** (an Artifact with the key frames in the chosen style, timings and what is said), wait for the owner's changes, then build with HyperFrames + earshot sounds. Style drafts for all future videos: https://claude.ai/artifact/UqVmmY9RsAbATo76WR8bvL (8 styles; the owner picks one or mixes). Scripts live in `daily-pro-routine/marketing/script-*.md`.
