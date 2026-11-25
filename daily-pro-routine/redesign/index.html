@@ -1,0 +1,759 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex"><link rel="icon" href="data:,">
+<title>Repline Redesign</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a slim left spine (day ring, 5 places, this week, you) and one calm content column per page; the profile opens as a sheet from the right */
+:root {
+  color-scheme: dark;
+  --bg: #050608; --panel: #0f1115; --panel2: #171a1f; --panel3: #1e2128; --line: #22252c;
+  --fg: #f5f5f7; --mute: #8b8f98; --dim: #585c65;
+  --accent: #38e0ff; --blue: #3f8dff; --warm: #ffb35c; --calm: #8f7bff; --ok: #30d158; --bad: #ff5a5f; --gold: #ffd60a;
+  --sans: "Inter", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 18px; --spine: 88px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.5; letter-spacing: -.01em; -webkit-font-smoothing: antialiased; padding-left: var(--spine); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.wrap { max-width: 1060px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+.page { padding-block: 32px 100px; display: grid; gap: 32px; }
+.page[hidden] { display: none; }
+.ph { display: grid; gap: 6px; }
+.eyebrow { font-size: 12px; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+.ph h1 { font-size: clamp(28px, 4.6vw, 42px); line-height: 1.08; letter-spacing: -.03em; }
+.ph p { color: var(--mute); font-size: 17px; max-width: 60ch; }
+.sh { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.sh h2 { font-size: 20px; letter-spacing: -.02em; }
+.sh span, .sh button { font-size: 14px; color: var(--mute); background: none; border: 0; padding: 0; }
+.ex { font-size: 12px; color: var(--dim); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+.btn { border: 0; background: var(--accent); color: #001018; font-weight: 700; padding: 12px 22px; border-radius: 99px; font-size: 15px; }
+.btn.big { padding: 15px 30px; font-size: 17px; }
+.btn.w { background: var(--fg); color: #000; }
+.btn.g { background: var(--panel2); color: var(--fg); border: 1px solid var(--line); font-weight: 600; }
+.btn:disabled { background: var(--panel2); color: var(--dim); cursor: default; }
+.chip { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; padding: 7px 14px; font-size: 14px; color: var(--mute); }
+.chip[aria-pressed="true"] { background: var(--fg); color: #000; border-color: var(--fg); font-weight: 600; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.mono { font-family: var(--mono); }
+.pro { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .04em; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 60; background: var(--fg); color: #000; font-weight: 600; font-size: 14px; padding: 10px 18px; border-radius: 99px; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+
+/* ---------- spine ---------- */
+.spine { position: fixed; left: 0; top: 0; bottom: 0; z-index: 25; width: var(--spine); padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(16px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 0px); border-right: 1px solid var(--line); background: var(--bg); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.lg { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 14px; position: relative; border: 0; background: none; padding: 0; }
+.lg svg { width: 48px; height: 48px; }
+.lg span { position: absolute; font-size: 11px; font-weight: 700; font-family: var(--mono); }
+.it { border: 0; background: none; width: 72px; padding: 10px 0 8px; border-radius: 14px; display: grid; justify-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--mute); position: relative; }
+.it svg { width: 22px; height: 22px; }
+.it:hover { color: var(--fg); }
+.it[aria-current="page"] { color: var(--fg); background: var(--panel2); }
+.it .badge { position: absolute; top: 6px; right: 14px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--accent); color: #001018; font-size: 10px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; }
+.wk { margin-top: auto; display: grid; gap: 7px; justify-items: center; padding-bottom: 14px; }
+.wk i { width: 10px; height: 10px; border-radius: 50%; background: var(--panel3); display: block; }
+.wk i.on { background: var(--accent); }
+.wk i.t { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent); }
+.wk i.cup { background: transparent; box-shadow: inset 0 0 0 2px var(--warm); }
+.wk small { font-size: 10px; color: var(--mute); font-family: var(--mono); }
+.me { width: 40px; height: 40px; border-radius: 50%; border: 0; background: linear-gradient(135deg, var(--accent), var(--blue)); color: #001018; font-weight: 700; }
+.mtop { display: none; }
+
+/* ---------- today ---------- */
+.launch { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--mute); }
+.launch b { color: var(--fg); font-weight: 600; }
+.launch .cd { font-family: var(--mono); color: var(--accent); font-size: 12px; }
+.tgrid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+.path { position: relative; display: grid; gap: 12px; }
+.path::before { content: ""; position: absolute; left: 23px; top: 30px; bottom: 40px; width: 2px; background: var(--line); }
+.step { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 16px; }
+.dot { width: 48px; height: 48px; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); display: grid; place-items: center; z-index: 1; color: var(--mute); font-size: 14px; font-weight: 600; }
+.step.done .dot { background: var(--c); border-color: var(--c); color: #001018; }
+.step.now .dot { border-color: var(--c); color: var(--c); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 18%, transparent); }
+.sbox { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 12px; }
+.step.now .sbox { border-color: color-mix(in srgb, var(--c) 45%, var(--line)); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 9%, var(--panel)), var(--panel) 60%); padding: 22px; }
+.bh { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.bh h3 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.step.now .bh h3 { font-size: 24px; }
+.bh .len { font-family: var(--mono); font-size: 13px; color: var(--mute); }
+.bh .tag { margin-left: auto; font-size: 12px; color: var(--c); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.step.done .bh .tag { color: var(--ok); }
+.sub { color: var(--mute); font-size: 15px; }
+.mini { display: none; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.step.now .mini { display: grid; }
+.ms { background: var(--panel2); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; }
+.ms b { font-size: 14px; font-weight: 600; }
+.ms span { font-size: 12px; color: var(--mute); font-family: var(--mono); }
+.acts { display: none; gap: 10px; flex-wrap: wrap; align-items: center; }
+.step.now .acts { display: flex; }
+.acts .btn { background: var(--c); }
+.acts .lnk { border: 0; background: none; color: var(--mute); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.rail { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); }
+.rail h4 { font-size: 12px; font-weight: 600; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.wd { display: grid; gap: 6px; justify-items: center; font-size: 12px; color: var(--mute); }
+.wd i { width: 28px; height: 28px; border-radius: 50%; background: var(--panel2); display: block; }
+.wd.on i { background: var(--accent); }
+.wd.today { color: var(--fg); font-weight: 600; }
+.wd.today:not(.on) i { box-shadow: inset 0 0 0 2px var(--accent); }
+.wd.cup { color: var(--warm); }
+.wd.cup i { box-shadow: inset 0 0 0 2px var(--warm); }
+.streak { display: flex; align-items: baseline; gap: 8px; margin-top: 14px; }
+.streak b { font-size: 32px; font-weight: 700; letter-spacing: -.03em; }
+.streak span { color: var(--mute); font-size: 14px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.row .t { display: grid; flex: 1; min-width: 0; line-height: 1.35; }
+.row .t b { font-size: 15px; font-weight: 600; }
+.row .t span { font-size: 13px; color: var(--mute); }
+.ico { width: 40px; height: 40px; border-radius: 12px; background: var(--panel2); display: grid; place-items: center; font-family: var(--mono); font-size: 12px; color: var(--c, var(--mute)); flex: none; }
+.wheel-s { width: 40px; height: 40px; border-radius: 50%; background: conic-gradient(var(--accent) 0 25%, var(--blue) 0 50%, var(--calm) 0 75%, var(--warm) 0); flex: none; }
+.wheel-s.off { filter: grayscale(1) brightness(.45); }
+
+/* ---------- train ---------- */
+.plan { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: end; background: linear-gradient(150deg, color-mix(in srgb, var(--calm) 14%, var(--panel)), var(--panel) 65%); border-color: color-mix(in srgb, var(--calm) 35%, var(--line)); padding: 22px; }
+.plan h2 { font-size: 22px; letter-spacing: -.02em; }
+.plan p { color: var(--mute); margin-top: 4px; }
+.plan .in { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; }
+.plan input { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px; color: var(--fg); font: inherit; }
+.plan .chips { grid-column: 1 / -1; }
+.rlist { display: grid; gap: 10px; }
+.rr { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 16px; align-items: center; text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px 16px 14px; width: 100%; }
+.rr:hover { border-color: var(--panel3); background: var(--panel2); }
+.rr > i { align-self: stretch; border-radius: 3px; background: var(--c); }
+.rr b { font-size: 17px; font-weight: 600; display: block; }
+.rr span { font-size: 14px; color: var(--mute); }
+.rr em { font-style: normal; font-family: var(--mono); font-size: 13px; color: var(--mute); text-align: right; }
+.rr .star { color: var(--accent); font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.maps { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.map { display: grid; gap: 4px; text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.map b { font-size: 15px; }
+.map span { font-size: 12px; color: var(--mute); }
+.map code { font-family: var(--mono); font-size: 14px; color: var(--accent); }
+
+/* routine detail */
+.det { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+.back { border: 0; background: none; color: var(--mute); font-size: 15px; padding: 0; justify-self: start; }
+.sets { display: grid; gap: 8px; }
+.set { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px 12px 12px; }
+.set .n { width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--c) 18%, var(--panel2)); color: var(--c); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; }
+.set b { font-size: 15px; display: block; }
+.set span { font-size: 13px; color: var(--mute); }
+.set em { font-style: normal; font-family: var(--mono); font-size: 13px; color: var(--mute); }
+.sum { display: grid; gap: 14px; position: sticky; top: 24px; }
+.kv { display: grid; gap: 10px; font-size: 14px; }
+.kv div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.kv span { color: var(--mute); }
+.kv b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; }
+.bar i { background: var(--c); flex: var(--w); }
+
+/* session */
+.sess { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+.timer { display: grid; justify-items: center; gap: 18px; text-align: center; padding: 28px 20px; }
+.tring { position: relative; width: min(70vw, 320px); aspect-ratio: 1; max-width: 100%; }
+.tring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tring .tt { position: absolute; inset: 0; display: grid; place-content: center; gap: 4px; }
+.tring .tt b { font-size: clamp(48px, 12vw, 72px); font-weight: 700; letter-spacing: -.04em; font-variant-numeric: tabular-nums; line-height: 1; }
+.tring .tt span { color: var(--mute); font-size: 14px; }
+.timer h2 { font-size: 28px; letter-spacing: -.02em; }
+.timer .hint { color: var(--mute); max-width: 46ch; }
+.codebox { display: inline-flex; gap: 10px; align-items: center; background: var(--panel2); border-radius: 99px; padding: 6px 6px 6px 16px; font-family: var(--mono); font-size: 14px; }
+.codebox button { border: 0; background: var(--panel3); border-radius: 99px; padding: 6px 12px; font-family: var(--sans); font-size: 13px; font-weight: 600; }
+.tctl { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.keys { font-size: 12px; color: var(--dim); }
+.keys kbd { font-family: var(--mono); background: var(--panel2); border-radius: 5px; padding: 1px 6px; color: var(--mute); }
+.queue .set.cur { border-color: var(--accent); }
+.queue .set.fin { opacity: .45; }
+.queue .set.fin .n { background: var(--ok); color: #001018; }
+
+/* done */
+.donep { display: grid; justify-items: center; text-align: center; gap: 16px; padding-block: 40px; }
+.donep .big { font-size: clamp(34px, 6vw, 54px); font-weight: 700; letter-spacing: -.04em; }
+.rewards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: min(620px, 100%); }
+.rw { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 2px; }
+.rw b { font-size: 24px; letter-spacing: -.02em; }
+.rw span { color: var(--mute); font-size: 13px; }
+
+/* progress */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { display: grid; gap: 2px; }
+.stat b { font-size: 28px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--mute); }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal span { font-size: 11px; color: var(--mute); text-align: center; }
+.cal i { aspect-ratio: 1; border-radius: 8px; background: var(--panel2); display: grid; place-items: center; font-style: normal; font-size: 12px; color: var(--dim); font-family: var(--mono); }
+.cal i.l1 { background: color-mix(in srgb, var(--accent) 35%, var(--panel2)); color: var(--fg); }
+.cal i.l2 { background: var(--accent); color: #001018; }
+.cal i.today { box-shadow: inset 0 0 0 2px var(--fg); }
+.cal i.x { visibility: hidden; }
+.chart svg { width: 100%; height: auto; display: block; }
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.bd { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 18px 10px; }
+.bd i { width: 48px; height: 48px; border-radius: 50%; background: var(--c); display: grid; place-items: center; font-style: normal; color: #001018; font-weight: 700; }
+.bd.lock { opacity: .4; }
+.bd.lock i { background: var(--panel3); color: var(--mute); }
+.bd b { font-size: 14px; }
+.bd span { font-size: 12px; color: var(--mute); }
+
+/* community */
+.lb { display: grid; gap: 4px; }
+.lr { display: grid; grid-template-columns: 40px 36px minmax(0, 1fr) auto; gap: 12px; padding: 10px 14px; background: var(--panel); border-radius: 12px; align-items: center; font-variant-numeric: tabular-nums; }
+.lr .p { color: var(--mute); font-family: var(--mono); font-size: 14px; }
+.lr .a { width: 32px; height: 32px; border-radius: 50%; background: var(--panel3); display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+.lr.you { outline: 1px solid var(--accent); }
+.lr .v { font-size: 12px; color: var(--ok); margin-left: 6px; }
+.prize { font-size: 13px; color: var(--mute); }
+.prize b { color: var(--gold); }
+.fr { display: grid; gap: 8px; }
+.live { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 25%, transparent); flex: none; }
+.drops { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 24px; align-items: center; }
+.wheel { position: relative; width: 240px; aspect-ratio: 1; max-width: 100%; justify-self: center; }
+.wheel .w { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--accent) 0 12.5%, var(--panel3) 0 25%, var(--blue) 0 37.5%, var(--panel3) 0 50%, var(--calm) 0 62.5%, var(--panel3) 0 75%, var(--warm) 0 87.5%, var(--gold) 0); transition: transform 3s cubic-bezier(.15,.8,.2,1); box-shadow: 0 0 0 6px var(--panel2); }
+.wheel::after { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); border: 10px solid transparent; border-top: 16px solid var(--fg); }
+.wheel .hub { position: absolute; inset: 38%; border-radius: 50%; background: var(--bg); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+.feed { display: grid; gap: 6px; font-size: 14px; color: var(--mute); }
+.feed b { color: var(--fg); }
+
+/* more */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.tile { text-align: left; display: grid; gap: 6px; align-content: start; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; }
+.tile .ico { width: 36px; height: 36px; }
+.tile b { font-size: 15px; }
+.tile span { font-size: 13px; color: var(--mute); }
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tier { display: grid; gap: 12px; align-content: start; }
+.tier.hl { border-color: var(--accent); }
+.tier h3 { font-size: 18px; }
+.tier .pr { font-size: 30px; font-weight: 700; letter-spacing: -.03em; }
+.tier .pr small { font-size: 14px; color: var(--mute); font-weight: 500; }
+.tier ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; color: var(--mute); }
+.tier li::before { content: "✓  "; color: var(--ok); }
+.qa details { border-bottom: 1px solid var(--line); padding-block: 14px; }
+.qa summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.qa summary::after { content: "+"; color: var(--mute); }
+.qa details[open] summary::after { content: "–"; }
+.qa p { color: var(--mute); margin-top: 8px; max-width: 70ch; }
+.win { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: linear-gradient(150deg, color-mix(in srgb, var(--blue) 14%, var(--panel)), var(--panel) 60%); }
+.win h2 { font-size: 22px; letter-spacing: -.02em; }
+.win p { color: var(--mute); margin-top: 4px; }
+
+/* profile sheet */
+.scrim { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.55); }
+.scrim[hidden] { display: none; }
+.sheet { position: fixed; top: 0; right: 0; bottom: 0; z-index: 41; width: min(440px, 100%); background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; padding: calc(24px + env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) 22px; display: grid; gap: 22px; align-content: start; transform: translateX(105%); transition: transform .3s cubic-bezier(.3,.1,.3,1); }
+.sheet.open { transform: none; }
+.sheet .x { position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--panel2); }
+.who { display: flex; gap: 14px; align-items: center; }
+.who .av { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--blue)); display: grid; place-items: center; color: #001018; font-size: 24px; font-weight: 700; flex: none; }
+.who b { font-size: 22px; letter-spacing: -.02em; display: block; }
+.who span { font-size: 13px; color: var(--mute); }
+.who .title { color: var(--gold); font-weight: 600; }
+.pstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pstats div { background: var(--panel2); border-radius: 14px; padding: 12px; display: grid; }
+.pstats b { font-size: 20px; letter-spacing: -.02em; }
+.pstats span { font-size: 12px; color: var(--mute); }
+.grp { display: grid; gap: 2px; }
+.grp h5 { margin: 0 0 6px; font-size: 12px; color: var(--mute); text-transform: uppercase; letter-spacing: .1em; }
+.opt { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--panel2); font-size: 15px; }
+.opt:first-of-type { border-radius: 14px 14px 0 0; }
+.opt:last-child { border-radius: 0 0 14px 14px; }
+.opt:only-of-type { border-radius: 14px; }
+.opt .l { flex: 1; min-width: 0; display: grid; line-height: 1.3; }
+.opt .l small { font-size: 12px; color: var(--mute); }
+.opt .v { color: var(--mute); font-size: 14px; }
+.opt button.v { border: 0; background: none; padding: 0; }
+.sw { position: relative; width: 46px; height: 28px; border-radius: 99px; border: 0; background: var(--panel3); flex: none; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.sw[aria-checked="true"] { background: var(--ok); }
+.sw[aria-checked="true"]::after { transform: translateX(18px); }
+.seg { display: inline-flex; background: var(--panel3); border-radius: 10px; padding: 2px; }
+.seg button { border: 0; background: none; padding: 5px 10px; border-radius: 8px; font-size: 13px; color: var(--mute); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: #000; font-weight: 600; }
+.danger { border: 0; background: none; color: var(--bad); font-size: 15px; padding: 8px 0; text-align: left; }
+
+/* visitor */
+.vis { display: grid; gap: 56px; padding-block: 40px 100px; }
+.vhero { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px; align-items: center; }
+.vhero h1 { font-size: clamp(36px, 6vw, 64px); line-height: 1.02; letter-spacing: -.04em; }
+.vhero p { color: var(--mute); font-size: 19px; margin-top: 14px; max-width: 44ch; }
+.vhero .chips { margin-top: 24px; }
+.dc { display: inline-flex; align-items: center; gap: 10px; background: #5865f2; color: #fff; }
+.demo { display: grid; gap: 8px; }
+.demo .set { padding: 10px 14px 10px 10px; }
+.how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.how .card { display: grid; gap: 8px; }
+.how b { font-size: 17px; }
+.how span { color: var(--mute); font-size: 15px; }
+.how .k { font-family: var(--mono); color: var(--accent); font-size: 13px; }
+.vbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.vbar .wrap { display: flex; align-items: center; gap: 12px; height: 56px; font-size: 14px; color: var(--mute); }
+.vbar .wrap .sp { flex: 1; }
+
+/* ---------- phone ---------- */
+@media (max-width: 900px) {
+  .tgrid, .det, .sess, .drops, .vhero { grid-template-columns: minmax(0, 1fr); }
+  .rail, .sum { position: static; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tiers, .how, .grid3 { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  body { padding-left: 0; }
+  .spine { transform: translateX(-100%); transition: transform .28s cubic-bezier(.3,.1,.3,1); box-shadow: 20px 0 60px rgba(0,0,0,.6); }
+  .spine.open { transform: none; }
+  .mtop { display: flex; align-items: center; gap: 12px; padding-top: 16px; }
+  .mtop .lg { margin: 0; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .mtop .lg svg { width: 34px; height: 34px; }
+  .mtop b { font-size: 17px; flex: 1; }
+  .mtop .me { width: 36px; height: 36px; }
+  .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .page { padding-top: 20px; }
+  .grid2, .rewards { grid-template-columns: minmax(0, 1fr); }
+  .rr { grid-template-columns: 6px minmax(0, 1fr); }
+  .rr em { grid-column: 2; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style></head><body>
+
+<nav class="spine" id="spine" aria-label="Main">
+  <button class="lg" data-go="today" aria-label="Today, day progress"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle class="prog" cx="24" cy="24" r="19" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 24 24)" style="transition:stroke-dasharray .6s"/></svg><span class="lgn">0/3</span></button>
+  <button class="it" data-go="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14v15H5zM5 10h14M9 3v4M15 3v4"/></svg>Today</button>
+  <button class="it" data-go="train"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>Train</button>
+  <button class="it" data-go="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3 7-9M15 6h5v5"/></svg>Progress</button>
+  <button class="it" data-go="community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.5"/><path d="M3 19c1-3 3.5-4.5 6-4.5s5 1.5 6 4.5M15 15c2 0 4.5 1 5.5 3.5"/></svg>Community<span class="badge" id="spinBadge" hidden>1</span></button>
+  <button class="it" data-go="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>More</button>
+  <div class="wk" id="wk" aria-label="This week"></div>
+  <button class="me" data-profile aria-label="Your profile and settings">K</button>
+</nav>
+
+<div class="wrap mtop">
+  <button class="lg" id="mopen" aria-label="Open menu"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle class="prog" cx="24" cy="24" r="19" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 24 24)"/></svg></button>
+  <b id="mtitle">Today</b>
+  <button class="me" data-profile aria-label="Your profile and settings">K</button>
+</div>
+
+<!-- ================= TODAY ================= -->
+<main class="wrap page" id="p-today">
+  <div class="launch">Launch month: <b>every Pro feature is free</b> until 13 Dec <span class="cd" id="cd"></span></div>
+  <div class="ph">
+    <span class="eyebrow" id="date">Wednesday 25 November</span>
+    <h1 id="hi">Good afternoon, kxvin.</h1>
+    <p id="hisub">Three steps today. About 65 minutes.</p>
+  </div>
+  <div class="tgrid">
+    <div class="path" id="path"></div>
+    <aside class="rail">
+      <div class="card"><h4>This week</h4><div class="week" id="week"></div><div class="streak"><b class="stk">3</b><span>days in a row · 2 freezes ready</span></div></div>
+      <div class="card"><h4>Coming up</h4><div class="row"><div class="ico" style="--c:var(--warm)">FRI</div><div class="t"><b>Cup in 2 days</b><span>Thursday is a light day in your plan</span></div></div></div>
+      <div class="card"><h4>Reward</h4><div class="row"><div class="wheel-s off" id="rwh"></div><div class="t"><b id="rwt">Spin after your routine</b><span id="rws">Every counted routine gives one spin</span></div></div></div>
+      <div class="card"><h4>Friends</h4><div class="row"><span class="live"></span><div class="t"><b>lucaedits is training</b><span>Daily Pro Routine · set 4 of 8</span></div></div></div>
+      <p class="ex">Example data</p>
+    </aside>
+  </div>
+</main>
+
+<!-- ================= TRAIN ================= -->
+<main class="wrap page" id="p-train" hidden>
+  <div class="ph"><span class="eyebrow">Train</span><h1>What do you want to train?</h1><p>Every routine runs set by set with a timer, map codes and a clear focus.</p></div>
+  <section class="card plan" aria-labelledby="h-plan">
+    <div><h2 id="h-plan">Personal Plan</h2><p>Write what you want to get better at, or when your next cup is. It builds today's routine for you.</p></div>
+    <span class="pro">PRO · 3 A DAY</span>
+    <div class="in"><input id="planin" placeholder="e.g. my edits are slow, cup on Friday" aria-label="What you want to train"><button class="btn" id="planbtn" style="background:var(--calm)">Build my routine</button></div>
+    <div class="chips" id="planlen" role="group" aria-label="Time"><button class="chip" aria-pressed="false">15 min</button><button class="chip" aria-pressed="true">30 min</button><button class="chip" aria-pressed="false">45 min</button><button class="chip" aria-pressed="false">60 min</button><button class="chip" aria-pressed="false">90 min</button></div>
+  </section>
+  <section><div class="sh"><h2>Routines</h2><span>Tap one to see every set</span></div><div class="rlist" id="rlist"></div></section>
+  <section><div class="sh"><h2>Your routines</h2><button>+ Build your own</button></div><div class="rlist" id="mylist"></div></section>
+  <section><div class="sh"><h2>Maps</h2><span>Tap to copy the code</span></div><div class="maps" id="maps"></div></section>
+</main>
+
+<!-- routine detail -->
+<main class="wrap page" id="p-routine" hidden></main>
+
+<!-- session -->
+<main class="wrap page" id="p-session" hidden></main>
+
+<!-- done -->
+<main class="wrap page" id="p-done" hidden>
+  <div class="donep">
+    <span class="eyebrow" style="color:var(--ok)">Counted</span>
+    <div class="big">Routine done.</div>
+    <p style="color:var(--mute);max-width:46ch">The server checked the time. This one counts for your streak, the leaderboard and your weekly goal.</p>
+    <div class="rewards"><div class="rw"><b>+1</b><span>spin in Drops</span></div><div class="rw"><b class="stk">4</b><span>days in a row</span></div><div class="rw"><b>+120</b><span>leaderboard points</span></div></div>
+    <div class="tctl"><button class="btn big" data-go="community">Spin the wheel</button><button class="btn g big" id="tocool">Cool down · 2 min</button></div>
+  </div>
+</main>
+
+<!-- ================= PROGRESS ================= -->
+<main class="wrap page" id="p-progress" hidden>
+  <div class="ph"><span class="eyebrow">Progress</span><h1>November so far</h1><p>One counted routine marks the day.</p></div>
+  <div class="stats card"><div class="stat"><b>12</b><span>routines</span></div><div class="stat"><b>9 h 40</b><span>trained</span></div><div class="stat"><b class="stk">3</b><span>days in a row</span></div><div class="stat"><b>7</b><span>best streak</span></div></div>
+  <div class="grid2">
+    <section class="card"><div class="sh"><h2>Training days</h2><span>November</span></div><div class="cal" id="cal"></div></section>
+    <section class="card chart"><div class="sh"><h2>Aim</h2><span>VT Pasu Rasp · +14 %</span></div>
+      <svg viewBox="0 0 320 170" role="img" aria-label="Aim score rising from 612 to 699 over three weeks">
+        <g stroke="var(--line)" stroke-width="1"><path d="M30 20H315M30 70H315M30 120H315"/></g>
+        <g fill="var(--mute)" font-size="10" font-family="JetBrains Mono, monospace"><text x="0" y="24">720</text><text x="0" y="74">660</text><text x="0" y="124">600</text><text x="30" y="160">3 weeks ago</text><text x="268" y="160">today</text></g>
+        <path d="M30 110 C70 106 90 98 120 92 S170 80 200 74 S250 56 280 44 L315 36 L315 140 L30 140 Z" fill="var(--accent)" opacity=".12"/>
+        <path d="M30 110 C70 106 90 98 120 92 S170 80 200 74 S250 56 280 44 L315 36" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="315" cy="36" r="4.5" fill="var(--accent)"/>
+        <path d="M168 20V140" stroke="var(--warm)" stroke-dasharray="3 4"/><text x="172" y="134" fill="var(--warm)" font-size="10" font-family="Inter, sans-serif">sens changed</text>
+      </svg>
+      <p class="ex" style="margin-top:8px">From KovaaK's results, Windows app</p>
+    </section>
+  </div>
+  <section><div class="sh"><h2>Badges</h2><span>7 of 24</span></div><div class="badges" id="badges"></div></section>
+  <p class="ex">Example data</p>
+</main>
+
+<!-- ================= COMMUNITY ================= -->
+<main class="wrap page" id="p-community" hidden>
+  <div class="ph"><span class="eyebrow">Community</span><h1>Train together.</h1><p>The weekly leaderboard, your friends and Drops.</p></div>
+  <section class="card drops" id="drops">
+    <div class="wheel"><div class="w" id="wheel"></div><div class="hub" id="hub">0 spins</div></div>
+    <div style="display:grid;gap:14px">
+      <div><h2 style="font-size:22px;letter-spacing:-.02em">Drops</h2><p style="color:var(--mute);margin-top:4px">Every counted routine gives one spin. Win overlay skins, timer rings, sounds, Pro days or points.</p></div>
+      <div><button class="btn" id="spin" disabled>Finish a routine to spin</button></div>
+      <div class="feed" id="feed"><span><b>tiltproof</b> won Title: Box God</span><span><b>lucaedits</b> won 3 Pro days</span><span><b>jonasfn</b> won Aurora background</span></div>
+    </div>
+  </section>
+  <div class="grid2">
+    <section><div class="sh"><h2>This week</h2><span class="prize">Top 3 win <b>1 month Pro</b></span></div><div class="lb" id="lb"></div></section>
+    <section><div class="sh"><h2>Friends</h2><button>+ Add</button></div>
+      <div class="fr">
+        <div class="card row"><span class="live"></span><div class="t"><b>lucaedits</b><span>Training now · Daily Pro Routine</span></div></div>
+        <div class="card row"><div class="ico">5d</div><div class="t"><b>tiltproof</b><span>5 days in a row</span></div></div>
+        <div class="card row"><div class="ico">—</div><div class="t"><b>jonasfn</b><span>Last trained 3 days ago</span></div><button class="chip">Nudge</button></div>
+      </div>
+    </section>
+  </div>
+  <section class="card row" style="padding:20px"><div class="ico" style="--c:#8b95ff">DC</div><div class="t"><b>Repline Discord</b><span>Bug reports, ideas, team partners and new routines first.</span></div><button class="btn g">Open Discord</button></section>
+  <p class="ex">Example data</p>
+</main>
+
+<!-- ================= MORE ================= -->
+<main class="wrap page" id="p-more" hidden>
+  <div class="ph"><span class="eyebrow">More</span><h1>Everything else.</h1></div>
+  <section><div class="sh"><h2>Mind &amp; Body</h2><span>Before and after you play</span></div><div class="tiles" id="mind"></div></section>
+  <section><div class="sh"><h2>In-game tools</h2><span>Windows app</span></div><div class="tiles" id="tools"></div></section>
+  <section class="card win"><div><h2>Repline for Windows</h2><p>Your routine as an overlay over the game, hotkeys, game detection for Verified runs and KovaaK's tracking. Never touches Fortnite.</p></div><button class="btn w">Download · free</button></section>
+  <section><div class="sh"><h2>Plans</h2><span>Payments start after the launch month</span></div>
+    <div class="tiers">
+      <div class="card tier"><h3>Free</h3><div class="pr">€0</div><ul><li>Every routine and timer</li><li>Streaks, leaderboard, Drops</li><li>5 Mind &amp; Body exercises</li></ul></div>
+      <div class="card tier"><h3>Standard</h3><div class="pr">€3.99<small> / month</small></div><ul><li>Everything in Free</li><li>Personal Plan, 1 a day</li><li>Your own routines</li></ul><span class="ex">or €29.99 a year</span></div>
+      <div class="card tier hl"><h3>Pro <span class="pro">· YOU, UNTIL 13 DEC</span></h3><div class="pr">€6.99<small> / month</small></div><ul><li>Personal Plan, 3 a day</li><li>All aim history and coach notes</li><li>All exercises, gold overlay skin</li></ul><span class="ex">or €49.99 a year</span></div>
+    </div>
+  </section>
+  <section><div class="sh"><h2>Questions</h2></div><div class="qa">
+    <details open><summary>When does a routine count?</summary><p>When you really trained it. Sets can't be skipped, and the server checks that the real time has passed. In the Windows app, Fortnite or KovaaK's also has to run during the game sets.</p></details>
+    <details><summary>Can the Windows app get me banned?</summary><p>No. Repline never touches Fortnite: no memory, no game files, no network. It only looks at the list of running programs, like Task Manager or Discord does.</p></details>
+    <details><summary>Do I need an account?</summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
+    <details><summary>Which keys can I use?</summary><p>Space start or pause, R restart (+15 s while you switch), F full screen.</p></details>
+  </div></section>
+  <section class="tiles"><button class="tile"><b>Partners</b><span>Creator codes and 50 % commission</span></button><button class="tile"><b>Report a bug</b><span>Goes straight to the devs</span></button><button class="tile"><b>Suggest a feature</b><span>Vote on ideas in Discord</span></button></section>
+</main>
+
+<!-- ================= VISITOR ================= -->
+<div id="p-visitor" hidden>
+  <div class="vbar"><div class="wrap"><b style="color:var(--fg);font-size:17px">Repline</b><span class="sp"></span><button class="chip" id="backin">Back to signed in</button><button class="btn dc" style="padding:8px 16px">Sign in</button></div></div>
+  <main class="wrap vis">
+    <section class="vhero">
+      <div><span class="eyebrow">Fortnite training, every day</span><h1>Train like the pros. 15 minutes is enough to start.</h1><p>Daily routines set by set, with timers, map codes and one focus per set. Free.</p>
+        <div class="tctl" style="justify-content:flex-start;margin-top:26px"><button class="btn big dc">Sign in with Discord</button><button class="btn g big" id="peek">Look at the routines</button></div>
+        <div class="chips"><span class="chip">Personal Plan</span><span class="chip">Windows overlay</span><span class="chip">Weekly prizes</span><span class="chip">Hand warm-up</span></div>
+      </div>
+      <div class="card demo"><span class="eyebrow">Quick Start · 15 min</span>
+        <div class="set" style="--c:var(--blue)"><span class="n">1</span><div><b>Edit wall</b><span>Clean first, then fast</span></div><em>5 min</em></div>
+        <div class="set" style="--c:var(--blue)"><span class="n">2</span><div><b>Freebuild 110%</b><span>Push your mechs</span></div><em>5 min</em></div>
+        <div class="set" style="--c:var(--calm)"><span class="n">3</span><div><b>Piece control</b><span>Walls and cones first</span></div><em>5 min</em></div>
+        <span class="ex mono">Map 2424-4344-7824</span>
+      </div>
+    </section>
+    <section class="how">
+      <div class="card"><span class="k">Every day</span><b>Pick a routine</b><span>15 minutes to 2 hours. Or tell the Personal Plan what you want to fix.</span></div>
+      <div class="card"><span class="k">Set by set</span><b>Train with a timer</b><span>Map code, focus and time for every set. No skipping, so it really counts.</span></div>
+      <div class="card"><span class="k">After</span><b>Watch it add up</b><span>Streaks, a weekly leaderboard with prizes, and a spin for every routine.</span></div>
+    </section>
+    <p class="ex" style="text-align:center">Independent service, not affiliated with Epic Games.</p>
+  </main>
+</div>
+
+<!-- ================= PROFILE SHEET ================= -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="pname">
+  <button class="x" id="sx" aria-label="Close">✕</button>
+  <div class="who"><div class="av">K</div><div><b id="pname">kxvin</b><span><span class="title">Edit Machine</span> · Pro until 13 Dec · signed in with Discord</span></div></div>
+  <div class="pstats"><div><b class="stk">3</b><span>day streak</span></div><div><b>#14</b><span>this week</span></div><div><b>12</b><span>routines</span></div></div>
+  <div class="grp"><h5>Training</h5>
+    <div class="opt"><span class="l">Weekly goal<small>Days you want to train</small></span><span class="seg" data-seg><button aria-pressed="false">3</button><button aria-pressed="true">5</button><button aria-pressed="false">7</button></span></div>
+    <div class="opt"><span class="l">Pause between sets<small>Time to open the next map</small></span><span class="seg" data-seg><button aria-pressed="false">15 s</button><button aria-pressed="true">30 s</button><button aria-pressed="false">60 s</button></span></div>
+    <div class="opt"><span class="l">Ask me to warm up<small>Once a day, before the first set</small></span><button class="sw" role="switch" aria-checked="true" aria-label="Ask me to warm up"></button></div>
+    <div class="opt"><span class="l">Finish sound</span><button class="v">Chime ›</button></div>
+  </div>
+  <div class="grp"><h5>Reminders</h5>
+    <div class="opt"><span class="l">Daily reminder<small>Discord DM and Windows</small></span><button class="sw" role="switch" aria-checked="true" aria-label="Daily reminder"></button></div>
+    <div class="opt"><span class="l">Time</span><button class="v">18:00 ›</button></div>
+    <div class="opt"><span class="l">Streak in danger</span><button class="sw" role="switch" aria-checked="true" aria-label="Streak in danger reminder"></button></div>
+  </div>
+  <div class="grp"><h5>Look</h5>
+    <div class="opt"><span class="l">Overlay skin</span><button class="v">Neon ›</button></div>
+    <div class="opt"><span class="l">Timer ring</span><button class="v">Bold ›</button></div>
+    <div class="opt"><span class="l">Title on the leaderboard</span><button class="v">Edit Machine ›</button></div>
+    <div class="opt"><span class="l">Animations</span><button class="sw" role="switch" aria-checked="true" aria-label="Animations"></button></div>
+  </div>
+  <div class="grp"><h5>Windows app</h5>
+    <div class="opt"><span class="l">Game detection<small>For Verified runs</small></span><button class="sw" role="switch" aria-checked="true" aria-label="Game detection"></button></div>
+    <div class="opt"><span class="l">KovaaK's tracking</span><button class="sw" role="switch" aria-checked="true" aria-label="KovaaK's tracking"></button></div>
+    <div class="opt"><span class="l">Overlay position</span><button class="v">Top right ›</button></div>
+  </div>
+  <div class="grp"><h5>Account</h5>
+    <div class="opt"><span class="l">Plan<small>Every Pro feature free until 13 Dec</small></span><button class="v">Plans ›</button></div>
+    <div class="opt"><span class="l">Creator code<small>Support a creator, free for you</small></span><button class="v">Add ›</button></div>
+    <div class="opt"><span class="l">Help<small>Report a bug, suggest a feature</small></span><button class="v">›</button></div>
+  </div>
+  <button class="danger" id="signout">Sign out</button>
+  <p class="ex">“Sign out” here shows the page new visitors see.</p>
+</aside>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- data ---------- */
+const COL = { aim: "var(--accent)", mech: "var(--blue)", fight: "var(--calm)", live: "var(--ok)", review: "#c7c7cc", warm: "var(--warm)", calm: "var(--calm)" };
+const V5 = "2424-4344-7824";
+const SETS = {
+  kov: ["KovaaK's · Tjino Tracking", "aim", "Play the whole playlist. Smooth tracking, don't chase scores.", "KovaaK's playlist"],
+  flick: ["V5 Aim · Reaction flick", "aim", "React, flick, stop on the target.", V5],
+  edit: ["Edit wall", "mech", "Edits on the wall. Clean first, then fast.", V5],
+  slow: ["Freebuild · 90%", "mech", "Speed to 90%. Exact, no misedits.", V5],
+  fast: ["Freebuild · 110%", "mech", "Push your mechs: 90s, ramp rushes, retakes.", V5],
+  piece: ["Piece control", "fight", "Take walls and cones first, then reset. Stay calm.", V5],
+  box: ["1v1 Build Fights", "fight", "Real opponents. Use what you just trained.", "1832-0431-4852"],
+  real: ["Pro Realistics", "fight", "Real terrain and loot. High ground, then pressure.", "9520-0654-8075"],
+  ranked: ["Ranked · one focus", "live", "Pick one focus for every game.", "Fortnite · Ranked"],
+  vod: ["VOD review", "review", "Watch one fight you lost. What killed you?", "Career → Replays"],
+  fix: ["Fix drill", "mech", "Drill the exact mechanic that killed you.", V5],
+  prep: ["Cup check", "review", "Settings unchanged, drop planned, water ready.", "—"],
+  warm: ["Hand warm-up", "warm", "Fingers, wrists, shoulders.", "Repline"],
+  breathe: ["Cyclic sighing", "calm", "Two short inhales, one long exhale.", "Repline"]
+};
+const ROUTINES = [
+  { id: "quick", name: "Quick Start", text: "Edits, building and piece control on one map.", c: "var(--accent)", star: "Start here", len: { "15 min": [["edit", 5], ["fast", 5], ["piece", 5]] } },
+  { id: "daily", name: "Daily Pro Routine", text: "Aim, mechanics, fights, ranked, review.", c: "var(--blue)", len: { Short: [["kov", 8], ["edit", 5], ["slow", 5], ["fast", 5], ["piece", 7], ["ranked", 20], ["vod", 5], ["fix", 5]], Medium: [["kov", 12], ["edit", 8], ["slow", 10], ["fast", 10], ["piece", 12], ["box", 15], ["ranked", 25], ["vod", 5], ["fix", 5]], Long: [["kov", 15], ["flick", 8], ["edit", 12], ["slow", 15], ["fast", 15], ["piece", 18], ["real", 20], ["ranked", 35], ["vod", 7], ["fix", 5]] } },
+  { id: "aim", name: "Quick: Aim", text: "KovaaK's tracking and V5 flicks.", c: "var(--accent)", len: { "20 min": [["kov", 12], ["flick", 8]] } },
+  { id: "mech", name: "Quick: Mechanics", text: "Edit wall, freebuild at 90% and 110%, piece control.", c: "var(--blue)", len: { "30 min": [["edit", 8], ["slow", 8], ["fast", 7], ["piece", 7]] } },
+  { id: "cup", name: "Cup day", text: "Warm up, check settings, nothing new.", c: "var(--warm)", len: { "30 min": [["warm", 3], ["kov", 8], ["edit", 6], ["piece", 8], ["prep", 5]] } }
+];
+const MINE = [{ id: "mine", name: "Box fight grind", text: "Made by you · shared 3 times", c: "var(--calm)", len: { "45 min": [["edit", 10], ["piece", 15], ["box", 20]] } }];
+const MAPS = [["Mechanics Training V5", "by Raider464", V5], ["1v1 Build Fights", "by Rezon", "1832-0431-4852"], ["Turtle Fights", "by martoz", "1513-6690-9481"], ["Pro Realistics", "by chap", "9520-0654-8075"], ["Clutch Realistics", "2v3 and worse", "6791-7475-7946"]];
+const TODAY = [
+  { name: "Warm up your hands", len: "3 min", c: "var(--warm)", sub: "Fingers, wrists, shoulders. Cold hands miss edits.", mini: [["Finger spreads", "0:40"], ["Wrist circles", "0:40"], ["Shoulder rolls", "0:40"], ["Arm circles", "1:00"]], go: "Start warm-up", skip: true },
+  { name: "Daily Pro Routine · Short", len: "60 min", c: "var(--accent)", sub: "8 sets, mostly on one map. Every set has one focus.", mini: ROUTINES[1].len.Short.map(([k, m]) => [SETS[k][0], m + " min"]), go: "Start routine", routine: ["daily", "Short"] },
+  { name: "Cool down", len: "2 min", c: "var(--calm)", sub: "Cyclic sighing. Brings your heart rate down after ranked.", mini: [["Cyclic sighing", "2:00"]], go: "Start breathing" }
+];
+const BADGES = [["First rep", "1 routine", 1, "var(--accent)"], ["Week warrior", "5 days in a week", 0, ""], ["Edit Machine", "10 mechanics sets", 1, "var(--blue)"], ["Verified", "1 Verified run", 1, "var(--ok)"], ["Early bird", "Train before 10:00", 1, "var(--warm)"], ["Cup ready", "3 cup days", 0, ""], ["Calm head", "10 cool downs", 1, "var(--calm)"], ["Streak 7", "7 days in a row", 1, "var(--gold)"], ["Night owl", "Train after 23:00", 1, "var(--calm)"], ["Hundred", "100 routines", 0, ""]];
+const LB = [["tiltproof", 2140, 1], ["lucaedits", 1980, 1], ["jonasfn", 1720, 0], ["kxvin (you)", 860, 1, 1]];
+const MIND = [["Box breathing", "4 · 4 · 4 · 4, before ranked", "1 min", 0], ["Cyclic sighing", "Calm down fast", "2 min", 0], ["Long exhale", "After a lost game", "2 min", 0], ["Hand warm-up", "Quick or full", "3–6 min", 0], ["Focus dot", "Keep your eyes still", "30 s", 0], ["Calm trigger", "React, don't flinch", "30 s", 0], ["Resonance breathing", "6 breaths a minute", "5 min", 1], ["Edge vision", "See more of the screen", "45 s", 1]];
+const TOOLS = [["Focus Cue", "One focus, called out at random times while you play"], ["Focus Tunnel", "Darkens the screen edges in drill and fight sets"], ["Look Around", "Reminds you to check left, right and behind you"], ["Pump Mode", "The tunnel shows after your pump key"]];
+
+/* ---------- state ---------- */
+let doneSteps = 0, spins = 0, streak = 3, current = "today", sel = null, sess = null;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function toast(t) { const e = $("#toast"); e.textContent = t; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => e.hidden = true, 1800); }
+function copy(code) { try { navigator.clipboard.writeText(code).then(() => toast("Map code copied"), () => toast(code)); } catch (e) { toast(code); } }
+const mins = (sets) => sets.reduce((a, [, m]) => a + m, 0);
+
+/* ---------- router ---------- */
+const PAGES = ["today", "train", "routine", "session", "done", "progress", "community", "more", "visitor"];
+const SPINE = { routine: "train", session: "train", done: "train" };
+const TITLES = { today: "Today", train: "Train", routine: "Train", session: "Training", done: "Done", progress: "Progress", community: "Community", more: "More" };
+function show(p) {
+  if (!PAGES.includes(p)) p = "today";
+  if ((p === "routine" && !sel) || ((p === "session") && !sess)) p = "train";
+  current = p;
+  PAGES.forEach((x) => { const el = $("#p-" + x); if (el) el.hidden = x !== p; });
+  const vis = p === "visitor";
+  $("#spine").hidden = vis; document.querySelector(".mtop").hidden = vis; document.body.style.paddingLeft = vis ? "0" : "";
+  document.querySelectorAll(".it[data-go]").forEach((b) => b.dataset.go === (SPINE[p] || p) ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  $("#mtitle").textContent = TITLES[p] || "";
+  $("#spine").classList.remove("open");
+  if (location.hash.slice(1) !== p) history.replaceState(null, "", "#" + p);
+  scrollTo(0, 0);
+}
+document.addEventListener("click", (e) => { const g = e.target.closest("[data-go]"); if (g) { e.preventDefault(); show(g.dataset.go); } });
+addEventListener("hashchange", () => show(location.hash.slice(1)));
+$("#mopen").onclick = () => $("#spine").classList.add("open");
+
+/* ---------- spine + shared ---------- */
+function syncShared() {
+  document.querySelectorAll(".prog").forEach((c) => { const L = 2 * Math.PI * 19; c.style.strokeDasharray = `${L * doneSteps / 3} ${L}`; });
+  document.querySelectorAll(".lgn").forEach((e) => e.textContent = doneSteps + "/3");
+  document.querySelectorAll(".stk").forEach((e) => e.textContent = streak);
+  const on = [1, 1, doneSteps >= 2 ? 1 : 0, 0, 0, 0, 0];
+  $("#wk").innerHTML = on.map((x, i) => `<i class="${x ? "on" : ""} ${i === 2 ? "t" : ""} ${i === 4 ? "cup" : ""}" title="${["Mon", "Tue", "Wed", "Thu", "Fri · cup", "Sat", "Sun"][i]}"></i>`).join("") + `<small>${streak}d</small>`;
+  $("#week").innerHTML = ["M", "T", "W", "T", "F", "S", "S"].map((d, i) => `<div class="wd ${on[i] ? "on" : ""} ${i === 2 ? "today" : ""} ${i === 4 ? "cup" : ""}"><i></i>${i === 4 ? "Cup" : d}</div>`).join("");
+  $("#spinBadge").hidden = !spins; $("#spinBadge").textContent = spins;
+  $("#rwh").classList.toggle("off", !spins);
+  $("#rwt").textContent = spins ? "Your spin is ready" : "Spin after your routine";
+  $("#rws").textContent = spins ? "Open Community to spin" : "Every counted routine gives one spin";
+  $("#hub").textContent = spins + (spins === 1 ? " spin" : " spins");
+  const sp = $("#spin"); sp.disabled = !spins; sp.textContent = spins ? "Spin the wheel" : "Finish a routine to spin";
+}
+
+/* ---------- today ---------- */
+function renderToday() {
+  $("#path").innerHTML = TODAY.map((s, i) => {
+    const st = i < doneSteps ? "done" : i === doneSteps ? "now" : "";
+    return `<div class="step ${st}" style="--c:${s.c}"><div class="dot">${i < doneSteps ? "✓" : i + 1}</div><div class="sbox">
+      <div class="bh"><h3>${s.name}</h3><span class="len">${s.len}</span><span class="tag">${i < doneSteps ? "Done" : i === doneSteps ? "Now" : "Later"}</span></div>
+      <p class="sub">${s.sub}</p>
+      <div class="mini">${s.mini.map(([n, t]) => `<div class="ms"><b>${n}</b><span>${t}</span></div>`).join("")}</div>
+      <div class="acts"><button class="btn" data-step="${i}">${s.go}</button>${s.skip ? '<button class="lnk" data-skipstep>Skip today</button>' : ""}${s.routine ? '<button class="lnk" data-go="train">Change routine</button>' : ""}</div></div></div>`;
+  }).join("");
+  const left = 3 - doneSteps;
+  $("#hisub").textContent = doneSteps >= 3 ? "Day done. See you tomorrow." : doneSteps === 0 ? "Three steps today. About 65 minutes." : `${left} step${left > 1 ? "s" : ""} left today.`;
+  syncShared();
+}
+$("#path").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-step]"), sk = e.target.closest("[data-skipstep]");
+  if (sk) { doneSteps = 1; renderToday(); return; }
+  if (!b) return;
+  const s = TODAY[+b.dataset.step];
+  if (s.routine) { openRoutine(s.routine[0], s.routine[1]); return; }
+  startSession(s.name, s.mini.map(([n, t]) => [n, t]), true);
+});
+
+/* ---------- train ---------- */
+function rrHTML(r) { const ks = Object.keys(r.len); const ms = ks.map((k) => mins(r.len[k])); return `<button class="rr" data-r="${r.id}" style="--c:${r.c}"><i></i><span>${r.star ? `<span class="star">${r.star}</span>` : ""}<b>${esc(r.name)}</b><span>${esc(r.text)}</span></span><em>${ms.length > 1 ? Math.min(...ms) + "–" + Math.max(...ms) : ms[0]} min</em></button>`; }
+$("#rlist").innerHTML = ROUTINES.map(rrHTML).join("");
+$("#mylist").innerHTML = MINE.map(rrHTML).join("");
+$("#maps").innerHTML = MAPS.map(([n, b, c]) => `<button class="map" data-copy="${c}"><b>${n}</b><span>${b}</span><code>${c}</code></button>`).join("");
+document.addEventListener("click", (e) => { const r = e.target.closest("[data-r]"); if (r) openRoutine(r.dataset.r); const c = e.target.closest("[data-copy]"); if (c) copy(c.dataset.copy); });
+document.querySelectorAll("#planlen .chip").forEach((c) => c.onclick = () => document.querySelectorAll("#planlen .chip").forEach((x) => x.setAttribute("aria-pressed", x === c)));
+$("#planbtn").onclick = () => {
+  const t = ($("#planin").value || "").toLowerCase(), len = parseInt(document.querySelector('#planlen [aria-pressed="true"]').textContent);
+  let pick = /aim|track|flick/.test(t) ? ["kov", "flick", "piece"] : /cup|tournament/.test(t) ? ["warm", "kov", "edit", "piece", "prep"] : /fight|box|piece/.test(t) ? ["edit", "piece", "box"] : ["edit", "slow", "fast", "piece"];
+  const each = Math.max(3, Math.round(len / pick.length));
+  const r = { id: "plan", name: "Personal Plan · today", text: t ? `For: “${esc($("#planin").value)}”` : "Built from your goal", c: "var(--calm)", len: { [len + " min"]: pick.map((k) => [k, each]) } };
+  ROUTINES.plan = r; openRoutine("plan");
+};
+function findR(id) { return id === "plan" ? ROUTINES.plan : ROUTINES.concat(MINE).find((r) => r.id === id); }
+function openRoutine(id, lenKey) {
+  const r = findR(id); if (!r) return;
+  sel = { r, len: lenKey || Object.keys(r.len)[0] };
+  renderRoutine(); show("routine");
+}
+function renderRoutine() {
+  const { r, len } = sel, sets = r.len[len], m = mins(sets), codes = [...new Set(sets.map(([k]) => SETS[k][3]).filter((c) => /\d{4}-/.test(c)))];
+  $("#p-routine").innerHTML = `<button class="back" data-go="train">‹ All routines</button>
+  <div class="ph"><span class="eyebrow" style="color:${r.c}">${r.star || "Routine"}</span><h1>${esc(r.name)}</h1><p>${r.text}</p></div>
+  ${Object.keys(r.len).length > 1 ? `<div class="chips" role="group" aria-label="Length">${Object.keys(r.len).map((k) => `<button class="chip" data-len="${k}" aria-pressed="${k === len}">${k} · ${mins(r.len[k])} min</button>`).join("")}</div>` : ""}
+  <div class="det"><div class="sets">${sets.map(([k, mm], i) => `<div class="set" style="--c:${COL[SETS[k][1]]}"><span class="n">${i + 1}</span><div><b>${SETS[k][0]}</b><span>${SETS[k][2]}</span></div><em>${mm} min</em></div>`).join("")}</div>
+  <aside class="card sum"><div class="bar">${sets.map(([k, mm]) => `<i style="--c:${COL[SETS[k][1]]};--w:${mm}"></i>`).join("")}</div>
+    <div class="kv"><div><span>Total</span><b>${m} min</b></div><div><span>Sets</span><b>${sets.length}</b></div><div><span>Reward</span><b>1 spin</b></div></div>
+    ${codes.length ? `<div style="display:grid;gap:6px">${codes.map((c) => `<button class="codebox" data-copy="${c}" style="border:0;justify-content:space-between">${c}<span style="font-family:var(--sans);font-size:13px;color:var(--mute)">Copy</span></button>`).join("")}</div>` : ""}
+    <button class="btn big" id="startR">Start routine</button><span class="ex">Sets can't be skipped. That's what makes it count.</span></aside></div>`;
+  $("#p-routine").querySelectorAll("[data-len]").forEach((b) => b.onclick = () => { sel.len = b.dataset.len; renderRoutine(); });
+  $("#startR").onclick = () => startSession(r.name, sets.map(([k, mm]) => [SETS[k][0], mm + " min", k]), false);
+}
+
+/* ---------- session (demo: 1 real second = 1 minute) ---------- */
+function startSession(name, list, isStep) {
+  sess = { name, list: list.map(([n, t, k]) => ({ n, k, secs: /min/.test(t) ? parseInt(t) * 60 : (parseInt(t.split(":")[0]) * 60 + parseInt(t.split(":")[1])) })), i: 0, left: 0, run: true, isStep };
+  sess.left = sess.list[0].secs; show("session"); renderSession(); tick();
+}
+function renderSession() {
+  const s = sess, cur = s.list[s.i], k = cur.k && SETS[cur.k], R = 120, L = 2 * Math.PI * R, p = 1 - s.left / cur.secs;
+  $("#p-session").innerHTML = `<button class="back" id="leave">‹ Leave routine</button>
+  <div class="sess"><div class="card timer">
+    <span class="eyebrow">${esc(s.name)} · set ${s.i + 1} of ${s.list.length}</span>
+    <div class="tring"><svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="${R}" fill="none" stroke="var(--panel2)" stroke-width="12"/><circle cx="130" cy="130" r="${R}" fill="none" stroke="${k ? COL[k[1]] : "var(--accent)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${L * p} ${L}"/></svg>
+      <div class="tt"><b id="clock">${Math.floor(s.left / 60)}:${String(s.left % 60).padStart(2, "0")}</b><span>left</span></div></div>
+    <h2>${esc(cur.n)}</h2>${k ? `<p class="hint">${k[2]}</p>${/\d{4}-/.test(k[3]) ? `<span class="codebox">${k[3]}<button data-copy="${k[3]}">Copy</button></span>` : `<span class="ex">${k[3]}</span>`}` : ""}
+    <div class="tctl"><button class="btn big w" id="pp">${s.run ? "Pause" : "Resume"}</button><button class="btn g big" id="rs">Restart set</button></div>
+    <span class="keys"><kbd>Space</kbd> pause · <kbd>R</kbd> restart · demo runs fast: 1 s = 1 min</span>
+  </div>
+  <aside class="sets queue">${s.list.map((x, i) => `<div class="set ${i < s.i ? "fin" : i === s.i ? "cur" : ""}" style="--c:${x.k ? COL[SETS[x.k][1]] : "var(--accent)"}"><span class="n">${i < s.i ? "✓" : i + 1}</span><div><b>${esc(x.n)}</b></div><em>${Math.round(x.secs / 60) || 1} min</em></div>`).join("")}</aside></div>`;
+  $("#pp").onclick = () => { s.run = !s.run; renderSession(); };
+  $("#rs").onclick = () => { s.left = cur.secs; renderSession(); };
+  $("#leave").onclick = () => { sess = null; show("today"); };
+}
+function tick() {
+  clearInterval(tick.t);
+  tick.t = setInterval(() => {
+    if (!sess || current !== "session" || !sess.run) return;
+    sess.left = Math.max(0, sess.left - 60 * (sess.list[sess.i].secs < 120 ? .25 : 1));
+    if (sess.left <= 0) {
+      sess.i++;
+      if (sess.i >= sess.list.length) { clearInterval(tick.t); finish(); return; }
+      sess.left = sess.list[sess.i].secs;
+    }
+    renderSession();
+  }, 1000);
+}
+function finish() {
+  const wasStep = sess.isStep; sess = null;
+  doneSteps = Math.min(3, doneSteps + 1);
+  if (!wasStep || doneSteps === 2) { doneSteps = Math.max(doneSteps, 2); spins++; streak = 4; renderToday(); show("done"); return; }
+  renderToday(); show("today"); toast(doneSteps >= 3 ? "Day done" : "Nice. Next step is ready.");
+}
+addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeSheet();
+  if (current !== "session" || !sess || e.target.closest("input")) return;
+  if (e.code === "Space") { e.preventDefault(); sess.run = !sess.run; renderSession(); }
+  if (e.key === "r" || e.key === "R") { sess.left = sess.list[sess.i].secs; renderSession(); }
+});
+$("#tocool").onclick = () => startSession("Cool down", [["Cyclic sighing", "2:00"]], true);
+
+/* ---------- progress ---------- */
+(function cal() {
+  const lv = { 3: 2, 4: 1, 6: 2, 10: 2, 11: 2, 12: 1, 13: 2, 17: 2, 18: 1, 19: 2, 23: 2, 24: 2 };
+  let h = ["M", "T", "W", "T", "F", "S", "S"].map((d) => `<span>${d}</span>`).join("") + "<i class='x'></i>".repeat(5);
+  for (let d = 1; d <= 30; d++) h += `<i class="${lv[d] ? "l" + lv[d] : ""} ${d === 25 ? "today" : ""}">${d}</i>`;
+  $("#cal").innerHTML = h;
+})();
+$("#badges").innerHTML = BADGES.map(([n, d, got, c]) => `<div class="card bd ${got ? "" : "lock"}" style="--c:${c}"><i>${got ? n[0] : "?"}</i><b>${n}</b><span>${d}</span></div>`).join("");
+
+/* ---------- community ---------- */
+$("#lb").innerHTML = LB.map(([n, p, v, me], i) => `<div class="lr ${me ? "you" : ""}"><span class="p">${me ? 14 : i + 1}</span><span class="a">${n[0].toUpperCase()}</span><b>${n}${v ? '<span class="v">✓ Verified</span>' : ""}</b><span class="mono">${p.toLocaleString("en")}</span></div>`).join("");
+let rot = 0;
+$("#spin").onclick = () => {
+  if (!spins) return; spins--; rot += 1440 + Math.floor(Math.random() * 360);
+  $("#wheel").style.transform = `rotate(${rot}deg)`; syncShared(); $("#spin").disabled = true;
+  setTimeout(() => { const prizes = ["Neon overlay skin", "+25 points", "Air horn sound", "1 Pro day", "Pulse timer ring"]; const w = prizes[Math.floor(Math.random() * prizes.length)]; toast("You won: " + w); $("#feed").insertAdjacentHTML("afterbegin", `<span><b>kxvin</b> won ${w}</span>`); syncShared(); }, 3100);
+};
+
+/* ---------- more ---------- */
+$("#mind").innerHTML = MIND.map(([n, d, t, pro]) => `<button class="tile"><div class="row"><div class="ico" style="--c:var(--calm)">${t.replace(" min", "m").replace(" s", "s")}</div>${pro ? '<span class="pro">PRO</span>' : ""}</div><b>${n}</b><span>${d}</span></button>`).join("");
+$("#tools").innerHTML = TOOLS.map(([n, d]) => `<button class="tile"><b>${n}</b><span>${d}</span></button>`).join("");
+
+/* ---------- profile ---------- */
+const sheet = $("#sheet"), scrim = $("#scrim");
+function openSheet() { sheet.classList.add("open"); scrim.hidden = false; $("#sx").focus(); }
+function closeSheet() { sheet.classList.remove("open"); scrim.hidden = true; }
+document.querySelectorAll("[data-profile]").forEach((b) => b.onclick = openSheet);
+$("#sx").onclick = closeSheet; scrim.onclick = closeSheet;
+sheet.querySelectorAll(".sw").forEach((s) => s.onclick = () => s.setAttribute("aria-checked", s.getAttribute("aria-checked") !== "true"));
+sheet.querySelectorAll("[data-seg]").forEach((g) => g.querySelectorAll("button").forEach((b) => b.onclick = () => g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b))));
+$("#signout").onclick = () => { closeSheet(); show("visitor"); };
+$("#backin").onclick = () => show("today");
+$("#peek").onclick = () => show("train");
+
+/* ---------- boot ---------- */
+const now = new Date();
+$("#date").textContent = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+const hr = now.getHours();
+$("#hi").textContent = (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening") + ", kxvin.";
+const ms = new Date("2026-12-13T00:00:00+01:00") - now;
+$("#cd").textContent = ms > 0 ? `${Math.floor(ms / 864e5)}d ${String(Math.floor(ms / 36e5) % 24).padStart(2, "0")}h left` : "";
+renderToday();
+show(location.hash.slice(1) || "today");
+</script>
+</body></html>
