@@ -1289,6 +1289,107 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   } catch (e) { document.documentElement.classList.add("anim"); }
 </script>
 
+<style>
+/* ---------- 2.0 layout: left spine instead of the top bar ---------- */
+:root { --spine: 88px; --warmc: #ffb35c; --calmc: #8f7bff; }
+.top { display: none !important; }
+body { padding-left: var(--spine); }
+.spine { position: fixed; left: 0; top: 0; bottom: 0; z-index: 70; width: var(--spine); padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(16px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 0px); border-right: 1px solid var(--keyline); background: var(--obsidian); display: flex; flex-direction: column; align-items: center; gap: 4px; overflow-y: auto; scrollbar-width: none; }
+.sp-lg { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 14px; position: relative; color: var(--porcelain); flex: none; }
+.sp-lg svg { width: 48px; height: 48px; }
+.sp-lg span { position: absolute; font-size: 11px; font-weight: 700; font-family: var(--mono); }
+.sp-prog { transition: stroke-dasharray .6s var(--ease); }
+.sp-it { width: 72px; padding: 10px 0 8px; border-radius: 14px; display: grid; justify-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--ash); position: relative; letter-spacing: 0; flex: none; }
+.sp-it svg { width: 22px; height: 22px; }
+.sp-it:hover { color: var(--porcelain); }
+.sp-it[aria-current="page"] { color: var(--porcelain); background: var(--carbon); }
+.sp-b { position: absolute; top: 6px; right: 14px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--c1); color: #001018; font-size: 10px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; }
+.sp-wk { margin-top: auto; display: grid; gap: 7px; justify-items: center; padding: 14px 0; }
+.sp-wk i { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2e; display: block; }
+.sp-wk i.on { background: var(--c1); }
+.sp-wk i.t { box-shadow: 0 0 0 2px var(--obsidian), 0 0 0 3.5px var(--c1); }
+.sp-wk small { font-size: 10px; color: var(--ash); font-family: var(--mono); }
+.sp-me { width: 40px; height: 40px; border-radius: 50%; border: 0; background: linear-gradient(135deg, var(--c1), var(--c3)); color: #001018; font-weight: 700; font-size: 15px; cursor: pointer; background-size: cover; background-position: center; flex: none; }
+.sp-me.out { width: 64px; height: auto; border-radius: 12px; padding: 8px 0; font-size: 12px; background: var(--blue); color: #fff; }
+.mtop { display: none; }
+.subnav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.subnav a { border: 1px solid var(--keyline); background: var(--graphite); border-radius: 99px; padding: 7px 15px; font-size: 14px; color: var(--ash); letter-spacing: -.1px; }
+.subnav a:hover { color: var(--porcelain); }
+.subnav a[aria-current="page"] { background: var(--porcelain); color: #000; border-color: var(--porcelain); font-weight: 600; }
+.view.has-sub > .back { display: none; }
+/* today: the day as a path + a quiet rail */
+body.signed #v-home > section:not(#home-me) { display: none; }
+#home-me { padding-top: 32px; }
+.me-tgrid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; margin-top: 28px; }
+#me-cards.me-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); }
+#me-cards .c-card.wide { grid-column: auto; }
+.dpath { position: relative; display: grid; gap: 12px; }
+.dpath::before { content: ""; position: absolute; left: 23px; top: 30px; bottom: 40px; width: 2px; background: var(--keyline); }
+.dstep { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 16px; }
+.ddot { width: 48px; height: 48px; border-radius: 50%; background: var(--graphite); border: 2px solid var(--keyline); display: grid; place-items: center; z-index: 1; color: var(--ash); font-size: 14px; font-weight: 600; }
+.dstep.done .ddot { background: var(--sc); border-color: var(--sc); color: #001018; }
+.dstep.skip .ddot { border-style: dashed; }
+.dstep.now .ddot { border-color: var(--sc); color: var(--sc); box-shadow: 0 0 0 6px color-mix(in srgb, var(--sc) 18%, transparent); }
+.dbox { background: var(--graphite); border-radius: 18px; box-shadow: inset 0 0 0 1px var(--keyline); padding: 16px 18px; display: grid; gap: 12px; }
+.dstep.now .dbox { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sc) 45%, var(--keyline)); background: linear-gradient(160deg, color-mix(in srgb, var(--sc) 9%, var(--graphite)), var(--graphite) 60%); padding: 22px; }
+.dbh { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.dbh h3 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+.dstep.now .dbh h3 { font-size: 24px; }
+.dbh .dlen { font-family: var(--mono); font-size: 13px; color: var(--ash); }
+.dbh .dtag { margin-left: auto; font-size: 12px; color: var(--sc); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.dstep.done .dbh .dtag { color: var(--green); }
+.dstep.skip .dbh .dtag { color: var(--ash); }
+.dsub { color: var(--ash); font-size: 15px; margin: 0; }
+.dmini { display: none; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.dstep.now .dmini { display: grid; }
+.dmini div { background: var(--carbon); border-radius: 12px; padding: 9px 12px; display: grid; gap: 1px; }
+.dmini b { font-size: 14px; font-weight: 600; }
+.dmini span { font-size: 12px; color: var(--ash); font-family: var(--mono); }
+.dacts { display: none; gap: 14px; flex-wrap: wrap; align-items: center; }
+.dstep.now .dacts { display: flex; }
+.dacts .go { border: 0; background: var(--sc); color: #001018; font-weight: 700; padding: 12px 24px; border-radius: 99px; font-size: 16px; cursor: pointer; }
+.dacts .lnk, .dbox .lnk { border: 0; background: none; color: var(--ash); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 0; }
+.more-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: 48px; }
+.more-tiles a { display: grid; gap: 6px; align-content: start; background: var(--graphite); border-radius: 18px; box-shadow: inset 0 0 0 1px var(--keyline); padding: 18px; color: var(--porcelain); }
+.more-tiles a:hover { background: var(--carbon); }
+.more-tiles b { font-size: 17px; font-weight: 600; }
+.more-tiles span { font-size: 14px; color: var(--ash); }
+.more-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 48px; }
+.more-row > div { background: var(--graphite); border-radius: 18px; box-shadow: inset 0 0 0 1px var(--keyline); padding: 22px; display: grid; gap: 12px; align-content: start; }
+.more-row h2 { margin: 0; font-size: 21px; letter-spacing: -.3px; }
+#v-goal .maps-sec { margin-top: 56px; }
+@media (max-width: 900px) {
+  .me-tgrid { grid-template-columns: minmax(0, 1fr); }
+  #me-cards.me-grid { position: static; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .more-row { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  body { padding-left: 0; }
+  .spine { transform: translateX(-100%); transition: transform .28s var(--ease); box-shadow: 20px 0 60px rgba(0,0,0,.6); }
+  .spine.open { transform: none; }
+  .sp-scrim { position: fixed; inset: 0; z-index: 69; background: rgba(0,0,0,.5); }
+  .mtop { display: flex; align-items: center; gap: 12px; padding-top: calc(14px + env(safe-area-inset-top, 0px)); }
+  .mtop .sp-lg { margin: 0; width: 42px; height: 42px; border: 1px solid var(--keyline); border-radius: 12px; background: var(--graphite); cursor: pointer; padding: 0; }
+  .mtop .sp-lg svg { width: 34px; height: 34px; }
+  .mtop b { font-size: 17px; flex: 1; }
+  .mtop .sp-me { width: 36px; height: 36px; }
+  .mtop .sp-me.out { width: auto; padding: 8px 14px; }
+  #home-me { padding-top: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .spine, .sp-prog { transition: none; } }
+</style>
+<nav class="spine" id="spine" aria-label="Main">
+  <a class="sp-lg" href="#" aria-label="Today, your day so far"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="#2a2a2e" stroke-width="4"/><circle class="sp-prog" cx="24" cy="24" r="19" fill="none" stroke="var(--c1)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 24 24)" stroke-dasharray="0 120"/></svg><span class="sp-n">0/3</span></a>
+  <a class="sp-it" href="#" data-sec="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v15H5zM5 10h14M9 3v4M15 3v4"/></svg>Today</a>
+  <a class="sp-it" href="#goal" data-sec="train"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>Train</a>
+  <a class="sp-it" href="#stats" data-sec="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18l5-6 4 3 7-9M15 6h5v5"/></svg>Progress</a>
+  <a class="sp-it" href="#board" data-sec="community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.5"/><path d="M3 19c1-3 3.5-4.5 6-4.5s5 1.5 6 4.5M15 15c2 0 4.5 1 5.5 3.5"/></svg>Community<span class="sp-b" id="sp-spin" hidden></span></a>
+  <a class="sp-it" href="#more" data-sec="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>More</a>
+  <div class="sp-wk" id="sp-wk" aria-label="This week"></div>
+  <button class="sp-me out" type="button" id="sp-me" aria-haspopup="dialog" aria-controls="drawer">Sign in</button>
+</nav>
+<div class="sp-scrim" id="sp-scrim" hidden></div>
+<div class="wrap mtop" id="mtop"><button class="sp-lg" type="button" id="sp-open" aria-label="Open menu" aria-controls="spine"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19" fill="none" stroke="#2a2a2e" stroke-width="4"/><circle class="sp-prog" cx="24" cy="24" r="19" fill="none" stroke="var(--c1)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 24 24)" stroke-dasharray="0 120"/></svg></button><b id="mt-title">Repline</b><button class="sp-me out" type="button" id="mt-me" aria-haspopup="dialog" aria-controls="drawer">Sign in</button></div>
 <header class="top">
   <div class="top-in">
     <a class="brand" href="#" aria-label="Repline, home">Repline</a>
@@ -1311,8 +1412,7 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
     <p class="tiny me-date" id="me-date"></p>
     <h1 class="d-xl me-hi" id="me-hi"></h1>
     <p class="lead me-sub" id="me-sub"></p>
-    <div class="me-today" id="me-today"></div>
-    <div class="me-grid" id="me-cards"></div>
+    <div class="me-tgrid"><div class="me-today dpath" id="me-today"></div><aside class="me-grid" id="me-cards" aria-label="Your week"></aside></div>
   </section>
   <section class="hero" id="hero" aria-label="Daily Pro Routine">
     <div class="dial" id="hero-dial" aria-hidden="true"><div class="dial-glow"></div><svg viewBox="0 0 200 200"></svg><div class="dial-mid"><span class="tiny">Today</span><span class="t" style="font-size:clamp(34px,5vw,48px)">Ready.</span><span class="tiny" id="hero-sub">Set by set</span></div></div>
@@ -1764,6 +1864,22 @@ html.bg-sunset body { background: radial-gradient(80% 50% at 50% 110%, rgba(255,
   <div class="vhead"><div><h1 class="d-l">Aim progress.</h1><p class="lead" id="aim-lead">Your KovaaK's results, as curves.</p></div>
     <div class="seg" role="tablist" aria-label="Range" id="aim-tabs"><button type="button" role="tab" data-ar="7">7 days</button><button type="button" role="tab" data-ar="30">30 days</button><button type="button" role="tab" data-ar="all">All time</button></div></div>
   <div id="aim-body"></div>
+</main>
+
+<main class="view wrap flowv" data-view="more" id="v-more" hidden>
+  <div class="vhead"><div><h1 class="d-l">More.</h1><p class="lead">Mind &amp; Body, in-game tools, plans and help.</p></div></div>
+  <div class="more-tiles">
+    <a href="#mind"><b>Mind &amp; Body</b><span>Hand warm-up, breathing and focus games.</span></a>
+    <a href="#cue"><b>In-game Tools</b><span>Focus Cue, Focus Tunnel, Look Around.</span></a>
+    <a href="#ai"><b>Personal Plan</b><span>Tell it what to fix. It builds today's routine.</span></a>
+    <a href="#aim"><b>Aim progress</b><span>Your KovaaK's results as curves.</span></a>
+    <a href="#plans"><b>Plans</b><span>Free, Standard and Pro.</span></a>
+    <a href="#partners"><b>Partners</b><span>Creator codes and commission.</span></a>
+  </div>
+  <div class="more-row">
+    <div><h2>Repline for Windows</h2><p class="small">Your routine as an overlay over the game, hotkeys, game detection for Verified runs and KovaaK's tracking. Never touches Fortnite.</p><span data-download="lg"></span></div>
+    <div><h2>Repline Discord</h2><p class="small">Bug reports, ideas, team partners and new routines first.</p><span data-discord="lg"></span></div>
+  </div>
 </main>
 
 <main class="view wrap flowv" data-view="studio" id="v-studio" hidden>
@@ -4249,6 +4365,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       btn.style.backgroundImage = account.avatar ? `url("${account.avatar.replace(/["\\]/g, "")}")` : "";
       btn.style.backgroundSize = "cover";
     }
+    try { spineSync(); } catch (e) { /* not ready yet */ }
   }
   function linkRow(label, url) { return url ? `<a class="row" href="${esc(url)}" target="_blank" rel="noopener"><span>${label}</span></a>` : ""; }
   function sw(id, label, on) { return `<div class="row"><label for="${id}">${label}</label><span class="switch"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><i></i></span></div>`; }
@@ -5481,9 +5598,83 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const via = [r.win && DESK ? "Windows" : null, r.dc ? "Discord" : null, r.push ? "this device" : null].filter(Boolean).join(" and ");
     return { time: r.time || "18:00", days, via };
   }
+  /* ---------- 2.0 · left spine ---------- */
+  function dayState() {
+    let wl = {}; try { wl = JSON.parse(localStorage.getItem("rl.warm")) || {}; } catch (e) {}
+    const tk = today(), routine = trainedToday();
+    const warmDone = wl.last === tk, warmSkip = !warmDone && (wl.skip === tk || routine);
+    const cool = store.get("rl.cool", "") === tk;
+    return { warm: warmDone || warmSkip, warmSkip, routine, cool, n: (warmDone || warmSkip ? 1 : 0) + (routine ? 1 : 0) + (cool ? 1 : 0) };
+  }
+  const SECTIONS = {
+    train: [["goal", "Routines"], ["ai", "Personal Plan"]],
+    progress: [["stats", "Stats"], ["aim", "Aim"], ["badges", "Badges"]],
+    community: [["board", "Leaderboard"], ["friends", "Friends"], ["drops", "Drops"]],
+    more: [["more", "Overview"], ["mind", "Mind & Body"], ["cue", "In-game Tools"], ["plans", "Plans"], ["partners", "Partners"]]
+  };
+  const SEC_OF = { home: "home", goal: "train", length: "train", plan: "train", training: "train", done: "train", builder: "train", ai: "train", studio: "train", stats: "progress", aim: "progress", badges: "progress", board: "community", friends: "community", drops: "community", more: "more", mind: "more", cue: "more", plans: "more", partners: "more" };
+  const SEC_TITLE = { home: "Today", train: "Train", progress: "Progress", community: "Community", more: "More" };
+  let spineView = "home";
+  function spineSync(id) {
+    if (id) spineView = id;
+    const sec = SEC_OF[spineView] || "home";
+    document.querySelectorAll(".sp-it").forEach((a) => a.dataset.sec === sec ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+    const mt = $("mt-title"); if (mt) mt.textContent = SEC_TITLE[sec] || "Repline";
+    const on = signedIn(), ds = on ? dayState() : { n: 0 };
+    const L = 2 * Math.PI * 19;
+    document.querySelectorAll(".sp-prog").forEach((c) => c.setAttribute("stroke-dasharray", `${L * ds.n / 3} ${L}`));
+    document.querySelectorAll(".sp-n").forEach((e) => e.textContent = on ? ds.n + "/3" : "");
+    // this week
+    const wk = $("sp-wk");
+    if (wk) {
+      if (!on) wk.innerHTML = "";
+      else {
+        const now = new Date(), w0 = weekStart(now), days = store.get(DAYS, []), tk = today(now);
+        let h = ""; for (let i = 0; i < 7; i++) { const k = today(dShift(w0, i)); h += `<i class="${days.indexOf(k) >= 0 ? "on" : ""} ${k === tk ? "t" : ""}" title="${dShift(w0, i).toLocaleDateString("en-GB", { weekday: "short" })}"></i>`; }
+        const st = streak(); wk.innerHTML = h + `<small title="Days in a row">${st}d</small>`;
+      }
+    }
+    // spins ready
+    const sp = $("sp-spin"); if (sp) { let n = 0; try { n = on ? spinsLeft() : 0; } catch (e) {} sp.hidden = !(n > 0); sp.textContent = n; }
+    // you
+    ["sp-me", "mt-me"].forEach((idb) => {
+      const b = $(idb); if (!b) return;
+      b.classList.toggle("out", !on);
+      if (!on) { b.textContent = "Sign in"; b.style.backgroundImage = ""; b.setAttribute("aria-label", "Sign in"); return; }
+      b.textContent = account.avatar ? "" : (account.name || "?").slice(0, 1).toUpperCase();
+      b.style.backgroundImage = account.avatar ? `url("${account.avatar.replace(/["\\]/g, "")}")` : "";
+      b.setAttribute("aria-label", "Your profile and settings");
+    });
+    // sub navigation on section pages
+    if (id) {
+      const v = $("v-" + id), list2 = SECTIONS[sec];
+      if (v && list2 && list2.some(([k]) => k === id)) {
+        let sn = v.querySelector(":scope > .subnav");
+        if (!sn) { sn = document.createElement("nav"); sn.className = "subnav"; sn.setAttribute("aria-label", SEC_TITLE[sec]); v.prepend(sn); }
+        sn.innerHTML = list2.map(([k, n]) => `<a href="#${k}"${k === id ? ' aria-current="page"' : ""}>${esc(n)}</a>`).join("");
+        v.classList.add("has-sub");
+      }
+    }
+    closeSpine();
+  }
+  function openSpine() { $("spine").classList.add("open"); $("sp-scrim").hidden = false; }
+  function closeSpine() { const s2 = $("spine"); if (s2) s2.classList.remove("open"); const sc = $("sp-scrim"); if (sc) sc.hidden = true; }
+  $("sp-open").addEventListener("click", openSpine);
+  $("sp-scrim").addEventListener("click", closeSpine);
+  ["sp-me", "mt-me"].forEach((idb) => $(idb).addEventListener("click", () => { closeSpine(); openDrawer(); }));
+  document.querySelectorAll(".spine a").forEach((a) => a.addEventListener("click", closeSpine));
+  addEventListener("keydown", (e) => { if (e.key === "Escape") closeSpine(); });
+  // maps live on the Train page, the questions under More
+  (function moveSections() {
+    const mp = document.querySelector("#v-home .maps"); const ms = mp && mp.closest("section");
+    if (ms) { ms.classList.add("maps-sec"); $("v-goal").appendChild(ms); }
+    const fq = $("faq"); if (fq) $("v-more").appendChild(fq);
+  })();
+
   function buildHomeMe() {
     const me = $("home-me"), on = signedIn();
     me.hidden = !on; $("hero").hidden = on;
+    document.body.classList.toggle("signed", on);
     if (!on) return;
     const now = new Date(), h = now.getHours();
     const part = h < 5 ? "Late night" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
@@ -5491,16 +5682,38 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $("me-hi").textContent = `${part}, ${account.name || "player"}.`;
     const s = streak(), t = trainedToday();
     $("me-sub").textContent = t ? (s > 1 ? `Day ${s} done. See you tomorrow.` : "Done for today. See you tomorrow.") : s > 0 ? `Day ${s + 1} is waiting. One routine keeps it alive.` : "Day 1 starts with one routine.";
-    // today
+    // today: warm up -> routine -> cool down
+    document.body.classList.add("signed");
     const l = S.goal && length(S.goal, S.len), last = store.get("rl.last", null);
     const lastOk = last && goal(last.goal) && length(last.goal, last.len) && !lengthLocked(goal(last.goal), length(last.goal, last.len));
-    let tc;
-    if (S.active && l) tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">In progress · Set ${S.b + 1} of ${list().length}</span><b>${esc(goal(S.goal).name)} · ${esc(l.name)}</b><span class="small">${esc(cur().name || "")}</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><a class="pill big" href="#training">Continue</a></div></div>`;
-    else if (lastOk) { const lg = length(last.goal, last.len); tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">Your usual${t ? " · done today" : ""}</span><b>${esc(goal(last.goal).name)} · ${esc(lg.name)}</b><span class="small">${lg.sets.length} sets · ${fmtMin(totalMin(lg.sets) || 0)}</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><button class="pill big" type="button" id="me-again">${t ? "Train again" : "Start again"}</button><a class="pill big out" href="#goal">Pick another</a></div></div>`; }
-    else tc = `<div class="c-card today-card"><div style="display:grid;gap:8px"><span class="tiny" style="color:var(--c2)">Today</span><b>Pick your routine</b><span class="small">Cup warm-up, a full day or a quick aim session.</span></div><div class="hero-cta" style="margin:0;justify-content:flex-start"><a class="pill big" href="#goal">Start routine</a></div></div>`;
-    $("me-today").innerHTML = tc;
-    const again = $("me-again");
-    if (again) again.addEventListener("click", () => { if (S.goal !== last.goal || S.len !== last.len) { S.goal = last.goal; S.len = last.len; resetRun(); } save(); go("plan"); });
+    const ds = dayState();
+    let rName, rSub, rBtn, rAct, rSets = [];
+    if (S.active && l) { rName = `${goal(S.goal).name} · ${l.name}`; rSub = `In progress · set ${S.b + 1} of ${list().length}`; rBtn = "Continue"; rAct = "continue"; rSets = list(); }
+    else if (lastOk) { const lg = length(last.goal, last.len); rName = `${goal(last.goal).name} · ${lg.name}`; rSub = t ? "Your usual. Done today." : "Your usual. Same routine as last time."; rBtn = "Start routine"; rAct = "again"; rSets = lg.sets || []; }
+    else { rName = "Pick today's routine"; rSub = "15 minutes to 2 hours. Quick Start is a good first step."; rBtn = "Choose a routine"; rAct = "pick"; }
+    const wm = window.ReplineWarm ? ReplineWarm.quickMinutes() : 3;
+    const steps = [
+      { k: "warm", c: "var(--warmc)", name: "Warm up your hands", len: wm + " min", sub: "Fingers, wrists, shoulders. Cold hands miss edits.", fin: ds.warm, skip: ds.warmSkip, btn: "Start warm-up", alt: '<button class="lnk" type="button" data-day="warmskip">Skip today</button>' },
+      { k: "routine", c: "var(--c1)", name: rName, len: rSets.length && totalMin(rSets) != null ? fmtMin(totalMin(rSets)) : "", sub: rSub, fin: t, btn: rBtn, act: rAct, sets: rSets, alt: '<button class="lnk" type="button" data-day="pick">' + (rAct === "pick" ? "Quick Start · 15 min" : "Change routine") + "</button>" },
+      { k: "cool", c: "var(--calmc)", name: "Cool down", len: "1–2 min", sub: "Cyclic sighing after you play. Brings your heart rate down.", fin: ds.cool, btn: "Start breathing" }
+    ];
+    const nowI = steps.findIndex((x) => !x.fin);
+    $("me-today").innerHTML = steps.map((x, i) => {
+      const st = x.fin ? (x.skip ? "skip" : "done") : i === nowI ? "now" : "";
+      const tag = x.fin ? (x.skip ? "Skipped" : "Done") : i === nowI ? "Now" : "Later";
+      const mini = x.sets && x.sets.length ? `<div class="dmini">${x.sets.slice(0, 8).map((b) => `<div><b>${esc(b.name || "")}</b><span>${b.min ? b.min + " min" : "kills"}</span></div>`).join("")}</div>` : "";
+      const again = x.k === "routine" && x.fin ? ' <button class="lnk" type="button" data-day="pick">Train again</button>' : "";
+      return `<div class="dstep ${st}" style="--sc:${x.c}"><div class="ddot">${x.fin ? (x.skip ? "–" : "✓") : i + 1}</div><div class="dbox"><div class="dbh"><h3>${esc(x.name)}</h3>${x.len ? `<span class="dlen">${esc(x.len)}</span>` : ""}<span class="dtag">${tag}</span></div><p class="dsub">${esc(x.sub)}${again}</p>${mini}<div class="dacts"><button class="go" type="button" data-day="${x.act || x.k}">${esc(x.btn)}</button>${x.alt || ""}</div></div></div>`;
+    }).join("");
+    $("me-today").querySelectorAll("[data-day]").forEach((b) => b.addEventListener("click", () => {
+      const a = b.dataset.day;
+      if (a === "warm") { go("mind"); setTimeout(() => { if (window.ReplineWarm) ReplineWarm.open({ start: true }); }, 150); }
+      else if (a === "warmskip") { if (window.ReplineWarm) ReplineWarm.skipToday(); buildHomeMe(); spineSync(); }
+      else if (a === "continue") go("training");
+      else if (a === "again") { if (S.goal !== last.goal || S.len !== last.len) { S.goal = last.goal; S.len = last.len; resetRun(); } save(); go("plan"); }
+      else if (a === "pick") go(rAct === "pick" && b.classList.contains("lnk") ? "quick" : "goal");
+      else if (a === "cool") { store.set("rl.cool", today()); try { sessionStorage.setItem("rl.mindPick", "sigh"); } catch (e) {} go("mind"); }
+    }));
     // cards
     const wk = weekStart(now), goalN = settings.weekGoal || 5; let wd = 0; const marks = [];
     for (let i = 0; i < 7; i++) { const d = dShift(wk, i), k = today(d), on2 = store.get(DAYS, []).indexOf(k) >= 0; if (on2) wd++; marks.push(`<i class="${on2 ? "on" : ""}"></i>`); }
@@ -5515,6 +5728,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       <a class="c-card" href="#board" id="me-rank"><span class="tiny">Weekly leaderboard</span><span class="big-n">${rank && rank.rank ? "#" + rank.rank + `<small> of ${rank.total}</small>` : "–"}</span><span class="tiny">${rank && rank.note ? esc(rank.note) : "Train to climb"}</span></a>
       ${nb ? `<a class="c-card wide" href="#badges" style="display:flex;align-items:center;gap:18px"><div class="bd" style="padding:0;background:none"><div class="ic" style="width:60px;height:60px;background:linear-gradient(135deg,${nb.b.c})">${svgI(nb.b.ic)}</div></div><div style="flex:1;display:grid;gap:8px;min-width:0"><span class="tiny">Next badge</span><b style="font-size:19px">${esc(nb.b.n)}</b><div class="meter"><i style="width:${Math.round(nb.r * 100)}%"></i></div><span class="tiny">${Math.min(nb.c, nb.g)} / ${nb.g}${nb.b.u ? " " + nb.b.u : ""} · ${esc(nb.b.d)}</span></div></a>` : `<a class="c-card wide" href="#badges"><span class="tiny">Badges</span><b style="font-size:19px">All training badges earned.</b></a>`}
       <div class="c-card"><span class="tiny">Reminder</span>${rm ? `<b style="font-size:19px">${esc(rm.time)} · ${esc(rm.days)}</b><span class="tiny">${esc(rm.via || "Turn on a way to get it")}</span>` : `<b style="font-size:19px">No reminder yet</b><span class="tiny">Get a nudge on Windows or Discord.</span>`}<button class="pill sm out" type="button" id="me-rem" style="justify-self:start">${rm ? "Change" : "Set a reminder"}</button></div>`;
+    { const jc = joinCard(); if (jc) { $("me-cards").insertAdjacentHTML("afterbegin", jc); const jb = $("me-cards").querySelector("[data-join]"); if (jb) jb.addEventListener("click", () => { signingIn = false; startSignIn(); }); } }
     $("me-rem").addEventListener("click", () => { drawerTab = "settings"; openDrawer(); setTimeout(() => { const r = $("rem-sec"); if (r) r.scrollIntoView({ block: "start" }); }, 60); });
     loadMyRank();
   }
@@ -6428,7 +6642,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio", "mind", "cue"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "drops", "studio", "mind", "cue", "more"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -6484,6 +6698,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (id === "done") { streakUI("done"); if (!$("done-sum").textContent) $("done-sum").textContent = "Routine done."; }
     if (!first || id !== "home") scrollTo(0, 0);
     updateResume();
+    try { spineSync(id); } catch (e) { /* spine is optional */ }
   }
   addEventListener("hashchange", route);
   // A routine saved before the routines changed may point past its last set: start it fresh.
