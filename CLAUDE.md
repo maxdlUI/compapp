@@ -11,7 +11,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 - **Show a preview first** (an Artifact) before building a bigger new feature into the app; build it after the owner approves.
 - **Never ask for tokens or secrets in chat.** Use the credential form or the environment settings.
 - Keep the owner's email and personal details private.
-- **Announce every update in Discord** (#announcements, ping the Updates role `1570387326834581535`): a short English post with what is new, after the release is live.
+- **Announce every update in Discord** (#announcements, ping the Updates role `1570387326834581535`): a short English post with what is new, after the release is live. Always attach images: screenshots of the new feature (Playwright, demo mode) or a small made-for-the-post graphic, uploaded with the message (multipart `files[0]`).
 - Commit and push on branch `claude/nifty-cannon-p4pndg`. No pull requests unless asked. No model names in commits.
 
 ## Repline at a glance
