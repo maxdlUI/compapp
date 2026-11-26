@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__vidIQ",
+      "mcp__ElevenLabs",
+      "mcp__Supabase",
+      "mcp__github"
+    ],
+    "deny": [
+      "mcp__vidIQ__vidiq_social_post_publish",
+      "mcp__vidIQ__vidiq_instagram_publish_reel",
+      "mcp__vidIQ__vidiq_reply_to_comment",
+      "mcp__Supabase__pause_project",
+      "mcp__Supabase__delete_branch",
+      "mcp__Supabase__reset_branch",
+      "mcp__Supabase__create_project",
+      "mcp__github__delete_file",
+      "mcp__github__create_repository",
+      "mcp__github__fork_repository"
+    ]
+  }
+}
