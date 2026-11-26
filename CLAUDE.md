@@ -12,6 +12,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 - **Never ask for tokens or secrets in chat.** Use the credential form or the environment settings.
 - Keep the owner's email and personal details private.
 - **Announce every update in Discord** (#announcements, ping the Updates role `1570387326834581535`): a short English post with what is new, after the release is live. Always attach images: screenshots of the new feature (Playwright, demo mode) or a small made-for-the-post graphic, uploaded with the message (multipart `files[0]`).
+- **Think ahead and fix what is stale (owner's standing rule, 26 Nov 2026):** whenever something no longer fits the current state (scheduled posts and tasks, texts on the site or in the bots, notes, prices, channel links, plan perks), fix it on your own, follow the other rules (images on posts, no costs) and tell the owner what you changed. Check consequences too, e.g. what players lose when a free period ends.
 - **Git:** `main` always holds the current Repline state. Each session works on the branch the system gives it, commits and pushes there, and when a task is finished and live, opens a pull request into `main` and merges it (owner's standing OK, 26 Nov 2026). No model names in commits.
 
 ## Repline at a glance
@@ -20,7 +21,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 - Website: https://repline.pages.dev (Cloudflare Pages, one worker file). Windows app: Electron with auto-updates from Cloudflare R2.
 - Accounts: Supabase project `wjwjvwjwlipjxsgufffj`, sign-in with Discord.
 - Plans: Free / Standard €3.99 (€29.99/year) / Pro €6.99 (€49.99/year). Payments are not live yet ("Coming soon").
-- Launch month: every Pro feature free for signed-in players until 13 Dec 2026 00:00 Berlin (`LAUNCH_END` in `index.html`, `effective_plan()` in the database). A scheduled task posts the end announcement in Discord.
+- Launch month: every Pro feature free for signed-in players until 13 Dec 2026 00:00 Berlin (`LAUNCH_END` in `index.html`, `effective_plan()` in the database). A scheduled task (`trig_01Sk5ecjDTpg1mFZYAbPasRc`, 13 Dec 09:00 UTC) posts the end announcement with a screenshot of the plans in Discord. Open point: payments are not live, so after 13 Dec nobody can get Standard/Pro (owner to decide: extend the launch or turn payments on).
 
 ## Files
 
