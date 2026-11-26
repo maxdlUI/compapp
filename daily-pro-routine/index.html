@@ -1,6 +1,6 @@
-<title>Repline</title>
+<title>Repline · Fortnite Practice Routines, Map Codes and In-Game Overlay</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Repline · Daily Pro Routine. Pick a goal, pick a length, train set by set.">
+<meta name="description" content="Free Fortnite practice routines set by set: timers, training map codes, KovaaK's playlists, streaks, leaderboards and an in-game overlay for Windows.">
 <style>
 /* Layout: black Apple product page (iPhone 18 Pro, Refero). A home screen, then a guided flow
    goal → length → plan → training → done. Blue only for primary actions; set-type colours are the "device finish". */
@@ -1927,7 +1927,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
 <div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t"></div></div>
 
 <footer>
-  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span data-download="text"></span> · <span id="ft-legal"></span></span></div>
+  <div class="wrap"><span>Repline · Independent service, not affiliated with Epic Games.</span><span><a href="/routines/">Routines</a> · <a href="/map-codes/">Map codes</a> · <a href="#plans">Plans</a> · <a href="#partners">Partners</a> · <span data-discord="text"></span> · <span data-download="text"></span> · <span id="ft-legal"></span></span></div>
 </footer>
 
 <!-- Account drawer -->
@@ -3482,7 +3482,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     rb.disabled = swm ? false : kill ? killsDone(S.b) === 0 : (S.status === "bereit" && e === 0);
     fillDial($("tr-dial").querySelector("svg"), bl.map((_, i) => fillFor(i)));
     gameUI();
-    document.title = swm ? `Get ready ${$("tr-clock").textContent} · Repline` : S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : "Repline";
+    document.title = swm ? `Get ready ${$("tr-clock").textContent} · Repline` : S.status === "laeuft" && !kill ? `${$("tr-clock").textContent} · Repline` : (window.__rlTitle = window.__rlTitle || document.title);
     pushOverlay();
   }
   let lastTick = null, lastCount = 0;
@@ -6682,6 +6682,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     let name = location.hash.replace("#", "");
     let importCode = null;
     if (/^import=/.test(name)) { importCode = decodeURIComponent(name.slice(7)); name = "goal"; }
+    // Links from the public routine pages: #start=<goal>.<length> opens that routine's plan.
+    if (/^start=/.test(name)) { const p = decodeURIComponent(name.slice(6)).split("."); if (goal(p[0]) && length(p[0], p[1]) && !(S.active && S.b > 0)) { S.goal = p[0]; S.len = p[1]; resetRun(); save(); } name = "plan"; try { history.replaceState(null, "", "#plan"); } catch (e) {} }
     const asked = name;
     if (name === "tools") name = "cue";
     if (name === "quick") { if (!(S.active && S.b > 0)) { S.goal = "quick"; S.len = "15"; resetRun(); save(); } name = "plan"; }
