@@ -62,6 +62,8 @@ COPY = {
         "why": "Slow first, then fast. Clean edits at 90% become fast edits at 120%, and piece control turns mechanics into fights you win.",
     },
 }
+# Maps used by many drills get one name instead of the list of drills.
+MAP_NAMES = {"2424-4344-7824": ("Raider464's Mechanics V5", "One map for everything: aim scenarios, edit wall, freebuild at any speed and piece control.")}
 TYPE = {"aim": "Aim", "mech": "Mechanics", "fight": "Fights", "live": "Live games", "review": "Review", "rest": "Break", "prep": "Prep"}
 
 CSS = """
@@ -250,8 +252,10 @@ def build():
         ins = sorted({x for d in en["drills"] for k, v in sets.items() if v is d for x in used.get(k, ())})
         links = " · ".join('<a href="%s">%s</a>' % (p, e(n)) for n, p in ins)
         img = ('<img src="/%s" alt="%s" loading="lazy">' % (e(en["img"].replace(".webp", "-s.webp")), e(names))) if en.get("img") else ""
-        return ('<div class="card">%s<div class="in"><h3>%s</h3>%s<span class="muted">%s</span>%s</div></div>'
-                % (img, e(names), code_html([cd]), e(first.get("hint")), ('<span class="muted">Used in: %s</span>' % links) if links else ""))
+        title, hint = MAP_NAMES.get(cd["value"], (names, first.get("hint")))
+        drills = ('<span class="muted">Drills: %s</span>' % e(names)) if title != names else ""
+        return ('<div class="card">%s<div class="in"><h3>%s</h3>%s<span class="muted">%s</span>%s%s</div></div>'
+                % (img, e(title), code_html([cd]), e(hint), drills, ('<span class="muted">Used in: %s</span>' % links) if links else ""))
 
     mq = [("How do I enter a Fortnite map code?", "In Fortnite open Discover, press the search or Island Code button, paste the code and launch the island."),
           ("Which map is best to warm up in Fortnite?", "A mechanics map like Raider464's V5 covers aim, edits and freebuild in one place. Follow it with a few real box fights."),
