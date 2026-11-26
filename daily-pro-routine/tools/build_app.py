@@ -23,6 +23,13 @@ HEAD_TOP = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://repline.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Repline">
+<meta property="og:title" content="Repline · Fortnite practice routines with timers and map codes">
+<meta property="og:description" content="Daily pro routines set by set, training map codes, KovaaK's playlists, streaks and an in-game overlay.">
+<meta property="og:url" content="https://repline.pages.dev/">
+<meta property="og:image" content="https://repline.pages.dev/icons/icon-1024.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -101,7 +108,8 @@ self.addEventListener("fetch", (e) => {{
   const r = e.request;
   if (r.method !== "GET" || new URL(r.url).origin !== location.origin) return;
   if (r.mode === "navigate") {{
-    e.respondWith(fetch(r).then((res) => {{ const copy = res.clone(); caches.open(CACHE).then((c) => c.put("index.html", copy)); return res; }}).catch(() => caches.match("index.html")));
+    const app = /^\\/(index\\.html)?$/.test(new URL(r.url).pathname);
+    e.respondWith(fetch(r).then((res) => {{ if (app && res.ok) {{ const copy = res.clone(); caches.open(CACHE).then((c) => c.put("index.html", copy)); }} return res; }}).catch(() => caches.match(app ? "index.html" : r).then((hit) => hit || caches.match("index.html"))));
     return;
   }}
   e.respondWith(caches.match(r).then((hit) => hit || fetch(r)));
@@ -121,8 +129,12 @@ open(os.path.join(APP, "sw.js"), "w", encoding="utf-8").write(sw)
 # Netlify / static host niceties
 open(os.path.join(APP, "_headers"), "w").write("/sw.js\n  Cache-Control: no-cache\n/manifest.webmanifest\n  Content-Type: application/manifest+json\n")
 
+# Public pages for search engines (routines, map codes, sitemap). Website only.
+import subprocess, sys
+subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build_seo.py")], check=True)
+
 # Desktop copy (Electron loads it from disk; no service worker needed there)
 if os.path.isdir(DESK):
     shutil.rmtree(DESK)
-shutil.copytree(APP, DESK, ignore=shutil.ignore_patterns("sw.js", "_headers"))
+shutil.copytree(APP, DESK, ignore=shutil.ignore_patterns("sw.js", "_headers", "routines", "map-codes", "robots.txt", "sitemap.xml"))
 print("built app/ and desktop/app/ · cache", version)

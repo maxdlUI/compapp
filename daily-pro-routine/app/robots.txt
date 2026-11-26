@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /download/
+
+Sitemap: https://repline.pages.dev/sitemap.xml

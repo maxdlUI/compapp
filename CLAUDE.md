@@ -29,6 +29,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 - `daily-pro-routine/supabase/00X_*.sql`: database changes in order. `supabase/functions/remind/index.ts`: edge function (reminders, gift DMs, #drops posts).
 - `daily-pro-routine/desktop/`: Electron app (`package.json` holds the version).
 - `daily-pro-routine/tools/`: `build_app.py` (builds `app/` and `desktop/app/`), `deploy.sh preview|production` (Cloudflare Pages), `publish_windows.py <dist>` (uploads the installer to R2 and writes `release.json`).
+- `daily-pro-routine/tools/build_seo.py` (run by `build_app.py`): public pages for Google, since the app's `#hash` routes count as one page. Builds `/routines/` (hub), `/routines/<slug>/` (one per routine, from the live `routine_catalog`, copy in `COPY`), `/map-codes/`, `robots.txt`, `sitemap.xml` (website only, not the Windows app). Buttons link to `/#start=<goal>.<length>`, which opens that routine's plan. New routines from the studio get a page on the next deploy. Live since 26 Nov 2026. Google Search Console still needs the owner to verify the site and submit `sitemap.xml`.
 - `daily-pro-routine/BACKLOG.md`: what is done and what is open. `DISCORD.md`: Discord server setup.
 
 ## Release steps

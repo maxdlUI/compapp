@@ -10,8 +10,8 @@ APP = os.path.join(ROOT, "app")
 OUT = os.path.join(ROOT, "dist-worker")
 
 TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".webmanifest": "application/manifest+json",
-         ".png": "image/png", ".webp": "image/webp", ".ico": "image/x-icon", ".svg": "image/svg+xml", ".json": "application/json", ".css": "text/css; charset=utf-8"}
-NO_CACHE = {"/index.html", "/sw.js", "/manifest.webmanifest"}
+         ".png": "image/png", ".webp": "image/webp", ".ico": "image/x-icon", ".svg": "image/svg+xml", ".json": "application/json", ".css": "text/css; charset=utf-8", ".xml": "application/xml; charset=utf-8", ".txt": "text/plain; charset=utf-8"}
+NO_CACHE = {"/index.html", "/sw.js", "/manifest.webmanifest", "/sitemap.xml", "/robots.txt"}
 
 REL = json.load(open(os.path.join(ROOT, "release.json")))
 
@@ -54,9 +54,12 @@ export default {
     if (path.indexOf("/download/") === 0 && path !== "/download/windows.json") return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } });
     if (path === "/download/windows.json") return new Response(JSON.stringify({ version: RELEASE.version, url: "/download/windows", bytes: RELEASE.windows.bytes }), { headers: { "content-type": "application/json", "cache-control": "no-cache" } });
     if (path === "/" || path === "") path = "/index.html";
+    // Public pages live at /routines/<slug>/ (file .../index.html). Without the slash, redirect so there is one URL.
+    if (!FILES[path] && FILES[path + "/index.html"]) return Response.redirect(url.origin + path + "/" + url.search, 301);
+    if (path.endsWith("/") && FILES[path + "index.html"]) path = path + "index.html";
     let f = FILES[path];
     let status = 200;
-    if (!f) { if (/\\.[a-z0-9]+$/i.test(path)) return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } }); f = FILES["/index.html"]; path = "/index.html"; }
+    if (!f) { if (/\\.[a-z0-9]+$/i.test(path)) return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } }); f = FILES["/index.html"]; status = path.indexOf("/auth/") === 0 ? 200 : 404; path = "/index.html"; }
     if (!cache.has(path)) cache.set(path, bin(f.b));
     const headers = { "content-type": f.t, "cache-control": f.c, "x-content-type-options": "nosniff", "referrer-policy": "strict-origin-when-cross-origin" };
     return new Response(request.method === "HEAD" ? null : cache.get(path), { status, headers });
