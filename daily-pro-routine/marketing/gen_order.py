@@ -72,16 +72,29 @@ def step(n, sid, a, b, vid, mstart, title, tkey, tn, subs, cuts=None):
         js(f'tl.fromTo("#v{sid}{i}", {{scale: 1.08}}, {{scale: 1.0, duration: 0.3, ease: "power3.out"}}, {sa:.3f});')
     js(f'tl.fromTo("#k{sid} .num", {{opacity: 0}}, {{opacity: 1, duration: 0.2}}, {a:.3f});')
 
-step(1, "p", S["s5"], S["s6"], "g3", 8, "Precision.", "precision", 1,
+step(1, "p", S["s5"], S["s6"], "g3", 16.3, "Precision.", "precision", 1,
      [P(("Slow,", "slow"), ("clean", "clean"), ("edits.", "edits")), P(("Zero", "zero"), ("mistakes.", "mistakes", 1, "inv"))])
-# zoom punch + ring on the edit (reisshub-style)
-zp = t("clean") - 0.05
-js(f'tl.to("#vp0", {{scale: 1.45, x: 60, y: -10, duration: 0.25, ease: "power3.out"}}, {zp:.3f});')
-js(f'tl.to("#vp0", {{scale: 1.0, x: 0, y: 0, duration: 0.3, ease: "power2.inOut"}}, {t("zero") - 0.1:.3f});')
-clip("ring", "ringw", zp + 0.15, t("zero") - 0.1, '<i class="ring"></i>')
-js(f'tl.fromTo("#ring .ring", {{scale: 1.6, opacity: 0}}, {{scale: 1, opacity: 1, duration: 0.2, ease: "back.out(2)"}}, {zp + 0.15:.3f});')
+# zoom punch on the crosshair + spotlight + drawn arrow with a label (clean, reisshub-style but calm)
+zp = t("clean") - 0.08
+ze = t("zero") - 0.12
+SC = 1.32
+pc = (1 - 1 / SC) / 2 * 100
+js(f'tl.fromTo("#vp0", {{scale: 1, clipPath: "inset(0% 0% 0% 0% round 22px)"}}, {{scale: {SC}, clipPath: "inset({pc:.2f}% {pc:.2f}% {pc:.2f}% {pc:.2f}% round {22 / SC:.1f}px)", duration: 0.32, ease: "power3.out", immediateRender: false}}, {zp:.3f});')
+js(f'tl.to("#vp0", {{scale: 1, clipPath: "inset(0% 0% 0% 0% round 22px)", duration: 0.35, ease: "power2.inOut"}}, {ze:.3f});')
+clip("spot", "spotw", zp, ze + 0.35, '<i class="hole"></i>')
+js(f'tl.fromTo("#spot .hole", {{opacity: 0, scale: 1.25}}, {{opacity: 1, scale: 1, duration: 0.35, ease: "power3.out"}}, {zp + 0.08:.3f});')
+js(f'tl.to("#spot .hole", {{opacity: 0, duration: 0.25}}, {ze:.3f});')
+ARW = ('<svg class="arw" viewBox="0 0 1080 1920" aria-hidden="true">'
+       '<path id="arwp" d="M300 455 C 330 560, 400 640, 470 690" pathLength="1"/>'
+       '<path id="arwh" d="M438 668 L 474 693 L 452 655" pathLength="1"/></svg>'
+       '<span class="pill">crosshair on the edit</span>')
+clip("arw", "arww", zp + 0.2, ze, ARW)
+js(f'tl.fromTo("#arw .pill", {{opacity: 0, y: -16}}, {{opacity: 1, y: 0, duration: 0.25, ease: "power3.out"}}, {zp + 0.2:.3f});')
+js(f'tl.fromTo("#arwp", {{strokeDashoffset: 1}}, {{strokeDashoffset: 0, duration: 0.35, ease: "power2.out"}}, {zp + 0.3:.3f});')
+js(f'tl.fromTo("#arwh", {{strokeDashoffset: 1}}, {{strokeDashoffset: 0, duration: 0.15, ease: "power2.out"}}, {zp + 0.62:.3f});')
+js(f'tl.to("#arw", {{opacity: 0, duration: 0.2}}, {ze - 0.2:.3f});')
 
-step(2, "q", S["s6"], S["s7"], "g2", 26, "Speed.", "speed", 1,
+step(2, "q", S["s6"], S["s7"], "g2", 32.8, "Speed.", "speed", 1,
      [P(("Same", "same"), ("moves.", "moves"), ("Faster.", "faster", 1, "inv")), P(("Until", "until"), ("you", "you", 2), ("stop", "stop"), ("thinking.", "thinking"))])
 a7, b7 = S["s7"], S["s8"]
 fc = [a7, a7 + 1.1, a7 + 2.0, a7 + 2.9, a7 + 3.8, b7]
@@ -129,8 +142,12 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #fff; 
 .subs { position: absolute; top: 1340px; left: 0; right: 0; }
 .subs .ln { font-size: 58px; font-weight: 800; color: #1c1c1e; line-height: 1.25; letter-spacing: -0.02em; }
 .pane { top: 470px; left: 60px; width: 960px; height: 540px; object-fit: cover; border-radius: 22px; z-index: 3; transform-origin: 50% 50%; }
-.ringw { z-index: 4; }
-.ring { position: absolute; left: 470px; top: 640px; width: 190px; height: 190px; border-radius: 50%; border: 10px solid #0a0a0a; box-shadow: 0 0 0 8px #fff; }
+.spotw { z-index: 4; top: 470px; left: 60px; width: 960px; height: 540px; border-radius: 22px; overflow: hidden; }
+.hole { position: absolute; left: 330px; top: 150px; width: 300px; height: 240px; border-radius: 28px; box-shadow: 0 0 0 1400px rgba(10,10,10,.52), inset 0 0 0 3px rgba(255,255,255,.9); }
+.arww { z-index: 5; }
+.arw { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: visible; }
+.arw path { fill: none; stroke: #ffffff; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; filter: drop-shadow(0 3px 6px rgba(0,0,0,.45)); }
+.pill { position: absolute; left: 150px; top: 386px; background: #0a0a0a; color: #fff; font-weight: 800; font-size: 34px; letter-spacing: -0.01em; padding: 12px 22px; border-radius: 14px; }
 .foot { position: absolute; bottom: 240px; left: 0; right: 0; font-weight: 600; font-size: 40px; color: #6b6b70; line-height: 1.35; letter-spacing: -0.01em; }
 .foot b { color: #0a0a0a; font-weight: 800; }
 """
@@ -144,7 +161,7 @@ for f in os.listdir(A):
             DURS[f[:-4]] = w.getnframes() / w.getframerate()
 SND = [("whoosh", a - 0.06, .18) for a in K[1:-1]]
 SND += [("tick", t(k, n) - 0.02, .22) for k, n in [("thousands", 1), ("better", 1), ("practice", 1), ("order", 1), ("mistakes", 1), ("faster", 1), ("fights", 1), ("three", 1), ("never", 1), ("day", 2), ("pressure", 2)]]
-SND += [("impact", t("precision", 1) - 0.05, .35), ("impact", t("speed", 1) - 0.05, .35), ("impact", t("pressure", 1) - 0.05, .35), ("whoosh", zp, .3)]
+SND += [("impact", t("precision", 1) - 0.05, .35), ("impact", t("speed", 1) - 0.05, .35), ("impact", t("pressure", 1) - 0.05, .35), ("whoosh", zp, .3), ("tick", zp + 0.62, .3)]
 SND += [("ding", t("repline") - 0.05, .25)]
 audio = [f'<audio id="vo" class="clip" src="assets/vo.wav" data-start="0" data-duration="{DUR}" data-volume="1"></audio>',
          f'<audio id="mu" class="clip" src="assets/music.wav" data-start="0" data-duration="{DUR}" data-volume="0.22"></audio>']
