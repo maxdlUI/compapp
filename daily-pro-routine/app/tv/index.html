@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Repline TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--fg:#f5f5f7;--dim:rgba(245,245,247,.58);--faint:rgba(245,245,247,.14);--glass:rgba(20,20,22,.38);--green:#30d158;--gold:#e8c66a;--silver:#c9ccd1;--bronze:#c98d5a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--fg);font-family:Inter,system-ui,sans-serif;overflow:hidden;cursor:none}
+body.cur{cursor:default}
+/* background photos, black and white, slow drift */
+.bg{position:fixed;inset:-4%;background-size:cover;background-position:center;filter:grayscale(1) brightness(.5) contrast(1.05);opacity:0;transition:opacity 4s ease;animation:drift 60s ease-in-out infinite alternate}
+.bg.on{opacity:1}
+@keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.12) translate(-2%,-1.5%)}}
+.shade{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,.15),rgba(0,0,0,.75) 85%),linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 60%,rgba(0,0,0,.7))}
+.grain{position:fixed;inset:0;opacity:.06;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main{position:relative;height:100vh;padding:3.6vh 4vw 3vh;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto 1fr auto;gap:2.4vh 3vw}
+main>section{min-height:0}
+.top{grid-column:1/3;display:flex;justify-content:space-between;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:.8vw;font-weight:600;letter-spacing:.32em;font-size:1.05vw;text-transform:uppercase;color:var(--dim)}
+.ring{width:1.9vw;height:1.9vw;border-radius:50%;border:.22vw solid var(--fg);position:relative}
+.ring:after{content:"";position:absolute;inset:28%;border-radius:50%;background:var(--fg)}
+.live{display:flex;align-items:center;gap:.6vw;font-size:.95vw;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.dot{width:.7vw;height:.7vw;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(48,209,88,.6);animation:pulse 2s infinite}
+.dot.off{background:#ff453a;animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(48,209,88,.55)}70%{box-shadow:0 0 0 .9vw rgba(48,209,88,0)}100%{box-shadow:0 0 0 0 rgba(48,209,88,0)}}
+/* left: clock, live hero, quote */
+.left{display:flex;flex-direction:column;justify-content:space-between;min-height:0}
+.clock{font-weight:200;font-size:9.5vw;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.clock small{font-size:.32em;font-weight:300;color:var(--dim);letter-spacing:0;margin-left:.4vw}
+.date{font-size:1.5vw;color:var(--dim);font-weight:300;margin-top:1.2vh}
+.hero{display:flex;align-items:flex-end;gap:2vw}
+.hero .n{font-size:8vw;font-weight:800;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.hero .l{padding-bottom:.6vw}
+.hero .l b{display:block;font-size:1.6vw;font-weight:600}
+.hero .l span{font-size:1.05vw;color:var(--dim)}
+.quote{max-width:46vw;transition:opacity 1.6s}
+.quote p{font-size:2.05vw;font-weight:300;line-height:1.3;letter-spacing:-.01em}
+.quote p:before{content:"“"}.quote p:after{content:"”"}
+.quote cite{display:block;margin-top:1.4vh;font-style:normal;font-size:1vw;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+/* right: cards */
+.right{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:min-content;gap:1.1vw;align-content:start}
+.card{background:var(--glass);backdrop-filter:blur(22px) saturate(1.1);-webkit-backdrop-filter:blur(22px);border:1px solid var(--faint);border-radius:1.4vw;padding:1.2vw 1.6vw}
+.card .k{font-size:.85vw;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.card .v{font-size:3vw;font-weight:600;letter-spacing:-.03em;margin-top:.7vh;font-variant-numeric:tabular-nums}
+.card .s{font-size:.95vw;color:var(--dim);margin-top:.3vh}
+.wide{grid-column:1/3}
+.goal .row{display:flex;justify-content:space-between;align-items:baseline}
+.goal .v{font-size:2.8vw}
+.goal .v span{color:var(--dim);font-weight:300}
+.bar{height:1.1vh;border-radius:99px;background:var(--faint);margin-top:1.6vh;overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:99px;background:var(--fg);transition:width 2.5s cubic-bezier(.2,.8,.2,1)}
+.bar i:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);animation:sweep 3.5s infinite}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.ticks{display:flex;justify-content:space-between;font-size:.8vw;color:var(--dim);margin-top:.8vh}
+.spark{display:flex;align-items:flex-end;gap:.45vw;height:6vh;margin-top:1.2vh}
+.spark i{flex:1;background:var(--fg);opacity:.85;border-radius:.3vw .3vw .1vw .1vw;min-height:3px;transition:height 1.5s}
+.spark i.z{opacity:.18}
+.top3{list-style:none;margin-top:1vh}
+.top3 li{display:flex;align-items:center;gap:1vw;padding:.4vh 0;font-size:1.2vw}
+.top3 li em{font-style:normal;width:1.9vw;height:1.9vw;border-radius:50%;display:grid;place-items:center;font-size:.9vw;font-weight:800;color:#000}
+.top3 li span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top3 li b{font-weight:400;color:var(--dim);font-variant-numeric:tabular-nums}
+.bottom{grid-column:1/3;display:flex;justify-content:space-between;align-items:center;font-size:.95vw;color:var(--dim);letter-spacing:.06em}
+.bottom b{color:var(--fg);font-weight:600}
+.toast{position:fixed;left:50%;top:6vh;transform:translate(-50%,-30vh);background:var(--fg);color:#000;font-weight:600;font-size:1.3vw;padding:1vh 1.8vw;border-radius:99px;transition:transform .9s cubic-bezier(.2,.9,.2,1.2)}
+.toast.show{transform:translate(-50%,0)}
+.lock{position:fixed;inset:0;display:none;place-items:center;text-align:center;background:#000;z-index:9}
+.lock.show{display:grid}
+.lock h1{font-weight:300;font-size:3vw}
+.lock p{color:var(--dim);margin-top:1vh;font-size:1.1vw}
+@media (max-aspect-ratio:1/1){main{grid-template-columns:1fr;overflow:auto}.right{grid-template-columns:1fr 1fr}.top,.bottom{grid-column:1}.clock{font-size:20vw}.card .v{font-size:8vw}.card .k,.card .s,.ticks{font-size:2.6vw}.quote{max-width:none}.quote p{font-size:4.5vw}.hero .n{font-size:16vw}.hero .l b{font-size:4vw}.hero .l span,.date,.bottom,.brand,.live{font-size:2.8vw}.top3 li{font-size:3.4vw}html,body{overflow:auto}}
+</style>
+</head>
+<body>
+<div class="bg" id="bg0"></div><div class="bg" id="bg1"></div>
+<div class="shade"></div><div class="grain"></div>
+<main>
+  <div class="top">
+    <div class="brand"><div class="ring"></div>Repline</div>
+    <div class="live"><div class="dot" id="dot"></div><span id="upd">Connecting…</span></div>
+  </div>
+  <section class="left">
+    <div>
+      <div class="clock" id="clock">00:00</div>
+      <div class="date" id="date"></div>
+    </div>
+    <div class="hero">
+      <div class="n" id="live">0</div>
+      <div class="l"><b>training right now</b><span id="online">0 on Repline</span></div>
+    </div>
+    <div class="quote" id="quote"><p></p><cite></cite></div>
+  </section>
+  <section class="right">
+    <div class="card"><div class="k">Players</div><div class="v" id="players">0</div><div class="s" id="week">+0 this week</div></div>
+    <div class="card"><div class="k">New today</div><div class="v" id="today">0</div><div class="s" id="newest">Newest: –</div></div>
+    <div class="card"><div class="k">Revenue</div><div class="v" id="rev">€0.00</div><div class="s">all time</div></div>
+    <div class="card"><div class="k">Played today</div><div class="v" id="play">0m</div><div class="s" id="trained">0 players trained</div></div>
+    <div class="card wide goal">
+      <div class="row"><div class="k">Goal · first €100</div><div class="k" id="pct">0 %</div></div>
+      <div class="v" id="goalv">€0 <span>/ €100</span></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="ticks"><span>€0</span><span>€25</span><span>€50</span><span>€75</span><span>€100</span></div>
+    </div>
+    <div class="card"><div class="k">Sign-ups · 14 days</div><div class="spark" id="spark"></div></div>
+    <div class="card"><div class="k">Top this week</div><ul class="top3" id="top3"></ul></div>
+  </section>
+  <div class="bottom">
+    <span id="launch"></span>
+    <span id="photo"></span>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+<div class="lock" id="lock"><div><h1>Private screen</h1><p>Open this page with your personal link.</p></div></div>
+<script>
+(function () {
+  var SB_URL = "https://wjwjvwjwlipjxsgufffj.supabase.co", SB_KEY = "sb_publishable_xA1CO4em6oz2mocDqBC5jg_4WhlX13q";
+  var LAUNCH_END = new Date("2026-12-13T00:00:00+01:00"), GOAL = 100;
+  var $ = function (id) { return document.getElementById(id); };
+  // key: from #k=... once, then remembered on this TV; the hash is removed from the address bar
+  var key = null;
+  var m = location.hash.match(/k=([a-f0-9]+)/);
+  try { if (m) localStorage.setItem("rl.tv.k", m[1]); key = (m && m[1]) || localStorage.getItem("rl.tv.k"); } catch (e) { key = m && m[1]; }
+  if (m) history.replaceState(null, "", location.pathname);
+  if (!key) { $("lock").classList.add("show"); return; }
+
+  var QUOTES = [
+    ["The best time to plant a tree was 20 years ago. The second best time is now.", "Chinese proverb"],
+    ["Make something people want.", "Paul Graham"],
+    ["Done is better than perfect.", "Sheryl Sandberg"],
+    ["If you're not embarrassed by the first version of your product, you've launched too late.", "Reid Hoffman"],
+    ["Stay hungry. Stay foolish.", "Steve Jobs"],
+    ["The way to get started is to quit talking and begin doing.", "Walt Disney"],
+    ["Ideas are easy. Execution is everything.", "John Doerr"],
+    ["Your most unhappy customers are your greatest source of learning.", "Bill Gates"],
+    ["Do things that don't scale.", "Paul Graham"],
+    ["It's not about ideas. It's about making ideas happen.", "Scott Belsky"],
+    ["Small daily improvements over time lead to stunning results.", "Robin Sharma"],
+    ["The secret of getting ahead is getting started.", "Mark Twain"],
+    ["Success is the sum of small efforts, repeated day in and day out.", "Robert Collier"],
+    ["Don't worry about failure; you only have to be right once.", "Drew Houston"],
+    ["Build something 100 people love, not something 1 million people kind of like.", "Brian Chesky"],
+    ["Move fast. Speed is one of your main advantages over large competitors.", "Sam Altman"],
+    ["Whether you think you can or you think you can't, you're right.", "Henry Ford"],
+    ["Discipline is choosing between what you want now and what you want most.", "Abraham Lincoln"],
+    ["Great things are done by a series of small things brought together.", "Vincent van Gogh"],
+    ["Amateurs sit and wait for inspiration. The rest of us just get up and go to work.", "Stephen King"],
+    ["The only way to do great work is to love what you do.", "Steve Jobs"],
+    ["Launch. Learn. Repeat.", "Startup wisdom"],
+    ["You don't have to see the whole staircase, just take the first step.", "Martin Luther King Jr."],
+    ["Every expert was once a beginner.", "Helen Hayes"],
+    ["Focus is saying no to a thousand good ideas.", "Steve Jobs"],
+    ["A year from now you may wish you had started today.", "Karen Lamb"],
+    ["Customers don't care about your product. They care about their problems.", "Startup wisdom"],
+    ["It always seems impossible until it's done.", "Nelson Mandela"],
+    ["The man who moves a mountain begins by carrying away small stones.", "Confucius"],
+    ["Fall seven times, stand up eight.", "Japanese proverb"],
+    ["Consistency beats intensity.", "Training wisdom"],
+    ["What gets measured gets managed.", "Peter Drucker"],
+    ["Hard work beats talent when talent doesn't work hard.", "Tim Notke"],
+    ["Be so good they can't ignore you.", "Steve Martin"],
+    ["The first €100 is the hardest. Then it's just more zeros.", "Repline"],
+    ["Don't count the days. Make the days count.", "Muhammad Ali"],
+    ["Opportunities don't happen. You create them.", "Chris Grosser"],
+    ["Simplicity is the ultimate sophistication.", "Leonardo da Vinci"],
+    ["Patience, persistence and perspiration make an unbeatable combination for success.", "Napoleon Hill"],
+    ["You miss 100% of the shots you don't take.", "Wayne Gretzky"],
+    ["Talk to your users. Then talk to them again.", "Startup wisdom"],
+    ["Dream big. Start small. Act now.", "Robin Sharma"],
+    ["The harder I work, the luckier I get.", "Samuel Goldwyn"],
+    ["One player at a time.", "Repline"],
+    ["Quality is not an act, it is a habit.", "Aristotle"],
+    ["Work hard in silence. Let success make the noise.", "Frank Ocean"],
+    ["Rome wasn't built in a day, but they were laying bricks every hour.", "John Heywood"],
+    ["Comfort is the enemy of progress.", "P. T. Barnum"]
+  ];
+  // black and white photos, a new pair every few minutes (Lorem Picsum, grayscale)
+  var SEEDS = ["mountain", "fog", "ocean", "city", "forest", "desert", "night", "lake", "road", "snow", "cliff", "studio", "clouds", "river", "tokyo", "nordic", "dunes", "valley"];
+
+  var nf = new Intl.NumberFormat("en-US");
+  var shown = {}, last = null;
+  function count(id, to, fmt) {
+    var el = $(id), from = shown[id] || 0; shown[id] = to;
+    fmt = fmt || function (v) { return nf.format(Math.round(v)); };
+    if (from === to) { el.textContent = fmt(to); return; }
+    var t0 = performance.now(), d = 1600;
+    (function step(t) { var p = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e); if (p < 1) requestAnimationFrame(step); })(t0);
+  }
+  function play(min) { var h = Math.floor(min / 60), m = Math.round(min % 60); return h ? h + "h " + m + "m" : m + "m"; }
+  function eur(c) { return "€" + (c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function toast(t) { var el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.h); toast.h = setTimeout(function () { el.classList.remove("show"); }, 7000); }
+
+  function render(s) {
+    if (last && s.players > last.players) toast("🎉 " + (s.players - last.players === 1 ? "New player: " + (s.newest || "someone") : "+" + (s.players - last.players) + " new players"));
+    if (last && s.revenue_cents > last.revenue_cents) toast("💶 New sale: +" + eur(s.revenue_cents - last.revenue_cents));
+    last = s;
+    count("live", s.training);
+    $("online").textContent = nf.format(s.online) + " on Repline right now";
+    count("players", s.players);
+    $("week").textContent = "+" + s.new_week + " this week";
+    count("today", s.new_today);
+    $("newest").textContent = "Newest: " + (s.newest || "–");
+    count("rev", s.revenue_cents, eur);
+    count("play", s.minutes_today, play);
+    $("trained").textContent = s.trained_today + (s.trained_today === 1 ? " player" : " players") + " trained · " + s.runs_today + " counted runs";
+    var e = s.revenue_cents / 100, p = Math.min(100, e / GOAL * 100);
+    $("goalv").innerHTML = "€" + e.toFixed(e < 10 ? 2 : 0) + " <span>/ €" + GOAL + "</span>";
+    $("pct").textContent = (p >= 100 ? "Reached 🏆" : Math.floor(p) + " %");
+    $("bar").style.width = Math.max(p, 0.8) + "%";
+    var sp = s.signups_14d || [], mx = Math.max.apply(null, sp.concat([1]));
+    $("spark").innerHTML = sp.map(function (v, i) { return '<i class="' + (v ? "" : "z") + '" title="' + v + '" style="height:' + Math.max(4, v / mx * 100) + '%"></i>'; }).join("");
+    var col = ["var(--gold)", "var(--silver)", "var(--bronze)"];
+    $("top3").innerHTML = (s.top_week || []).length ? s.top_week.map(function (r, i) { return '<li><em style="background:' + col[i] + '">' + (i + 1) + "</em><span>" + esc(r.name) + "</span><b>" + play(r.min) + "</b></li>"; }).join("") : '<li><span style="color:var(--dim)">Nobody yet this week</span></li>';
+  }
+
+  var fails = 0;
+  function load() {
+    fetch(SB_URL + "/rest/v1/rpc/tv_stats", { method: "POST", headers: { apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ k: key }) })
+      .then(function (r) { if (r.status === 401 || r.status === 403 || r.status === 400) throw "key"; if (!r.ok) throw "net"; return r.json(); })
+      .then(function (s) { fails = 0; render(s); $("dot").classList.remove("off"); $("upd").textContent = "Live · " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); })
+      .catch(function (e) {
+        if (e === "key") { try { localStorage.removeItem("rl.tv.k"); } catch (x) {} $("lock").classList.add("show"); return; }
+        fails++; $("dot").classList.add("off"); $("upd").textContent = "Reconnecting…";
+      });
+  }
+
+  function tick() {
+    var n = new Date();
+    $("clock").innerHTML = n.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + "<small>" + String(n.getSeconds()).padStart(2, "0") + "</small>";
+    var h = n.getHours(), hi = h < 5 ? "Late night grind" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    $("date").textContent = hi + " · " + n.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+    var left = LAUNCH_END - n;
+    if (left > 0) { var d = Math.floor(left / 864e5), hh = Math.floor(left % 864e5 / 36e5), mm = Math.floor(left % 36e5 / 6e4); $("launch").innerHTML = "Launch month ends in <b>" + d + "d " + hh + "h " + mm + "m</b>"; }
+    else $("launch").innerHTML = "Launch month is over · <b>time to sell</b>";
+  }
+
+  var qHour = -1;
+  function quote() {
+    var hr = Math.floor(Date.now() / 36e5);
+    if (hr === qHour) return; qHour = hr;
+    var q = QUOTES[(hr * 7) % QUOTES.length], el = $("quote");
+    el.style.opacity = 0;
+    setTimeout(function () { el.querySelector("p").textContent = q[0]; el.querySelector("cite").textContent = "— " + q[1]; el.style.opacity = 1; }, 1600);
+  }
+
+  var bgi = 0, cur = 0;
+  function photo() {
+    var seed = SEEDS[Math.floor(Date.now() / 3e5) % SEEDS.length] + "-" + (bgi++ % 3);
+    var url = "https://picsum.photos/seed/rl-" + seed + "/1920/1080?grayscale";
+    var img = new Image();
+    img.onload = function () { cur = 1 - cur; var el = $("bg" + cur); el.style.backgroundImage = "url('" + url + "')"; el.classList.add("on"); $("bg" + (1 - cur)).classList.remove("on"); };
+    img.src = url;
+  }
+
+  // keep the TV awake, hide the cursor, double click or F for full screen
+  function wake() { try { navigator.wakeLock && navigator.wakeLock.request("screen").catch(function () {}); } catch (e) {} }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { wake(); load(); } });
+  function fs() { var d = document.documentElement; if (!document.fullscreenElement && d.requestFullscreen) d.requestFullscreen().catch(function () {}); else if (document.exitFullscreen) document.exitFullscreen(); }
+  document.addEventListener("dblclick", fs);
+  document.addEventListener("keydown", function (e) { if (e.key === "f" || e.key === "F" || e.key === "Enter") fs(); });
+  var ch; document.addEventListener("mousemove", function () { document.body.classList.add("cur"); clearTimeout(ch); ch = setTimeout(function () { document.body.classList.remove("cur"); }, 2500); });
+
+  tick(); quote(); photo(); load(); wake();
+  setInterval(tick, 1000);
+  setInterval(quote, 30000);
+  setInterval(load, 15000);
+  setInterval(photo, 120000);
+  setInterval(function () { location.reload(); }, 6 * 36e5); // fresh page every 6 h for long TV sessions
+})();
+</script>
+</body>
+</html>
