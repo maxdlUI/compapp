@@ -57,6 +57,10 @@ main>section{min-height:0}
 .bar i:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);animation:sweep 3.5s infinite}
 @keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .ticks{display:flex;justify-content:space-between;font-size:.8vw;color:var(--dim);margin-top:.8vh}
+.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:1vw;margin-top:1.8vh;padding-top:1.5vh;border-top:1px solid var(--faint)}
+.odds b{display:block;font-size:1.9vw;font-weight:600;font-variant-numeric:tabular-nums}
+.odds span{font-size:.8vw;color:var(--dim);letter-spacing:.08em}
+.how{font-size:.75vw;color:var(--dim);margin-top:1.1vh;line-height:1.4}
 .spark{display:flex;align-items:flex-end;gap:.45vw;height:6vh;margin-top:1.2vh}
 .spark i{flex:1;background:var(--fg);opacity:.85;border-radius:.3vw .3vw .1vw .1vw;min-height:3px;transition:height 1.5s}
 .spark i.z{opacity:.18}
@@ -105,6 +109,8 @@ main>section{min-height:0}
       <div class="v" id="goalv">€0 <span>/ €100</span></div>
       <div class="bar"><i id="bar"></i></div>
       <div class="ticks"><span>€0</span><span>€25</span><span>€50</span><span>€75</span><span>€100</span></div>
+      <div class="odds"><div><b id="o1">–</b><span id="o1l">CHANCE BY …</span></div><div><b id="o2">–</b><span id="o2l">CHANCE BY …</span></div><div><b id="o3">–</b><span>MOST LIKELY</span></div></div>
+      <div class="how" id="how">Realistic chance if you post every day and keep building.</div>
     </div>
     <div class="card"><div class="k">Sign-ups · 14 days</div><div class="spark" id="spark"></div></div>
     <div class="card"><div class="k">Top this week</div><ul class="top3" id="top3"></ul></div>
@@ -176,6 +182,38 @@ main>section{min-height:0}
     ["Quality is not an act, it is a habit.", "Aristotle"],
     ["Work hard in silence. Let success make the noise.", "Frank Ocean"],
     ["Rome wasn't built in a day, but they were laying bricks every hour.", "John Heywood"],
+    ["Revenue is the best validation.", "Startup wisdom"],
+    ["Make it work, make it right, make it fast.", "Kent Beck"],
+    ["The only failure is to stop.", "Startup wisdom"],
+    ["Your first 100 customers will teach you more than any book.", "Startup wisdom"],
+    ["Start where you are. Use what you have. Do what you can.", "Arthur Ashe"],
+    ["Motivation gets you going. Habit keeps you going.", "Jim Ryun"],
+    ["The best marketing doesn't feel like marketing.", "Tom Fishburne"],
+    ["Post every day. The algorithm rewards the stubborn.", "Creator wisdom"],
+    ["Nobody cares about your product until it solves their problem.", "Startup wisdom"],
+    ["If you do what you've always done, you'll get what you've always gotten.", "Tony Robbins"],
+    ["Starve your distractions, feed your focus.", "Unknown"],
+    ["The cave you fear to enter holds the treasure you seek.", "Joseph Campbell"],
+    ["It's a marathon with sprints inside.", "Startup wisdom"],
+    ["Ship it.", "Startup wisdom"],
+    ["Persistence is the hard work you do after you get tired of doing the hard work you already did.", "Newt Gingrich"],
+    ["Don't find customers for your products, find products for your customers.", "Seth Godin"],
+    ["Ordinary people with extraordinary consistency.", "Unknown"],
+    ["The question isn't who is going to let me; it's who is going to stop me.", "Ayn Rand"],
+    ["Little by little, a little becomes a lot.", "Tanzanian proverb"],
+    ["Bet on yourself.", "Unknown"],
+    ["Ideas are worthless without execution.", "Unknown"],
+    ["You can't build a reputation on what you are going to do.", "Henry Ford"],
+    ["The secret to success: find a need and fill it.", "Ruth Stafford Peale"],
+    ["Being busy is not the same as being productive.", "Tim Ferriss"],
+    ["Make the next 90 days the best of your life.", "Unknown"],
+    ["Good things come to those who hustle.", "Anaïs Nin"],
+    ["Inspiration exists, but it has to find you working.", "Pablo Picasso"],
+    ["Your network is your net worth, but your work is your foundation.", "Unknown"],
+    ["The obstacle is the way.", "Marcus Aurelius"],
+    ["We are what we repeatedly do.", "Will Durant"],
+    ["Show up. Every day. That's the whole trick.", "Repline"],
+    ["Everything you want is on the other side of consistency.", "Unknown"],
     ["Comfort is the enemy of progress.", "P. T. Barnum"]
   ];
   // black and white photos, a new pair every few minutes (Lorem Picsum, grayscale)
@@ -210,6 +248,7 @@ main>section{min-height:0}
     $("trained").textContent = s.trained_today + (s.trained_today === 1 ? " player" : " players") + " trained · " + s.runs_today + " counted runs";
     var e = s.revenue_cents / 100, p = Math.min(100, e / GOAL * 100);
     $("goalv").innerHTML = "€" + e.toFixed(e < 10 ? 2 : 0) + " <span>/ €" + GOAL + "</span>";
+    forecast(s);
     $("pct").textContent = (p >= 100 ? "Reached 🏆" : Math.floor(p) + " %");
     $("bar").style.width = Math.max(p, 0.8) + "%";
     var sp = s.signups_14d || [], mx = Math.max.apply(null, sp.concat([1]));
@@ -218,6 +257,53 @@ main>section{min-height:0}
     $("top3").innerHTML = (s.top_week || []).length ? s.top_week.map(function (r, i) { return '<li><em style="background:' + col[i] + '">' + (i + 1) + "</em><span>" + esc(r.name) + "</span><b>" + play(r.min) + "</b></li>"; }).join("") : '<li><span style="color:var(--dim)">Nobody yet this week</span></li>';
   }
 
+
+  // seeded random, so the forecast and the quote order don't jump around
+  function rng(seed) { var x = seed >>> 0 || 1; return function () { x ^= x << 13; x >>>= 0; x ^= x >> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; }
+  function pois(l, r) { if (l > 30) return Math.max(0, Math.round(l + Math.sqrt(l) * (r() + r() + r() - 1.5) * 2)); var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= r(); } while (p > L); return k - 1; }
+
+  // Honest forecast for the €100 goal (Monte Carlo, 2000 runs, one year ahead). Assumptions, all from real Repline data or common SaaS numbers:
+  //  - sign-ups today: last 14 days, one spike day counted as at most 5
+  //  - posting a TikTok every day grows sign-ups by 15-70 % a month (random per run, most runs in the middle)
+  //  - payments switch on when the launch month ends (13 Dec); until then nobody can pay
+  //  - 1-5 % of players ever buy (free-to-paid for small consumer apps); older players a bit less
+  //  - 70 % pick Standard €3.99, 30 % Pro €6.99, monthly; 35 % cancel each month
+  var fcKey = "";
+  function forecast(s) {
+    var need = GOAL - s.revenue_cents / 100;
+    var sp = (s.signups_14d || []).map(function (v) { return Math.min(v, 5); });
+    var r0 = Math.max(0.4, sp.reduce(function (a, b) { return a + b; }, 0) / Math.max(1, sp.length));
+    var key = [need.toFixed(2), r0.toFixed(2), s.players, new Date().toDateString()].join("|");
+    if (key === fcKey) return; fcKey = key;
+    var now = new Date(), day0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var payDay = Math.max(0, Math.ceil((LAUNCH_END - day0) / 864e5));
+    var h1 = 90, h2 = 180, runs = 2000, H = 365, hits = [], r = rng(Math.floor(day0 / 864e5) * 31 + s.players);
+    for (var n = 0; n < runs; n++) {
+      if (need <= 0) { hits.push(0); continue; }
+      var g = 1.15 + 0.55 * (r() + r()) / 2, conv = 0.01 + 0.04 * (r() + r()) / 2, rev = 0, subs = [], hit = -1;
+      var old = s.players, pending = [];
+      for (var d = 1; d <= H && hit < 0; d++) {
+        var born = pois(r0 * Math.pow(g, d / 30), r);
+        for (var b = 0; b < born; b++) if (r() < conv) pending.push(d + 3 + Math.floor(r() * 25));
+        if (d === payDay + 1) { for (var o = 0; o < old; o++) if (r() < conv * 0.6) pending.push(d + Math.floor(r() * 20)); }
+        if (d > payDay) {
+          for (var q = pending.length - 1; q >= 0; q--) if (pending[q] <= d) { subs.push({ p: r() < 0.7 ? 3.99 : 6.99, due: d }); pending.splice(q, 1); }
+          for (var k = subs.length - 1; k >= 0; k--) if (subs[k].due === d) { rev += subs[k].p; if (r() < 0.65) subs[k].due = d + 30; else subs.splice(k, 1); }
+          if (rev >= need) hit = d;
+        }
+      }
+      hits.push(hit < 0 ? Infinity : hit);
+    }
+    hits.sort(function (a, b) { return a - b; });
+    var by = function (h) { return hits.filter(function (x) { return x <= h; }).length / runs; };
+    var date = function (dd) { var x = new Date(day0.getTime() + dd * 864e5); return x.toLocaleDateString("en-GB", { day: "numeric", month: "short" }); };
+    var pc = function (p) { return p >= 0.995 ? ">99 %" : p < 0.01 ? "<1 %" : Math.round(p * 100) + " %"; };
+    $("o1").textContent = pc(by(h1)); $("o1l").textContent = "CHANCE BY " + date(h1).toUpperCase();
+    $("o2").textContent = pc(by(h2)); $("o2l").textContent = "CHANCE BY " + date(h2).toUpperCase();
+    var med = hits[Math.floor(runs / 2)];
+    $("o3").textContent = need <= 0 ? "Done 🏆" : med === Infinity ? "> 1 year" : new Date(day0.getTime() + med * 864e5).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+    $("how").textContent = "Posting daily · " + r0.toFixed(1) + " sign-ups/day now · payments from 13 Dec · 1–5 % buy · 2,000 simulated futures";
+  }
   var fails = 0;
   function load() {
     fetch(SB_URL + "/rest/v1/rpc/tv_stats", { method: "POST", headers: { apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ k: key }) })
@@ -241,9 +327,11 @@ main>section{min-height:0}
 
   var qHour = -1;
   function quote() {
-    var hr = Math.floor(Date.now() / 36e5);
-    if (hr === qHour) return; qHour = hr;
-    var q = QUOTES[(hr * 7) % QUOTES.length], el = $("quote");
+    var slot = Math.floor(Date.now() / 3e5); // a new quote every 5 minutes
+    if (slot === qHour) return; qHour = slot;
+    var day = Math.floor(slot / 288), order = QUOTES.map(function (_, i) { return i; }), rnd = rng(day * 9973 + 7);
+    for (var i = order.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = order[i]; order[i] = order[j]; order[j] = t; }
+    var q = QUOTES[order[(slot % 288) % order.length]], el = $("quote");
     el.style.opacity = 0;
     setTimeout(function () { el.querySelector("p").textContent = q[0]; el.querySelector("cite").textContent = "— " + q[1]; el.style.opacity = 1; }, 1600);
   }
@@ -267,7 +355,7 @@ main>section{min-height:0}
 
   tick(); quote(); photo(); load(); wake();
   setInterval(tick, 1000);
-  setInterval(quote, 30000);
+  setInterval(quote, 10000);
   setInterval(load, 15000);
   setInterval(photo, 120000);
   setInterval(function () { location.reload(); }, 6 * 36e5); // fresh page every 6 h for long TV sessions
