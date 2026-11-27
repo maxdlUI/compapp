@@ -1,6 +1,6 @@
 // Repline reminders: called every 5 minutes by pg_cron (see 004_gifts_reminders.sql).
 // Also sends a DM for every gifted plan (see sendGiftDMs).
-// Sends the daily training reminder and the "streak in danger" alert as a Discord DM from the Repline bot
+// Sends the daily training reminder as a Discord DM from the Repline bot
 // and/or as a web push to the browser/iPhone. It only sends what is due and remembers what it sent,
 // so calling it more often does no harm.
 //
@@ -101,19 +101,14 @@ Deno.serve(async (req) => {
     const now = localNow(r.tz || "Europe/Berlin");
     const at = toMins(r.at_time || "18:00");
     const dueReminder = (r.days || []).includes(now.dow) && now.mins >= at && now.mins < at + 180 && r.last_sent !== now.date;
-    const dueDanger = r.danger && now.mins >= 21 * 60 && now.mins < 23 * 60 + 30 && r.last_danger !== now.date;
-    if (!dueReminder && !dueDanger) continue;
+    if (!dueReminder) continue;
 
-    const [{ data: days }, { data: prof }, { data: state }] = await Promise.all([
-      db.from("training_days").select("day, routines, minutes, streak, frozen").eq("user_id", r.user_id).in("day", [now.date, now.yesterday]),
-      db.from("profiles").select("discord_id").eq("id", r.user_id).maybeSingle(),
-      db.from("user_state").select("settings").eq("user_id", r.user_id).maybeSingle()
+    const [{ data: days }, { data: prof }] = await Promise.all([
+      db.from("training_days").select("day, routines, minutes").eq("user_id", r.user_id).eq("day", now.date),
+      db.from("profiles").select("discord_id").eq("id", r.user_id).maybeSingle()
     ]);
-    const today = (days || []).find((d) => d.day === now.date), yday = (days || []).find((d) => d.day === now.yesterday);
+    const today = (days || [])[0];
     const trained = !!(today && (today.routines > 0 || today.minutes > 0));
-    const done = !!(today && today.routines > 0);
-    const streak = Math.max(yday ? (yday.streak || (yday.routines > 0 || yday.frozen ? 1 : 0)) : 0, today ? today.streak || 0 : 0);
-    const freezes = Number((state?.settings as { freezes?: number } | null)?.freezes || 0);
 
     const send = async (title: string, body: string) => {
       let ok = false;
@@ -128,15 +123,9 @@ Deno.serve(async (req) => {
 
     if (dueReminder) {
       if (!(r.skip_if_trained && trained)) {
-        await send("Time for your routine", streak > 0 ? `Day ${streak + 1} is waiting. One routine keeps your streak alive.` : "One routine today. Day 1 starts now.");
+        await send("Time for your routine", "One routine today. Every minute counts on the leaderboard.");
       }
       await db.from("reminders").update({ last_sent: now.date }).eq("user_id", r.user_id);
-    }
-    if (dueDanger) {
-      if (!done && streak > 0 && freezes === 0) {
-        await send("Your streak is in danger", `Your ${streak}-day streak ends at midnight. One routine keeps it alive.`);
-      }
-      await db.from("reminders").update({ last_danger: now.date }).eq("user_id", r.user_id);
     }
   }
   return new Response(JSON.stringify({ checked: rems?.length || 0, sent, gifts }), { headers: { "Content-Type": "application/json" } });

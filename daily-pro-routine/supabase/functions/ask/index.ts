@@ -51,13 +51,11 @@ const FAQ: Faq[] = [
   { id: "plans", keys: [[/price|preis|cost|kost|plan|abo|subscription|premium|\bpro\b|standard|pay|bezahl|kauf|buy|purchase|paypal|card|€|euro|free|kostenlos|gratis/, 2], [/how much|wie viel|when|wann|upgrade|get pro/, 2]],
     a: `**Plans:** Free · **Standard** €3.99 a month (€29.99 a year) · **Pro** €6.99 a month (€49.99 a year). Details: ${SITE}/#plans\n**Right now you don't need to pay anything:** it's launch month, and every Pro feature is free for everyone who is signed in until **12 December 2026**. Payments aren't open yet (“Coming soon”).` },
   { id: "count", keys: [[/count|zählt|zaehlt|verified|verifiziert|not counted|didn.?t count|no points|keine punkte|not on the leaderboard|minutes? missing|minuten fehlen/, 3], [/routine|training|set/, 1]],
-    a: "**A routine counts when you really trained it:** sets can't be skipped, and our server checks that the real time has passed.\n**Verified** (Windows app): Fortnite or KovaaK's also has to be running during the game sets. A Verified routine gets a mark next to your name on the leaderboard.\n**Short on time?** End a routine after 15 minutes or more and you can **save** it: it counts for your streak and the leaderboard.\nA routine that doesn't count keeps your streak, but its time doesn't go on the leaderboard. Pausing a lot or skipping ahead with the clock is the usual reason." },
+    a: "**A routine counts when you really trained it:** sets can't be skipped, and our server checks that the real time has passed.\n**Verified** (Windows app): Fortnite or KovaaK's also has to be running during the game sets. A Verified routine gets a mark next to your name on the leaderboard.\n**Short on time?** End a routine after 15 minutes or more and you can **save** it: it counts on the leaderboard.\nA routine that doesn't count is saved, but its time doesn't go on the leaderboard. Pausing a lot or skipping ahead with the clock is the usual reason." },
   { id: "skip", keys: [[/skip|überspring|ueberspring|next set|nächste(n)? set|naechste(n)? set/, 3]],
     a: "Sets can't be skipped: the next set starts when the current one is done. That's how we keep the leaderboard fair.\nTo get to the next map faster, use the pause between sets (30 seconds by default, change it in **Settings**). Keys: **Space** start/pause · **R** restart · **F** full screen. In the Windows app the same works in game with **Ctrl+Shift+Space / R**." },
   { id: "board", keys: [[/leaderboard|rangliste|rank|platz|points|punkte|playtime|spielzeit|prize|preis(e)?|gewinn|\bwin\b|reward|belohnung|top ?\d+/, 2], [/how|wie|get|bekomm|month|monat|week|woche/, 1]],
-    a: `**Ranked by playtime:** the minutes of your routines that count (server-checked, no skipping, pauses don't count). Weeks start Monday, months on the 1st (Berlin time).\n**Monthly prizes:** #1 3 months Pro · #2–3 1 month Pro · #4–10 1 month Standard · #11–50 a badge. **Weekly Top 3** get a badge and a shout-out here.\nYour account has to be at least 7 days old, one account per person. Leaderboard: ${SITE}/#board` },
-  { id: "streak", keys: [[/streak|serie|freeze|freez|lost my|verloren/, 3]],
-    a: "Your **streak** grows with every day you train. Miss a day and a **streak freeze** saves it on its own. You earn one freeze for every 7 days in a row (hold up to 2, Pro 3). A day saved by a freeze keeps the streak but adds no playtime." },
+    a: `**Ranked by playtime:** the minutes of your routines that count (server-checked, no skipping, pauses don't count). Weeks start Monday, months on the 1st (Berlin time).\n**Monthly prizes:** #1 3 months Pro · #2–3 1 month Pro · #4–10 1 month Standard. **Weekly Top 3** get a shout-out here.\nYour account has to be at least 7 days old, one account per person. Leaderboard: ${SITE}/#board` },
   { id: "overlay", keys: [[/overlay|in.?game|hotkey|tastenkürzel|shortcut|keybind|taste/, 3]],
     a: "The **in-game overlay** is in the Windows app: it shows your timer on top of Fortnite. Set position (or drag it), size, opacity and sound in **Settings → Overlay**.\n**Hotkeys in game:** Ctrl+Shift+Space start/pause · Ctrl+Shift+N next · Ctrl+Shift+R restart · Ctrl+Shift+O overlay on/off · Ctrl+Shift+E open Repline.\nTip: run Fortnite in **Windowed Fullscreen**, in Fullscreen no overlay can show on top." },
   { id: "kovaaks", keys: [[/kovaak|kovak|aim ?trainer|aim score|aim progress|playlist/, 3]],
@@ -67,7 +65,7 @@ const FAQ: Faq[] = [
   { id: "coach", keys: [[/personal plan|coach|ai routine|ki routine|\bai\b|\bki\b|made for (me|you)|custom routine for me/, 3]],
     a: `**Personal Plan** (${SITE}/#ai): pick how much time you have (15 min to 90 min) and write what you want to train, like “my edits are bad, cup in 3 days”, and you get a routine made for you. Standard: 1 a day, Pro: 3 a day (during launch month everyone signed in counts as Pro).\nThe more you say (weak spots, cup date, input), the better it fits.` },
   { id: "short", keys: [[/short|quick|kurz|schnell|15 ?min|little time|wenig zeit|no time|keine zeit|too long|zu lang|first routine|erste routine|where (do i|to) start|wo anfangen|start here/, 3]],
-    a: `**Quick Start** is 15 minutes on one map: edits, building, piece control. Perfect for your first routine or a busy day: ${SITE}/#quick\nAnd if a longer routine runs late: end it after 15 minutes or more and **save** it. It still counts for your streak and the leaderboard.` },
+    a: `**Quick Start** is 15 minutes on one map: edits, building, piece control. Perfect for your first routine or a busy day: ${SITE}/#quick\nAnd if a longer routine runs late: end it after 15 minutes or more and **save** it. It still counts on the leaderboard.` },
   { id: "own", keys: [[/own routine|eigene routine|create (a )?routine|make (a )?routine|builder|erstell|import code|share code|teilen|share (my|a) routine/, 3]],
     a: "**Your own routines:** Home → **My routines → New**, pick sets and times. Free: 1 own routine, Standard: 2, Pro: unlimited.\nTo **share** one, open it and copy its code. To use a friend's, click **Import code** and paste it." },
   { id: "creator", keys: [[/creator code|support.?a.?creator|code von|creator/, 3]],
@@ -89,7 +87,7 @@ const FAQ: Faq[] = [
   { id: "pause", keys: [[/pause|break|countdown|timer (between|zwischen)|zwischen den sets/, 2]],
     a: "Between sets there's a short break to open the next map: **30 seconds** by default, then the set starts on its own. Change it in **Settings**." },
   { id: "what", keys: [[/what is repline|was ist repline|how does (it|repline) work|wie funktioniert|what does repline/, 4]],
-    a: `**Repline** is daily Fortnite training like the pros do it: pick a routine, then train set by set with timers, map codes and KovaaK's playlists. Streaks, leaderboards by playtime with prizes, and a Personal Plan made for you. New here? Start with the 15-min Quick Start: ${SITE}/#quick` },
+    a: `**Repline** is daily Fortnite training like the pros do it: pick a routine, then train set by set with timers, map codes and KovaaK's playlists. A leaderboard by playtime with prizes, and a Personal Plan made for you. New here? Start with the 15-min Quick Start: ${SITE}/#quick` },
 ];
 
 const norm = (t: string) => " " + String(t || "").toLowerCase().replace(/<@!?\d+>/g, " ").replace(/\s+/g, " ") + " ";
@@ -207,7 +205,7 @@ async function welcomeDms() {
     const { count: ever } = await db.from("routine_runs").select("id", { count: "exact", head: true }).eq("user_id", p.id).eq("counted", true);
     await dm(String(p.discord_id), {
       content: (ever || 0) > 0
-        ? "Ready for round two? 15 minutes today keeps your streak going. 🔥"
+        ? "Ready for round two? 15 minutes today and you're on the leaderboard. 🔥"
         : "Quick one? 15 minutes, one map: edits, building, piece control. 🎯",
       components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Open Repline", SITE)] }],
     });

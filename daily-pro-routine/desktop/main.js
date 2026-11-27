@@ -441,11 +441,7 @@ function remTick() {
   const [hh, mm] = String(r.time || "18:00").split(":").map(Number), at = hh * 60 + (mm || 0);
   if ((r.days || []).indexOf(dow) >= 0 && mins >= at && mins < at + 180 && remSent.day !== day) {
     remSent.day = day; remSave();
-    if (!(r.skip && r.trained)) notify("Time for your routine", r.streak > 0 ? `Day ${r.streak + 1} is waiting.${r.usual ? " Your usual: " + r.usual + "." : ""}` : `Day 1 starts with one routine.${r.usual ? " Your usual: " + r.usual + "." : ""}`);
-  }
-  if (r.danger && mins >= 21 * 60 && mins < 23 * 60 + 30 && remSent.danger !== day) {
-    remSent.danger = day; remSave();
-    if (!r.trained && r.streak > 0 && !(r.freezes > 0)) notify("Your streak is in danger", `Your ${r.streak}-day streak ends at midnight. One routine keeps it alive.`);
+    if (!(r.skip && r.trained)) notify("Time for your routine", `One routine today. Every minute counts on the leaderboard.${r.usual ? " Your usual: " + r.usual + "." : ""}`);
   }
 }
 ipcMain.on("reminder:set", (_e, v) => { remCfg = v && typeof v === "object" ? v : null; remTick(); });
