@@ -2866,7 +2866,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.22.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.23.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -3280,7 +3280,14 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     }
   }
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
-  $("plan-start").addEventListener("click", () => { if (!signedIn()) { askSignIn("plan"); return; } S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save(); go("training"); });
+  $("plan-start").addEventListener("click", () => {
+    if (!signedIn()) { askSignIn("plan"); return; }
+    S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save();
+    // the start intro (owner's pick): logo, then the sets are dealt out, then the first timer
+    const bl = list(), tot = totalMin(bl);
+    if (window.ReplineFX && settings.intro !== false && anim()) ReplineFX.intro({ title: `${goal(S.goal).name} · ${length(S.goal, S.len).name}`, sub: `${tot != null ? fmtMin(tot) + " · " : ""}${bl.length} set${bl.length === 1 ? "" : "s"}`, sets: bl.map((b) => ({ name: b.name || "Set", kind: TYPES[b.type] ? TYPES[b.type].label : "", min: b.min })) }, () => go("training"));
+    else go("training");
+  });
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
@@ -4444,7 +4451,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         </div><p class="dr-foot">Repline updates itself. New versions download in the background and install when you restart the app.</p></section>`;
       }
     } else {
-      h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}</div></section>`;
+      h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}${sw("set-intro", "Start intro before a routine", settings.intro !== false)}</div></section>`;
       if (DESK) h += `<section class="dr-sec"><h3>Discord</h3><div class="group">${sw("rpc-on", "Show my training on Discord", settings.rpc !== false)}${sw("rpc-name", "Show the routine name", settings.rpcName !== false)}</div><p class="dr-foot">While a routine runs, friends see “Playing Repline” with your set and time left on your Discord profile. Needs the Discord app open on this PC.</p></section>`;
       if (DESK) {
         const cs = store.get(CUSTOM, null), unlocked = hasCustom();
@@ -4597,6 +4604,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     on("trk-pick", "click", () => DESK.kovaaks.pick().then((r) => { if (!r) return; aimInfo = { found: !!r.found, folder: r.folder || "" }; aimRows = null; aimLoading = null; renderDrawer(); toast(r.rows && r.rows.length ? `${r.rows.length} KovaaK's runs found` : "No KovaaK's results in that folder"); }));
     on("trk-del", "click", async () => { if (!(sb && cloudUser)) return; const { error } = await sb.from("aim_scores").delete().eq("user_id", cloudUser.id); if (error) { toast("Couldn't delete. Please try again."); return; } settings.aimSynced = ""; saveSettings(); aimRows = null; aimLoading = null; DESK.kovaaks.forget(); renderDrawer(); toast("Your KovaaK's results were deleted"); });
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
+    on("set-intro", "change", (e) => { settings.intro = e.target.checked; saveSettings(); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
     on("reset-today", "click", () => { confirmReset = confirmReset === "today" ? null : "today"; renderDrawer(); });
     on("rs-no", "click", () => { confirmReset = null; renderDrawer(); });
@@ -6099,6 +6107,160 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   if (sb) loadCatalog();
   route();
   updateResume();
+})();
+</script>
+<style>
+/* ---------- Start intro (owner's pick: logo, then "Deal") and the Esports teaser (owner's pick: Spotlight) ---------- */
+.rfx { position: fixed; inset: 0; z-index: 300; background: #000; overflow: hidden; cursor: pointer; perspective: 1200px; }
+.rfx canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rfx .rf-ring { position: absolute; left: 50%; top: 50%; width: min(32vmin, 240px); aspect-ratio: 1; margin: calc(min(32vmin, 240px) / -2) 0 0 calc(min(32vmin, 240px) / -2); opacity: 0; }
+.rfx .rf-ring .seg { fill: none; stroke-width: 9; stroke-dasharray: 0 999; }
+.rfx.s-logo .rf-ring { animation: rfRing 1.9s cubic-bezier(.2,.8,.2,1) forwards; }
+.rfx.s-logo .rf-ring .seg { animation: rfDraw .5s cubic-bezier(.3,.9,.3,1) forwards; }
+.rfx.s-logo .rf-ring .seg:nth-child(2) { animation-delay: .1s } .rfx.s-logo .rf-ring .seg:nth-child(3) { animation-delay: .2s } .rfx.s-logo .rf-ring .seg:nth-child(4) { animation-delay: .3s } .rfx.s-logo .rf-ring .seg:nth-child(5) { animation-delay: .4s }
+@keyframes rfDraw { to { stroke-dasharray: var(--len) 999; } }
+@keyframes rfRing { 0% { opacity: 1; transform: scale(.6) rotate(-90deg); } 40% { transform: scale(1) rotate(0); filter: drop-shadow(0 0 28px rgba(255,255,255,.5)); } 62% { opacity: 1; transform: scale(1); } 85%, 100% { opacity: 0; transform: scale(6); } }
+.rfx .rf-word { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 800 clamp(40px, 10vw, 120px) var(--display); color: #fff; letter-spacing: .9em; opacity: 0; white-space: nowrap; }
+.rfx.s-logo .rf-word { animation: rfWord 1.5s .95s cubic-bezier(.2,.9,.2,1) forwards; }
+@keyframes rfWord { 0% { opacity: 0; letter-spacing: .9em; filter: blur(12px); } 45% { opacity: 1; letter-spacing: .04em; filter: blur(0); } 72% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(.9); filter: blur(6px); } }
+.rfx .rf-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.rfx.s-logo .rf-flash { animation: rfFlash .5s 1.35s ease-out; }
+@keyframes rfFlash { 15% { opacity: .5; } 100% { opacity: 0; } }
+.rfx .rf-list { position: absolute; left: 50%; top: 50%; width: min(88vw, 640px); transform: translate(-50%, -50%); display: grid; gap: 10px; }
+.rfx .rf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; opacity: 0; }
+.rfx .rf-head b { font: 700 clamp(22px, 3.4vw, 32px) var(--display); letter-spacing: -.02em; color: #fff; }
+.rfx .rf-head span { font: 14px var(--mono); color: #aeaeb2; }
+.rfx .rf-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 16px; border-radius: 16px; background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.03)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), inset 0 1px 0 rgba(255,255,255,.3); opacity: 0; color: #f5f5f7; }
+.rfx .rf-row .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 700; color: #000; background: var(--c); }
+.rfx .rf-row .t { min-width: 0; display: grid; } .rfx .rf-row .t b { font-size: clamp(15px, 2.2vw, 19px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .rfx .rf-row .t span { font-size: 13px; color: #aeaeb2; }
+.rfx .rf-row .m { font: 600 18px var(--mono); font-variant-numeric: tabular-nums; }
+.rfx .rf-more { font: 13px var(--mono); color: #8e8e93; text-align: center; opacity: 0; }
+.rfx .rf-total { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; opacity: 0; }
+.rfx .rf-total i { display: block; height: 100%; width: 0; background: #fff; box-shadow: 0 0 12px #fff; }
+.rfx.s-list .rf-head, .rfx.s-list .rf-more { animation: rfFade .4s forwards; }
+.rfx.s-list .rf-row { animation: rfDeal .8s cubic-bezier(.2,1.2,.3,1) forwards; animation-delay: calc(.1s + var(--i) * .14s); }
+@keyframes rfDeal { 0% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(.6); } 60% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+.rfx.s-list .rf-total { animation: rfFade .3s .9s forwards; } .rfx.s-list .rf-total i { animation: rfBar 1s 1s ease forwards; }
+.rfx.s-out .rf-row:not(:first-of-type) { animation: rfAway .45s ease-in forwards; animation-delay: calc(var(--i) * .04s); }
+.rfx.s-out .rf-row:first-of-type { animation: rfGrow .55s .15s cubic-bezier(.7,0,.3,1) forwards; }
+.rfx.s-out .rf-head, .rfx.s-out .rf-total, .rfx.s-out .rf-more { animation: rfAway .3s forwards; }
+.rfx.s-end { animation: rfFadeOut .35s ease forwards; }
+@keyframes rfAway { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
+@keyframes rfGrow { from { opacity: 1; } to { transform: scale(1.6); opacity: 0; filter: blur(6px); } }
+@keyframes rfFade { to { opacity: 1; } }
+@keyframes rfFadeOut { to { opacity: 0; } }
+@keyframes rfBar { to { width: 100%; } }
+.rfx .rf-skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); font: 11px var(--mono); color: #48484a; letter-spacing: .12em; }
+
+/* teaser */
+.rft { position: fixed; inset: 0; z-index: 290; display: grid; place-items: center; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); background: rgba(0,0,0,.35); -webkit-backdrop-filter: blur(16px) brightness(.5); backdrop-filter: blur(16px) brightness(.5); perspective: 1100px; animation: rfFade .6s ease both; opacity: 0; overflow: hidden; }
+.rft.out { animation: rfFadeOut .35s ease forwards; opacity: 1; }
+.rft .bl, .rft .br { position: absolute; top: -20%; width: 40%; height: 140%; background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 75%); filter: blur(18px); opacity: 0; transform-origin: 50% 0; clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%); pointer-events: none; }
+.rft .bl { left: 5%; animation: rftL 1.6s .2s cubic-bezier(.3,1,.3,1) forwards; }
+.rft .br { right: 5%; animation: rftR 1.6s .35s cubic-bezier(.3,1,.3,1) forwards; }
+@keyframes rftL { 0% { opacity: 0; transform: rotate(-40deg); } 100% { opacity: 1; transform: rotate(-16deg); } }
+@keyframes rftR { 0% { opacity: 0; transform: rotate(40deg); } 100% { opacity: 1; transform: rotate(16deg); } }
+.rft .card { position: relative; width: min(100%, 540px); padding: clamp(24px, 4vw, 40px); border-radius: 30px; display: grid; gap: 14px; justify-items: center; text-align: center; color: #f5f5f7; background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.03)); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 1px 0 rgba(255,255,255,.5), 0 40px 100px -30px #000; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(.7); opacity: 0; overflow: hidden; animation: rftPop .9s .7s cubic-bezier(.2,1.3,.3,1) forwards; }
+.rft.live .card { animation: none; opacity: 1; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .15s; }
+@keyframes rftPop { to { opacity: 1; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1); } }
+.rft .card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 50% at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.18), transparent 70%); pointer-events: none; }
+.rft .k { font: 600 12px var(--mono); letter-spacing: .3em; color: #d1d1d6; }
+.rft .big { margin: 0; font: 800 clamp(34px, 6vw, 60px)/1 var(--display); letter-spacing: -.03em; }
+.rft .one { font: 900 clamp(80px, 15vw, 150px)/.9 var(--display); background: linear-gradient(100deg, #8a6d1a, #ffd60a 35%, #fff6c8 50%, #ffd60a 65%, #8a6d1a); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rftShine 3s 1.2s ease-in-out infinite; }
+@keyframes rftShine { 0% { background-position: 100% 0; } 60%, 100% { background-position: -50% 0; } }
+.rft p { margin: 0; color: #d1d1d6; max-width: 40ch; font-size: clamp(15px, 1.9vw, 17px); }
+.rft .acts { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+.rft .go { font: 600 16px var(--text); border: 0; cursor: pointer; padding: 13px 26px; border-radius: 999px; color: #fff; background: linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,.10)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), inset 0 1px 0 rgba(255,255,255,.8), 0 10px 24px -10px rgba(0,0,0,.8); }
+.rft .go:hover { background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.16)); }
+.rft .x { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,255,255,.1); color: #f5f5f7; font-size: 18px; cursor: pointer; z-index: 2; }
+.rft .go:focus-visible, .rft .x:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .rfx *, .rft, .rft * { animation-duration: .01s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; } }
+</style>
+<script>
+/* Start intro + Esports teaser. Intro: window.ReplineFX.intro(info, done). Teaser: shows on every app open or reload, closes with a click. */
+window.ReplineFX = (function () {
+  const GREYS = ["#f5f5f7", "#d1d1d6", "#aeaeb2", "#8e8e93", "#636366"];
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ringSVG() {
+    const R = 80, C = 2 * Math.PI * R, GAP = 6, SEG = C / 5 - GAP;
+    return `<svg class="rf-ring" viewBox="0 0 200 200" aria-hidden="true">${GREYS.map((c, i) => `<circle class="seg" cx="100" cy="100" r="${R}" stroke="${c}" style="--len:${SEG}" transform="rotate(${-90 + i * 72 + (GAP / C) * 180} 100 100)"/>`).join("")}</svg>`;
+  }
+  // info: { title, sub, sets: [{ name, kind, min }] }
+  function intro(info, done) {
+    if (reduce()) { done(); return; }
+    const host = document.createElement("div");
+    host.className = "rfx"; host.setAttribute("role", "presentation");
+    const sets = (info.sets || []).slice(0, 6), more = (info.sets || []).length - sets.length;
+    host.innerHTML = `<canvas aria-hidden="true"></canvas>${ringSVG()}<div class="rf-word">REPLINE</div><div class="rf-flash"></div>
+      <div class="rf-list"><div class="rf-head"><b>${esc(info.title)}</b><span>${esc(info.sub)}</span></div>
+      ${sets.map((s, i) => `<div class="rf-row" style="--i:${i};--c:${GREYS[i % 5]};--dx:${(i % 2 ? 1 : -1) * 40}px;--dy:${120 - i * 60}px;--r:${(i % 2 ? 1 : -1) * (14 + i * 4)}deg"><span class="n">${i + 1}</span><span class="t"><b>${esc(s.name)}</b><span>${esc(s.kind || "")}</span></span><span class="m" data-m="${s.min == null ? "" : Math.round(s.min)}">${s.min == null ? "–" : "0:00"}</span></div>`).join("")}
+      ${more > 0 ? `<div class="rf-more">+ ${more} more set${more === 1 ? "" : "s"}</div>` : ""}<div class="rf-total"><i></i></div></div>
+      <span class="rf-skip">TAP TO SKIP</span>`;
+    document.body.appendChild(host);
+    const cv = host.querySelector("canvas"), ctx = cv.getContext("2d"), d = Math.min(2, devicePixelRatio || 1);
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    const P = Array.from({ length: 140 }, () => ({ a: Math.random() * 6.283, s: .4 + Math.random(), g: Math.random() }));
+    const t0 = performance.now(); let raf = 0, timers = [], ended = false;
+    (function draw(now) {
+      const t = (now - t0) / 1000, W = cv.width, H = cv.height, cx = W / 2, cy = H / 2, M = Math.hypot(W, H) / 2;
+      ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(0, 0, W, H);
+      const k = t - 1.35;
+      if (k > 0 && k < 1.4) P.forEach((p) => { const r = (k * (.6 + p.s)) ** .7 * M * .9; ctx.fillStyle = `rgba(255,255,255,${Math.max(0, 1 - k / 1.4) * (.4 + .6 * p.g)})`; const z = (1.5 + 2 * p.g) * W / 1200; ctx.fillRect(cx + Math.cos(p.a) * r, cy + Math.sin(p.a) * r, z * 3, z); });
+      if (t < 3) raf = requestAnimationFrame(draw);
+    })(t0);
+    const finish = () => {
+      if (ended) return; ended = true; timers.forEach(clearTimeout); cancelAnimationFrame(raf);
+      removeEventListener("keydown", onKey, true);
+      done();
+      host.classList.add("s-end"); setTimeout(() => host.remove(), 380);
+    };
+    const onKey = (e) => { e.preventDefault(); e.stopPropagation(); finish(); };
+    host.addEventListener("click", finish); addEventListener("keydown", onKey, true);
+    void host.offsetWidth; host.classList.add("s-logo");
+    timers.push(setTimeout(() => {
+      host.classList.add("s-list");
+      host.querySelectorAll(".rf-row .m").forEach((el, i) => {
+        const target = +el.dataset.m; if (!el.dataset.m) return; const start = performance.now() + 150 + i * 140;
+        const step = (now) => { const q = Math.min(1, Math.max(0, (now - start) / 600)); el.textContent = `${Math.round(target * q)}:00`; if (q < 1 && !ended) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      });
+    }, 2250));
+    timers.push(setTimeout(() => host.classList.add("s-out"), 4400));
+    timers.push(setTimeout(finish, 4950));
+  }
+
+  function teaser() {
+    if (document.querySelector(".rft")) return;
+    const host = document.createElement("div");
+    host.className = "rft"; host.setAttribute("role", "dialog"); host.setAttribute("aria-modal", "true"); host.setAttribute("aria-labelledby", "rft-t");
+    host.innerHTML = `<div class="bl"></div><div class="br"></div>
+      <div class="card"><button class="x" type="button" aria-label="Close">✕</button>
+        <span class="k">COMING SOON</span>
+        <p class="big" id="rft-t">Something big<br>is coming.</p>
+        <span class="one" aria-hidden="true">#1</span>
+        <p>The top of the leaderboard is about to mean a lot more. Every minute you train from today counts.</p>
+        <div class="acts"><button class="go" type="button">Keep training</button></div>
+      </div>`;
+    document.body.appendChild(host);
+    const card = host.querySelector(".card");
+    const close = () => { host.classList.add("out"); removeEventListener("keydown", onKey); setTimeout(() => host.remove(), 360); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    host.querySelector(".x").addEventListener("click", close);
+    host.querySelector(".go").addEventListener("click", close);
+    host.addEventListener("click", (e) => { if (e.target === host) close(); });
+    addEventListener("keydown", onKey);
+    setTimeout(() => { host.classList.add("live"); try { host.querySelector(".go").focus({ preventScroll: true }); } catch (e) {} }, 1700);
+    host.addEventListener("pointermove", (e) => {
+      if (reduce()) return;
+      const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      card.style.setProperty("--ry", (Math.max(-.6, Math.min(.6, x)) * 16).toFixed(2) + "deg"); card.style.setProperty("--rx", (-Math.max(-.6, Math.min(.6, y)) * 12).toFixed(2) + "deg");
+      card.style.setProperty("--mx", ((x + .5) * 100).toFixed(1) + "%"); card.style.setProperty("--my", ((y + .5) * 100).toFixed(1) + "%");
+    });
+  }
+  // every time Repline is opened or reloaded
+  setTimeout(teaser, 900);
+  return { intro, teaser };
 })();
 </script>
 
