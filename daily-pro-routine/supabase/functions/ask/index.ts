@@ -8,6 +8,14 @@
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+
+// Our own database calls send a key (023_limits.sql), so nobody else can make the bot run.
+async function cronOk(req: Request) {
+  const k = req.headers.get("x-cron-key") || "";
+  if (!k) return false;
+  const { data } = await db.rpc("check_cron_key", { k });
+  return data === true;
+}
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const GUILD = "1570385914096783381";
 const CHANNEL = "1572188220970635324"; // #ask-a-question
@@ -175,7 +183,7 @@ async function welcomeDms() {
   for (const p of fresh || []) {
     await db.from("profiles").update({ welcome_dm_at: iso(now) }).eq("id", p.id).is("welcome_dm_at", null);
     await dm(String(p.discord_id), {
-      embeds: [{ color: 0x38e0ff, title: `Welcome to Repline${p.username ? ", " + clip(p.username, 40) : ""}!`,
+      embeds: [{ color: 0xf5f5f7, title: `Welcome to Repline${p.username ? ", " + clip(p.username, 40) : ""}!`,
         description: "Start with **Quick Start**: 15 minutes, one map, three sets. Or let us build a routine just for you with your **Personal Plan**." }],
       components: [{ type: 1, components: [linkBtn("Quick Start · 15 min", `${SITE}/#quick`), linkBtn("Build my Personal Plan", `${SITE}/#ai`)] }],
     });
@@ -249,6 +257,7 @@ async function comebackDms(now: number) {
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("ok");
+  if (!(await cronOk(req))) return new Response("forbidden", { status: 403 });
   let b: any = {}; try { b = await req.json(); } catch { /* ignore */ }
   if (b && b.test) return new Response(JSON.stringify(match(String(b.test)).map((f) => f.id)), { headers: { "Content-Type": "application/json" } });
   if (!b || !b.poll) return new Response("{}", { status: 400 });

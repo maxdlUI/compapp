@@ -4436,7 +4436,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       if (!(sb && cloudUser)) { account.cr = Object.assign({}, account.cr, { creator: "Demo creator", code: v.toLowerCase() }); ccEdit = false; renderDrawer(); toast("Now supporting Demo creator (demo)"); return; }
       const { data, error } = await sb.rpc("set_creator_code", { c: v });
       if (error || !data) { toast("Couldn't save the code. Please try again."); return; }
-      if (data.error) { toast({ not_found: "No creator with this code", self: "That's your own code", signed_out: "Sign in first" }[data.error] || "Couldn't save the code"); return; }
+      if (data.error) { toast({ not_found: "No creator with this code", self: "That's your own code", too_soon: "You can change your creator code once a day", signed_out: "Sign in first" }[data.error] || "Couldn't save the code"); return; }
       ccEdit = false; toast(`Now supporting ${data.creator}`); await loadCreator(); renderDrawer();
     };
     on("cc-use", use);

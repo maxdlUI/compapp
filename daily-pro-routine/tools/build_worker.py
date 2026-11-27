@@ -33,7 +33,7 @@ const RELEASE = %s;
 const bin = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 const cache = new Map();
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
     let path = decodeURIComponent(url.pathname);
@@ -47,8 +47,19 @@ export default {
       if (!env || !env.DOWNLOADS) return new Response("Download is not available right now.", { status: 503, headers: { "content-type": "text/plain" } });
       const head = { "content-type": "application/octet-stream", "content-disposition": `attachment; filename="${W.filename}"`, "cache-control": "no-store", "x-content-type-options": "nosniff" };
       if (request.method === "HEAD") return new Response(null, { headers: { ...head, "content-length": String(W.bytes) } });
+      // Served from Cloudflare's edge cache when it can, so many downloads (or someone hammering the link)
+      // don't turn into many R2 reads. The cache key carries the version, so a new release is never stale.
+      const ck = new Request("https://repline-cache.internal/dl/" + RELEASE.version + "/" + W.filename);
+      let cache = null;
+      try { cache = caches.default; const hit = await cache.match(ck); if (hit) return new Response(hit.body, { headers: { ...head, "content-length": hit.headers.get("content-length") || String(W.bytes) } }); } catch (e) { cache = null; }
       const obj = await env.DOWNLOADS.get(W.key);
       if (!obj) return new Response("Download is not available right now.", { status: 404, headers: { "content-type": "text/plain" } });
+      if (cache) {
+        const [a, b] = obj.body.tee();
+        const put = cache.put(ck, new Response(b, { headers: { "content-type": "application/octet-stream", "content-length": String(obj.size), "cache-control": "public, max-age=2592000" } })).catch(() => {});
+        if (ctx && ctx.waitUntil) ctx.waitUntil(put);
+        return new Response(a, { headers: { ...head, "content-length": String(obj.size), etag: obj.httpEtag } });
+      }
       return new Response(obj.body, { headers: { ...head, "content-length": String(obj.size), etag: obj.httpEtag } });
     }
     if (path.indexOf("/download/") === 0 && path !== "/download/windows.json") return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } });
