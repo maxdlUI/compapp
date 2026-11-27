@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /download/
+Disallow: /tv/
 
 Sitemap: https://repline.pages.dev/sitemap.xml

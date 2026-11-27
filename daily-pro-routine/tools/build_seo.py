@@ -271,7 +271,7 @@ def build():
     routes.insert(1, "/map-codes/")
 
     # robots.txt + sitemap.xml
-    open(os.path.join(APP, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /download/\n\nSitemap: %s/sitemap.xml\n" % SITE)
+    open(os.path.join(APP, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /download/\nDisallow: /tv/\n\nSitemap: %s/sitemap.xml\n" % SITE)
     urls = ["/"] + routes
     open(os.path.join(APP, "sitemap.xml"), "w").write(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
