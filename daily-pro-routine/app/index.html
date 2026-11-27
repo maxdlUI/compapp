@@ -286,9 +286,9 @@ footer .wrap { max-width: 1024px; display: flex; flex-wrap: wrap; justify-conten
 .state { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; letter-spacing: -0.224px; color: var(--ash); }
 .state i { width: 8px; height: 8px; border-radius: 50%; background: var(--slate); }
 .stage[data-status="laeuft"] .state i { background: var(--c1); box-shadow: 0 0 10px var(--c1); }
-.stage[data-status="wechsel"] .state i { background: #ffd60a; box-shadow: 0 0 10px #ffd60a; }
+.stage[data-status="wechsel"] .state i { background: #f5f5f7; box-shadow: 0 0 10px #f5f5f7; }
 html.anim .stage[data-status="wechsel"] .state i { animation: blink 1s ease-in-out infinite; }
-.stage[data-status="wechsel"] .dial-mid .t { color: #ffd60a; }
+.stage[data-status="wechsel"] .dial-mid .t { color: #f5f5f7; text-shadow: 0 0 24px rgba(255,255,255,.35); }
 .unlock-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
 .unlock-list li { display: flex; gap: 10px; align-items: center; color: var(--porcelain); font-size: 15px; }
 .unlock-list li::before { content: ""; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #c1c1c1 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
@@ -1182,6 +1182,26 @@ a { text-decoration-color: rgba(245,245,247,.35); }
 .dstep.now .dacts .go:hover, #plan-start:hover, #co-build:hover, #co-start:hover, #wu-go:hover { color: #fff; background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.16)); }
 .dstep.now .dacts .go:active, #plan-start:active, #co-build:active, #co-start:active, #wu-go:active { transform: scale(.97); }
 @media (prefers-reduced-motion: reduce) { .dstep.now .dbox::after { animation: none; display: none; } }
+
+/* Competitive Play / Free Play choice (plan page) and the tag on the training screen */
+.pmodes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+@media (max-width: 460px) { .pmodes { grid-template-columns: 1fr; } }
+.pm { position: relative; overflow: hidden; text-align: left; font: inherit; color: var(--porcelain); cursor: pointer; border: 0; border-radius: 20px; padding: 16px; display: grid; gap: 8px; align-content: start; background: var(--graphite); box-shadow: inset 0 0 0 1px var(--keyline); transition: background .2s, box-shadow .2s, transform .12s; }
+.pm:active { transform: scale(.98); }
+.pm[disabled] { opacity: .4; cursor: default; }
+.pm[aria-checked="true"] { background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04)); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55), inset 0 1px 0 rgba(255,255,255,.5), 0 18px 40px -18px rgba(0,0,0,.9); }
+.pm[aria-checked="true"]::after { content: ""; position: absolute; top: -50%; bottom: -50%; left: -40%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.12), transparent); transform: rotate(12deg); animation: glassSweep 6s ease-in-out infinite; pointer-events: none; }
+.pm-top { display: flex; align-items: center; justify-content: space-between; }
+.pm-top svg { width: 32px; height: 32px; fill: none; stroke: var(--porcelain); stroke-width: 1.7; stroke-linecap: round; }
+.pm-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--dim); }
+.pm[aria-checked="true"] .pm-dot { box-shadow: inset 0 0 0 6px #fff; }
+.pm b { font-size: 18px; letter-spacing: -.01em; }
+.pm .pm-t { font-size: 14px; color: var(--ash); }
+.pm ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 13px; color: #d1d1d6; }
+.pm li { display: flex; gap: 8px; } .pm li i { font-style: normal; width: 14px; flex: none; color: var(--ash); }
+.pmode-tag { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; color: #000; background: #f5f5f7; }
+.pmode-tag.free { color: #d1d1d6; background: none; box-shadow: inset 0 0 0 1px var(--steel); }
+@media (prefers-reduced-motion: reduce) { .pm[aria-checked="true"]::after { animation: none; display: none; } }
 </style>
 
 </head>
@@ -1478,7 +1498,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
     <div class="qa rv d1">
       <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order, built from how pros practise. Every set has one focus.</p></details>
       <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
-      <details><summary>When does a routine count?<i></i></summary><p>When you really trained it. Sets can't be skipped, and our server checks that the real time has passed. In the Windows app, Fortnite or KovaaK's also has to run during the game sets: then your routine is <b>Verified</b> and gets a mark on the leaderboard. A routine that doesn't count is saved, but its time doesn't go on the leaderboard.</p></details>
+      <details><summary>When does a routine count?<i></i></summary><p>When you play it in Competitive Play and really train it: sets can't be skipped, and our server checks that the real time has passed. Free Play lets you skip sets, but it never counts. In the Windows app, Fortnite or KovaaK's also has to run during the game sets: then your routine is <b>Verified</b> and gets a mark on the leaderboard. A routine that doesn't count is saved, but its time doesn't go on the leaderboard.</p></details>
       <details><summary>Can the Windows app get me banned?<i></i></summary><p>No. Repline never touches Fortnite: no memory, no game files, no network. It only looks at the list of running programs, like Task Manager or Discord does. For KovaaK's it reads the result files KovaaK's saves itself. Both can be turned off in Settings.</p></details>
       <details><summary>Do I need an account?<i></i></summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
       <details><summary>Do I stay signed in?<i></i></summary><p>Yes, on this device until you sign out. On iPhone, add Repline to your Home Screen: Safari clears website data after 7 days without a visit.</p></details>
@@ -1520,6 +1540,8 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       <p class="lead" id="plan-sum"></p>
       <div class="field" id="cup-field" hidden><label for="cup-time">Your cup starts at</label><input id="cup-time" type="time" value="19:00"></div>
       <p class="note" id="cup-note" hidden></p>
+      <div class="pmodes" id="plan-mode" role="radiogroup" aria-label="How do you want to play it?"></div>
+      <p class="note" id="plan-mode-note"></p>
       <button class="pill big" type="button" id="plan-start">Start training</button>
     </div>
     <div><div class="sbar" id="plan-bar" aria-hidden="true"></div><div class="blocks" id="plan-blocks"></div></div>
@@ -1532,7 +1554,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
   <div class="train">
     <section class="stage" id="stage" data-status="bereit" aria-label="Timer">
       <div class="stage-top">
-        <span class="state" aria-live="polite"><i></i><span id="st-word">Ready</span></span>
+        <span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="state" aria-live="polite"><i></i><span id="st-word">Ready</span></span><span class="pmode-tag" id="tr-mode"></span></span>
         <span>
           <button class="icon-btn" type="button" id="snd" aria-pressed="true" aria-label="Sound at the end of a set"><svg class="on-i"><use href="#i-sound"/></svg><svg class="off-i"><use href="#i-mute"/></svg></button>
           <button class="icon-btn" type="button" id="full" aria-label="Full screen"><svg><use href="#i-full"/></svg></button>
@@ -1541,9 +1563,11 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       </div>
       <div class="dial" id="tr-dial"><svg viewBox="0 0 200 200" aria-hidden="true"></svg><div class="dial-mid"><span class="tiny" id="tr-kick"></span><span class="t" id="tr-clock" role="timer" aria-live="off">0:00</span><span class="tiny" id="tr-under"></span></div></div>
       <div class="controls">
+        <button class="round" type="button" id="b-prev" aria-label="Previous set" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M18 6l-7 6 7 6M9 6v12"/></svg></button>
         <button class="round" type="button" id="b-restart" aria-label="Restart set (R)"><svg><use href="#i-restart"/></svg></button>
         <button class="pill big" type="button" id="b-main">Start</button>
-        <span class="round-ph" aria-hidden="true"></span>
+        <span class="round-ph" aria-hidden="true" id="b-ph"></span>
+        <button class="round" type="button" id="b-skip" aria-label="Skip set (N)" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M6 6l7 6-7 6M15 6v12"/></svg></button>
       </div>
       <div class="gstat" id="tr-game" role="status" hidden></div>
       <div class="keys tiny"><span><kbd>Space</kbd> Start/Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>N</kbd> Next set when done</span><span><kbd>F</kbd> Full screen</span></div>
@@ -2866,7 +2890,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.23.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.24.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -3247,12 +3271,26 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     return b.codes.map((c) => `<div class="code"><div><span class="tiny">${esc(c.name || "Code")}${c.by ? " · " + esc(c.by) : ""}</span><b>${c.value ? esc(c.value) : PCODE}</b></div><button class="pill sm" type="button" data-copy="${c.value ? esc(c.value) : ""}">Copy</button></div>`).join("");
   }
   const thumbOf = (u) => String(u).replace(/\.webp$/, "-s.webp");
+  // Competitive Play or Free Play, picked before a routine (owner, 27 Nov 2026). The last pick is remembered.
+  const pickMode = () => (settings.playMode === "free" ? "free" : "comp");
+  const MODE_INFO = {
+    comp: { name: "Competitive Play", icon: '<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', text: "The real thing. Your time goes on the leaderboard.", pts: [["✓", "Counts on the leaderboard"], ["✓", "Server-checked, Verified in the Windows app"], ["–", "No skipping, every set to the end"]] },
+    free: { name: "Free Play", icon: '<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>', text: "Just train. Skip sets, go back, end any time.", pts: [["✓", "Skip any set or go back"], ["✓", "Saved in your own stats"], ["–", "Doesn't count on the leaderboard"]] }
+  };
+  function renderModes() {
+    const box = $("plan-mode"); if (!box) return;
+    const running = S.active && S.run, m = running ? (S.mode || "comp") : pickMode();
+    box.innerHTML = ["comp", "free"].map((k) => { const x = MODE_INFO[k]; return `<button class="pm" type="button" role="radio" data-pm="${k}" aria-checked="${m === k}"${running && m !== k ? " disabled" : ""}><span class="pm-top"><svg viewBox="0 0 24 24" aria-hidden="true">${x.icon}</svg><span class="pm-dot" aria-hidden="true"></span></span><b>${x.name}</b><span class="pm-t">${x.text}</span><ul>${x.pts.map(([a, b]) => `<li><i>${a}</i>${esc(b)}</li>`).join("")}</ul></button>`; }).join("");
+    $("plan-mode-note").textContent = running ? "This routine is already running. End it to change the mode." : m === "free" ? "Free Play: train how you like. It doesn't count on the leaderboard." : "Competitive Play: every set to the end, and your time goes on the leaderboard.";
+    box.querySelectorAll("[data-pm]").forEach((b) => b.addEventListener("click", () => { if (running) return; settings.playMode = b.dataset.pm; saveSettings(); renderModes(); }));
+  }
   function buildPlan() {
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
     const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.coach ? "ai" : z.custom ? "goal" : "length"; bk.textContent = z.coach ? "Personal Plan" : z.custom ? "Routines" : "Length";
     const swt = switchTotalSec(bl.length);
     $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
     $("plan-start").innerHTML = signedIn() ? "Start training" : `<svg aria-hidden="true" style="width:20px;height:20px;margin-right:10px;vertical-align:-4px"><use href="#i-discord"/></svg>Sign in to start`;
+    renderModes();
     $("plan-bar").innerHTML = bl.map((b) => `<i style="flex:${b.min || 1};background:${tcol(b)}" title="${esc(b.name)}"></i>`).join("");
     $("cup-field").hidden = !z.cupTime; $("cup-note").hidden = !z.cupTime;
     $("cup-time").value = S.cup || "";
@@ -3282,10 +3320,11 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
   $("plan-start").addEventListener("click", () => {
     if (!signedIn()) { askSignIn("plan"); return; }
+    if (!S.run) S.mode = pickMode();
     S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save();
     // the start intro (owner's pick): logo, then the sets are dealt out, then the first timer
     const bl = list(), tot = totalMin(bl);
-    if (window.ReplineFX && settings.intro !== false && anim()) ReplineFX.intro({ title: `${goal(S.goal).name} · ${length(S.goal, S.len).name}`, sub: `${tot != null ? fmtMin(tot) + " · " : ""}${bl.length} set${bl.length === 1 ? "" : "s"}`, sets: bl.map((b) => ({ name: b.name || "Set", kind: TYPES[b.type] ? TYPES[b.type].label : "", min: b.min })) }, () => go("training"));
+    if (window.ReplineFX && settings.intro !== false && anim()) ReplineFX.intro({ title: `${goal(S.goal).name} · ${length(S.goal, S.len).name}`, sub: `${S.mode === "free" ? "Free Play" : "Competitive Play"} · ${bl.length} set${bl.length === 1 ? "" : "s"}`, sets: bl.map((b) => ({ name: b.name || "Set", kind: TYPES[b.type] ? TYPES[b.type].label : "", min: b.min })) }, () => go("training"));
     else go("training");
   });
 
@@ -3368,6 +3407,10 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $("stage").style.setProperty("--sc", tcol(b));
     $("tr-pos").innerHTML = `<i style="background:${tcol(b)}"></i>${TYPES[b.type].label} · Set ${S.b + 1} of ${bl.length}`;
     $("tr-name").textContent = b.name || "***";
+    const fr = isFree(), tm = $("tr-mode");
+    tm.textContent = fr ? "Free Play · doesn't count" : "Competitive Play · counts"; tm.classList.toggle("free", fr);
+    $("b-skip").hidden = !fr; $("b-prev").hidden = !fr || S.b === 0; $("b-ph").hidden = fr;
+    const nk = $("v-training").querySelector(".keys span:nth-child(3)"); if (nk) nk.innerHTML = fr ? "<kbd>N</kbd> Skip set" : "<kbd>N</kbd> Next set when done";
     const ti = $("tr-img"); ti.hidden = !b.img; if (b.img) { ti.src = b.img; ti.alt = b.alt || b.name; }
     const f = getFocus();
     $("tr-hint").innerHTML = esc(b.hint || "") + (b.where && b.codes && b.codes.length ? `<br><span class="tiny">Where: ${esc(b.where)}</span>` : "") + (b.tip ? `<br><span class="tip">${esc(b.tip)}</span>` : "");
@@ -3487,10 +3530,12 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   function play(at) { if (isKill(cur()) || S.status === "fertig") return; if (!S.run && !S.b && window.ReplineWarm && window.ReplineWarm.shouldAsk()) { askWarm(at); return; } startRun(); S.gAt = 0; S.runAt = at || Date.now(); S.status = "laeuft"; keepAwake(true); clearInterval(raf); raf = setInterval(loop, 200); save(); render(); pushOverlay(true); }
   function pause() { countTime(); S.before = elapsed(); S.runAt = null; S.status = "pause"; clearInterval(raf); keepAwake(false); save(); render(); pushOverlay(true); }
   function restart() { if (S.status === "wechsel") { addSwitch(15); return; } countTime(); if (S.counted) S.counted[S.b] = 0; clearInterval(raf); S.before = 0; S.status = "bereit"; delete S.done[S.b]; S.kills[S.b] = {}; keepAwake(false); save(); buildTraining(); }
-  // No skipping: the next set only starts once this one is done (timer over, all targets ticked).
-  const canNext = () => S.status === "fertig" || (!isKill(cur()) && cur().min == null && elapsed() > 0);
+  // Competitive Play: no skipping, the next set only starts once this one is done (timer over, all targets ticked).
+  // Free Play (owner, 27 Nov 2026): skip or go back any time; it never counts on the leaderboard.
+  const isFree = () => S.mode === "free";
+  const canNext = () => isFree() || S.status === "fertig" || (!isKill(cur()) && cur().min == null && elapsed() > 0);
   function nextBlock() {
-    if (!canNext()) { toast("Finish this set first. Sets can't be skipped."); return; }
+    if (!canNext()) { toast("Finish this set first. In Competitive Play sets can't be skipped."); return; }
     countTime(); clearInterval(raf); keepAwake(false);
     S.done[S.b] = true;
     if (S.b >= list().length - 1) { finish(); return; }
@@ -3499,6 +3544,14 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     save(); buildTraining(); pushOverlay(true);
     const v = $("v-training"); v.classList.remove("enter-f"); void v.offsetWidth; v.classList.add("enter-f");
   }
+  function prevBlock() {
+    if (!isFree() || S.b <= 0) return;
+    countTime(); clearInterval(raf); keepAwake(false);
+    S.b -= 1; S.before = 0; S.runAt = null; S.swEnd = null; S.status = "bereit"; delete S.done[S.b];
+    save(); buildTraining(); pushOverlay(true);
+  }
+  $("b-skip").addEventListener("click", () => nextBlock());
+  $("b-prev").addEventListener("click", prevBlock);
   function mainAction() { if (S.status === "wechsel") startNow(false); else if (S.status === "fertig") nextBlock(); else if (S.status === "laeuft") pause(); else play(); }
   let finT = 0;
   function flash() {
@@ -3606,7 +3659,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   async function startRun() {
     if (!S.goal || !length(S.goal, S.len)) return;
     if (!S.run) { S.run = { at: Date.now(), id: null, planned: plannedLeft() }; S.game = { need: 0, got: 0 }; store.set(KEY, S); }
-    if (S.run.id || runBusy || !(sb && cloudUser)) return;
+    if (isFree() || S.run.id || runBusy || !(sb && cloudUser)) return;
     runBusy = true;
     try {
       const { data, error } = await sb.rpc("run_start", { client_day: S.day || today(), goal_id: String(S.goal).slice(0, 80), len_id: String(S.len || "").slice(0, 40), planned: S.run.planned, src: DESK ? "win" : "web" });
@@ -4226,7 +4279,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     store.set(DONE, store.get(DONE, 0) + 1);
     store.set(FIN, store.get(FIN, []).concat([{ t: Date.now(), g: S.goal }]).slice(-300));
     afterFinish();
-    const run = S.run, game = S.game;
+    const run = S.run, game = S.game, wasFree = isFree();
     coachDone(S.goal === "coach");
     $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag wait">Checking</span><b>Checking your routine…</b></div>`;
     const z = goal(S.goal), l = length(S.goal, S.len);
@@ -4236,6 +4289,11 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     pushOverlay(true); watchGames();
     cloudPush();
     go("done");
+    if (wasFree) {
+      $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag">Free Play</span><b>Saved in your stats</b><span class="small">Free Play doesn't go on the leaderboard. Pick Competitive Play next time to climb.</span></div>`;
+      if (run) aimAfterRun(run.at);
+      return;
+    }
     judgeRun(run, game, early).then((v) => {
       const rt = store.get(ROUT, {});
       rt[t] = (rt[t] || 0) + (v.counted || v.error ? 1 : 0); store.set(ROUT, rt);
@@ -5191,6 +5249,11 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   const trainedSec = () => S.run && S.run.at ? Math.round((Date.now() - S.run.at) / 1000) : 0;
   function askEnd() {
     if (!(S.goal && S.active)) return;
+    if (isFree()) {
+      openModal(`<h2 id="sheet-t">End this routine?</h2><p class="small">Free Play: your time so far is saved in your stats.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill" type="button" id="end-yes">End routine</button></div>`,
+        (sh, close) => { sh.querySelector("#end-yes").addEventListener("click", () => { close(); endRoutine(); }); });
+      return;
+    }
     const sec = trainedSec(), canSave = sec >= EARLY_SEC && signedIn();
     const left = Math.ceil((EARLY_SEC - sec) / 60);
     openModal(canSave
