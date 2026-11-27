@@ -33,8 +33,8 @@ Deno.serve(async (req) => {
   if (first) {
     const ch = await fetch(API + "/users/@me/channels", { method: "POST", headers: { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" }, body: JSON.stringify({ recipient_id: me.id }) }).then((x) => x.ok ? x.json() : null).catch(() => null);
     if (ch && ch.id) await fetch(`${API}/channels/${ch.id}/messages`, { method: "POST", headers: { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" }, body: JSON.stringify({
-      content: `You're in the Repline Discord${prof.username ? ", " + String(prof.username).slice(0, 40) : ""}! 🎉 Here's a **free bonus spin** for today on the Drops wheel. Questions? Ask in #ask-a-question, the bot answers in seconds.`,
-      components: [{ type: 1, components: [{ type: 2, style: 5, label: "Spin the wheel", url: `${SITE}/#drops` }, { type: 2, style: 5, label: "Quick Start · 15 min", url: `${SITE}/#quick` }] }],
+      content: `You're in the Repline Discord${prof.username ? ", " + String(prof.username).slice(0, 40) : ""}! 🎉 Questions? Ask in #ask-a-question, the bot answers in seconds.`,
+      components: [{ type: 1, components: [{ type: 2, style: 5, label: "Quick Start · 15 min", url: `${SITE}/#quick` }] }],
     }) }).catch(() => {});
   }
   return out({ ok: true, joined: r.status === 201, first });
