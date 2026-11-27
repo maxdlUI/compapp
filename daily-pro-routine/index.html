@@ -1,6 +1,6 @@
 <title>Repline · Fortnite Practice Routines, Map Codes and In-Game Overlay</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Free Fortnite practice routines set by set: timers, training map codes, KovaaK's playlists, streaks, leaderboards and an in-game overlay for Windows.">
+<meta name="description" content="Free Fortnite practice routines set by set: timers, training map codes, KovaaK's playlists, a playtime leaderboard and an in-game overlay for Windows.">
 <style>
 /* Layout: black Apple product page (iPhone 18 Pro, Refero). A home screen, then a guided flow
    goal → length → plan → training → done. Blue only for primary actions; set-type colours are the "device finish". */
@@ -1363,7 +1363,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
     <div class="vh-how">
       <div><span>Every day</span><b>Pick a routine</b><p>15 minutes to 2 hours. Or tell the Personal Plan what you want to fix.</p></div>
       <div><span>Set by set</span><b>Train with a timer</b><p>Map code, focus and time for every set. No skipping, so it really counts.</p></div>
-      <div><span>After</span><b>Watch it add up</b><p>Streaks, badges and a leaderboard by playtime, with monthly prizes.</p></div>
+      <div><span>After</span><b>Watch it add up</b><p>Every minute you train goes on the leaderboard, with monthly prizes.</p></div>
     </div>
   </section>
 
@@ -1424,7 +1424,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
         <div id="home-focus"></div>
       </div>
       <div style="display:grid;gap:20px">
-        <div><span class="streak-n" id="home-streak">0</span> <span class="lead" style="display:inline" id="home-streak-w">days in a row</span></div>
+        <div><span class="streak-n" id="home-streak">0 min</span> <span class="lead" style="display:inline" id="home-streak-w">played this week</span></div>
         <div class="days" id="home-days"></div>
       </div>
     </div>
@@ -1444,7 +1444,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
     <div class="qa rv d1">
       <details open><summary>What is the Daily Pro Routine?<i></i></summary><p>Training in a fixed order, built from how pros practise. Every set has one focus.</p></details>
       <details><summary>What is a set?<i></i></summary><p>One part of your routine: a map, a mode or a review, with a time or a kill target.</p></details>
-      <details><summary>When does a routine count?<i></i></summary><p>When you really trained it. Sets can't be skipped, and our server checks that the real time has passed. In the Windows app, Fortnite or KovaaK's also has to run during the game sets: then your routine is <b>Verified</b> and gets a mark on the leaderboard. A routine that doesn't count keeps your streak, but its time doesn't go on the leaderboard.</p></details>
+      <details><summary>When does a routine count?<i></i></summary><p>When you really trained it. Sets can't be skipped, and our server checks that the real time has passed. In the Windows app, Fortnite or KovaaK's also has to run during the game sets: then your routine is <b>Verified</b> and gets a mark on the leaderboard. A routine that doesn't count is saved, but its time doesn't go on the leaderboard.</p></details>
       <details><summary>Can the Windows app get me banned?<i></i></summary><p>No. Repline never touches Fortnite: no memory, no game files, no network. It only looks at the list of running programs, like Task Manager or Discord does. For KovaaK's it reads the result files KovaaK's saves itself. Both can be turned off in Settings.</p></details>
       <details><summary>Do I need an account?<i></i></summary><p>To train, yes: sign in with Discord, it's free. You can look at every routine without one.</p></details>
       <details><summary>Do I stay signed in?<i></i></summary><p>Yes, on this device until you sign out. On iPhone, add Repline to your Home Screen: Safari clears website data after 7 days without a visit.</p></details>
@@ -1544,7 +1544,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
     </div>
     <div style="display:grid;gap:20px">
-      <div><span class="streak-n" id="done-streak">0</span> <span class="lead" style="display:inline" id="done-streak-w">days in a row</span></div>
+      <div><span class="streak-n" id="done-streak">0 min</span> <span class="lead" style="display:inline" id="done-streak-w">played this week</span></div>
       <div class="days" id="done-days"></div>
     </div>
   </div>
@@ -1773,7 +1773,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
   <button class="back" type="button" data-go="">Home</button>
   <div class="vhead"><div><h1 class="d-l">Leaderboards.</h1><p class="lead">Train, climb, win Pro.</p></div>
     <div class="vtools"><label class="fo" for="fo-only"><input type="checkbox" id="fo-only"> Friends only</label>
-      <div class="seg" role="tablist" aria-label="Leaderboard" id="board-tabs"><button type="button" role="tab" data-bt="week">This week</button><button type="button" role="tab" data-bt="month">This month</button><button type="button" role="tab" data-bt="streaks">Streaks</button></div></div></div>
+      <div class="seg" role="tablist" aria-label="Leaderboard" id="board-tabs"><button type="button" role="tab" data-bt="week">This week</button><button type="button" role="tab" data-bt="month">This month</button></div></div></div>
   <div id="board-body"></div>
 </main>
 
@@ -1784,11 +1784,6 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
   <div id="stats-body"></div>
 </main>
 
-<main class="view wrap flowv" data-view="badges" id="v-badges" hidden>
-  <button class="back" type="button" data-go="">Home</button>
-  <div class="vhead"><div><h1 class="d-l">Badges.</h1><p class="lead" id="bd-sum"></p></div></div>
-  <div id="badges-body"></div>
-</main>
 
 <main class="view wrap flowv" data-view="friends" id="v-friends" hidden>
   <button class="back" type="button" data-go="">Home</button>
@@ -2837,7 +2832,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.21.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.23.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -2920,9 +2915,9 @@ const ALERT_SOUNDS = [["chime", "Chime"], ["bell", "Bell"], ["marimba", "Marimba
 const ALERT_ANIMS = [["wave", "Wave"], ["flash", "Flash"], ["shake", "Shake"], ["glow", "Glow"], ["confetti", "Confetti"], ["slide", "Slide"], ["minimal", "Minimal"]];
 /* Plans: what each one unlocks. Payments open later (Stripe); the plan is stored on the profile. */
 const PLANS = [
-  { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Streak, focus and replay review"] },
+  { id: "free", name: "Free", price: 0, perks: ["Short version of every routine", "1 own routine", "Focus and replay review"] },
   { id: "standard", name: "Standard", price: 3.99, year: 29.99, perks: ["Every routine in every length", "2 own routines", "Personal Plan: 1 routine a day, made for you", "In-game overlay (Windows app)", "Everything in Free"] },
-  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "3 streak freezes instead of 2", "Pro routines", "Personal Plan: 3 routines a day", "Everything in Standard"], soon: ["Pro routines"] }
+  { id: "pro", name: "Pro", price: 6.99, year: 49.99, perks: ["Unlimited own routines", "More customization, e.g. custom sound (Windows app)", "Pro routines", "Personal Plan: 3 routines a day", "Everything in Standard"], soon: ["Pro routines"] }
 ];
 const DEFAULT_MIN = { aim: 10, mech: 10, fight: 15, live: 30, review: 10, prep: 5, rest: 5 };
 const TEST_GOAL = { id: "test", name: "Test routine", text: "Every set 3 seconds. Runs on its own.", icon: "i-ki", dev: true, lengths: [
@@ -3251,7 +3246,14 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     }
   }
   $("cup-time").addEventListener("input", (e) => { S.cup = e.target.value; save(); buildPlan(); });
-  $("plan-start").addEventListener("click", () => { if (!signedIn()) { askSignIn("plan"); return; } S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save(); go("training"); });
+  $("plan-start").addEventListener("click", () => {
+    if (!signedIn()) { askSignIn("plan"); return; }
+    S.active = true; store.set("rl.last", { goal: S.goal, len: S.len }); save();
+    // the start intro (owner's pick): logo, then the sets are dealt out, then the first timer
+    const bl = list(), tot = totalMin(bl);
+    if (window.ReplineFX && settings.intro !== false && anim()) ReplineFX.intro({ title: `${goal(S.goal).name} · ${length(S.goal, S.len).name}`, sub: `${tot != null ? fmtMin(tot) + " · " : ""}${bl.length} set${bl.length === 1 ? "" : "s"}`, sets: bl.map((b) => ({ name: b.name || "Set", kind: TYPES[b.type] ? TYPES[b.type].label : "", min: b.min })) }, () => go("training"));
+    else go("training");
+  });
 
   /* ---------- Training ---------- */
   let raf = 0, wake = null, audio = null;
@@ -3596,18 +3598,18 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }
   const fmtDur = (sec) => { const m = Math.round(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`; };
   function doneCheckHTML(v) {
-    if (v.error) return `<div class="vcheck"><span class="vc-tag wait">Not checked</span><b>We couldn't reach the server.</b><span class="small">Your routine counts for your streak. Your playtime on the leaderboard needs the check, so stay online while you train.</span></div>`;
+    if (v.error) return `<div class="vcheck"><span class="vc-tag wait">Not checked</span><b>We couldn't reach the server.</b><span class="small">Your playtime on the leaderboard needs the check, so stay online while you train.</span></div>`;
     const timeLine = `<span class="vc-row"><span>Real time</span><b>${fmtDur(v.real_sec)} of ${fmtDur(v.planned_sec)}</b></span>`;
     const gameLine = v.need_sec > 0 ? `<span class="vc-row"><span>Game running</span><b>${fmtDur(v.game_sec)} of ${fmtDur(v.need_sec)}</b></span>` : "";
     if (v.counted) {
       const tag = v.verified ? `<span class="vc-tag ok">${VMARK}Verified</span>` : `<span class="vc-tag ok">${v.early ? "Saved" : "Counted"}</span>`;
       const gain = `+${Math.round(v.planned_sec / 60)} min on the leaderboard`;
       const tip = !v.verified && !DESK ? `<span class="tiny">Train in the Windows app with the game running and your routine is Verified: a mark next to your name on the leaderboard.</span>` : !v.verified && DESK && settings.gameDetect === false ? `<span class="tiny">Game detection is off, so this routine isn't Verified. Turn it on in Settings.</span>` : "";
-      return `<div class="vcheck${v.verified ? " ver" : ""}">${tag}<b>${v.early ? "Saved: counts for your streak" : "Routine counted"}</b>${timeLine}${gameLine}<span class="vc-gain">${gain}</span>${tip}</div>`;
+      return `<div class="vcheck${v.verified ? " ver" : ""}">${tag}<b>${v.early ? "Saved: counts on the leaderboard" : "Routine counted"}</b>${timeLine}${gameLine}<span class="vc-gain">${gain}</span>${tip}</div>`;
     }
     const why = v.reason === "no_game" ? "The game didn't run" : "Trained too short";
     const help = v.reason === "no_game" ? `Start ${v.need_sec ? "Fortnite or KovaaK's" : "the game"} before the set, then it counts. On the website only the time is checked.` : "The server measures the real time from start to finish. Pausing is fine, rushing isn't.";
-    return `<div class="vcheck no"><span class="vc-tag">Not counted</span><b>${why}</b>${timeLine}${gameLine}<span class="small">Your routine is saved and your streak stays. Its time doesn't go on the leaderboard. ${help}</span></div>`;
+    return `<div class="vcheck no"><span class="vc-tag">Not counted</span><b>${why}</b>${timeLine}${gameLine}<span class="small">Your routine is saved, but its time doesn't go on the leaderboard. ${help}</span></div>`;
   }
 
   /* ---------- 1.8 · KovaaK's aim progress ----------
@@ -4225,8 +4227,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       if (anim() && on) div.querySelector("i").style.transitionDelay = (0.1 * (6 - k)) + "s";
       box.appendChild(div);
     }
-    countTo($(prefix + "-streak"), n);
-    $(prefix + "-streak-w").textContent = n === 1 ? "day in a row" : "days in a row";
+    $(prefix + "-streak").textContent = fmtPlay(weekMin());
+    $(prefix + "-streak-w").textContent = "played this week";
   }
   function countTo(el, n) {
     if (!anim() || n === 0) { el.textContent = n; return; }
@@ -4266,7 +4268,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     try {
       if (view === "home") buildHome(); else if (view === "training") buildTraining(); else if (view === "goal") buildPick();
       else if (view === "plans") buildPlans(); else if (view === "plan") buildPlan();
-      else if (view === "board") buildBoard(); else if (view === "stats") buildStats(); else if (view === "badges") buildBadges(); else if (view === "friends") buildFriends();
+      else if (view === "board") buildBoard(); else if (view === "stats") buildStats(); else if (view === "friends") buildFriends();
     } catch (e) {}
     updateResume();
   }
@@ -4359,13 +4361,13 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (drawerTab === "account") {
     if (!account) {
       h += `<section class="dr-sec"><p class="d-m" style="font-size:28px">Sign in to Repline.</p><p class="small">Look around freely. To train, sign in with Discord. It's free.</p>
-        <ul class="unlock-list"><li>Start every routine</li><li>Build your own routine</li><li>Sound, animations and set alerts</li><li>Your streak on every device</li>${DESK ? "<li>In-game overlay settings</li>" : ""}<li>Your referral link</li></ul>
+        <ul class="unlock-list"><li>Start every routine</li><li>Build your own routine</li><li>Sound, animations and set alerts</li><li>Your progress on every device</li>${DESK ? "<li>In-game overlay settings</li>" : ""}<li>Your referral link</li></ul>
         <button class="discord" type="button" id="dc-in" ${signingIn ? "disabled" : ""}><svg aria-hidden="true"><use href="#i-discord"/></svg>${signingIn ? "Connecting to Discord…" : "Continue with Discord"}</button>
         <p class="dr-foot">${sb ? "Repline only uses your Discord ID, name and avatar. Your progress and settings are saved to your account." : "Demo: this signs you in with an example account on this device. Real sign-in works on repline.pages.dev."}</p></section>`;
     } else {
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       if (account.isDev) h += devHTML();
-      h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">Streak</span><b>${streak()}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
+      h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">This week</span><b>${fmtPlay(weekMin())}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
       h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="aim">Aim progress</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
       h += myCodeHTML();
@@ -4387,9 +4389,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       h += remHTML();
       h += `<section class="dr-sec"><h3>Data</h3><div class="group">
         <button class="row go" type="button" id="reset-today" aria-expanded="${confirmReset === "today"}">Reset today's progress</button>
-        ${confirmReset === "today" ? `<div class="confirm inline"><span class="small">This clears the routine you're doing today. Your streak stays.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-today-yes">Reset today</button></div></div>` : ""}
-        <button class="row go" type="button" id="reset-streak" aria-expanded="${confirmReset === "streak"}">Reset streak</button>
-        ${confirmReset === "streak" ? `<div class="confirm inline"><span class="small">This deletes all your training days${account && account.real ? " on every device" : ""}. Your streak starts at 0. This can't be undone.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-streak-yes">Reset streak</button></div></div>` : ""}
+        ${confirmReset === "today" ? `<div class="confirm inline"><span class="small">This clears the routine you're doing today.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-today-yes">Reset today</button></div></div>` : ""}
+        <button class="row go" type="button" id="reset-streak" aria-expanded="${confirmReset === "streak"}">Reset training history</button>
+        ${confirmReset === "streak" ? `<div class="confirm inline"><span class="small">This deletes all your training days${account && account.real ? " on every device" : ""}. This can't be undone.</span><div><button class="pill sm out" type="button" id="rs-no">Cancel</button><button class="pill sm red" type="button" id="rs-streak-yes">Reset history</button></div></div>` : ""}
       </div></section>`;
       h += `<section class="dr-sec"><h3>Help</h3><div class="group">
         <button class="row go" type="button" id="to-faq">FAQ</button>
@@ -4415,7 +4417,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         </div><p class="dr-foot">Repline updates itself. New versions download in the background and install when you restart the app.</p></section>`;
       }
     } else {
-      h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}</div></section>`;
+      h += `<section class="dr-sec"><h3>Motion</h3><div class="group">${sw("set-motion", "Animations", anim())}${sw("set-intro", "Start intro before a routine", settings.intro !== false)}</div></section>`;
       if (DESK) h += `<section class="dr-sec"><h3>Discord</h3><div class="group">${sw("rpc-on", "Show my training on Discord", settings.rpc !== false)}${sw("rpc-name", "Show the routine name", settings.rpcName !== false)}</div><p class="dr-foot">While a routine runs, friends see “Playing Repline” with your set and time left on your Discord profile. Needs the Discord app open on this PC.</p></section>`;
       if (DESK) {
         const cs = store.get(CUSTOM, null), unlocked = hasCustom();
@@ -4568,6 +4570,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     on("trk-pick", "click", () => DESK.kovaaks.pick().then((r) => { if (!r) return; aimInfo = { found: !!r.found, folder: r.folder || "" }; aimRows = null; aimLoading = null; renderDrawer(); toast(r.rows && r.rows.length ? `${r.rows.length} KovaaK's runs found` : "No KovaaK's results in that folder"); }));
     on("trk-del", "click", async () => { if (!(sb && cloudUser)) return; const { error } = await sb.from("aim_scores").delete().eq("user_id", cloudUser.id); if (error) { toast("Couldn't delete. Please try again."); return; } settings.aimSynced = ""; saveSettings(); aimRows = null; aimLoading = null; DESK.kovaaks.forget(); renderDrawer(); toast("Your KovaaK's results were deleted"); });
     on("set-awake", "change", (e) => { settings.awake = e.target.checked; saveSettings(); if (!settings.awake) keepAwake(false); });
+    on("set-intro", "change", (e) => { settings.intro = e.target.checked; saveSettings(); });
     on("set-motion", "change", (e) => { root.classList.toggle("anim", e.target.checked); store.set("rl.motion", e.target.checked ? "on" : "off"); });
     on("reset-today", "click", () => { confirmReset = confirmReset === "today" ? null : "today"; renderDrawer(); });
     on("rs-no", "click", () => { confirmReset = null; renderDrawer(); });
@@ -4940,7 +4943,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (u.state === "ready") body = `<p class="small">Repline ${v} is downloaded. It installs in a few seconds and opens again by itself.</p><button class="pill big" type="button" id="ug-go">Update now</button>`;
     else if (u.state === "error") body = `<p class="small">The update didn't download. Check your internet and try again.</p><div class="hero-cta" style="margin:0"><button class="pill big" type="button" id="ug-retry">Try again</button><a class="pill big out" href="https://repline.pages.dev/download/windows" target="_blank" rel="noopener">Download from the website</a></div>`;
     else body = `<p class="small">Downloading Repline ${v}… ${pct} %</p><div class="ug-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
-    g.innerHTML = `<div class="ug-box"><div class="ug-ver" aria-hidden="true"><span>Version</span><b>${esc(String(u.version || "").replace(/\.0$/, ""))}</b></div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress, routines and streak stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
+    g.innerHTML = `<div class="ug-box"><div class="ug-ver" aria-hidden="true"><span>Version</span><b>${esc(String(u.version || "").replace(/\.0$/, ""))}</b></div><h2 id="ug-t">A new Repline is here.</h2><p class="lead" style="margin:0">Update to keep training. Your progress and routines stay exactly as they are.</p>${body}<span class="tiny">You're on ${esc(u.current || "an older version")}. Old versions can't be used.</span></div>`;
     const go = $("ug-go"); if (go) go.addEventListener("click", installUpdate);
     const rt = $("ug-retry"); if (rt) rt.addEventListener("click", () => { DESK.updates.check(); upd = Object.assign({}, upd, { state: "downloading", progress: 0 }); renderUpdGate(); });
   }
@@ -4995,28 +4998,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   const totalMinutes = (g) => Object.keys(store.get(MINS, {})).reduce((a, d) => a + dayMin(d, g), 0);
   const trainedToday = () => store.get(DAYS, []).indexOf(today()) >= 0;
   const routinesOn = (d) => { const r = store.get(ROUT, {}); return d in r ? r[d] : (store.get(DAYS, []).indexOf(d) >= 0 ? 1 : 0); };
-  const bestStreak = () => Math.max(settings.best || 0, streak());
-  const freezeMax = () => (planId() === "pro" ? 3 : 2);
-  function applyFreezes() {
-    if (!signedIn()) return;
-    const have = new Set(store.get(DAYS, []).concat(store.get(FROZ, [])));
-    if (!have.size) return;
-    const d = new Date(); d.setDate(d.getDate() - 1);
-    const gap = [];
-    while (!have.has(today(d)) && gap.length <= 7) { gap.push(today(d)); d.setDate(d.getDate() - 1); }
-    if (!gap.length || gap.length > 7 || gap.length > (settings.freezes || 0)) return;
-    store.set(FROZ, store.get(FROZ, []).concat(gap).sort());
-    settings.freezes -= gap.length; saveSettings();
-    if (sb && cloudUser) sb.from("training_days").upsert(gap.map((day) => ({ user_id: cloudUser.id, day, frozen: true })), { onConflict: "user_id,day" }).then(() => {});
-    setTimeout(() => toast(gap.length > 1 ? `${gap.length} streak freezes saved your streak` : "A streak freeze saved your streak"), 900);
-  }
+  // Streaks, freezes and badges were removed (owner, 27 Nov 2026). These stay as no-ops for old callers.
+  function applyFreezes() {}
   function afterFinish() {
-    const s = streak();
-    settings.best = Math.max(settings.best || 0, s);
-    if (s > 0 && s % 7 === 0 && settings.freezeAt !== today()) {
-      settings.freezeAt = today();
-      if ((settings.freezes || 0) < freezeMax()) { settings.freezes = (settings.freezes || 0) + 1; setTimeout(() => toast("Streak freeze earned"), 2600); }
-    }
     saveSettings();
     setTimeout(() => { checkBadges(); syncDeskReminder(); }, 1200);
   }
@@ -5039,37 +5023,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     snow: '<path d="M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/>'
   };
   const finCount = (fn) => store.get(FIN, []).filter((x) => fn(new Date(x.t).getHours())).length;
-  const BADGE_LIST = [
-    { id: "first_rep", g: "Streaks", n: "First rep", d: "Finish your first routine", ic: "check", c: "#d8d8d8,#c1c1c1", p: () => [store.get(DONE, 0), 1] },
-    { id: "streak_7", g: "Streaks", n: "One week", d: "7-day streak", ic: "flame", c: "#ff9f0a,#ff453a", p: () => [bestStreak(), 7], u: "days" },
-    { id: "streak_14", g: "Streaks", n: "Two weeks strong", d: "14-day streak", ic: "flame", c: "#ff9f0a,#ff453a", p: () => [bestStreak(), 14], u: "days" },
-    { id: "streak_30", g: "Streaks", n: "Iron month", d: "30-day streak", ic: "flame", c: "#ff453a,#bcbcbc", p: () => [bestStreak(), 30], u: "days" },
-    { id: "streak_100", g: "Streaks", n: "100 club", d: "100-day streak", ic: "flame", c: "#ffd60a,#ff453a", p: () => [bestStreak(), 100], u: "days" },
-    { id: "early_bird", g: "Training", n: "Early bird", d: "5 routines before 9:00", ic: "sun", c: "#ffd60a,#ff9f0a", p: () => [finCount((h) => h < 9), 5] },
-    { id: "night_owl", g: "Training", n: "Night owl", d: "5 routines after 22:00", ic: "moon", c: "#c8c8c8,#bcbcbc", p: () => [finCount((h) => h >= 22), 5] },
-    { id: "cup_ready", g: "Training", n: "Cup ready", d: "10 cup warm-ups", ic: "cup", c: "#5ed39a,#30d158", p: () => [store.get(FIN, []).filter((x) => x.g === "cup").length, 10] },
-    { id: "grinder", g: "Training", n: "Grinder", d: "50 hours trained", ic: "clock", c: "#ffd60a,#5ed39a", p: () => [Math.floor(totalMinutes() / 60), 50], u: "hours" },
-    { id: "sharpshooter", g: "Training", n: "Sharpshooter", d: "10 hours of aim", ic: "target", c: "#d8d8d8,#e6e6e6", p: () => [Math.floor(totalMinutes("aim") / 60), 10], u: "hours" },
-    { id: "founding", g: "Community & leaderboards", n: "Founding member", d: "Joined in 2026", ic: "flag", c: "#f5f5f7,#86868b", p: () => [account && account.real && account.created && account.created.slice(0, 4) <= "2026" ? 1 : 0, 1] },
-    { id: "builder", g: "Community & leaderboards", n: "Builder", d: "Build your own routine", ic: "plus", c: "#e6e6e6,#d8d8d8", p: () => [myRoutines().length > 0 || store.get("rl.built", false) ? 1 : 0, 1] },
-    { id: "shared", g: "Community & leaderboards", n: "Shared", d: "Your routines imported 5 times", ic: "share", c: "#c1c1c1,#bcbcbc", p: () => [store.get("rl.imports", 0), 5], u: "imports" },
-    { id: "weekly_top3", g: "Community & leaderboards", n: "Weekly Top 3", d: "Finish a week in the Top 3", ic: "medal", c: "#ffd60a,#ff9f0a" },
-    { id: "top50", g: "Community & leaderboards", n: "Top 50", d: "Finish a month in the Top 50", ic: "medal", c: "#86868b,#f5f5f7" },
-    { id: "top10", g: "Community & leaderboards", n: "Top 10", d: "Finish a month in the Top 10", ic: "crown", c: "#c1c1c1,#d8d8d8" },
-    { id: "podium", g: "Community & leaderboards", n: "Podium", d: "Finish a month in the Top 3", ic: "crown", c: "#c7c7cc,#f5f5f7" },
-    { id: "champion", g: "Community & leaderboards", n: "Champion", d: "Win a month", ic: "star", c: "#ffd60a,#ff9f0a" }
-  ];
-  const svgI = (k, extra) => `<svg viewBox="0 0 24 24" aria-hidden="true"${extra || ""}>${BI[k]}</svg>`;
-  function checkBadges(quiet) {
-    if (!signedIn()) return;
-    const have = store.get(BADGES, {}), got = [];
-    BADGE_LIST.forEach((b) => { if (!b.p || have[b.id]) return; const [c, g] = b.p(); if (c >= g) { have[b.id] = new Date().toISOString(); got.push(b); } });
-    if (!got.length) return;
-    store.set(BADGES, have);
-    if (sb && cloudUser) sb.from("user_badges").upsert(got.map((b) => ({ user_id: cloudUser.id, badge: b.id })), { onConflict: "user_id,badge", ignoreDuplicates: true }).then(() => {});
-    if (!quiet) got.forEach((b, i) => setTimeout(() => toast(`Badge unlocked · ${b.n}`), 2600 + i * 2400));
-    if (view === "badges") buildBadges();
-  }
+  function checkBadges() {}
 
   /* ---------- 1.6 · modal sheet ---------- */
   let modalNext = null;
@@ -5198,7 +5152,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal").hidden) { const c = $("sheet").querySelector("[data-close]"); if (c) c.click(); } });
 
   /* ---------- 1.6 · end a routine ---------- */
-  // Ended early after 15+ real minutes: the player can save it. It counts for the streak and the leaderboard.
+  // Ended early after 15+ real minutes: the player can save it. It counts on the leaderboard.
   const EARLY_SEC = 900;
   const trainedSec = () => S.run && S.run.at ? Math.round((Date.now() - S.run.at) / 1000) : 0;
   function askEnd() {
@@ -5206,8 +5160,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const sec = trainedSec(), canSave = sec >= EARLY_SEC && signedIn();
     const left = Math.ceil((EARLY_SEC - sec) / 60);
     openModal(canSave
-      ? `<h2 id="sheet-t">Done for today?</h2><p class="small">You trained <b>${fmtDur(sec)}</b>. Save it: it counts for your streak and the leaderboard.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill out" type="button" id="end-yes">Throw it away</button><button class="pill" type="button" id="end-save">Save ${fmtDur(sec)}</button></div>`
-      : `<h2 id="sheet-t">End this routine?</h2><p class="small">Your progress in it is lost. It doesn't count for your streak.${S.run && S.run.at && sec > 60 && sec < EARLY_SEC ? ` Train <b>${left} more min</b> and you can save it: it counts for your streak and the leaderboard.` : ""}</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill red" type="button" id="end-yes">End routine</button></div>`,
+      ? `<h2 id="sheet-t">Done for today?</h2><p class="small">You trained <b>${fmtDur(sec)}</b>. Save it: it counts on the leaderboard.</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill out" type="button" id="end-yes">Throw it away</button><button class="pill" type="button" id="end-save">Save ${fmtDur(sec)}</button></div>`
+      : `<h2 id="sheet-t">End this routine?</h2><p class="small">Your progress in it is lost. It doesn't go on the leaderboard.${S.run && S.run.at && sec > 60 && sec < EARLY_SEC ? ` Train <b>${left} more min</b> and you can save it: it counts on the leaderboard.` : ""}</p><div class="acts"><button class="pill out" type="button" data-close>Keep training</button><button class="pill red" type="button" id="end-yes">End routine</button></div>`,
       (sh, close) => {
         sh.querySelector("#end-yes").addEventListener("click", () => { close(); endRoutine(); });
         const sv = sh.querySelector("#end-save"); if (sv) sv.addEventListener("click", () => { close(); countTime(); clearInterval(raf); keepAwake(false); finish(true); });
@@ -5267,7 +5221,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   async function cloudSocial() {
     try {
       const [bd, imp, rem] = await Promise.all([
-        sb.from("user_badges").select("badge, earned_at"),
+        Promise.resolve({ data: [] }),
         sb.rpc("my_share_imports"),
         sb.from("reminders").select("*").maybeSingle()
       ]);
@@ -5302,8 +5256,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     else if (x.kind === "idea") { ic = x.status === "fixed" ? "star" : "check"; t = x.status === "fixed" ? "Your idea is live" : x.status === "working" ? "Your idea is planned" : "Thanks for your idea"; b = x.status === "fixed" ? `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) is now in Repline. <b>Thank you</b> for suggesting it!` : x.status === "working" ? `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) is planned. We'll let you know when it's live.` : `Idea #${esc(String(x.id))} (“${esc(x.what || "")}”) isn't planned right now, but we keep every idea in mind. Thanks!`; }
     else if (x.kind === "bug") { ic = "check"; t = x.status === "fixed" ? "Your bug is fixed" : "Thanks for your report"; b = x.status === "fixed" ? `Bug #${esc(String(x.id))} (“${esc(x.what || "")}”) is fixed. <b>Thank you</b> for reporting it, you helped make Repline better!` : `We checked bug #${esc(String(x.id))} (“${esc(x.what || "")}”): it works as intended. Thanks for taking the time to report it!`; }
     else if (x.kind === "invite") { t = "Invite reward"; b = "3 friends trained with Repline. <b>1 month Standard</b> is yours. Thanks for spreading the word."; ic = "share"; }
-    else if (x.kind === "monthly") { ic = x.rank === 1 ? "star" : x.rank <= 10 ? "crown" : "medal"; t = `#${x.rank} last month`; b = x.rank === 1 ? "You won the month. <b>3 months Pro</b> and the Champion badge are yours." : x.rank <= 3 ? "You made the podium. <b>1 month Pro</b> and the Podium badge are yours." : x.rank <= 10 ? "Top 10. <b>1 month Standard</b> and the Top 10 badge are yours." : "Top 50. The Top 50 badge is yours."; }
-    else if (x.kind === "weekly_top3") { ic = "medal"; t = `#${x.rank} last week`; b = "You finished in the Top 3. The Weekly Top 3 badge is yours."; }
+    else if (x.kind === "monthly") { ic = x.rank === 1 ? "star" : x.rank <= 10 ? "crown" : "medal"; t = `#${x.rank} last month`; b = x.rank === 1 ? "You won the month. <b>3 months Pro</b> are yours." : x.rank <= 3 ? "You made the podium. <b>1 month Pro</b> is yours." : "Top 10. <b>1 month Standard</b> is yours."; }
+    else if (x.kind === "weekly_top3") { ic = "medal"; t = `#${x.rank} last week`; b = "You finished in the Top 3. Look out for your shout-out on our Discord."; }
     else { t = "News"; b = esc(x.text || ""); }
     openModal(`<div class="gift-ico">${svgI(ic)}</div><h2 id="sheet-t" style="text-align:center">${esc(t)}</h2><p class="small" style="text-align:center;margin:0">${b}</p><div class="acts" style="justify-content:center"><button class="pill" type="button" data-close>Nice</button></div>`, null, () => {
       if (x.notice && sb && cloudUser) sb.from("notices").update({ seen_at: new Date().toISOString() }).eq("id", x.notice).then(() => {});
@@ -5342,17 +5296,18 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         <div class="kv"><span><b style="color:#ffd60a">#1</b> Champion</span><span>3 months Pro</span></div>
         <div class="kv"><span><b style="color:#c7c7cc">#2–3</b> Podium</span><span>1 month Pro</span></div>
         <div class="kv"><span><b>#4–10</b> Top 10</span><span>1 month Standard</span></div>
-        <div class="kv"><span><b>#11–50</b> Top 50</span><span>Badge</span></div>
-        <div class="sep"></div><b>Weekly</b><span class="small">Top 3: the Weekly Top 3 badge and a shout-out on our Discord.</span>
-        <span class="tiny">Every prize comes with its badge. Pro and Standard from prizes add to a plan you already have.</span></div>
+        <div class="sep"></div><b>Weekly</b><span class="small">Top 3: a shout-out on our Discord.</span>
+        <span class="tiny">Pro and Standard from prizes add to a plan you already have.</span></div>
       <div class="c-card"><b style="font-size:22px">How it's ranked</b>
         <div class="kv"><span>Ranked by</span><b>Playtime</b></div>
         <div class="kv"><span>What counts</span><b>Minutes of routines that count</b></div>
-        <span class="tiny">Only routines our server checked count: real time, no skipping. Paused time and the switch countdown don't count. Streak freezes keep your streak but add no time. Weeks start Monday 00:00, months on the 1st (Berlin time).</span></div>
+        <span class="tiny">Only routines our server checked count: real time, no skipping. Paused time and the switch countdown don't count. Weeks start Monday 00:00, months on the 1st (Berlin time).</span></div>
       <div class="c-card" style="background:var(--graphite);box-shadow:inset 0 0 0 1px var(--keyline)"><b>Fair play</b><span class="tiny" style="font-size:13px;line-height:1.5">Signed-in accounts only, at least 7 days old. Dev accounts don't take part. One account per person. Suspicious timers are checked and can be removed.</span></div>
     </div>`;
   }
   const nameStyle = () => "";
+  // Minutes trained this week (Monday to today), from this device's tracked time.
+  const weekMin = () => { let m = 0; const wk = weekStart(new Date()); for (let i = 0; i < 7; i++) { const d = dShift(wk, i); if (d <= new Date()) m += dayMin(today(d)); } return m; };
   // Playtime in minutes, shown as "3 h 05" or "45 min".
   const fmtPlay = (m) => { m = Math.round(Number(m) || 0); return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`; };
   async function buildBoard() {
@@ -5373,12 +5328,12 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       pod = `<div class="podium">${[top[1], top[0], top[2]].map((r, i) => `<div class="pod p${[2, 1, 3][i]}">${avHTML(r.username, r.avatar_url, " lg")}<b${nameStyle(r)}>${esc(r.username)}${r.verified ? VMARK : ""}</b><span class="tiny">${val(r)}</span><span class="pl">${[2, 1, 3][i]}</span></div>`).join("")}</div>`;
     }
     const shown = rows.filter((r) => !(pod && r.rank <= 3)).filter((r) => r.rank <= 50 || r.is_me);
-    let h = `<div class="lb head"><span>Rank</span><span></span><span>Player</span><span>${st ? "Streak" : "Playtime"}</span><span>${st ? "" : "Streak"}</span></div>`;
+    let h = `<div class="lb head"><span>Rank</span><span></span><span>Player</span><span>${st ? "Streak" : "Playtime"}</span><span></span></div>`;
     let lastRank = pod ? 3 : 0;
     shown.forEach((r) => {
       if (r.rank > lastRank + 1 && r.is_me) h += `<div class="tiny" style="text-align:center;padding:4px">· · ·</div>`;
       lastRank = r.rank;
-      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}<span${nameStyle(r)}>${esc(r.username)}</span>${r.verified ? VMARK : ""}${r.training_now ? '<span class="live">Training now</span>' : ""}</span><span>${val(r)}</span><span class="tiny">${st ? "" : r.streak + " d"}</span></div>`;
+      h += `<div class="lb${r.is_me ? " me" : ""}"><b>${r.rank}</b>${avHTML(r.username, r.avatar_url)}<span>${r.is_me ? "<b>You</b> · " : ""}<span${nameStyle(r)}>${esc(r.username)}</span>${r.verified ? VMARK : ""}${r.training_now ? '<span class="live">Training now</span>' : ""}</span><span>${val(r)}</span><span class="tiny"></span></div>`;
     });
     const others = rows.filter((r) => !r.is_me && (st ? r.streak > 0 : r.points > 0)).length;
     let note = "";
@@ -5480,7 +5435,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     body.innerHTML = `<div class="st-tiles">
         <div class="c-card"><span class="tiny">Trained ${statsRange === "week" ? "this week" : statsRange === "month" ? "this month" : "in 12 weeks"}</span><b>${fmtH(tot)}</b>${diff != null ? `<span class="tiny" style="color:${diff >= 0 ? "var(--pos)" : "var(--ash)"}">${diff >= 0 ? "+" : "−"}${fmtH(Math.abs(diff))} vs. last week</span>` : ""}</div>
         <div class="c-card"><span class="tiny">Routines finished</span><b>${routs}</b><span class="tiny">${store.get(DONE, 0)} in total</span></div>
-        <div class="c-card"><span class="tiny">Current streak</span><b>${s} day${s === 1 ? "" : "s"}</b><span class="tiny">Best: ${bestStreak()} days</span></div>
+        <div class="c-card"><span class="tiny">Training days</span><b>${store.get(DAYS, []).length}</b><span class="tiny">in total</span></div>
         <div class="c-card"><span class="tiny">Playtime this week</span><b>${fmtPlay(pts)}</b><a class="tiny" href="#board">Leaderboard ›</a></div>
       </div>
       <div class="bgrid" style="margin-bottom:24px">
@@ -5490,41 +5445,14 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
           ${share.length ? share.map((x) => `<div style="display:grid;gap:6px"><div class="kv"><span>${x.n}</span><span class="tiny">${fmtH(x.v)} · ${x.p} %</span></div><div class="meter"><i style="width:${x.p}%;background:${x.col}"></i></div></div>`).join("") : '<p class="small" style="margin:0">No training in this range yet.</p>'}
           ${tip ? `<span class="tiny">${tip}</span>` : ""}</div>
       </div>
-      <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Last 12 weeks</b><span class="tiny">Each square is a day · brighter = more minutes${fz.size ? " · outlined = streak freeze" : ""}</span></div>
+      <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Last 12 weeks</b><span class="tiny">Each square is a day · brighter = more minutes</span></div>
         <div class="hm"><div class="hm-days"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span></div><div class="hm-grid" role="img" aria-label="Training days over the last 12 weeks">${cells.join("")}</div></div></div>`;
   }
   document.querySelectorAll("[data-sr]").forEach((b) => b.addEventListener("click", () => { statsRange = b.dataset.sr; buildStats(); }));
 
   /* ---------- 1.6 · badges page ---------- */
-  function buildBadges() {
-    const body = $("badges-body");
-    if (!signedIn()) { $("bd-sum").textContent = ""; body.innerHTML = lockHTML("Sign in to earn badges", "badges"); bindLock(body); return; }
-    const have = store.get(BADGES, {}), n = BADGE_LIST.filter((b) => have[b.id]).length;
-    $("bd-sum").textContent = `${n} of ${BADGE_LIST.length} earned.`;
-    const fzn = settings.freezes || 0, max = freezeMax(), s = streak(), next = 7 - (s % 7);
-    let h = `<div class="c-card freeze-card"><div class="ico">${svgI("snow", ' style="stroke:#e6e6e6;fill:none;stroke-width:1.7;stroke-linecap:round"')}</div>
-      <div style="display:grid;gap:6px"><b style="font-size:22px">Streak freeze · ${fzn} ready</b><span class="small">Miss a day and a freeze saves your streak on its own. You earn one for every 7 days in a row.</span><span class="tiny">Hold up to ${max}${max < 3 ? " · Pro: up to 3" : ""}${fzn < max ? ` · Next one in ${next} day${next === 1 ? "" : "s"}` : " · Full"}</span></div>
-      <div class="fz-slots" aria-hidden="true">${Array.from({ length: max }, (_, i) => `<i class="${i < fzn ? "on" : ""}"></i>`).join("")}</div></div>`;
-    ["Streaks", "Training", "Community & leaderboards"].forEach((g) => {
-      h += `<h2 class="d-s" style="margin:0 0 14px;font-size:22px">${esc(g)}</h2><div class="bd-grid">`;
-      BADGE_LIST.filter((b) => b.g === g).forEach((b) => {
-        const on = !!have[b.id], [c1, c2] = b.c.split(",");
-        let sub = b.d;
-        if (!on && b.p) { const [c, goal] = b.p(); sub = `${Math.min(c, goal)} / ${goal}${b.u ? " " + b.u : ""}`; }
-        h += `<div class="bd${on ? "" : " off"}"><div class="ic" style="background:linear-gradient(135deg,${c1},${c2})">${svgI(b.ic)}</div><b>${esc(b.n)}</b><span class="tiny">${esc(on ? b.d : sub)}</span></div>`;
-      });
-      h += `</div>`;
-    });
-    body.innerHTML = h;
-  }
 
   /* ---------- 1.6 · personal home ---------- */
-  function nextBadge() {
-    const have = store.get(BADGES, {});
-    let best = null;
-    BADGE_LIST.forEach((b) => { if (have[b.id] || !b.p) return; const [c, g] = b.p(); const r = Math.min(1, c / g); if (!best || r > best.r) best = { b, c, g, r }; });
-    return best;
-  }
   function remSummary() {
     const r = settings.rem; if (!r || !r.on) return null;
     const dn = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], ds = (r.days || []).slice().sort();
@@ -5542,7 +5470,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }
   const SECTIONS = {
     train: [["goal", "Routines"], ["ai", "Personal Plan"]],
-    progress: [["stats", "Stats"], ["aim", "Aim"], ["badges", "Badges"]],
+    progress: [["stats", "Stats"], ["aim", "Aim"]],
     community: [["board", "Leaderboard"], ["friends", "Friends"]],
     more: [["more", "Overview"], ["mind", "Mind & Body"], ["cue", "In-game Tools"], ["plans", "Plans"], ["partners", "Partners"]]
   };
@@ -5565,7 +5493,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       else {
         const now = new Date(), w0 = weekStart(now), days = store.get(DAYS, []), tk = today(now);
         let h = ""; for (let i = 0; i < 7; i++) { const k = today(dShift(w0, i)); h += `<i class="${days.indexOf(k) >= 0 ? "on" : ""} ${k === tk ? "t" : ""}" title="${dShift(w0, i).toLocaleDateString("en-GB", { weekday: "short" })}"></i>`; }
-        const st = streak(); wk.innerHTML = h + `<small title="Days in a row">${st}d</small>`;
+        wk.innerHTML = h;
       }
     }
     // you
@@ -5614,7 +5542,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $("me-date").textContent = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
     $("me-hi").textContent = `${part}, ${account.name || "player"}.`;
     const s = streak(), t = trainedToday();
-    $("me-sub").textContent = t ? (s > 1 ? `Day ${s} done. See you tomorrow.` : "Done for today. See you tomorrow.") : s > 0 ? `Day ${s + 1} is waiting. One routine keeps it alive.` : "Day 1 starts with one routine.";
+    $("me-sub").textContent = t ? "Done for today. See you tomorrow." : "One routine today. Every minute counts on the leaderboard.";
     // today: warm up -> routine -> cool down
     document.body.classList.add("signed");
     const l = S.goal && length(S.goal, S.len), last = store.get("rl.last", null);
@@ -5651,14 +5579,13 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const wk = weekStart(now), goalN = settings.weekGoal || 5; let wd = 0; const marks = [];
     for (let i = 0; i < 7; i++) { const d = dShift(wk, i), k = today(d), on2 = store.get(DAYS, []).indexOf(k) >= 0; if (on2) wd++; marks.push(`<i class="${on2 ? "on" : ""}"></i>`); }
     const circ = 2 * Math.PI * 30, frac = Math.min(1, wd / goalN);
-    const nb = nextBadge(), rm = remSummary(), fz = settings.freezes || 0;
+    const rm = remSummary(), wmin = weekMin();
     let rank = store.get("rl.rank", null);
     if (rank && account && account.real && rank.note === "Demo numbers") rank = null;
     $("me-cards").innerHTML = `
       <a class="c-card" href="#stats"><span class="tiny">This week</span><div style="display:flex;align-items:center;gap:16px"><svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="${wd} of ${goalN} training days this week"><circle cx="36" cy="36" r="30" fill="none" stroke="#333336" stroke-width="8"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="#d8d8d8" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(circ * frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 36 36)"></circle></svg><div><span class="big-n">${wd}<small> / ${goalN} days</small></span><br><span class="tiny">Stats ›</span></div></div><div class="wk" aria-hidden="true">${marks.join("")}</div></a>
-      <a class="c-card" href="#badges"><span class="tiny">Streak</span><span class="big-n">${s}<small> day${s === 1 ? "" : "s"}</small></span><span class="frz">${svgI("snow", ' style="stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round"')}${fz} streak freeze${fz === 1 ? "" : "s"} ready</span><span class="tiny">Best: ${bestStreak()} days</span></a>
+      <a class="c-card" href="#board"><span class="tiny">Played this week</span><span class="big-n">${fmtPlay(wmin)}</span><span class="tiny">Every minute counts on the leaderboard</span></a>
       <a class="c-card" href="#board" id="me-rank"><span class="tiny">Weekly leaderboard</span><span class="big-n">${rank && rank.rank ? "#" + rank.rank + `<small> of ${rank.total}</small>` : "–"}</span><span class="tiny">${rank && rank.note ? esc(rank.note) : "Train to climb"}</span></a>
-      ${nb ? `<a class="c-card wide" href="#badges" style="display:flex;align-items:center;gap:18px"><div class="bd" style="padding:0;background:none"><div class="ic" style="width:60px;height:60px;background:linear-gradient(135deg,${nb.b.c})">${svgI(nb.b.ic)}</div></div><div style="flex:1;display:grid;gap:8px;min-width:0"><span class="tiny">Next badge</span><b style="font-size:19px">${esc(nb.b.n)}</b><div class="meter"><i style="width:${Math.round(nb.r * 100)}%"></i></div><span class="tiny">${Math.min(nb.c, nb.g)} / ${nb.g}${nb.b.u ? " " + nb.b.u : ""} · ${esc(nb.b.d)}</span></div></a>` : `<a class="c-card wide" href="#badges"><span class="tiny">Badges</span><b style="font-size:19px">All training badges earned.</b></a>`}
       <div class="c-card"><span class="tiny">Reminder</span>${rm ? `<b style="font-size:19px">${esc(rm.time)} · ${esc(rm.days)}</b><span class="tiny">${esc(rm.via || "Turn on a way to get it")}</span>` : `<b style="font-size:19px">No reminder yet</b><span class="tiny">Get a nudge on Windows or Discord.</span>`}<button class="pill sm out" type="button" id="me-rem" style="justify-self:start">${rm ? "Change" : "Set a reminder"}</button></div>`;
     { const jc = joinCard(); if (jc) { $("me-cards").insertAdjacentHTML("afterbegin", jc); const jb = $("me-cards").querySelector("[data-join]"); if (jb) jb.addEventListener("click", () => { signingIn = false; startSignIn(); }); } }
     $("me-rem").addEventListener("click", () => { drawerTab = "settings"; openDrawer(); setTimeout(() => { const r = $("rem-sec"); if (r) r.scrollIntoView({ block: "start" }); }, 60); });
@@ -5918,7 +5845,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   function syncDeskReminder() {
     if (!(DESK && DESK.reminder)) return;
     const last = store.get("rl.last", null), lg = last && goal(last.goal) && length(last.goal, last.len);
-    try { DESK.reminder.set(Object.assign(remGet(), { trained: trainedToday(), streak: streak(), freezes: settings.freezes || 0, usual: lg ? `${goal(last.goal).name} · ${lg.name}` : "" })); } catch (e) {}
+    try { DESK.reminder.set(Object.assign(remGet(), { trained: trainedToday(), streak: 0, freezes: 0, danger: false, usual: lg ? `${goal(last.goal).name} · ${lg.name}` : "" })); } catch (e) {}
   }
   function remHTML() {
     const r = remGet(), dn = ["M", "T", "W", "T", "F", "S", "S"];
@@ -5928,7 +5855,6 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       <div class="row"><label for="rem-time">Time</label><input type="time" id="rem-time" value="${esc(r.time)}" class="in" style="flex:0 0 auto;width:auto;height:36px"></div>
       <div class="row stack"><span>Days</span><span class="days-pick" role="group" aria-label="Days">${dn.map((d, i) => `<button type="button" data-rd="${i + 1}" aria-pressed="${r.days.indexOf(i + 1) >= 0}" aria-label="${["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i]}">${d}</button>`).join("")}</span></div>
       ${sw("rem-skip", "Skip if I already trained today", r.skip)}
-      ${sw("rem-danger", "Streak in danger at 21:00", r.danger)}
     </div><h3 style="margin-top:16px">Send it to</h3><div class="group">
       ${DESK ? sw("rem-win", "Windows notification (while Repline is open)", r.win) : ""}
       ${sw("rem-dc", "Discord DM from the Repline bot", r.dc)}
@@ -6077,7 +6003,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }, { passive: true });
 
   /* ---------- Routing ---------- */
-  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "badges", "friends", "studio", "mind", "cue", "more"];
+  const ORDER = ["", "goal", "length", "plan", "training", "done", "ai", "plans", "partners", "builder", "board", "stats", "aim", "friends", "studio", "mind", "cue", "more"];
   let view = null;
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   document.querySelectorAll("[data-scroll]").forEach((a) => a.addEventListener("click", (e) => {
@@ -6122,7 +6048,6 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (window.ReplineMind) { if (id === "mind") ReplineMind.open(); else ReplineMind.close(); }
     if (window.ReplineWarm) { if (id === "mind") ReplineWarm.open(); else ReplineWarm.close(); }
     if (window.ReplineCue && id === "cue") ReplineCue.open();
-    if (id === "badges") buildBadges();
     if (id === "friends") buildFriends();
     if (id === "studio") buildStudio();
     if (importCode) setTimeout(() => openImport(importCode), 300);
@@ -6148,5 +6073,159 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   if (sb) loadCatalog();
   route();
   updateResume();
+})();
+</script>
+<style>
+/* ---------- Start intro (owner's pick: logo, then "Deal") and the Esports teaser (owner's pick: Spotlight) ---------- */
+.rfx { position: fixed; inset: 0; z-index: 300; background: #000; overflow: hidden; cursor: pointer; perspective: 1200px; }
+.rfx canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rfx .rf-ring { position: absolute; left: 50%; top: 50%; width: min(32vmin, 240px); aspect-ratio: 1; margin: calc(min(32vmin, 240px) / -2) 0 0 calc(min(32vmin, 240px) / -2); opacity: 0; }
+.rfx .rf-ring .seg { fill: none; stroke-width: 9; stroke-dasharray: 0 999; }
+.rfx.s-logo .rf-ring { animation: rfRing 1.9s cubic-bezier(.2,.8,.2,1) forwards; }
+.rfx.s-logo .rf-ring .seg { animation: rfDraw .5s cubic-bezier(.3,.9,.3,1) forwards; }
+.rfx.s-logo .rf-ring .seg:nth-child(2) { animation-delay: .1s } .rfx.s-logo .rf-ring .seg:nth-child(3) { animation-delay: .2s } .rfx.s-logo .rf-ring .seg:nth-child(4) { animation-delay: .3s } .rfx.s-logo .rf-ring .seg:nth-child(5) { animation-delay: .4s }
+@keyframes rfDraw { to { stroke-dasharray: var(--len) 999; } }
+@keyframes rfRing { 0% { opacity: 1; transform: scale(.6) rotate(-90deg); } 40% { transform: scale(1) rotate(0); filter: drop-shadow(0 0 28px rgba(255,255,255,.5)); } 62% { opacity: 1; transform: scale(1); } 85%, 100% { opacity: 0; transform: scale(6); } }
+.rfx .rf-word { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 800 clamp(40px, 10vw, 120px) var(--display); color: #fff; letter-spacing: .9em; opacity: 0; white-space: nowrap; }
+.rfx.s-logo .rf-word { animation: rfWord 1.5s .95s cubic-bezier(.2,.9,.2,1) forwards; }
+@keyframes rfWord { 0% { opacity: 0; letter-spacing: .9em; filter: blur(12px); } 45% { opacity: 1; letter-spacing: .04em; filter: blur(0); } 72% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(.9); filter: blur(6px); } }
+.rfx .rf-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.rfx.s-logo .rf-flash { animation: rfFlash .5s 1.35s ease-out; }
+@keyframes rfFlash { 15% { opacity: .5; } 100% { opacity: 0; } }
+.rfx .rf-list { position: absolute; left: 50%; top: 50%; width: min(88vw, 640px); transform: translate(-50%, -50%); display: grid; gap: 10px; }
+.rfx .rf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; opacity: 0; }
+.rfx .rf-head b { font: 700 clamp(22px, 3.4vw, 32px) var(--display); letter-spacing: -.02em; color: #fff; }
+.rfx .rf-head span { font: 14px var(--mono); color: #aeaeb2; }
+.rfx .rf-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 16px; border-radius: 16px; background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.03)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), inset 0 1px 0 rgba(255,255,255,.3); opacity: 0; color: #f5f5f7; }
+.rfx .rf-row .n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 700; color: #000; background: var(--c); }
+.rfx .rf-row .t { min-width: 0; display: grid; } .rfx .rf-row .t b { font-size: clamp(15px, 2.2vw, 19px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .rfx .rf-row .t span { font-size: 13px; color: #aeaeb2; }
+.rfx .rf-row .m { font: 600 18px var(--mono); font-variant-numeric: tabular-nums; }
+.rfx .rf-more { font: 13px var(--mono); color: #8e8e93; text-align: center; opacity: 0; }
+.rfx .rf-total { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; opacity: 0; }
+.rfx .rf-total i { display: block; height: 100%; width: 0; background: #fff; box-shadow: 0 0 12px #fff; }
+.rfx.s-list .rf-head, .rfx.s-list .rf-more { animation: rfFade .4s forwards; }
+.rfx.s-list .rf-row { animation: rfDeal .8s cubic-bezier(.2,1.2,.3,1) forwards; animation-delay: calc(.1s + var(--i) * .14s); }
+@keyframes rfDeal { 0% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(.6); } 60% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+.rfx.s-list .rf-total { animation: rfFade .3s .9s forwards; } .rfx.s-list .rf-total i { animation: rfBar 1s 1s ease forwards; }
+.rfx.s-out .rf-row:not(:first-of-type) { animation: rfAway .45s ease-in forwards; animation-delay: calc(var(--i) * .04s); }
+.rfx.s-out .rf-row:first-of-type { animation: rfGrow .55s .15s cubic-bezier(.7,0,.3,1) forwards; }
+.rfx.s-out .rf-head, .rfx.s-out .rf-total, .rfx.s-out .rf-more { animation: rfAway .3s forwards; }
+.rfx.s-end { animation: rfFadeOut .35s ease forwards; }
+@keyframes rfAway { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
+@keyframes rfGrow { from { opacity: 1; } to { transform: scale(1.6); opacity: 0; filter: blur(6px); } }
+@keyframes rfFade { to { opacity: 1; } }
+@keyframes rfFadeOut { to { opacity: 0; } }
+@keyframes rfBar { to { width: 100%; } }
+.rfx .rf-skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); font: 11px var(--mono); color: #48484a; letter-spacing: .12em; }
+
+/* teaser */
+.rft { position: fixed; inset: 0; z-index: 290; display: grid; place-items: center; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); background: rgba(0,0,0,.35); -webkit-backdrop-filter: blur(16px) brightness(.5); backdrop-filter: blur(16px) brightness(.5); perspective: 1100px; animation: rfFade .6s ease both; opacity: 0; overflow: hidden; }
+.rft.out { animation: rfFadeOut .35s ease forwards; opacity: 1; }
+.rft .bl, .rft .br { position: absolute; top: -20%; width: 40%; height: 140%; background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 75%); filter: blur(18px); opacity: 0; transform-origin: 50% 0; clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%); pointer-events: none; }
+.rft .bl { left: 5%; animation: rftL 1.6s .2s cubic-bezier(.3,1,.3,1) forwards; }
+.rft .br { right: 5%; animation: rftR 1.6s .35s cubic-bezier(.3,1,.3,1) forwards; }
+@keyframes rftL { 0% { opacity: 0; transform: rotate(-40deg); } 100% { opacity: 1; transform: rotate(-16deg); } }
+@keyframes rftR { 0% { opacity: 0; transform: rotate(40deg); } 100% { opacity: 1; transform: rotate(16deg); } }
+.rft .card { position: relative; width: min(100%, 540px); padding: clamp(24px, 4vw, 40px); border-radius: 30px; display: grid; gap: 14px; justify-items: center; text-align: center; color: #f5f5f7; background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.03)); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 1px 0 rgba(255,255,255,.5), 0 40px 100px -30px #000; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(.7); opacity: 0; overflow: hidden; animation: rftPop .9s .7s cubic-bezier(.2,1.3,.3,1) forwards; }
+.rft.live .card { animation: none; opacity: 1; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .15s; }
+@keyframes rftPop { to { opacity: 1; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1); } }
+.rft .card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 50% at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.18), transparent 70%); pointer-events: none; }
+.rft .k { font: 600 12px var(--mono); letter-spacing: .3em; color: #d1d1d6; }
+.rft .big { margin: 0; font: 800 clamp(34px, 6vw, 60px)/1 var(--display); letter-spacing: -.03em; }
+.rft .one { font: 900 clamp(80px, 15vw, 150px)/.9 var(--display); background: linear-gradient(100deg, #8a6d1a, #ffd60a 35%, #fff6c8 50%, #ffd60a 65%, #8a6d1a); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rftShine 3s 1.2s ease-in-out infinite; }
+@keyframes rftShine { 0% { background-position: 100% 0; } 60%, 100% { background-position: -50% 0; } }
+.rft p { margin: 0; color: #d1d1d6; max-width: 40ch; font-size: clamp(15px, 1.9vw, 17px); }
+.rft .acts { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+.rft .go { font: 600 16px var(--text); border: 0; cursor: pointer; padding: 13px 26px; border-radius: 999px; color: #fff; background: linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,.10)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), inset 0 1px 0 rgba(255,255,255,.8), 0 10px 24px -10px rgba(0,0,0,.8); }
+.rft .go:hover { background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.16)); }
+.rft .x { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,255,255,.1); color: #f5f5f7; font-size: 18px; cursor: pointer; z-index: 2; }
+.rft .go:focus-visible, .rft .x:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .rfx *, .rft, .rft * { animation-duration: .01s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; } }
+</style>
+<script>
+/* Start intro + Esports teaser. Intro: window.ReplineFX.intro(info, done). Teaser: shows on every app open or reload, closes with a click. */
+window.ReplineFX = (function () {
+  const GREYS = ["#f5f5f7", "#d1d1d6", "#aeaeb2", "#8e8e93", "#636366"];
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ringSVG() {
+    const R = 80, C = 2 * Math.PI * R, GAP = 6, SEG = C / 5 - GAP;
+    return `<svg class="rf-ring" viewBox="0 0 200 200" aria-hidden="true">${GREYS.map((c, i) => `<circle class="seg" cx="100" cy="100" r="${R}" stroke="${c}" style="--len:${SEG}" transform="rotate(${-90 + i * 72 + (GAP / C) * 180} 100 100)"/>`).join("")}</svg>`;
+  }
+  // info: { title, sub, sets: [{ name, kind, min }] }
+  function intro(info, done) {
+    if (reduce()) { done(); return; }
+    const host = document.createElement("div");
+    host.className = "rfx"; host.setAttribute("role", "presentation");
+    const sets = (info.sets || []).slice(0, 6), more = (info.sets || []).length - sets.length;
+    host.innerHTML = `<canvas aria-hidden="true"></canvas>${ringSVG()}<div class="rf-word">REPLINE</div><div class="rf-flash"></div>
+      <div class="rf-list"><div class="rf-head"><b>${esc(info.title)}</b><span>${esc(info.sub)}</span></div>
+      ${sets.map((s, i) => `<div class="rf-row" style="--i:${i};--c:${GREYS[i % 5]};--dx:${(i % 2 ? 1 : -1) * 40}px;--dy:${120 - i * 60}px;--r:${(i % 2 ? 1 : -1) * (14 + i * 4)}deg"><span class="n">${i + 1}</span><span class="t"><b>${esc(s.name)}</b><span>${esc(s.kind || "")}</span></span><span class="m" data-m="${s.min == null ? "" : Math.round(s.min)}">${s.min == null ? "–" : "0:00"}</span></div>`).join("")}
+      ${more > 0 ? `<div class="rf-more">+ ${more} more set${more === 1 ? "" : "s"}</div>` : ""}<div class="rf-total"><i></i></div></div>
+      <span class="rf-skip">TAP TO SKIP</span>`;
+    document.body.appendChild(host);
+    const cv = host.querySelector("canvas"), ctx = cv.getContext("2d"), d = Math.min(2, devicePixelRatio || 1);
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    const P = Array.from({ length: 140 }, () => ({ a: Math.random() * 6.283, s: .4 + Math.random(), g: Math.random() }));
+    const t0 = performance.now(); let raf = 0, timers = [], ended = false;
+    (function draw(now) {
+      const t = (now - t0) / 1000, W = cv.width, H = cv.height, cx = W / 2, cy = H / 2, M = Math.hypot(W, H) / 2;
+      ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(0, 0, W, H);
+      const k = t - 1.35;
+      if (k > 0 && k < 1.4) P.forEach((p) => { const r = (k * (.6 + p.s)) ** .7 * M * .9; ctx.fillStyle = `rgba(255,255,255,${Math.max(0, 1 - k / 1.4) * (.4 + .6 * p.g)})`; const z = (1.5 + 2 * p.g) * W / 1200; ctx.fillRect(cx + Math.cos(p.a) * r, cy + Math.sin(p.a) * r, z * 3, z); });
+      if (t < 3) raf = requestAnimationFrame(draw);
+    })(t0);
+    const finish = () => {
+      if (ended) return; ended = true; timers.forEach(clearTimeout); cancelAnimationFrame(raf);
+      removeEventListener("keydown", onKey, true);
+      done();
+      host.classList.add("s-end"); setTimeout(() => host.remove(), 380);
+    };
+    const onKey = (e) => { e.preventDefault(); e.stopPropagation(); finish(); };
+    host.addEventListener("click", finish); addEventListener("keydown", onKey, true);
+    void host.offsetWidth; host.classList.add("s-logo");
+    timers.push(setTimeout(() => {
+      host.classList.add("s-list");
+      host.querySelectorAll(".rf-row .m").forEach((el, i) => {
+        const target = +el.dataset.m; if (!el.dataset.m) return; const start = performance.now() + 150 + i * 140;
+        const step = (now) => { const q = Math.min(1, Math.max(0, (now - start) / 600)); el.textContent = `${Math.round(target * q)}:00`; if (q < 1 && !ended) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      });
+    }, 2250));
+    timers.push(setTimeout(() => host.classList.add("s-out"), 4400));
+    timers.push(setTimeout(finish, 4950));
+  }
+
+  function teaser() {
+    if (document.querySelector(".rft")) return;
+    const host = document.createElement("div");
+    host.className = "rft"; host.setAttribute("role", "dialog"); host.setAttribute("aria-modal", "true"); host.setAttribute("aria-labelledby", "rft-t");
+    host.innerHTML = `<div class="bl"></div><div class="br"></div>
+      <div class="card"><button class="x" type="button" aria-label="Close">✕</button>
+        <span class="k">COMING SOON</span>
+        <p class="big" id="rft-t">Something big<br>is coming.</p>
+        <span class="one" aria-hidden="true">#1</span>
+        <p>The top of the leaderboard is about to mean a lot more. Every minute you train from today counts.</p>
+        <div class="acts"><button class="go" type="button">Keep training</button></div>
+      </div>`;
+    document.body.appendChild(host);
+    const card = host.querySelector(".card");
+    const close = () => { host.classList.add("out"); removeEventListener("keydown", onKey); setTimeout(() => host.remove(), 360); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    host.querySelector(".x").addEventListener("click", close);
+    host.querySelector(".go").addEventListener("click", close);
+    host.addEventListener("click", (e) => { if (e.target === host) close(); });
+    addEventListener("keydown", onKey);
+    setTimeout(() => { host.classList.add("live"); try { host.querySelector(".go").focus({ preventScroll: true }); } catch (e) {} }, 1700);
+    host.addEventListener("pointermove", (e) => {
+      if (reduce()) return;
+      const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      card.style.setProperty("--ry", (Math.max(-.6, Math.min(.6, x)) * 16).toFixed(2) + "deg"); card.style.setProperty("--rx", (-Math.max(-.6, Math.min(.6, y)) * 12).toFixed(2) + "deg");
+      card.style.setProperty("--mx", ((x + .5) * 100).toFixed(1) + "%"); card.style.setProperty("--my", ((y + .5) * 100).toFixed(1) + "%");
+    });
+  }
+  // every time Repline is opened or reloaded
+  setTimeout(teaser, 900);
+  return { intro, teaser };
 })();
 </script>
