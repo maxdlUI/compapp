@@ -9,6 +9,14 @@
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+
+// Our own database calls send a key (023_limits.sql), so nobody else can make the bot run.
+async function cronOk(req: Request) {
+  const k = req.headers.get("x-cron-key") || "";
+  if (!k) return false;
+  const { data } = await db.rpc("check_cron_key", { k });
+  return data === true;
+}
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const PUBLIC_KEY = "29c4bd3d09ce957a1f4c81e242ecb2f97f3b303494a87292362eed99791d3440";
 const CHANNEL = "1572181354353926165"; // #report-a-bug
@@ -16,7 +24,7 @@ const IDEA_CHANNEL = "1572183657177940049"; // #suggest-a-feature
 const API = "https://discord.com/api/v10";
 const H = { Authorization: `Bot ${BOT}`, "Content-Type": "application/json" };
 const EPH = 64;
-const CYAN = 0x38e0ff, COLORS: Record<string, number> = { critical: 0xf23f43, high: 0xff9f0a, medium: 0x38e0ff, low: 0x86868b };
+const CYAN = 0xf5f5f7, COLORS: Record<string, number> = { critical: 0xf23f43, high: 0xc7c7cc, medium: 0x8e8e93, low: 0x48484a };
 const PRIO_TXT: Record<string, string> = { critical: "🔴 Critical", high: "🟠 High", medium: "🔵 Medium", low: "⚪ Low" };
 
 type Report = Record<string, any>;
@@ -55,18 +63,16 @@ const AREAS: [RegExp, string][] = [
   [/sign.?in|log.?in|login|logout|discord (auth|login)|account/i, "Sign-in"],
   [/overlay|hotkey|ctrl\+shift/i, "Overlay"],
   [/timer|set|routine|switch|pause|next set|skip/i, "Timer & routines"],
-  [/drop|wheel|spin|item|theme|skin|ring|ticket|jackpot/i, "Drops"],
   [/personal plan|coach/i, "Personal Plan"],
   [/kovaak|aim progress|scenario|curve/i, "KovaaK's"],
   [/leaderboard|points|rank|verified/i, "Leaderboard"],
   [/update|install|download|windows app|setup/i, "Windows app"],
-  [/streak|badge|freeze/i, "Streak & badges"],
   [/friend|invite/i, "Friends"],
   [/remind|notification/i, "Reminders"]
 ];
 function areaOf(t: string) { for (const [re, a] of AREAS) if (re.test(t)) return a; return "Other"; }
 function prioOf(t: string) {
-  if (/crash|can'?t (open|start|sign|log)|cannot (open|start|sign|log)|won'?t (open|start|load)|black screen|white screen|blank|lost (my )?(streak|progress|items|account)|geht nicht mehr|stürzt|absturz/i.test(t)) return "critical";
+  if (/crash|can'?t (open|start|sign|log)|cannot (open|start|sign|log)|won'?t (open|start|load)|black screen|white screen|blank|lost (my )?(progress|playtime|account)|geht nicht mehr|stürzt|absturz/i.test(t)) return "critical";
   if (/stop|freez|stuck|hang|not working|doesn'?t work|does not work|broken|disappear|missing|wrong|kaputt|funktioniert nicht/i.test(t)) return "high";
   if (/typo|spelling|text|colou?r|looks|align|small|tippfehler/i.test(t)) return "low";
   return "medium";
@@ -89,7 +95,7 @@ function ideaEmbed(r: Report, title?: string) {
     { name: "Votes", value: String(r.votes || 0), inline: true },
     ...(r.similar_count ? [{ name: "Similar", value: `${r.similar_count} similar idea${r.similar_count === 1 ? "" : "s"} this week`, inline: true }] : [])
   ];
-  return { title: title || `💡 Idea #${r.id}`, color: 0xffcf4a, fields, footer: { text: `${r.source === "app" ? "Sent from the app" : "Sent in Discord"}${r.discord_name ? " · " + r.discord_name : ""}` }, timestamp: r.created_at };
+  return { title: title || `💡 Idea #${r.id}`, color: 0xf5f5f7, fields, footer: { text: `${r.source === "app" ? "Sent from the app" : "Sent in Discord"}${r.discord_name ? " · " + r.discord_name : ""}` }, timestamp: r.created_at };
 }
 const voteRow = (id: number, n: number) => [{ type: 1, components: [{ type: 2, style: 2, label: `Upvote · ${n}`, emoji: { name: "👍" }, custom_id: `iv:${id}` }] }];
 function reportEmbed(r: Report, title?: string) {
@@ -335,6 +341,6 @@ Deno.serve(async (req) => {
     try { return await handle(JSON.parse(body), wait); } catch (e) { console.log("handle", e); return json({ type: 4, data: { flags: EPH, content: "Something went wrong. Please try again." } }); }
   }
   let b: any = {}; try { b = JSON.parse(body); } catch { /* ignore */ }
-  if (b && b.bugs) { await processPending(); return json({ ok: true }); }
+  if (b && b.bugs && (await cronOk(req))) { await processPending(); return json({ ok: true }); }
   return json({ ok: false }, 400);
 });

@@ -11,6 +11,14 @@ import webpush from "npm:web-push@3.6.7";
 
 const SITE = "https://repline.pages.dev";
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+
+// Our own database calls send a key (023_limits.sql), so nobody else can make the bot run.
+async function cronOk(req: Request) {
+  const k = req.headers.get("x-cron-key") || "";
+  if (!k) return false;
+  const { data } = await db.rpc("check_cron_key", { k });
+  return data === true;
+}
 const BOT = Deno.env.get("DISCORD_BOT_TOKEN") || "";
 const VPUB = Deno.env.get("VAPID_PUBLIC") || "", VPRIV = Deno.env.get("VAPID_PRIVATE") || "";
 let pushReady = false;
@@ -67,7 +75,7 @@ async function sendGiftDMs() {
       `Open Repline and sign in with Discord to use it.`
     ].filter(Boolean);
     const ok = await discordDM(prof.discord_id, "", {
-      title: `🎁 You got Repline ${plan}!`, description: lines.join("\n\n"), url: SITE, color: 0xa855f7,
+      title: `🎁 You got Repline ${plan}!`, description: lines.join("\n\n"), url: SITE, color: 0xf5f5f7,
       footer: { text: "Repline · repline.pages.dev" }
     });
     if (ok) sent++;
@@ -84,6 +92,7 @@ async function push(sub: unknown, title: string, body: string) {
 const SITE_VAPID = "BL1_JnQ__0aDN0r83IBLweagLTxyyuCOhgzkmLzJ6Pwn0lGatksVYpFH6308HecpEa-syIeqTYS2pmT-Y6ryTVM";
 
 Deno.serve(async (req) => {
+  if (!(await cronOk(req))) return new Response("forbidden", { status: 403 });
   let body: { check?: boolean } = {};
   try { body = await req.json(); } catch { /* cron sends {} */ }
   if (body.check) {

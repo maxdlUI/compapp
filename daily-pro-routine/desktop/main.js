@@ -89,7 +89,7 @@ function createMain() {
   win.once("ready-to-show", () => win.show());
   win.loadFile(path.join(__dirname, "app", "index.html"));
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: "deny" }; });
-  win.webContents.on("will-navigate", (e, url) => { if (/^https?:/.test(url)) { e.preventDefault(); shell.openExternal(url); } });
+  win.webContents.on("will-navigate", (e, url) => { if (/^https?:/.test(url)) { e.preventDefault(); shell.openExternal(url); } else if (!/^file:/.test(url)) e.preventDefault(); }); // never javascript:, data: or other schemes
   win.on("closed", () => { win = null; app.quit(); });
 }
 
