@@ -1003,7 +1003,7 @@ textarea.st-in { resize: vertical; min-height: 64px; }
 .mi-hcard{display:flex;gap:14px;align-items:center;background:var(--carbon);border-radius:24px;padding:16px 18px;color:var(--porcelain);text-decoration:none}
 .mi-hcard:hover{text-decoration:none;box-shadow:inset 0 0 0 1px var(--steel)}
 .mi-hcard .t{display:grid;gap:2px;min-width:0}.mi-hcard b{font-size:17px}.mi-hcard span.s{font-size:13px;color:var(--ash)}
-.mi-orb{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#a1a1a6 70%,#ffb36b);flex:none}
+.mi-orb{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#a1a1a6 70%,#48484a);flex:none}
 .mi-lock{font-size:11px;font-weight:700;color:#000;background:linear-gradient(100deg,#c1c1c1,#bcbcbc);padding:3px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
 .gicon{display:block;width:48px;height:48px}
 .gstage{position:relative;width:min(380px,100%);aspect-ratio:1/1;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -1022,7 +1022,7 @@ textarea.st-in { resize: vertical; min-height: 64px; }
 .gres div{background:var(--m-bg2);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
 .gres span{font-size:12px;color:var(--m-mute)}.gres b{font-size:20px}
 /* Mind: the website's greys, white as the main colour, one warm accent for the exhale */
-#v-mind .mind{--m-bg:#1d1d1f;--m-bg2:#2a2a2d;--m-line:#3a3a3e;--m-in:#f5f5f7;--m-hold:#a1a1a6;--m-out:#ffb36b;--m-mute:#86868b}
+#v-mind .mind{--m-bg:#1d1d1f;--m-bg2:#2a2a2d;--m-line:#3a3a3e;--m-in:#f5f5f7;--m-hold:#a1a1a6;--m-out:#636366;--m-mute:#86868b}
 #v-mind .mi-card{background:var(--m-bg)}
 .m-eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m-mute)}
 .mplayer{gap:16px}
@@ -1081,7 +1081,7 @@ textarea.st-in { resize: vertical; min-height: 64px; }
 #v-cue .fc-pump[hidden] { display: none; }
 #v-cue .fc-pump-what { margin: 0; color: #c7c7cc; }
 #v-cue .fc-pump-row { display: grid; gap: 6px; }
-#v-cue .fc-need { color: #ffb36b; font-weight: 600; margin-left: 6px; }
+#v-cue .fc-need { color: #f5f5f7; font-weight: 600; margin-left: 6px; }
 #v-cue .fc-need[hidden] { display: none; }
 #v-cue .fc-sl label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ash); }
 #v-cue .fc-sl label b { color: var(--porcelain); font-variant-numeric: tabular-nums; }
@@ -1101,12 +1101,12 @@ textarea.st-in { resize: vertical; min-height: 64px; }
 #v-cue .fc-flash.on b { color: var(--c1); }
 #v-cue .fc-flash.on i { animation: fcPing 1.1s ease-out infinite; }
 #v-cue .fc-flash.ok { box-shadow: inset 0 0 0 2px var(--green); } #v-cue .fc-flash.ok i { background: var(--green); }
-#v-cue .fc-flash.miss { box-shadow: inset 0 0 0 2px #ffb36b; } #v-cue .fc-flash.miss i { background: #ffb36b; }
+#v-cue .fc-flash.miss { box-shadow: inset 0 0 0 2px #8e8e93; } #v-cue .fc-flash.miss i { background: #8e8e93; }
 @keyframes fcPing { from { box-shadow: 0 0 0 0 rgba(216,216,216,.75); } to { box-shadow: 0 0 0 18px rgba(216,216,216,0); } }
 #v-cue .fc-plan { text-align: center; color: #c7c7cc; margin: 0; }
 #v-cue .fc-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 #v-cue .fc-yes { background: var(--green); color: #000; }
-#v-cue .fc-no { background: #ffb36b; color: #000; }
+#v-cue .fc-no { background: #3a3a3c; color: #f5f5f7; }
 #v-cue .fc-yes:disabled, #v-cue .fc-no:disabled { opacity: .35; cursor: default; }
 #v-cue .fc-keys, #v-cue #fc-keys { text-align: center; }
 #v-cue .fc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -1170,6 +1170,18 @@ textarea.st-in { resize: vertical; min-height: 64px; }
 .pill:not(.out), .days-pick button[aria-pressed="true"], .len .lock b, .sp-me.out, .rs-go { color: #000; }
 .pill:not(.out):hover { color: #000; }
 a { text-decoration-color: rgba(245,245,247,.35); }
+
+/* Glass (owner's pick, 27 Nov 2026): the step that is "now" on Today and a few key buttons, not everything. */
+.dstep.now::before { content: ""; position: absolute; inset: -30px -10px auto 20%; height: 180px; background: radial-gradient(50% 60% at 60% 40%, rgba(255,255,255,.10), transparent 70%); pointer-events: none; }
+.dstep.now .ddot { color: #fff; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.45); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 6px rgba(255,255,255,.05); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.dstep.now .dbox { position: relative; overflow: hidden; background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.03)); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), inset 0 1px 0 rgba(255,255,255,.35), 0 20px 50px -20px rgba(0,0,0,.9); }
+.dstep.now .dbox::after { content: ""; position: absolute; top: -50%; bottom: -50%; left: -40%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.12), transparent); transform: rotate(12deg); animation: glassSweep 6s ease-in-out infinite; pointer-events: none; }
+@keyframes glassSweep { 0%, 60% { left: -40%; } 100% { left: 130%; } }
+.dstep.now .dbh .dtag { color: #fff; }
+.dstep.now .dacts .go, #plan-start, #co-build, #co-start, #wu-go { color: #fff; font-weight: 600; background: linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,.10)); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), inset 0 1px 0 rgba(255,255,255,.8), inset 0 -10px 20px -10px rgba(255,255,255,.25), 0 10px 24px -10px rgba(0,0,0,.8); transition: background .2s, transform .12s; }
+.dstep.now .dacts .go:hover, #plan-start:hover, #co-build:hover, #co-start:hover, #wu-go:hover { color: #fff; background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.16)); }
+.dstep.now .dacts .go:active, #plan-start:active, #co-build:active, #co-start:active, #wu-go:active { transform: scale(.97); }
+@media (prefers-reduced-motion: reduce) { .dstep.now .dbox::after { animation: none; display: none; } }
 </style>
 
 </head>
@@ -1204,7 +1216,7 @@ a { text-decoration-color: rgba(245,245,247,.35); }
 
 <style>
 /* ---------- 2.0 layout: left spine instead of the top bar ---------- */
-:root { --spine: 88px; --warmc: #ffb35c; --calmc: #c8c8c8; }
+:root { --spine: 88px; --warmc: #f5f5f7; --calmc: #aeaeb2; }
 .top { display: none !important; }
 body { padding-left: var(--spine); }
 .spine { position: fixed; left: 0; top: 0; bottom: 0; z-index: 70; width: var(--spine); padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(16px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 0px); border-right: 1px solid var(--keyline); background: var(--obsidian); display: flex; flex-direction: column; align-items: center; gap: 4px; overflow-y: auto; scrollbar-width: none; }
@@ -1881,7 +1893,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
 
 const $ = (id) => document.getElementById(id);
 /* ---------- MIND ---------- */
-const C_IN = "#f5f5f7", C_HOLD = "#a1a1a6", C_OUT = "#ffb36b", C_TRACK = "#3a3a3e";
+const C_IN = "#f5f5f7", C_HOLD = "#a1a1a6", C_OUT = "#636366", C_TRACK = "#3a3a3e";
 const B = (k, s, label) => ({ k, s, label: label || { in: "Breathe in", in2: "One more sip in", hold: "Hold", out: "Breathe out", holdOut: "Hold" }[k] });
 const EX = [
   { id: "sigh", name: "Cyclic sighing", vis: "sigh", tags: ["After a loss", "Between games"], desc: "Two breaths in through the nose, the second one short, then a long, slow breath out through the mouth.",
@@ -2859,7 +2871,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.20.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.21.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
