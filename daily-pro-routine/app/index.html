@@ -2890,7 +2890,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.24.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.25.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -5364,7 +5364,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
 
   /* ---------- 1.6 · leaderboards ---------- */
   let boardTab = "week";
-  const avHTML = (name, url, cls) => url ? `<span class="av${cls || ""}" style="background-image:url('${esc(String(url).replace(/['\\]/g, ""))}')"></span>` : `<span class="av${cls || ""}">${esc((name || "?").slice(0, 1).toUpperCase())}</span>`;
+  const avHTML = (name, url, cls) => url && /^https:\/\/cdn\.discordapp\.com\/[\w./?=&-]+$/.test(String(url)) ? `<span class="av${cls || ""}" style="background-image:url('${esc(String(url).replace(/['\\]/g, ""))}')"></span>` : `<span class="av${cls || ""}">${esc((name || "?").slice(0, 1).toUpperCase())}</span>`;
   function demoBoard(fo) {
     const me = { username: (account && account.name) || "you", is_me: true, points: 955, streak: 12 };
     const all = [["nyxbuilds", 1586, 22], ["kxvin", 1412, 19], ["tiltproof", 1377, 9], ["vortexqt", 1290, 27], ["ramprush", 1244, 9], ["edit.exe", 1198, 41], ["coldhands", 1150, 14], ["sunsetboxer", 1102, 6], ["lowground", 1087, 18], ["pieceking", 1041, 11]];

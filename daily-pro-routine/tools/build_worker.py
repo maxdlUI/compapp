@@ -61,7 +61,7 @@ export default {
     let status = 200;
     if (!f) { if (/\\.[a-z0-9]+$/i.test(path)) return new Response("Not found", { status: 404, headers: { "content-type": "text/plain" } }); f = FILES["/index.html"]; status = path.indexOf("/auth/") === 0 || path.indexOf("/r/") === 0 ? 200 : 404; path = "/index.html"; }
     if (!cache.has(path)) cache.set(path, bin(f.b));
-    const headers = { "content-type": f.t, "cache-control": f.c, "x-content-type-options": "nosniff", "referrer-policy": "strict-origin-when-cross-origin" };
+    const headers = { "content-type": f.t, "cache-control": f.c, "x-content-type-options": "nosniff", "referrer-policy": "strict-origin-when-cross-origin", "x-frame-options": "DENY", "content-security-policy": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'", "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()", "strict-transport-security": "max-age=31536000" };
     return new Response(request.method === "HEAD" ? null : cache.get(path), { status, headers });
   }
 };
