@@ -129,6 +129,13 @@ open(os.path.join(APP, "sw.js"), "w", encoding="utf-8").write(sw)
 # Netlify / static host niceties
 open(os.path.join(APP, "_headers"), "w").write("/sw.js\n  Cache-Control: no-cache\n/manifest.webmanifest\n  Content-Type: application/manifest+json\n")
 
+# Owner's private TV dashboard (/tv, data needs the key in the link). Website only.
+TV = os.path.join(ROOT, "tv")
+if os.path.isdir(os.path.join(APP, "tv")):
+    shutil.rmtree(os.path.join(APP, "tv"))
+if os.path.isdir(TV):
+    shutil.copytree(TV, os.path.join(APP, "tv"))
+
 # Public pages for search engines (routines, map codes, sitemap). Website only.
 import subprocess, sys
 subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build_seo.py")], check=True)
@@ -136,5 +143,5 @@ subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build_seo.py")], ch
 # Desktop copy (Electron loads it from disk; no service worker needed there)
 if os.path.isdir(DESK):
     shutil.rmtree(DESK)
-shutil.copytree(APP, DESK, ignore=shutil.ignore_patterns("sw.js", "_headers", "routines", "map-codes", "robots.txt", "sitemap.xml"))
+shutil.copytree(APP, DESK, ignore=shutil.ignore_patterns("sw.js", "_headers", "tv", "routines", "map-codes", "robots.txt", "sitemap.xml"))
 print("built app/ and desktop/app/ · cache", version)
