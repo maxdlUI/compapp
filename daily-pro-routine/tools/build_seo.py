@@ -67,7 +67,7 @@ MAP_NAMES = {"2424-4344-7824": ("Raider464's Mechanics V5", "One map for everyth
 TYPE = {"aim": "Aim", "mech": "Mechanics", "fight": "Fights", "live": "Live games", "review": "Review", "rest": "Break", "prep": "Prep"}
 
 CSS = """
-:root{color-scheme:dark;--bg:#000;--card:#111113;--line:#28282b;--text:#f5f5f7;--dim:#a1a1a6;--blue:#0071e3;--link:#2997ff}
+:root{color-scheme:dark;--bg:#000;--card:#111113;--line:#28282b;--text:#f5f5f7;--dim:#a1a1a6;--blue:#a0a0a0;--link:#c0c0c0}
 *{box-sizing:border-box}html{background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--text);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
@@ -81,7 +81,7 @@ h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.01em;margin:44px 0 12px}
 h3{font-size:19px;margin:0}
 .lead{font-size:clamp(18px,2.4vw,21px);color:var(--dim);max-width:720px}
 .cta{display:inline-block;background:var(--blue);color:#fff;border-radius:980px;padding:12px 22px;font-weight:600;margin:18px 0 6px}
-.cta:hover{text-decoration:none;background:#0077ed}
+.cta:hover{text-decoration:none;background:#a7a7a7}
 .muted{color:var(--dim);font-size:15px}
 .len{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0}
 .len-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}

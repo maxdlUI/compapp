@@ -5,6 +5,7 @@ This repository is **Repline**; everything lives in `daily-pro-routine/`. The ol
 ## How the owner wants to work
 
 - Reply in **German**, short and clear. The Repline app and website itself are in **English** (Apple-style design).
+- **Colors (owner, 27 Nov 2026): black and white only.** No blue, cyan or purple anywhere (no gradients in those colors). Accent `--blue` is white `#f5f5f7` with black text on it, set types `--c1..--c5` are greys, avatars grey. Kept: gold/silver/bronze on the podium, green for done, red for danger, the warm-up orange. App icon and installer art are grey too (`tools/make_icons.py`, `tools/make_installer_art.py`).
 - **Nothing that costs money** without asking first. Before uploading or turning on anything that could cost money (hosting, storage, paid APIs, credits), stop and ask. The owner wants zero cost risk.
 - **No GitHub for hosting or deploys.** Everything runs on Cloudflare (Pages + R2). GitHub only stores the code.
 - **No code signing** for the Windows app.
@@ -44,7 +45,7 @@ The Cloudflare token and the Discord bot token are saved on this cloud environme
 
 ## Discord
 
-Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app id `1570194691465420870`. Channel #drops `1570793070125908108` (unused since Drops was removed), #announcements `1570387421269467186`, #report-a-bug `1572181354353926165`, #suggest-a-feature `1572183657177940049`, #ask-a-question `1572188220970635324` (text channel), #download `1570387423895224410`.
+Server id `1570385914096783381`, invite https://discord.gg/3WeFB27Nk9, bot/app id `1570194691465420870`. #announcements `1570387421269467186`, #report-a-bug `1572181354353926165`, #suggest-a-feature `1572183657177940049`, #ask-a-question `1572188220970635324` (text channel), #download `1570387423895224410`.
 
 ## Routine Studio (dev only)
 
