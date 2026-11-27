@@ -4,18 +4,18 @@ from PIL import Image, ImageDraw, ImageFilter
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "icons"
 os.makedirs(OUT, exist_ok=True)
-COLORS = ["#38e0ff", "#7debff", "#3f8dff", "#a855f7", "#8f7bff"]
+COLORS = ["#f5f5f7", "#d1d1d6", "#aeaeb2", "#8e8e93", "#636366"]
 
 def hexrgb(h): return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
 
 def draw(size, ring_scale=0.62, rounded=False):
     S = size * 4
     img = Image.new("RGBA", (S, S), (0, 0, 0, 255))
-    # soft blue glow
+    # soft grey glow
     glow = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
     r = S * ring_scale * 0.42
-    gd.ellipse([S / 2 - r, S / 2 - r, S / 2 + r, S / 2 + r], fill=(40, 90, 200, 110))
+    gd.ellipse([S / 2 - r, S / 2 - r, S / 2 + r, S / 2 + r], fill=(120, 120, 128, 70))
     glow = glow.filter(ImageFilter.GaussianBlur(S * 0.08))
     img.alpha_composite(glow)
     d = ImageDraw.Draw(img)

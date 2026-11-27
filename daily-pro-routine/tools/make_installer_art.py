@@ -24,8 +24,8 @@ def sidebar():
     # soft glow in the brand colours behind the logo
     glow = Image.new("RGB", (W, H), (0, 0, 0))
     g = ImageDraw.Draw(glow)
-    g.ellipse((W * -0.25, H * 0.02, W * 1.25, H * 0.52), fill=(18, 40, 96))
-    g.ellipse((W * 0.35, H * 0.62, W * 1.6, H * 1.15), fill=(48, 20, 80))
+    g.ellipse((W * -0.25, H * 0.02, W * 1.25, H * 0.52), fill=(36, 36, 40))
+    g.ellipse((W * 0.35, H * 0.62, W * 1.6, H * 1.15), fill=(28, 28, 30))
     im = Image.blend(im, glow.filter(ImageFilter.GaussianBlur(70 * S / 4)), 0.9)
     # the icon sits on black, so "screen" blends it into the glow without a visible square
     logo = Image.open(ICON).convert("RGB").resize((124 * S, 124 * S), Image.LANCZOS)
@@ -39,7 +39,7 @@ def sidebar():
     center("Repline", 160 * S, font("InterDisplay-Bold.otf", 27 * S), (245, 245, 247))
     center("Daily Pro Routine", 196 * S, font("Inter-Medium.otf", 11 * S), (134, 134, 139))
     # set bar like the app: five segments
-    cols = [(56, 224, 255), (63, 141, 255), (63, 141, 255), (168, 85, 247), (134, 134, 139)]
+    cols = [(245, 245, 247), (209, 209, 214), (174, 174, 178), (142, 142, 147), (99, 99, 102)]
     x, bw, gap = 30 * S, 18 * S, 3 * S
     for c in cols:
         d.rounded_rectangle((x, 236 * S, x + bw, 239 * S), radius=2 * S, fill=c)

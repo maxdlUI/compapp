@@ -3,7 +3,7 @@
 <style>
 /* Repline stream banner. A black "island" pill (like the app) opens, morphs between four messages and closes.
    Rendered frame by frame: window.render(t) sets every style for time t (seconds). */
-:root { --ink: #f5f5f7; --ash: #86868b; --cyan: #38e0ff; --blue: #3f8dff; --violet: #a855f7; --apple: #0071e3; }
+:root { --ink: #f5f5f7; --ash: #86868b; --cyan: #d8d8d8; --blue: #c1c1c1; --violet: #bcbcbc; --apple: #a0a0a0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 1200px; height: 240px; background: transparent; overflow: hidden; }
 body { font-family: "Inter Display", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: var(--ink); }
@@ -26,7 +26,7 @@ body { font-family: "Inter Display", "Inter", system-ui, sans-serif; -webkit-fon
 <div id="pill">
   <div id="glow"></div>
   <div class="slot" id="s0"><div class="logo-clip"><img src="icon.png" alt=""></div></div>
-  <div class="slot" id="s1"><svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="29" fill="none" stroke="#1d1d1f" stroke-width="7"/><circle id="ring" cx="36" cy="36" r="29" fill="none" stroke="#38e0ff" stroke-width="7" stroke-linecap="round" transform="rotate(-90 36 36)" stroke-dasharray="182.2" stroke-dashoffset="0"/><text id="ringt" x="36" y="41" text-anchor="middle" fill="#f5f5f7" font-family="Inter Display, Inter, sans-serif" font-size="15" font-weight="600">4:59</text></svg></div>
+  <div class="slot" id="s1"><svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="29" fill="none" stroke="#1d1d1f" stroke-width="7"/><circle id="ring" cx="36" cy="36" r="29" fill="none" stroke="#d8d8d8" stroke-width="7" stroke-linecap="round" transform="rotate(-90 36 36)" stroke-dasharray="182.2" stroke-dashoffset="0"/><text id="ringt" x="36" y="41" text-anchor="middle" fill="#f5f5f7" font-family="Inter Display, Inter, sans-serif" font-size="15" font-weight="600">4:59</text></svg></div>
   <div class="slot" id="s2"><div class="pro">PRO</div></div>
   <div class="slot" id="s3"><div class="url"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div></div>
   <div class="txt" id="x0"><span class="t1">Repline</span><span class="t2">Daily pro routines for Fortnite</span></div>
