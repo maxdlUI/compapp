@@ -5471,7 +5471,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         <div class="c-card" style="background:linear-gradient(135deg,#12361f 0%,var(--carbon) 65%)">
           <span class="tiny" style="color:var(--pos);text-transform:uppercase;letter-spacing:1.4px">Invite reward</span>
           <b style="font-size:24px;letter-spacing:-.4px">Bring 3 friends. Get 1 month Standard.</b>
-          <span class="small">A friend counts once they sign up with your link and finish a routine on 3 days.</span>
+          <span class="small">A friend counts once they sign up with your link and finish a Competitive Play routine on 3 days.</span>
           <div class="inv-slots">${slots.map((x) => `<div class="${x.ok ? "ok" : ""}">${x.u ? avHTML(x.u) : `<span class="av" style="background:var(--steel);color:var(--ash)">${x.ok ? "✓" : "+"}</span>`}<span>${esc(x.name)}</span></div>`).join("")}</div>
           <div class="inline-in"><code style="flex:1;min-width:0;font-size:14px;background:#000;padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(refLink().replace(/^https?:\/\//, ""))}</code><button class="pill" type="button" id="inv-copy">Copy link</button></div>
           <span class="tiny">${earned ? `${monthsWord(earned)} earned so far. ` : ""}Every 3 friends = another month. Already on Standard or Pro? The month is added on top.</span>
