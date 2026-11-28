@@ -1237,7 +1237,7 @@ a { text-decoration-color: rgba(245,245,247,.35); }
 
 <script>
   try {
-    var pm = localStorage.getItem("rl.motion");
+    var pm = localStorage.getItem("rl.motion"); try { pm = JSON.parse(pm); } catch (e) {}
     var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (pm === "off" || (pm !== "on" && reduce)) {} else document.documentElement.classList.add("anim");
   } catch (e) { document.documentElement.classList.add("anim"); }
@@ -2928,7 +2928,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.27.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.28.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -3071,7 +3071,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   const SET = "rl.settings";
   const settings = Object.assign({ sound: true, awake: true, alertSound: "chime", alertAnim: "wave", switchSec: 30, weekGoal: 5, freezes: 0, freezeAt: "", best: 0, rpc: true, rpcName: true }, store.get(SET, {}));
   const CUSTOM = "rl.customSound";
-  const saveSettings = () => { store.set(SET, settings); cloudPush(); };
+  const saveSettings = () => { settings.savedAt = Date.now(); store.set(SET, settings); cloudPush(); };
   let testOn = false; // set from the account: only dev accounts see the test routine
   try { localStorage.removeItem("rl.test"); } catch (e) {}
   const syncTest = () => { const i = GOALS.indexOf(TEST_GOAL); if (testOn && i < 0) GOALS.push(TEST_GOAL); if (!testOn && i >= 0) GOALS.splice(i, 1); };
@@ -4798,7 +4798,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     on("rs-streak-yes", "click", () => { confirmReset = null; store.del(DAYS); store.del(DONE); if (sb && cloudUser) sb.from("training_days").delete().eq("user_id", cloudUser.id).then(() => {}); toast("Streak was reset"); if (view === "home") streakUI("home"); renderDrawer(); });
     on("to-faq", "click", () => { closeDrawer(); const doIt = () => $("faq").scrollIntoView({ behavior: anim() ? "smooth" : "auto" }); if (view !== "home") { go(""); setTimeout(doIt, 60); } else doIt(); });
     on("sign-out", "click", async () => {
-      if (account && account.real && sb) { try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; store.set(MYR, myRoutines().filter((x) => String(x.id).indexOf("l-") === 0)); }
+      if (account && account.real && sb) { authByUser = true; try { await sb.auth.signOut(); } catch (e) {} cloudUser = null; store.set(MYR, myRoutines().filter((x) => String(x.id).indexOf("l-") === 0)); }
       if (S.status === "laeuft") { S.before = elapsed(); S.runAt = null; S.status = "pause"; }
       if (S.status === "wechsel") { S.swEnd = null; S.status = "bereit"; }
       save(); pushOverlay(true);
@@ -4811,7 +4811,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       if (account && account.real && sb) {
         const { error } = await sb.rpc("delete_my_account");
         if (error) { toast("Couldn't delete the account. Please try again."); return; }
-        try { await sb.auth.signOut(); } catch (e) {}
+        authByUser = true; try { await sb.auth.signOut(); } catch (e) {}
         cloudUser = null;
       }
       account = null; [ACC, DAYS, DONE, KEY, MYR, ROUT, FIN, MINS, FROZ, BADGES, "rl.rank", "rl.last", "rl.imports", "rl.drop", "rl.demodrop"].forEach((k) => store.del(k)); S = fresh(); confirmDelete = false; topAccount(); renderDrawer(); toast("Account deleted"); if (view === "home") buildHome();
@@ -4874,17 +4874,40 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   // Real sign-in runs on repline.pages.dev / repline.gg (and localhost). Elsewhere (preview, desktop) the demo account stays.
   var SB_URL = "https://wjwjvwjwlipjxsgufffj.supabase.co";
   var SB_KEY = "sb_publishable_xA1CO4em6oz2mocDqBC5jg_4WhlX13q";
+  /* Stay signed in (28 Nov 2026): the session is also kept in a backup key. If the library drops it after one failed
+     token refresh (sleep, short network loss, a browser extension), the page restores it and refreshes once.
+     Only a real sign-out (or a refresh the server rejects) ends the session. */
+  const AUTH_KEY = "sb-wjwjvwjwlipjxsgufffj-auth-token", AUTH_BAK = "rl.auth.bak";
+  let authByUser = false, authRestored = false;
+  const AUTH_STORE = {
+    getItem(k) { try { const v = localStorage.getItem(k); if (v != null || k !== AUTH_KEY) return v; const b = localStorage.getItem(AUTH_BAK); if (b && !authRestored) { authRestored = true; return b; } return null; } catch (e) { return null; } },
+    setItem(k, v) { try { localStorage.setItem(k, v); if (k === AUTH_KEY) localStorage.setItem(AUTH_BAK, v); } catch (e) {} },
+    removeItem(k) { try { localStorage.removeItem(k); if (k === AUTH_KEY && authByUser) localStorage.removeItem(AUTH_BAK); } catch (e) {} }
+  };
+  async function authRecover() {
+    let b = null; try { b = JSON.parse(localStorage.getItem(AUTH_BAK) || "null"); } catch (e) {}
+    if (!b || !b.refresh_token || authRestored === "tried") return false;
+    authRestored = "tried";
+    try { const r = await sb.auth.refreshSession({ refresh_token: b.refresh_token }); if (r && r.data && r.data.session) return true; } catch (e) {}
+    try { localStorage.removeItem(AUTH_BAK); } catch (e) {}
+    return false;
+  }
   var sb = (window.supabase && (window.replineDesktop || /(^|\.)repline\.pages\.dev$|(^|\.)repline\.gg$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)))
-    ? window.supabase.createClient(SB_URL, SB_KEY, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true, autoRefreshToken: true } })
+    ? window.supabase.createClient(SB_URL, SB_KEY, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true, autoRefreshToken: true, storage: AUTH_STORE } })
     : null;
   var cloudUser = null, cloudT = 0, cloudBusy = false;
+  let cloudPending = false;
+  const cloudSend = () => { cloudPending = false; return sb.from("user_state").upsert({ user_id: cloudUser.id, settings, focus: store.get(FOCUS, null), session: store.get(KEY, null), updated_at: new Date().toISOString() }).then(() => {}); };
   function cloudPush() {
-    if (!sb || !cloudUser || cloudBusy) return;
+    if (!sb || !cloudUser) return;
+    cloudPending = true;
+    if (cloudBusy) return; // sent once the account has loaded
     clearTimeout(cloudT);
-    cloudT = setTimeout(() => {
-      sb.from("user_state").upsert({ user_id: cloudUser.id, settings, focus: store.get(FOCUS, null), session: store.get(KEY, null), updated_at: new Date().toISOString() }).then(() => {});
-    }, 1200);
+    cloudT = setTimeout(cloudSend, 1200);
   }
+  // closing the tab or the app right after a change still saves it
+  addEventListener("pagehide", () => { if (cloudPending && sb && cloudUser && !cloudBusy) { clearTimeout(cloudT); cloudSend(); } });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && cloudPending && sb && cloudUser && !cloudBusy) { clearTimeout(cloudT); cloudSend(); } });
   async function cloudDay() {
     if (!sb || !cloudUser) return;
     const t = today();
@@ -4930,7 +4953,10 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       await cloudSocial();
       // settings, focus, routine in progress
       const st = state.data || {};
-      if (st.settings && Object.keys(st.settings).length) { Object.assign(settings, st.settings); store.set(SET, settings); setSound(settings.sound); }
+      // newest wins: settings changed on this device after the last upload are kept and uploaded
+      const remoteAt = st.settings ? (+st.settings.savedAt || Date.parse(st.updated_at || "") || 0) : 0;
+      if (st.settings && Object.keys(st.settings).length && remoteAt >= (+settings.savedAt || 0)) { Object.assign(settings, st.settings); store.set(SET, settings); setSound(settings.sound); }
+      else if (+settings.savedAt) cloudPending = true;
       const lf = store.get(FOCUS, null);
       if (st.focus && st.focus.text && (!lf || (st.focus.day || "") >= (lf.day || ""))) store.set(FOCUS, st.focus);
       const ls = store.get(KEY, null);
@@ -4961,7 +4987,8 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   })();
   // Sessions are kept in this browser until you sign out. If the network is down when the page opens,
   // the saved account stays and the session is refreshed once you're back online.
-  const hasStoredSession = () => { try { return !!localStorage.getItem("sb-wjwjvwjwlipjxsgufffj-auth-token"); } catch (e) { return false; } };
+  if (DESK) document.querySelectorAll('a[href^="/routines/"], a[href^="/map-codes/"]').forEach((a) => { a.href = SITE.url + a.getAttribute("href"); a.target = "_blank"; a.rel = "noopener"; });
+  const hasStoredSession = () => { try { return !!(localStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_BAK)); } catch (e) { return false; } };
   if (sb) {
     if (account && !account.real) { account = null; store.del(ACC); }
     addEventListener("online", () => { if (account && account.real && !cloudUser) sb.auth.getSession().then(() => {}); });
@@ -4976,6 +5003,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
           setTimeout(() => { cloudLoad(session.user).then(() => { if (isNew) { toast(`Signed in as ${account ? account.name : "you"}`); afterSignIn(); } }); }, 0);
         }
       } else if (event === "SIGNED_OUT" || (event === "INITIAL_SESSION" && account && account.real && !hasStoredSession())) {
+        if (!authByUser && account && account.real) { authRecover().then((ok) => { if (!ok) { cloudUser = null; account = null; store.del(ACC); topAccount(); if (drawerOpen) renderDrawer(); refreshView(); } }); return; }
         cloudUser = null; if (account && account.real) { account = null; store.del(ACC); } topAccount(); if (drawerOpen) renderDrawer(); refreshView();
       }
     });
@@ -5101,7 +5129,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       <ul>${pl.perks.map((x) => `<li class="${(pl.soon || []).indexOf(x) >= 0 ? "soonli" : ""}"><span>${esc(x)}${(pl.soon || []).indexOf(x) >= 0 ? ' <span class="soon">soon</span>' : ""}</span></li>`).join("")}</ul>
       ${pl.id === cur ? '<button class="pill out" type="button" disabled>Your plan</button>' : pl.price ? `<button class="pill${pl.id === "pro" ? "" : " out"}" type="button" disabled>Coming soon</button>` : ""}
     </div>`).join("");
-    $("plans-note").textContent = devMode() ? "Dev account: every feature is unlocked for testing. Payments open soon." : viewAs() ? `Dev · viewing as ${planWord2(viewAs())}. Switch back in your account.` : "Payments open soon. Monthly or yearly, cancel anytime.";
+    $("plans-note").textContent = devMode() ? "Dev account: every feature is unlocked. Payments open soon." : viewAs() ? `Dev · viewing as ${planWord2(viewAs())}. Switch back in your account.` : "Payments open soon. Monthly or yearly, cancel anytime.";
   }
 
   /* ---------- Discord buttons ---------- */
@@ -5504,7 +5532,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         <div class="kv"><span>Ranked by</span><b>Playtime</b></div>
         <div class="kv"><span>What counts</span><b>Minutes of routines that count</b></div>
         <span class="tiny">Only routines our server checked count: real time, no skipping. Paused time and the switch countdown don't count. Weeks start Monday 00:00, months on the 1st (Berlin time).</span></div>
-      <div class="c-card" style="background:var(--graphite);box-shadow:inset 0 0 0 1px var(--keyline)"><b>Fair play</b><span class="tiny" style="font-size:13px;line-height:1.5">Signed-in accounts only, at least 7 days old. Dev accounts don't take part. One account per person. Suspicious timers are checked and can be removed.</span></div>
+      <div class="c-card" style="background:var(--graphite);box-shadow:inset 0 0 0 1px var(--keyline)"><b>Fair play</b><span class="tiny" style="font-size:13px;line-height:1.5">Signed-in accounts only, you count from day one. One account per person. Suspicious timers are checked and can be removed. Team accounts don't win prizes.</span></div>
     </div>`;
   }
   const nameStyle = () => "";
@@ -5539,7 +5567,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     });
     const others = rows.filter((r) => !r.is_me && (st ? r.streak > 0 : r.points > 0)).length;
     let note = "";
-    if (!fo && !me) note = account && account.isDev ? "Dev accounts aren't ranked. Untick nothing, it's just you testing." : "You join the board 7 days after you sign up.";
+    if (!fo && !me) note = "Finish a Competitive Play routine to get on the board.";
     else if (fo && others === 0) note = "No friends on the board yet. Add them on the Friends page.";
     else if (!others && !me) note = "No playtime yet. Train to get on the board.";
     h += `<p class="tiny" style="margin:10px 14px 6px">${note ? esc(note) + " " : ""}${fo ? `<a href="#friends">Friends</a>` : `${rows.length ? (rows[0].total || rows.length) + " players" : ""}`}</p>`;
@@ -5802,7 +5830,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (sb && cloudUser) {
       const { data } = await sb.rpc("leaderboard", { period: "week", friends_only: false });
       const me = (data || []).find((r) => r.is_me);
-      info = me ? { rank: me.rank, total: me.total, note: `${fmtPlay(me.points)} this week` } : { note: account && account.isDev ? "Dev accounts aren't ranked" : "You join 7 days after sign-up" };
+      info = me ? { rank: me.rank, total: me.total, note: `${fmtPlay(me.points)} this week` } : { note: "Train to get on the board" };
     } else info = { rank: 14, total: 312, note: "Demo numbers" };
     store.set("rl.rank", info);
     const el = $("me-rank");
