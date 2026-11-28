@@ -72,23 +72,9 @@ Status-Spalte pflegen: offen / angeschrieben (Datum) / Antwort / Partner / Nein.
 Reihenfolge = meine Priorität. Status pflegen wie oben. YouTube-Zahlen von vidIQ (28 Nov 2026, alle haben im November hochgeladen). Nur englisch- und deutschsprachige Creator, weil Repline auf Englisch ist.
 **Regel für alle:** erst 1–2 echte Kommentare unter ihren Videos/Posts, dann die DM. Nie Copy-Paste an viele gleichzeitig, immer den Namen und ein konkretes Video nennen.
 
-## A) Map-Creator, deren Maps in Repline-Routinen laufen (stärkster Hebel)
+## A) Große Creator: bewusst raus (Owner, 28 Nov 2026)
 
-Warum: Repline schickt jeden Tag Spieler auf ihre Maps, und jeder Spieler bringt ihnen Engagement-Geld von Epic. Für sie ist das ein echter Vorteil, kein Gefallen. Kontakt: in Fortnite auf die Insel → **„View Developer“**, dort stehen meist Discord/YouTube/Twitch. Sonst YouTube „About“ → E-Mail.
-
-| Creator | Map in Repline | Wo anschreiben | Status |
-|---|---|---|---|
-| Raider464 | Mechanics Training V5 (2424-4344-7824), Piece Control Practice | Discord aus der Insel-Seite, YouTube/Twitch ([Profil](https://vpesports.com/player/raider464)) | offen |
-| Rezon | 1v1 Build Fights (1832-0431-4852) | Insel-Seite → Discord | offen |
-| martoz | Turtle Fights (1513-6690-9481), Martoz 1v1 Build Fights | Insel-Seite → Discord | offen |
-| chap | Pro Realistics (9520-0654-8075) | Insel-Seite → Discord | offen |
-| Ersteller „Clutch Realistics“ | 2v3 Clutch (6791-7475-7946) | Insel-Seite → Discord | offen |
-| Pandvil | Build-/Box-Fight-Maps (noch nicht in Repline, gute Ergänzung) | Insel-Seite → Discord | offen |
-| Training Maps (fortnite.com/@trainingmaps, 24K Follower) | Trainingsmaps | Insel-Seite | offen |
-| Donwozi (Skaavok Aim Trainer) | Aim-Map (passt zu „Quick: Aim“) | Insel-Seite → Discord | offen |
-
-**Nachricht (Englisch):**
-> Hey [Name], Max here. I built Repline, a free training app for competitive Fortnite. Your [Map-Name] is in our routines, so every day players load into it straight from Repline with your code and a timer. I'd love to credit you properly (your name and link on the set) and maybe add your new maps too. Would you be up for that? And if you ever want to mention Repline on your island page or Discord, I'll give you Pro free and your own creator code once payments are live. No pressure either way, just wanted you to know your map is getting played 🙏
+Raider464, Rezon, martoz, chap, Pandvil, Training Maps, Skaavok und große Kanäle (über ~40K, z. B. Farley_FN, Sero, LAV0N, FNCS Pickaxe, ytwarren, totosnumberone, .onramen, chaserfnt, litosbrrr, heroclicker) sind zu groß: sie verdienen genug, antworten nicht und machen keine Werbung für eine neue App. Nur kleine Creator anschreiben. Übersichtliche Liste mit Nachrichten: https://claude.ai/artifact/S5H4MKb4AqzSn4vrK8HEG1
 
 ## B) YouTube: Tutorials, Guides, Coaching (passt am besten)
 
