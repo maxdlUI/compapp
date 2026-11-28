@@ -362,13 +362,9 @@ a.c-card:hover { text-decoration: none; box-shadow: inset 0 0 0 1px var(--steel)
 .bd.off .ic { background: var(--carbon) !important; box-shadow: inset 0 0 0 1px var(--steel); }
 .bd.off .ic svg { stroke: var(--ash); }
 .bd.off b { color: #d2d2d7; }
-.freeze-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 22px; align-items: center; background: linear-gradient(135deg, #3f3f3f 0%, var(--carbon) 65%); margin-bottom: 28px; }
-.freeze-card .ico { width: 76px; height: 76px; border-radius: 24px; background: rgba(230,230,230, .12); display: grid; place-items: center; }
-.freeze-card .ico svg { width: 38px; height: 38px; }
 .fz-slots { display: flex; gap: 8px; }
 .fz-slots i { width: 30px; height: 40px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--slate); }
 .fz-slots i.on { background: var(--c2); box-shadow: none; }
-@media (max-width: 640px) { .freeze-card { grid-template-columns: minmax(0, 1fr); } }
 .fr-row { display: flex; align-items: center; gap: 12px; padding: 10px 4px; }
 .fr-row > span:not(.av) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .c-card > * { min-width: 0; }
@@ -1384,7 +1380,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       <h1 class="vh-h">Train like the pros. 15 minutes is enough to start.</h1>
       <p class="lead">Daily routines set by set, with timers, map codes and one focus per set. Free.</p>
       <div class="hero-cta"><button class="discord vh-dc" type="button" id="hero-signin"><svg aria-hidden="true"><use href="#i-discord"/></svg>Sign in with Discord</button><a class="pill big out" href="#goal">Look at the routines</a><a class="pill big out" href="#training" id="resume" hidden>Continue</a></div>
-      <div class="vh-chips"><span>Personal Plan</span><span>Windows overlay</span><span>Weekly prizes</span><span>Hand warm-up</span></div>
+      <div class="vh-chips"><span>Personal Plan</span><span>Windows overlay</span><span>Monthly prizes</span><span>Hand warm-up</span></div>
     </div>
     <div class="vh-demo">
       <span class="vh-eye">Quick Start · 15 min</span>
@@ -1394,7 +1390,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       <span class="vh-code">Map 2424-4344-7824</span>
     </div>
     <div class="vh-how">
-      <div><span>Every day</span><b>Pick a routine</b><p>15 minutes to 2 hours. Or tell the Personal Plan what you want to fix.</p></div>
+      <div><span>Every day</span><b>Pick a routine</b><p>From 15 minutes. Or tell the Personal Plan what you want to fix.</p></div>
       <div><span>Set by set</span><b>Train with a timer</b><p>Map code, focus and time for every set. No skipping, so it really counts.</p></div>
       <div><span>After</span><b>Watch it add up</b><p>Every minute you train goes on the leaderboard, with monthly prizes.</p></div>
     </div>
@@ -1453,7 +1449,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
     <div class="progress rv">
       <div style="display:grid;gap:12px">
         <h2 id="h-prog" class="d-m">Your progress.</h2>
-        <p class="small">One finished routine, one day.</p>
+        <p class="small">Every minute you train counts.</p>
         <div id="home-focus"></div>
       </div>
       <div style="display:grid;gap:20px">
@@ -3216,7 +3212,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (full) n.setAttribute("aria-disabled", "true");
     n.innerHTML = full
       ? `<span class="plus">+</span><b>New routine</b><span class="small">${planId() === "free" ? "Standard gives you 2, Pro unlimited." : "Pro gives you unlimited routines."}</span><span class="pill sm out">See plans</span>`
-      : signedIn() ? `<span class="plus">+</span><b>New routine</b><span class="small">Build it from sets and set every time.</span>`
+      : signedIn() ? `<span class="plus">+</span><b>New routine</b><span class="small">Build it from sets and pick the time for each one.</span>`
       : `<span class="plus">+</span><b>New routine</b><span class="small">Sign in with Discord to build your own.</span><span class="pill sm out">Sign in</span>`;
     n.addEventListener("click", () => { if (!signedIn()) { askSignIn("goal"); return; } if (full) { go("plans"); return; } draft = { id: null, name: "", sets: [] }; go("builder"); });
     box.appendChild(n);
@@ -3268,7 +3264,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     const z = goal(S.goal), l = length(S.goal, S.len), bl = list(), t = totalMin(bl);
     const bk = $("v-plan").querySelector(".back"); bk.dataset.go = z.coach ? "ai" : z.custom ? "goal" : "length"; bk.textContent = z.coach ? "Personal Plan" : z.custom ? "Routines" : "Length";
     const swt = switchTotalSec(bl.length);
-    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)} · ${fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
+    $("plan-sum").innerHTML = `${esc(z.name)} · ${esc(l.name)}${l.name === fmtMin(t) ? "" : " · " + fmtMin(t)} · ${bl.length} sets${swt ? `<br><span class="small">+ ${fmtSwitch(swt)} to switch between sets</span>` : ""}`;
     $("plan-start").innerHTML = signedIn() ? "Start training" : `<svg aria-hidden="true" style="width:20px;height:20px;margin-right:10px;vertical-align:-4px"><use href="#i-discord"/></svg>Sign in to start`;
     renderModes();
     $("plan-bar").innerHTML = bl.map((b) => `<i style="flex:${b.min || 1};background:${tcol(b)}" title="${esc(b.name)}"></i>`).join("");
@@ -4527,7 +4523,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       h += `<section class="dr-sec"><div class="profile">${account.avatar ? `<img class="avatar" src="${esc(account.avatar)}" alt="">` : `<div class="avatar" aria-hidden="true">${esc((account.name || "?").slice(0, 1).toUpperCase())}</div>`}<div><b>${esc(account.name || "Player")}${account.real ? (account.isDev ? '<span class="badge">Dev</span>' : "") : '<span class="badge">Demo</span>'}</b><span class="small">Signed in with Discord${account.real ? " · synced" : ""}</span></div></div></section>`;
       if (account.isDev) h += devHTML();
       h += `<section class="dr-sec"><h3>Progress</h3><div class="group"><div class="stats"><div><span class="tiny">This week</span><b>${fmtPlay(weekMin())}</b></div><div><span class="tiny">Routines done</span><b>${store.get(DONE, 0)}</b></div></div></div></section>`;
-      h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="aim">Aim progress</button><button class="row go" type="button" data-nav="badges">Badges</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
+      h += `<section class="dr-sec"><div class="group">${account.isDev ? '<button class="row go" type="button" data-nav="studio">Routine Studio <span class="tiny" style="color:var(--c1)">Dev</span></button>' : ""}<button class="row go" type="button" data-nav="stats">Your stats</button><button class="row go" type="button" data-nav="aim">Aim progress</button><button class="row go" type="button" data-nav="friends">Friends &amp; invites</button><button class="row go" type="button" data-nav="board">Leaderboards</button></div></section>`;
       h += `<section class="dr-sec"><h3>Subscription</h3><div class="group"><div class="row"><span>Plan</span><span class="val">${planName()}${devMode() ? " · all unlocked (dev)" : viewAs() ? " · view as (dev)" : launchActive() ? " · free in launch month" : account.bonusPlan && account.bonusUntil && new Date(account.bonusUntil) > new Date() ? ` · ${planWord(account.bonusPlan)} until ${new Date(account.bonusUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}</span></div><button class="row go" type="button" id="to-plans">See plans</button><div class="row"><span>Manage subscription</span><span class="soon">Coming Soon</span></div>${creatorRowHTML()}</div><p class="dr-foot">Support a creator: ${crRate()} % of your subscription goes to them, at no extra cost to you. Change or remove it anytime, also with an active plan.</p></section>`;
       h += myCodeHTML();
     }
@@ -5580,7 +5576,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
         <div class="c-card"><span class="tiny">Trained ${statsRange === "week" ? "this week" : statsRange === "month" ? "this month" : "in 12 weeks"}</span><b>${fmtH(tot)}</b>${diff != null ? `<span class="tiny" style="color:${diff >= 0 ? "var(--pos)" : "var(--ash)"}">${diff >= 0 ? "+" : "−"}${fmtH(Math.abs(diff))} vs. last week</span>` : ""}</div>
         <div class="c-card"><span class="tiny">Routines finished</span><b>${routs}</b><span class="tiny">${store.get(DONE, 0)} in total</span></div>
         <div class="c-card"><span class="tiny">Training days</span><b>${store.get(DAYS, []).length}</b><span class="tiny">in total</span></div>
-        <div class="c-card"><span class="tiny">Playtime this week</span><b>${fmtPlay(pts)}</b><a class="tiny" href="#board">Leaderboard ›</a></div>
+        <div class="c-card"><span class="tiny">Weekly leaderboard</span><b>${(store.get("rl.rank", null) || {}).rank ? "#" + store.get("rl.rank", null).rank : "–"}</b><a class="tiny" href="#board">Leaderboard ›</a></div>
       </div>
       <div class="bgrid" style="margin-bottom:24px">
         <div class="c-card"><div class="kv" style="flex-wrap:wrap"><b style="font-size:20px">Minutes per ${statsRange === "all" ? "week" : "day"}</b><span class="legend">${GROUPS.map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("")}</span></div>
@@ -5695,7 +5691,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     let rName, rSub, rBtn, rAct, rSets = [];
     if (S.active && l) { rName = `${goal(S.goal).name} · ${l.name}`; rSub = `In progress · set ${S.b + 1} of ${list().length}`; rBtn = "Continue"; rAct = "continue"; rSets = list(); }
     else if (lastOk) { const lg = length(last.goal, last.len); rName = `${goal(last.goal).name} · ${lg.name}`; rSub = t ? "Your usual. Done today." : "Your usual. Same routine as last time."; rBtn = "Start routine"; rAct = "again"; rSets = lg.sets || []; }
-    else { rName = "Pick today's routine"; rSub = "15 minutes to 2 hours. Quick Start is a good first step."; rBtn = "Choose a routine"; rAct = "pick"; }
+    else { rName = "Pick today's routine"; rSub = "From 15 minutes. Quick Start is a good first step."; rBtn = "Choose a routine"; rAct = "pick"; }
     const wm = window.ReplineWarm ? ReplineWarm.quickMinutes() : 3;
     const steps = [
       { k: "warm", c: "var(--warmc)", name: "Warm up your hands", len: wm + " min", sub: "Fingers, wrists, shoulders. Cold hands miss edits.", fin: ds.warm, skip: ds.warmSkip, btn: "Start warm-up", alt: '<button class="lnk" type="button" data-day="warmskip">Skip today</button>' },
