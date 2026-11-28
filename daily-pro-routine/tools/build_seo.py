@@ -199,7 +199,7 @@ def build():
         qa = [("How long is this routine?",
                "It comes in %d lengths, from %s. Pick the one that fits your day; every set has its own timer." % (len(totals), span)),
               ("Do I need to pay for the map codes?", "No. Every map is a free Fortnite creative map. Paste the code in Fortnite under Island Code. KovaaK's playlists need KovaaK's on Steam."),
-              ("Can I run this routine with timers?", "Yes. Open it in Repline: it walks you through set by set with a timer, the map code ready to copy and your streak tracked. Free, sign in with Discord.")]
+              ("Can I run this routine with timers?", "Yes. Open it in Repline: it walks you through set by set with a timer, the map code ready to copy and your playtime on the leaderboard. Free, sign in with Discord.")]
         body = ('<p class="muted"><a href="/routines/">Routines</a> › %s</p><h1>%s</h1><p class="lead">%s</p>'
                 '<a class="cta" href="/#start=%s.%s">Start this routine free</a><p class="muted">Runs in the browser and in the Windows app with an in-game overlay.</p>'
                 '%s<h2>Every set, every map code</h2>%s'
@@ -219,7 +219,7 @@ def build():
                    for g, c, p, span, i in cards)
     hub_qa = [("What is the best Fortnite practice routine?", "One you can repeat every day. Start with aim, then edits and freebuild, then fights, then ranked with one focus, and end with a short replay review."),
               ("How long should I practice Fortnite a day?", "Even 15 to 30 focused minutes a day beats one long session a week. Repline's Quick Start is 15 minutes on one map."),
-              ("Are these routines free?", "Yes. The routines and map codes are free. Repline adds timers, streaks, leaderboards and an in-game overlay.")]
+              ("Are these routines free?", "Yes. The routines and map codes are free. Repline adds timers, a leaderboard by playtime, a Personal Plan and an in-game overlay.")]
     hub = ('<h1>Fortnite practice routines</h1><p class="lead">Daily routines for competitive Fortnite: aim, edits, freebuild, piece control, fights, ranked and review. '
            'Every set comes with a timer and the free creative map code.</p><a class="cta" href="/#quick">Try the 15-minute Quick Start</a>'
            '<div class="grid">%s</div><p>Looking for the maps only? See all <a href="/map-codes/">Fortnite training map codes</a>.</p>'
