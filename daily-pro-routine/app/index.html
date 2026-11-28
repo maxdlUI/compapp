@@ -4367,7 +4367,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       const cy = fmt === "post" ? 590 : 740, r = fmt === "post" ? 230 : 290;
       x.lineCap = "round"; x.lineWidth = 34; x.strokeStyle = "#222225"; x.beginPath(); x.arc(W / 2, cy, r, 0, Math.PI * 2); x.stroke();
       x.strokeStyle = "#f5f5f7"; x.shadowColor = "rgba(255,255,255,.5)"; x.shadowBlur = 30; x.beginPath(); x.arc(W / 2, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, d.done / Math.max(1, d.sets))); x.stroke(); x.shadowBlur = 0;
-      x.textAlign = "center"; x.fillStyle = "#f5f5f7"; x.font = `800 ${fmt === "post" ? 150 : 180}px ${F}`; x.fillText(fmtPlay(d.min), W / 2, cy + 50);
+      x.textAlign = "center"; x.fillStyle = "#f5f5f7"; const tm = fmtPlay(d.min); x.font = `800 ${(fmt === "post" ? 128 : 156) * (tm.length > 6 ? 0.78 : 1)}px ${F}`; x.fillText(tm, W / 2, cy + 45);
       x.fillStyle = "#8e8e93"; x.font = `700 38px ${F}`; x.fillText(`${d.done} / ${d.sets} sets${d.counted ? " · counted ✓" : ""}`, W / 2, cy + 120); x.textAlign = "left";
       const y0 = fmt === "post" ? 960 : 1200;
       if (d.rank) { x.fillStyle = "#f5f5f7"; x.font = `800 ${fmt === "post" ? 96 : 120}px ${F}`; x.fillText("#" + d.rank, 80, y0 + 80); x.fillStyle = "#a1a1a6"; x.font = `700 42px ${F}`; x.fillText("this week", fmt === "post" ? 310 : 350, y0 + 70); }
