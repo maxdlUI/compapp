@@ -13,7 +13,7 @@
 html,body{height:100%;background:#000;color:var(--fg);font-family:Inter,system-ui,sans-serif;overflow:hidden;cursor:none}
 body.cur{cursor:default}
 /* background photos, black and white, slow drift */
-.bg{position:fixed;inset:-4%;background-size:cover;background-position:center;filter:grayscale(1) brightness(.5) contrast(1.05);opacity:0;transition:opacity 4s ease;animation:drift 60s ease-in-out infinite alternate}
+.bg{position:fixed;inset:-4%;background-size:cover;background-position:center;filter:saturate(1.5) brightness(.78) contrast(1.05);opacity:0;transition:opacity 4s ease;animation:drift 60s ease-in-out infinite alternate}
 .bg.on{opacity:1}
 @keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.12) translate(-2%,-1.5%)}}
 .shade{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,.15),rgba(0,0,0,.75) 85%),linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 60%,rgba(0,0,0,.7))}
@@ -216,7 +216,7 @@ main>section{min-height:0}
     ["Everything you want is on the other side of consistency.", "Unknown"],
     ["Comfort is the enemy of progress.", "P. T. Barnum"]
   ];
-  // black and white photos, a new pair every few minutes (Lorem Picsum, grayscale)
+  // colorful photos, a new one every 2 minutes (Lorem Picsum)
   var SEEDS = ["mountain", "fog", "ocean", "city", "forest", "desert", "night", "lake", "road", "snow", "cliff", "studio", "clouds", "river", "tokyo", "nordic", "dunes", "valley"];
 
   var nf = new Intl.NumberFormat("en-US");
@@ -339,7 +339,7 @@ main>section{min-height:0}
   var bgi = 0, cur = 0;
   function photo() {
     var seed = SEEDS[Math.floor(Date.now() / 3e5) % SEEDS.length] + "-" + (bgi++ % 3);
-    var url = "https://picsum.photos/seed/rl-" + seed + "/1920/1080?grayscale";
+    var url = "https://picsum.photos/seed/rl-" + seed + "/1920/1080";
     var img = new Image();
     img.onload = function () { cur = 1 - cur; var el = $("bg" + cur); el.style.backgroundImage = "url('" + url + "')"; el.classList.add("on"); $("bg" + (1 - cur)).classList.remove("on"); };
     img.src = url;
