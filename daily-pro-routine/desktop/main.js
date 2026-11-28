@@ -277,7 +277,7 @@ ipcMain.on("cue:show", (_e, c) => {
   overlay.webContents.send("overlay:cue", {
     kind: c.kind === "ack" ? "ack" : c.kind === "lock" ? "lock" : c.kind === "look" ? "look" : "cue",
     word: String(c.word || "").slice(0, 24), plan: String(c.plan || "").slice(0, 140), note: String(c.note || "").slice(0, 60),
-    ok: !!c.ok, voice: !!c.voice, tone: !!c.tone, say: String(c.say || "").slice(0, 200), ms, show
+    ok: !!c.ok, voice: !!c.voice, tone: !!c.tone, say: String(c.say || "").slice(0, 200), clip: /^voice\/(energetic|calm|clear)\/[a-z-]+\.mp3$/.test(String(c.clip || "")) ? String(c.clip) : "", ms, show
   });
   updateOverlayVisibility();
 });
