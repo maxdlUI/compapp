@@ -1745,6 +1745,8 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
         <button class="fc-chip" type="button" id="fc-o-tone">Soft tone</button>
         <button class="fc-chip" type="button" id="fc-o-flash">Overlay pulse</button>
       </div>
+      <span class="tiny">Voice (also for Look Around)</span>
+      <div class="fc-chips" id="fc-vox" role="group" aria-label="Voice"></div>
     </section>
 
     <section class="c-card" aria-labelledby="fc-h5">
@@ -2572,7 +2574,7 @@ const PK = "rl.cue", LK = "rl.cue.log";
 const get = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const P0 = get(PK, {});
-let P = Object.assign({ focus: "head", mode: "match", voice: true, tone: true, flash: true, words: {}, own: "",
+let P = Object.assign({ focus: "head", mode: "match", voice: true, vox: "energetic", tone: true, flash: true, words: {}, own: "",
   on: !!P0.auto, tunnel: { on: false, size: 34, dark: 55, soft: 60, shape: "circle", when: "drill" },
   look: { on: false, dirs: { left: true, right: true, behind: true, up: false, map: true }, mode: "normal", voice: true, edge: true } }, P0);
 P.tunnel = Object.assign({ on: false, size: 34, dark: 55, soft: 60, shape: "circle", when: "drill" }, P.tunnel || {});
@@ -2619,10 +2621,35 @@ function tone() {
   } catch (e) {}
 }
 function say(text) { try { if (!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 1.05; u.lang = "en-US"; speechSynthesis.speak(u); } catch (e) {} }
+/* Recorded voice lines (ElevenLabs, 28 Nov 2026) in voice/<voice>/<line>.mp3: the 8 cue words, "Locked in", the 7 lock-in plans
+   and the 5 Look Around calls. Only words and plans a player typed themselves still use the system voice. */
+const VOX = [["energetic", "Energetic"], ["calm", "Calm"], ["clear", "Clear"]];
+const vox = () => (VOX.some(([v]) => v === P.vox) ? P.vox : "energetic");
+function clipFor(c) {
+  const f = F(), base = "voice/" + vox() + "/";
+  if (c.kind === "cue") return P.words[P.focus] && P.words[P.focus] !== f.word ? "" : base + "w-" + f.id + ".mp3";
+  if (c.kind === "lock") return P.focus === "own" ? "" : base + "l-" + f.id + ".mp3";
+  if (c.kind === "ack" && c.say === "Locked in.") return base + "locked.mp3";
+  if (c.kind === "look") { const k = Object.keys(LOOK).find((x) => LOOK[x][0] === c.say); return k ? base + "k-" + k + ".mp3" : ""; }
+  return "";
+}
+let clipAudio = null;
+function play(clip, text) {
+  if (!clip) { say(text); return; }
+  try {
+    speechSynthesis.cancel();
+    if (clipAudio) clipAudio.pause();
+    clipAudio = new Audio(clip); let fell = false;
+    const fall = () => { if (!fell) { fell = true; say(text); } };
+    clipAudio.addEventListener("error", fall);
+    const pr = clipAudio.play(); if (pr && pr.catch) pr.catch(fall);
+  } catch (e) { say(text); }
+}
 function emit(c) {
+  if (c.voice && c.say) c.clip = clipFor(c);
   if (DESK && DESK.cue) { try { DESK.cue(c); return; } catch (e) {} }
   if (c.tone) tone();
-  if (c.voice && c.say) setTimeout(() => say(c.say), c.tone ? 380 : 0);
+  if (c.voice && c.say) setTimeout(() => play(c.clip, c.say), c.tone ? 380 : 0);
 }
 function flash(cls, ms, text) {
   const el = $("fc-flash"); if (!el) return;
@@ -2673,7 +2700,7 @@ function start(isAuto) {
   clearInterval(timer); timer = setInterval(loop, 1000);
   paint();
 }
-function stop() { run = null; clearInterval(timer); timer = 0; try { speechSynthesis.cancel(); } catch (e) {} paint(); }
+function stop() { run = null; clearInterval(timer); timer = 0; try { speechSynthesis.cancel(); if (clipAudio) clipAudio.pause(); } catch (e) {} paint(); }
 function loop() {
   if (!run) return;
   if (!anyCall()) { stop(); return; }
@@ -2808,6 +2835,7 @@ function setup() {
   chips($("fc-lk-dirs"), Object.keys(LOOK).map((k) => [k, LOOK[k][0]]), (v) => A.dirs[v], (v) => { A.dirs[v] = !A.dirs[v]; });
   chips($("fc-lk-mode"), Object.entries(LMODES).map(([k, v]) => [k, v[0]]), (v) => A.mode === v, (v) => { A.mode = v; });
   chips($("fc-lk-how"), [["voice", "Voice"], ["edge", "Edge light"]], (v) => A[v], (v) => { A[v] = !A[v]; });
+  chips($("fc-vox"), VOX, (v) => vox() === v, (v) => { P.vox = v; setTimeout(() => play(clipFor({ kind: "cue", say: word() }), word()), 30); });
 }
 function progress() {
   const w = $("fc-week"); if (!w) return;
@@ -2831,7 +2859,7 @@ function bind() {
   $("fc-no").addEventListener("click", () => answer(false));
   $("fc-wordin").addEventListener("input", (e) => { const v = e.target.value.trim(); if (v) P.words[P.focus] = v.slice(0, 18); else delete P.words[P.focus]; saveP(); paint(); });
   $("fc-own").addEventListener("input", (e) => { P.own = e.target.value.slice(0, 120); saveP(); $("fc-plan2").textContent = plan(); paint(); });
-  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"]].forEach(([id, k]) => $(id).addEventListener("click", () => { P[k] = !P[k]; saveP(); setup(); paint(); if (k === "voice" && P.voice) say(word()); }));
+  [["fc-o-voice", "voice"], ["fc-o-tone", "tone"], ["fc-o-flash", "flash"]].forEach(([id, k]) => $(id).addEventListener("click", () => { P[k] = !P[k]; saveP(); setup(); paint(); if (k === "voice" && P.voice) play(clipFor({ kind: "cue", say: word() }), word()); }));
   $("fc-sw-cue").addEventListener("click", () => { P.on = !P.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
   $("fc-sw-look").addEventListener("click", () => { P.look.on = !P.look.on; saveP(); setup(); paint(); if (run && !anyCall()) stop(); });
   $("fc-sw-tunnel").addEventListener("click", () => { if (!DESK) return; P.tunnel.on = !P.tunnel.on; saveP(); setup(); syncTunnel(); });
@@ -2866,7 +2894,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.26.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.27.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page

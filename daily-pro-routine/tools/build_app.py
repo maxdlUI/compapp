@@ -92,6 +92,11 @@ if os.path.isdir(os.path.join(APP, "img")):
     shutil.rmtree(os.path.join(APP, "img"))
 if os.path.isdir(IMG):
     shutil.copytree(IMG, os.path.join(APP, "img"))
+VOICE = os.path.join(ROOT, "voice")  # Focus Cue / Look Around voice lines (ElevenLabs), small mono mp3
+if os.path.isdir(os.path.join(APP, "voice")):
+    shutil.rmtree(os.path.join(APP, "voice"))
+if os.path.isdir(VOICE):
+    shutil.copytree(VOICE, os.path.join(APP, "voice"))
 VENDOR = os.path.join(ROOT, "vendor")
 if os.path.isdir(os.path.join(APP, "vendor")):
     shutil.rmtree(os.path.join(APP, "vendor"))
