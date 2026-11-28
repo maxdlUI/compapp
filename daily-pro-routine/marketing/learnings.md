@@ -21,7 +21,7 @@ Running log for the daily TikTok task. Read it before each new video, add what y
 
 | Date | Video | Length | Views | Likes | Saves | Notes |
 |---|---|---|---|---|---|---|
-| 28 Nov | Play like the pros (app demo: Windows cursor, camera follows it; `gen_cursor.py`) | 17 s | – | – | – | hook over g3 9.0 / g1 24.0, then only app footage |
+| 28 Nov | Play like the pros (app demo: Windows cursor, camera follows it; `gen_cursor.py`) | 17 s | – | – | – | hook over g3 9.0 / g1 24.0, then only app footage. Owner liked this style a lot: reuse cursor + camera app demos |
 | 27 Nov | Stop freebuilding for hours | 15.6 s | ~800 | 50 | 25 | 0 comments: add a question or a reason to comment next time | g2 33.6, g3 9.0 + 21.5, g1 24/0.4/37.3/32.5 |
 | 26 Nov | The right order (white style) | 40 s | ~250 | – | – | edit wall 16.3–21.3 (g3), freebuild 32.8–38 (g2), fights g1 12/20/27/15/31 |
 
