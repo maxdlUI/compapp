@@ -435,6 +435,19 @@ html.anim .sheet { animation: updrise .4s var(--ease); }
 .wl-quick { border-radius: 18px; padding: 18px; display: grid; gap: 10px; background: linear-gradient(135deg, rgba(216,216,216,.22), rgba(193,193,193,.12) 55%, rgba(188,188,188,.14)); box-shadow: inset 0 0 0 1.5px rgba(216,216,216,.55), 0 18px 50px rgba(216,216,216,.12); }
 .wl-quick .wl-qt { display: flex; align-items: center; gap: 8px; } .wl-quick .wl-qt b { font-size: 20px; letter-spacing: -.3px; }
 .wl-quick .pill.big { width: 100%; justify-content: center; }
+.wl-start { display: grid; gap: 4px; text-align: left; width: 100%; padding: 20px; border-radius: 18px; cursor: pointer; font: inherit; color: var(--ink, #f5f5f7); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 18px 50px rgba(255,255,255,.08); backdrop-filter: blur(14px); transition: transform .15s ease, background .15s ease; }
+.wl-start b { font-size: 21px; letter-spacing: -.3px; } .wl-start span { font-size: 13px; color: #a1a1a6; }
+.wl-start:hover { background: rgba(255,255,255,.16); transform: translateY(-1px); }
+.wl-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.wl-links button { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; color: #a1a1a6; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.wl-links button:hover { color: #f5f5f7; }
+.shr { display: grid; gap: 14px; padding: 18px; border-radius: 18px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); max-width: 560px; }
+.shr-rank { display: flex; align-items: center; gap: 14px; }
+.shr-rank .n { font-size: 34px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.shr-rank .t { display: grid; font-size: 13px; color: #a1a1a6; } .shr-rank .t b { color: #f5f5f7; font-size: 15px; }
+.shr-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.shr canvas { width: 120px; height: auto; border-radius: 10px; border: 1px solid rgba(255,255,255,.14); }
+.shr-prev { display: flex; gap: 14px; align-items: center; }
 .co-time { flex-wrap: wrap; }
 .wl-pp { border-radius: 18px; padding: 16px; display: grid; gap: 10px; background: linear-gradient(180deg, rgba(216,216,216,.10), rgba(216,216,216,.03)); box-shadow: inset 0 0 0 1.5px var(--c1); }
 .wl-pp .wl-top { display: flex; align-items: center; gap: 8px; } .wl-pp .wl-top b { font-size: 17px; }
@@ -1597,6 +1610,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
       <h1 class="d-xl burst">Done.</h1>
       <p class="lead" id="done-sum"></p>
       <div id="done-check"></div>
+      <div id="done-share"></div>
       <div id="done-coach"></div>
       <div id="done-mind"></div>
       <div class="acts"><a class="pill big" href="#">Back to home</a><a class="pill big out" href="#goal">Another routine</a></div>
@@ -1837,7 +1851,7 @@ a.c-card:hover { box-shadow: inset 0 0 0 1px var(--steel); background: #141416; 
 
 <main class="view wrap flowv" data-view="stats" id="v-stats" hidden>
   <button class="back" type="button" data-go="">Home</button>
-  <div class="vhead"><div><h1 class="d-l">Your stats.</h1><p class="lead" id="st-since"></p></div>
+  <div class="vhead"><div><h1 class="d-l">Your stats.</h1><p class="lead" id="st-since"></p><button class="pill out" type="button" id="st-share" style="margin-top:14px">Share my week</button></div>
     <div class="seg" role="tablist" aria-label="Range" id="stats-tabs"><button type="button" role="tab" data-sr="week">Week</button><button type="button" role="tab" data-sr="month">Month</button><button type="button" role="tab" data-sr="all">All time</button></div></div>
   <div id="stats-body"></div>
 </main>
@@ -2890,7 +2904,7 @@ const SITE = {
   url: "https://repline.pages.dev", // switch to the own domain once it is bought
   contactEmail: null,        // optional: shown in the account panel once set
   discordUrl: "https://discord.gg/3WeFB27Nk9", // Discord invite link (never expires); null shows "Join Discord · soon"
-  download: { url: "https://repline.pages.dev/download/windows", version: "1.25.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
+  download: { url: "https://repline.pages.dev/download/windows", version: "1.26.0", size: "80 MB" }, // Windows app (private R2 bucket via the site worker); null leads to #download on Discord
   imprintUrl: null,          // optional: imprint / legal notice page
   privacyUrl: null,          // optional: privacy policy page
   termsUrl: null,            // optional: terms of service page
@@ -4284,6 +4298,9 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag wait">Checking</span><b>Checking your routine…</b></div>`;
     const z = goal(S.goal), l = length(S.goal, S.len);
     $("done-sum").textContent = early ? `${z.name} · saved after ${Math.max(1, S.b)} of ${list().length} sets. Nice work.` : `${z.name} · ${l.name} · ${list().length} sets done.${z.cupTime ? " Good luck in your cup." : ""}`;
+    const bl0 = list(), doneN = early ? Math.max(1, S.b) : bl0.length;
+    shareLast = { name: z.name, sets: bl0.length, done: doneN, min: bl0.slice(0, doneN).reduce((a, b) => a + (b.min || 0), 0), counted: false };
+    if ($("done-share")) $("done-share").innerHTML = "";
     const keep = { goal: S.goal, len: S.len, cup: S.cup };
     S = Object.assign(fresh(), keep); store.del(KEY);
     pushOverlay(true); watchGames();
@@ -4292,6 +4309,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     if (wasFree) {
       $("done-check").innerHTML = `<div class="vcheck"><span class="vc-tag">Free Play</span><b>Saved in your stats</b><span class="small">Free Play doesn't go on the leaderboard. Pick Competitive Play next time to climb.</span></div>`;
       if (run) aimAfterRun(run.at);
+      shareAfterRun(false);
       return;
     }
     judgeRun(run, game, early).then((v) => {
@@ -4299,6 +4317,7 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
       rt[t] = (rt[t] || 0) + (v.counted || v.error ? 1 : 0); store.set(ROUT, rt);
       cloudDay();
       if ($("done-check")) $("done-check").innerHTML = doneCheckHTML(v);
+      shareAfterRun(v && v.counted);
       if (run) aimAfterRun(run.at);
     });
   }
@@ -4322,6 +4341,88 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
     $(prefix + "-streak").textContent = fmtPlay(weekMin());
     $(prefix + "-streak-w").textContent = "played this week";
   }
+  /* ---------- Share card (28 Nov 2026): a picture of the session or the week, drawn on the player's device,
+     with the player's own invite link on it. Phone: share sheet with the image; PC / Windows app: save the image + copy the link. ---------- */
+  let shareLast = null;
+  function shareFont() { try { return getComputedStyle(document.body).fontFamily || "Arial, sans-serif"; } catch (e) { return "Arial, sans-serif"; } }
+  function shareDraw(fmt, d) {
+    const c = document.createElement("canvas"); c.width = 1080; c.height = fmt === "post" ? 1350 : 1920;
+    const x = c.getContext("2d"), W = c.width, H = c.height, F = shareFont();
+    const rr = (px, py, w, h, r) => { x.beginPath(); if (x.roundRect) x.roundRect(px, py, w, h, r); else x.rect(px, py, w, h); };
+    x.fillStyle = "#000"; x.fillRect(0, 0, W, H);
+    const g = x.createRadialGradient(W * .3, H * .18, 10, W * .3, H * .18, W * 1.1); g.addColorStop(0, "rgba(255,255,255,.13)"); g.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.lineWidth = 15; x.strokeStyle = "#f5f5f7"; x.beginPath(); x.arc(115, 115, 27, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = "#f5f5f7"; x.font = `800 44px ${F}`; x.textBaseline = "middle"; x.fillText("REPLINE", 168, 117); x.textBaseline = "alphabetic";
+    const dt = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }).toUpperCase();
+    x.fillStyle = "#8e8e93"; x.font = `700 34px ${F}`;
+    if (fmt === "week") {
+      x.fillText("MY WEEK · " + dt, 80, 250);
+      x.fillStyle = "#f5f5f7"; x.font = `800 230px ${F}`; x.fillText(fmtPlay(d.week), 66, 520);
+      x.fillStyle = "#a1a1a6"; x.font = `700 46px ${F}`; x.fillText("trained this week", 84, 590);
+      const mx = Math.max(30, ...d.days), L = ["M", "T", "W", "T", "F", "S", "S"];
+      d.days.forEach((v, i) => { const bx = 90 + i * 132, bh = Math.max(14, v / mx * 420); x.fillStyle = v ? "#f5f5f7" : "#222225"; rr(bx, 1180 - bh, 92, bh, 14); x.fill(); x.fillStyle = "#6e6e73"; x.font = `700 34px ${F}`; x.fillText(L[i], bx + 34, 1240); });
+      if (d.rank) { x.fillStyle = "#f5f5f7"; x.font = `800 120px ${F}`; x.fillText("#" + d.rank, 80, 1470); x.fillStyle = "#a1a1a6"; x.font = `700 44px ${F}`; x.fillText("on the weekly leaderboard", 84, 1530); }
+    } else {
+      x.fillText(dt + " · " + String(d.name).toUpperCase().slice(0, 28), 80, 250);
+      const cy = fmt === "post" ? 590 : 740, r = fmt === "post" ? 230 : 290;
+      x.lineCap = "round"; x.lineWidth = 34; x.strokeStyle = "#222225"; x.beginPath(); x.arc(W / 2, cy, r, 0, Math.PI * 2); x.stroke();
+      x.strokeStyle = "#f5f5f7"; x.shadowColor = "rgba(255,255,255,.5)"; x.shadowBlur = 30; x.beginPath(); x.arc(W / 2, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, d.done / Math.max(1, d.sets))); x.stroke(); x.shadowBlur = 0;
+      x.textAlign = "center"; x.fillStyle = "#f5f5f7"; const tm = fmtPlay(d.min); x.font = `800 ${(fmt === "post" ? 128 : 156) * (tm.length > 6 ? 0.78 : 1)}px ${F}`; x.fillText(tm, W / 2, cy + 45);
+      x.fillStyle = "#8e8e93"; x.font = `700 38px ${F}`; x.fillText(`${d.done} / ${d.sets} sets${d.counted ? " · counted ✓" : ""}`, W / 2, cy + 120); x.textAlign = "left";
+      const y0 = fmt === "post" ? 960 : 1200;
+      if (d.rank) { x.fillStyle = "#f5f5f7"; x.font = `800 ${fmt === "post" ? 96 : 120}px ${F}`; x.fillText("#" + d.rank, 80, y0 + 80); x.fillStyle = "#a1a1a6"; x.font = `700 42px ${F}`; x.fillText("this week", fmt === "post" ? 310 : 350, y0 + 70); }
+      else { x.fillStyle = "#f5f5f7"; x.font = `800 ${fmt === "post" ? 96 : 120}px ${F}`; x.fillText(fmtPlay(d.week), 80, y0 + 80); x.fillStyle = "#a1a1a6"; x.font = `700 42px ${F}`; x.fillText("this week", 84, y0 + 140); }
+    }
+    x.fillStyle = "rgba(255,255,255,.08)"; rr(60, H - 210, W - 120, 140, 30); x.fill();
+    x.fillStyle = "#8e8e93"; x.font = `700 32px ${F}`; x.fillText("Train with me, free", 110, H - 150);
+    x.fillStyle = "#f5f5f7"; x.font = `800 44px ${F}`; x.fillText(shareUrl().replace(/^https?:\/\//, ""), 110, H - 95);
+    return c;
+  }
+  const shareUrl = () => refLink() || SITE.url;
+  function shareText(d, fmt) { return (fmt === "week" ? `I trained ${fmtPlay(d.week)} this week on Repline.` : `Just trained ${fmtPlay(d.min)} on Repline.`) + ` Train with me, free: ${shareUrl()}`; }
+  async function shareGo(fmt, d, btn) {
+    const c = shareDraw(fmt, d);
+    const blob = await new Promise((r) => c.toBlob(r, "image/png")); if (!blob) { toast("Couldn't make the image"); return; }
+    const file = typeof File === "function" ? new File([blob], `repline-${fmt}.png`, { type: "image/png" }) : null;
+    if (file && navigator.canShare && navigator.share && !window.replineDesktop) {
+      try { if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: shareText(d, fmt) }); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    shareSave(blob, fmt); copyText(shareText(d, fmt), btn, "Image saved · link copied");
+  }
+  function shareSave(blob, fmt) { const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = `repline-${fmt}.png`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+  function shareData(base) {
+    const info = store.get("rl.rank", null), wk = weekStart(new Date());
+    const days = []; for (let i = 0; i < 7; i++) days.push(dayMin(today(dShift(wk, i))));
+    return Object.assign({ week: weekMin(), days, rank: info && info.rank && !(info.note === "Demo numbers" && account && account.real) ? info.rank : 0 }, base || {});
+  }
+  function shareBox(el, base, fmts) {
+    if (!el || !signedIn()) return;
+    let fmt = fmts[0]; const d = shareData(base);
+    const names = { story: "Story", post: "Post", week: "My week" };
+    el.innerHTML = `<div class="shr">
+      <div class="shr-rank"><span class="n">${d.rank ? "#" + d.rank : fmtPlay(d.week)}</span><span class="t"><b>${d.rank ? "this week" : "played this week"}</b><span>${d.rank ? fmtPlay(d.week) + " this week" : "Climb the board with every counted routine"}</span></span></div>
+      <div class="shr-prev"><canvas aria-hidden="true"></canvas><span class="small" style="margin:0">Share your ${fmts[0] === "week" ? "week" : "session"}. Friends who join through your card count towards your free month of Standard.</span></div>
+      <div class="shr-row">${fmts.length > 1 ? `<div class="seg" role="group" aria-label="Card format">${fmts.map((f) => `<button type="button" data-sf="${f}" aria-pressed="${f === fmt}">${names[f]}</button>`).join("")}</div>` : ""}</div>
+      <div class="shr-row"><button class="pill" type="button" data-sh="go">Share card</button><button class="pill out" type="button" data-sh="save">Save image</button><button class="pill out" type="button" data-sh="link">Copy link</button></div></div>`;
+    const prev = () => { const c = shareDraw(fmt, d), p = el.querySelector("canvas"); p.width = c.width / 6; p.height = c.height / 6; p.getContext("2d").drawImage(c, 0, 0, p.width, p.height); };
+    prev();
+    el.querySelectorAll("[data-sf]").forEach((b) => b.addEventListener("click", () => { fmt = b.dataset.sf; el.querySelectorAll("[data-sf]").forEach((o) => o.setAttribute("aria-pressed", String(o === b))); prev(); }));
+    el.querySelector('[data-sh="go"]').addEventListener("click", (e) => shareGo(fmt, d, e.currentTarget));
+    el.querySelector('[data-sh="save"]').addEventListener("click", () => shareDraw(fmt, d).toBlob((b) => b && shareSave(b, fmt), "image/png"));
+    el.querySelector('[data-sh="link"]').addEventListener("click", (e) => copyText(shareUrl(), e.currentTarget, "Invite link copied"));
+  }
+  function shareAfterRun(counted) {
+    const el = $("done-share"); if (!el || !shareLast) return;
+    shareLast.counted = !!counted;
+    rankT = 0; Promise.resolve(loadMyRank()).catch(() => {}).then(() => shareBox(el, shareLast, ["story", "post"]));
+  }
+  function openShareWeek() {
+    if (!signedIn()) { askSignIn("stats"); return; }
+    openModal(`<h2 id="sheet-t">Share your week</h2><div id="shr-week"></div><div class="acts"><button class="pill out" type="button" data-close>Close</button></div>`, () => {
+      rankT = 0; Promise.resolve(loadMyRank()).catch(() => {}).then(() => shareBox($("shr-week"), null, ["week"]));
+    });
+  }
+  if ($("st-share")) $("st-share").addEventListener("click", openShareWeek);
   function countTo(el, n) {
     if (!anim() || n === 0) { el.textContent = n; return; }
     const t0 = performance.now(), dur = 900;
@@ -5184,44 +5285,24 @@ addEventListener("unhandledrejection", (e) => { try { const r = e.reason; window
   }
   function openWelcome() {
     const name = account && account.name ? account.name : "";
-    const pick = ["aim", "mechanics"].map((id) => GOALS.find((g) => g.id === id)).filter(Boolean).map((g) => {
-      const l = g.lengths[0], min = l.sets.reduce((a, x) => a + x.min, 0), img = (l.sets.find((x) => x.img) || {}).img;
-      return { id: g.id, len: l.id, name: g.name, min, img, text: g.text };
-    });
-    const freeTag = planId() === "free" ? "Free once" : "Made for you";
     let started = false;
+    // One clear first step (owner's pick, 28 Nov 2026): Quick Start in Competitive Play, so the first routine counts.
     openModal(`<h2 id="sheet-t" class="sr-only">Welcome to Repline</h2>
       <span class="wl-hi">Welcome to Repline${name ? ", " + esc(name) : ""}</span>
-      <b style="font-size:28px;line-height:1.12;letter-spacing:-.5px">Let's start your first routine.</b>
-      <div class="wl-quick">
-        <span class="wl-qt"><b>Quick Start</b><span class="wl-tag">15 min</span></span>
-        <span class="small" style="color:#c7c7cc">One map, three sets: edits, building, piece control. The fastest way to your first finished routine.</span>
-        <button class="pill big" type="button" id="wl-quick">Start 15 min</button>
-      </div>
-      <div class="wl-or">or let us build it</div>
-      <div class="wl-pp">
-        <div class="wl-top"><svg class="gi" aria-hidden="true" style="width:22px;height:22px;color:var(--c1)"><use href="#i-ki"/></svg><b>Your Personal Plan</b><span class="wl-tag">${freeTag}</span></div>
-        <label class="small" for="wl-msg" style="color:#c7c7cc;margin:0">Tell us what you want to work on. We build today's routine just for you.</label>
-        <textarea id="wl-msg" class="co-msg" maxlength="400" rows="2" placeholder="e.g. my edits are slow, cup on Friday" style="min-height:64px"></textarea>
-        <div class="wl-go"><span class="tiny">Your first one is 20 min, so you finish it.</span><button class="pill" type="button" id="wl-build">Build my routine</button></div>
-      </div>
-      <div class="wl-or">or pick a 30-min routine</div>
-      <div class="wl-list">${pick.map((r) => `<div class="wl-r">${r.img ? `<img src="${esc(thumbOf(r.img))}" alt="" loading="lazy" decoding="async">` : `<i class="wl-ph"></i>`}<span><b style="font-size:15px">${esc(r.name)}</b><span class="tiny">${fmtMin(r.min)} · ${esc(r.text)}</span></span><button class="pill sm" type="button" data-wl="${r.id}" data-len="${r.len}">Start</button></div>`).join("")}</div>
-      <button class="wl-later" type="button" data-close>Maybe later</button>`,
+      <b style="font-size:28px;line-height:1.12;letter-spacing:-.5px">Your first routine. 15 minutes.</b>
+      <span class="small" style="color:#c7c7cc">One map, three sets: edits, freebuild, piece control. It counts on this week's leaderboard.</span>
+      <button class="wl-start" type="button" id="wl-quick"><b>Start now →</b><span>Quick Start · Competitive Play · no setup</span></button>
+      <div class="wl-links"><button type="button" id="wl-pick">Pick another routine</button><button type="button" id="wl-pp">Build my Personal Plan</button><button type="button" data-close>Later</button></div>`,
       (sh, close) => {
         sh.classList.add("wl");
-        sh.querySelectorAll("[data-wl]").forEach((b) => b.addEventListener("click", () => {
+        sh.querySelector("#wl-quick").addEventListener("click", () => {
           started = true; close();
-          S.goal = b.dataset.wl; S.len = b.dataset.len; resetRun(); save(); go("plan");
-        }));
-        sh.querySelector("#wl-quick").addEventListener("click", () => { started = true; close(); go("quick"); });
-        sh.querySelector("#wl-build").addEventListener("click", () => {
-          const t = sh.querySelector("#wl-msg").value.trim();
-          const u = COACH.understand(t, coachProf());
-          if (!t || (u.min == null && !Object.keys(u.focus).length && !u.cup)) { toast("Write what you want to train, e.g. edits or aim"); sh.querySelector("#wl-msg").focus(); return; }
-          started = true; coachText = t; close(); go("ai");
-          setTimeout(() => { const m = $("co-msg"); if (m) { m.value = t; coachRun(); } }, 350);
+          settings.playMode = "comp"; saveSettings();
+          S.goal = "quick"; S.len = "15"; resetRun(); save(); go("plan");
+          setTimeout(() => { const b = $("plan-start"); if (b && view === "plan") b.click(); }, 250);
         });
+        sh.querySelector("#wl-pick").addEventListener("click", () => { started = true; close(); go("goal"); });
+        sh.querySelector("#wl-pp").addEventListener("click", () => { started = true; close(); go("ai"); });
       },
       () => {
         sh0().classList.remove("wl");
